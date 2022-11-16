@@ -36,6 +36,9 @@ android {
                 keystoreFile = rootProject.file(path)
             }
             println("keystore file path: ${keystoreFile.absolutePath}")
+            if (!keystoreFile.exists()) {
+                throw new GradleException("Keystore file does not exist")
+            }
             if (keystoreFile.exists()) {
                 storeFile keystoreFile
                 storePassword envOrProp(properties, 'KEYSTORE_PASSWORD')
