@@ -105,7 +105,8 @@ jobs:
 
       - name: Cleanup keystore
         if: always()
-        run: rm $KEYSTORE_PATH
+        run: |
+          [ -e file ] && rm $KEYSTORE_PATH
         shell: bash
 
       - name: Upload APKs
