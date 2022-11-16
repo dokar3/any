@@ -1,9 +1,6 @@
-name: Release
+name: Build release with baseline profile
 
 on:
-  push:
-    tags:
-      - v*
   workflow_dispatch:
 
 jobs:
@@ -11,7 +8,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       check: true
-      gen_baseline_profile: false
+      gen_baseline_profile: true
       build_release: true
     secrets:
       keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}

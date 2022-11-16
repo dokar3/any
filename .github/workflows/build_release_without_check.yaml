@@ -1,15 +1,15 @@
-name: Run CI
+name: Build release without check
 
 on:
   workflow_dispatch:
 
 jobs:
-  check:
+  build:
     uses: ./.github/workflows/build.yaml
     with:
-      check: true
+      check: false
       gen_baseline_profile: false
-      release: false
+      build_release: true
     secrets:
       keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}
       keystore_password: ${{ secrets.KEYSTORE_PASSWORD }}

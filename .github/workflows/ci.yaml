@@ -1,19 +1,18 @@
-name: Generate release APKs
+name: Run CI
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  gen_release_apks:
+  check:
     uses: ./.github/workflows/build.yaml
     with:
-      check: false
+      check: true
       gen_baseline_profile: false
-      release: true
+      build_release: false
     secrets:
       keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}
       keystore_password: ${{ secrets.KEYSTORE_PASSWORD }}

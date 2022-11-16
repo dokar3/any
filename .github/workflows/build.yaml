@@ -9,7 +9,7 @@ on:
       gen_baseline_profile:
         required: true
         type: boolean
-      release:
+      build_release:
         required: true
         type: boolean
     secrets:
@@ -90,7 +90,7 @@ jobs:
         shell: bash
 
       - name: Decode keystore
-        if: ${{ inputs.release }}
+        if: ${{ inputs.build_release }}
         env:
           ENCODED_KEYSTORE: ${{ secrets.keystore_base64 }}
         run: |
@@ -101,7 +101,7 @@ jobs:
           node ./scripts/file_base64_converter.js 2 $ENCODED_KEYSTORE $KEYSTORE_PATH
 
       - name: Build release APKs
-        if: ${{ inputs.release }}
+        if: ${{ inputs.build_release }}
         env:
           KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
           KEYSTORE_KEY_PASSWORD: ${{ secrets.keystore_key_password }}
@@ -113,7 +113,7 @@ jobs:
           [ -e $KEYSTORE_PATH ] && rm $KEYSTORE_PATH
         shell: bash
 
-      - name: Create release
+      - name: Create release from tag
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
         with:
@@ -124,7 +124,7 @@ jobs:
             android/app/build/outputs/apk/standard/release/app-universal-release.apk
 
       - name: Upload APKs
-        if: ${{ inputs.release }}
+        if: ${{ inputs.build_release }}
         uses: actions/upload-artifact@v3
         with:
           name: "Apks"
