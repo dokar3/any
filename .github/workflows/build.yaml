@@ -94,6 +94,10 @@ jobs:
         env:
           ENCODED_KEYSTORE: ${{ secrets.keystore_base64 }}
         run: |
+          if [ -n "$ENCODED_KEYSTORE" ]; then
+            echo "'keystore_base64' is not set"
+            exit 1
+          fi
           node ./scripts/file_base64_converter.js 2 $ENCODED_KEYSTORE $KEYSTORE_PATH
 
       - name: Build release APKs
