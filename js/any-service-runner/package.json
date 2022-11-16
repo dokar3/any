@@ -20,7 +20,7 @@
     "webpack-dev-server": "^4.8.1"
   },
   "devDependencies": {
-    "any-compile": "portal:../any-compile"
+    "any-service-compile": "portal:../any-service-compile"
   },
   "bin": "./src/main.js"
 }

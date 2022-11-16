@@ -30,14 +30,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"any-cli@workspace:.":
+"any-service-cli@workspace:.":
   version: 0.0.0-use.local
-  resolution: "any-cli@workspace:."
+  resolution: "any-service-cli@workspace:."
   dependencies:
     handlebars: ^4.7.7
     inquirer: ^8.2.4
   bin:
-    any-cli: ./src/main.js
+    any-service-cli: ./src/main.js
   languageName: unknown
   linkType: soft
 

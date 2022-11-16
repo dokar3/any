@@ -1930,9 +1930,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"any-compile@portal:../any-compile::locator=any-runner%40workspace%3A.":
+"any-service-compile@portal:../any-service-compile::locator=any-service-runner%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "any-compile@portal:../any-compile::locator=any-runner%40workspace%3A."
+  resolution: "any-service-compile@portal:../any-service-compile::locator=any-service-runner%40workspace%3A."
   dependencies:
     "@babel/core": ^7.17.10
     "@babel/plugin-proposal-class-properties": ^7.16.7
@@ -1954,13 +1954,13 @@ __metadata:
   languageName: node
   linkType: soft
 
-"any-runner@workspace:.":
+"any-service-runner@workspace:.":
   version: 0.0.0-use.local
-  resolution: "any-runner@workspace:."
+  resolution: "any-service-runner@workspace:."
   dependencies:
     "@babel/preset-env": ^7.16.11
     "@babel/preset-typescript": ^7.18.6
-    any-compile: "portal:../any-compile"
+    any-service-compile: "portal:../any-service-compile"
     axios: ^0.27.2
     babel-loader: ^8.2.5
     comlink: ^4.3.1
@@ -1972,7 +1972,7 @@ __metadata:
     thread-loader: ^3.0.4
     webpack-dev-server: ^4.8.1
   bin:
-    any-runner: ./src/main.js
+    any-service-runner: ./src/main.js
   languageName: unknown
   linkType: soft
 
@@ -3377,7 +3377,7 @@ __metadata:
 
 "fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -5139,7 +5139,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>":
   version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
+  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=c3c19d"
   dependencies:
     is-core-module: ^2.9.0
     path-parse: ^1.0.7
@@ -5772,7 +5772,7 @@ __metadata:
 
 "typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
   version: 4.8.4
-  resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"
+  resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=0102e9"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
