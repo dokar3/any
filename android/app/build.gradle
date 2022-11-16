@@ -29,11 +29,9 @@ android {
                 properties.load(localProps.newDataInputStream())
             }
             def path = envOrProp(properties, 'KEYSTORE_PATH')
-            def keystoreFile
-            if (file(path).isAbsolute()) {
+            def keystoreFile = rootProject.file(path)
+            if (!keystoreFile.exists()) {
                 keystoreFile = file(path)
-            } else {
-                keystoreFile = rootProject.file(path)
             }
             println("keystore file path: ${keystoreFile.absolutePath}")
             if (!keystoreFile.exists()) {
