@@ -2,6 +2,10 @@ name: Generate release APKs
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   gen_release_apks:
