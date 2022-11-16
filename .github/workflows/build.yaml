@@ -22,7 +22,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       KEYSTORE_PATH: ./release.jks
     steps:
