@@ -110,7 +110,7 @@ jobs:
       - name: Cleanup keystore
         if: always()
         run: |
-          [ -e "$KEYSTORE_PATH" ] && rm $KEYSTORE_PATH
+          [ -e "$KEYSTORE_PATH" ] && rm -f $KEYSTORE_PATH
         shell: bash
 
       - name: Create release from tag
