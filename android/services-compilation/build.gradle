@@ -143,3 +143,6 @@ project.afterEvaluate {
 }
 
 clean.dependsOn(cleanCompiledJs)
+
+check.dependsOn(cleanCompiledJs)
+check.dependsOn(compileBuiltinJsServices)
