@@ -1,0 +1,145 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+import java.util.regex.Pattern
+
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'any.services.compilation'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        minSdk 21
+        targetSdk libs.versions.targetSdk.get().toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+}
+
+dependencies {}
+
+def builtinServicesDir() {
+    return new File(rootProject.projectDir, "js/services")
+}
+
+def assetsDir() {
+    return new File(project.projectDir, "src/main/assets")
+}
+
+def compiledJsDir() {
+    return new File(assetsDir(), "js")
+}
+
+class ExecRet {
+    int exitValue
+    String stdout
+    String errorOut
+
+    ExecRet(int exitValue, String stdout, String errorOut) {
+        this.exitValue = exitValue
+        this.stdout = stdout
+        this.errorOut = errorOut
+    }
+}
+
+def cmd(File dir, String command) {
+    def stdout = new ByteArrayOutputStream()
+    def errorOut = new ByteArrayOutputStream()
+    def commandArgs
+    if (DefaultNativePlatform.currentOperatingSystem.isWindows()) {
+        commandArgs = ["powershell", command]
+    } else {
+        commandArgs = ["sh", "-c", command]
+    }
+    def ret = exec {
+        workingDir dir
+        commandLine commandArgs
+        standardOutput stdout
+        errorOutput errorOut
+        ignoreExitValue true
+    }
+    return new ExecRet(
+            ret.exitValue,
+            stdout.toString().trim(),
+            errorOut.toString().trim(),
+    )
+}
+
+def checkNodeJs() {
+    def check = "node -v"
+    def out = cmd(builtinServicesDir(), check).stdout
+    return Pattern.compile("v\\d+\\.\\d+\\.\\d+").matcher(out).matches()
+}
+
+def checkYarn() {
+    def check = "yarn -v"
+    def out = cmd(builtinServicesDir(), check).stdout
+    return Pattern.compile("\\d+\\.\\d+\\.\\d+").matcher(out).matches()
+}
+
+task compileBuiltinJsServices() {
+    def inputFiles = fileTree(builtinServicesDir()) {
+        include "/*/src/**/*"
+        include "/*/*.*"
+    }
+    inputs.files(inputFiles)
+    outputs.dir(compiledJsDir())
+    doLast {
+        // Check nodejs
+        println("Checking node.js")
+        if (!checkNodeJs()) {
+            throw new GradleException("Node.js is not installed, please install it " +
+                    "manually: https://nodejs.org")
+        }
+
+        if (!checkYarn()) {
+            throw new GradleException("Yarn is not installed, please install it " +
+                    "manually: https://yarnpkg.com/getting-started/install")
+        }
+
+        println("Compiling builtin js services...")
+        // Compile js files
+        def outputDir = compiledJsDir().absolutePath
+        def buildCmd = "node buildAll.js --platform=android --output=${outputDir} " +
+                "--file-prefix=file:///android_asset/js/"
+        def ret = cmd(builtinServicesDir(), buildCmd)
+        if (ret.exitValue != 0) {
+            throw new GradleException("Failed to compile builtin js services, details:\n" +
+                    "stdout:\n${ret.stdout}\nerrorOut:\n${ret.errorOut}")
+        }
+        println("Compiled builtin js services, copied to: $outputDir")
+    }
+}
+
+task cleanCompiledJs() {
+    doLast {
+        println("Clean compiled js services....")
+        delete compiledJsDir()
+        delete new File(builtinServicesDir(), ".build")
+    }
+}
+
+project.afterEvaluate {
+    packageDebugAssets.dependsOn(compileBuiltinJsServices)
+    packageReleaseAssets.dependsOn(compileBuiltinJsServices)
+}
+
+clean.dependsOn(cleanCompiledJs)

@@ -1,0 +1,65 @@
+{
+  "id": "any.twitter.{userId}",
+  "minApiVersion": "0.1.0",
+  "maxApiVersion": "",
+  "name": "Twitter",
+  "description": "Check tweets from your account",
+  "developer": "Any",
+  "homepage": "https://github.com/dokar3/Any/tree/main/js/apps/Twitter",
+  "changelog": "CHANGELOG.md",
+  "version": "1.0.0",
+  "isPageable": true,
+  "viewType": "full_width",
+  "mediaAspectRatio": "5:4",
+  "icon": "src/assets/icon.png",
+  "themeColor": "#1D9BF0",
+  "main": "src/main.ts",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "forceConfigsValidation": true,
+  "configs": [
+    {
+      "name": "Client id",
+      "key": "clientId",
+      "type": "text",
+      "description": "Twitter developer app client id",
+      "value": "{{TWITTER_CLIENT_ID}}",
+      "visibleToUser": false
+    },
+    {
+      "name": "Login to twitter",
+      "key": "authCookies",
+      "type": "cookies",
+      "required": true,
+      "description": "Login your twitter account to fetch tweets",
+      "extras": {
+        "requestUrl": "https://twitter.com/i/oauth2/authorize?response_type=code&client_id={{TWITTER_CLIENT_ID}}&redirect_uri=https://dokar3.github.io/twitter_oauth_redirect&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain",
+        "targetUrl": "https://dokar3.github.io/twitter_oauth_redirect"
+      }
+    },
+    {
+      "name": "Auth code",
+      "key": "authCode",
+      "type": "text",
+      "visibleToUser": false
+    },
+    {
+      "name": "Bearer token",
+      "key": "bearerToken",
+      "type": "text",
+      "visibleToUser": false
+    },
+    {
+      "name": "Refresh token",
+      "key": "refreshToken",
+      "type": "text",
+      "visibleToUser": false
+    },
+    {
+      "name": "User id",
+      "key": "userId",
+      "type": "text",
+      "visibleToUser": false
+    }
+  ]
+}

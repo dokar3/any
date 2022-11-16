@@ -1,0 +1,93 @@
+package any.ui.common.widget
+
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import any.base.R
+import any.ui.common.theme.secondaryText
+import com.google.accompanist.swiperefresh.SwipeRefreshState
+
+@Composable
+fun PullToRefreshIndicator(
+    refreshState: SwipeRefreshState,
+    refreshTriggerDp: Dp,
+    progress: Float?,
+    progressColor: Color = MaterialTheme.colors.primary,
+    textColor: Color = MaterialTheme.colors.secondaryText.copy(alpha = 0.7f),
+) {
+    if (refreshState.isRefreshing) {
+        if (progress != null && progress > 0f) {
+            LinearProgressIndicator(
+                progress = progress,
+                modifier = Modifier.fillMaxWidth(),
+                color = progressColor,
+            )
+        } else {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                color = progressColor,
+            )
+        }
+    } else if (refreshState.indicatorOffset > 0f) {
+        val indicatorOffset = refreshState.indicatorOffset
+        val refreshTriggerPx = with(LocalDensity.current) { refreshTriggerDp.toPx() }
+        val refreshProgress = (indicatorOffset / refreshTriggerPx).coerceIn(0f, 1f)
+        Row(
+            modifier = Modifier
+                .layout { measurable, constraints ->
+                    val placeable = measurable.measure(constraints)
+                    val width = placeable.width
+                    val height = placeable.height
+                    layout(width, height) {
+                        val h = height - 16.dp.toPx()
+                        val offsetY = if (indicatorOffset > h) {
+                            ((indicatorOffset - h) / 2).toInt()
+                        } else {
+                            0
+                        }
+                        placeable.placeRelative(0, offsetY)
+                    }
+                }
+                .fillMaxWidth()
+                .padding(16.dp)
+                .alpha(refreshProgress),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            ProgressBar(
+                size = 18.dp,
+                progress = refreshProgress,
+                color = progressColor,
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = if (refreshProgress == 1f) {
+                    stringResource(R.string.release_to_refresh)
+                } else {
+                    stringResource(R.string.pull_to_refresh)
+                },
+                modifier = Modifier.animateContentSize(),
+                color = textColor,
+                fontSize = 14.sp,
+            )
+        }
+    }
+}

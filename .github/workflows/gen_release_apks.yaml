@@ -1,0 +1,16 @@
+name: Generate release APKs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  gen_release_apks:
+    uses: ./.github/workflows/build.yaml
+    with:
+      check: false
+      gen_baseline_profile: false
+      release: true
+    secrets:
+      keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}
+      keystore_password: ${{ secrets.KEYSTORE_PASSWORD }}
+      keystore_key_password: ${{ secrets.KEYSTORE_KEY_PASSWORD }}

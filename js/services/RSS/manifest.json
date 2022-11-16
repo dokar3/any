@@ -1,0 +1,33 @@
+{
+  "id": "any.rss.{hash(url)}",
+  "minApiVersion": "0.1.0",
+  "name": "RSS",
+  "description": "Subscribe your feeds",
+  "developer": "Any",
+  "homepage": "https://github.com/dokar3/Any/tree/main/js/apps/RSS",
+  "version": "1.0.0",
+  "isPageable": false,
+  "viewType": "card",
+  "mediaAspectRatio": "12:7",
+  "icon": "src/assets/icon.png",
+  "main": "src/main.ts",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "configs": [
+    {
+      "name": "Always open in browser",
+      "key": "alwaysOpenInBrowser",
+      "type": "boolean",
+      "required": true,
+      "value": true
+    },
+    {
+      "name": "Link",
+      "description": "Subscription link",
+      "key": "url",
+      "type": "url",
+      "required": true,
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    namespace 'com.dokar.any'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.dokar.any"
+        minSdk 21
+        targetSdk libs.versions.targetSdk.get().toInteger()
+        versionCode 1
+        versionName "0.1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            def localProps = rootProject.file('local.properties')
+            if (localProps.exists()) {
+                properties.load(localProps.newDataInputStream())
+            }
+            def path = envOrProp(properties, 'KEYSTORE_PATH')
+            def keystoreFile
+            if (file(path).isAbsolute()) {
+                keystoreFile = file(path)
+            } else {
+                keystoreFile = rootProject.file(path)
+            }
+            println("keystore file path: ${keystoreFile.absolutePath}")
+            if (keystoreFile.exists()) {
+                storeFile keystoreFile
+                storePassword envOrProp(properties, 'KEYSTORE_PASSWORD')
+                keyAlias 'any'
+                keyPassword envOrProp(properties, 'KEYSTORE_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        benchmark {
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            debuggable false
+            proguardFiles "benchmark-rules.pro"
+        }
+        release {
+            // Disable minify when running a compiler reports release build
+            minifyEnabled project.findProperty("enableComposeCompilerReports") != "true"
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    splits {
+        abi {
+            enable !project.hasProperty("disableSplits")
+            reset()
+            include "arm64-v8a", "x86_64"
+            universalApk false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
+    }
+}
+
+static def envOrProp(Properties props, String propName) {
+    def envVal = System.getenv(propName)
+    return envVal != null ? envVal : props[propName]
+}
+
+dependencies {
+    implementation projects.base
+    implementation projects.data
+    implementation projects.domain
+    implementation projects.download
+    implementation projects.navigation
+    implementation projects.commonUi
+    implementation projects.uiHome
+    implementation projects.uiSearch
+    implementation projects.uiService
+    implementation projects.uiPost
+    implementation projects.uiProfile
+    implementation projects.uiImagepager
+    implementation projects.uiSettings
+    implementation projects.uiPassword
+    implementation projects.uiRunsql
+    implementation projects.uiJslogger
+    implementation projects.uiReadingbubble
+    implementation projects.servicesCompilation
+
+    implementation libs.sheets
+
+    implementation libs.compose.ui.tooling
+    implementation libs.androidx.lifecycle.runtime
+    implementation libs.androidx.profileinstaller
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+    androidTestImplementation libs.compose.ui.test
+}

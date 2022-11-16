@@ -1,0 +1,29 @@
+{
+  "name": "{{packageName}}",
+  "version": "{{version}}",
+  "description": "{{description}}",
+  "author": "{{author}}",
+  "license": "{{license}}",
+  "type": "module",
+  "scripts": {
+    "test": "jest ./test",
+    "build-android": "any-build --platform=android --output=./dist/",
+    "build-desktop": "any-build --platform=desktop --output=./dist/",
+    "build-browser": "any-build --platform=browser --output=./dist/",
+    "any-runner-backend": "any-runner --backend",
+    "any-runner-frontend": "any-runner --frontend",
+    "runner": "concurrently --kill-others -n \"Backend \",\"Frontend\" \"npm run any-runner-backend\" \"npm run any-runner-frontend\""
+  },
+  "dependencies": {
+    "any-service-api": "file:{{anyApiPath}}"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "any-service-compile": "file:{{anyCompilePath}}",
+    "any-service-runner": "file:{{anyRunnerPath}}",
+    "any-service-testing": "file:{{anyTestingPath}}",
+    "concurrently": "^7.1.0",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.7"
+  }
+}

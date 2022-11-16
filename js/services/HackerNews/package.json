@@ -1,0 +1,24 @@
+{
+  "name": "hacker-news",
+  "version": "1.0.0",
+  "description": "Collect stories from Hacker News",
+  "author": "Any",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "build-android": "any-service-build --platform=android --output=./dist/",
+    "build-desktop": "any-service-build --platform=desktop --output=./dist/",
+    "build-browser": "any-service-build --platform=browser --output=./dist/",
+    "any-service-runner-backend": "any-service-runner --backend",
+    "any-service-runner-frontend": "any-service-runner --frontend",
+    "runner": "concurrently --kill-others -n \"Backend \",\"Frontend\" \"npm run any-service-runner-backend\" \"npm run any-service-runner-frontend\""
+  },
+  "dependencies": {
+    "any-service-api": "portal:../../any-service-api"
+  },
+  "devDependencies": {
+    "any-service-compile": "portal:../../any-service-compile",
+    "any-service-runner": "portal:../../any-service-runner",
+    "concurrently": "^7.1.0"
+  }
+}

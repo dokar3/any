@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_item_save"
+        android:icon="@drawable/ic_baseline_save_alt_24"
+        android:title="@string/save" />
+    <item
+        android:id="@+id/menu_item_copy_url"
+        android:icon="@drawable/ic_baseline_content_copy_24"
+        android:title="@string/copy_image_url" />
+    <item
+        android:id="@+id/menu_item_glen"
+        android:icon="@drawable/ic_glens"
+        android:title="@string/google_lens"
+        android:visible="false"/>
+    <item
+        android:id="@+id/menu_item_share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:title="@string/share" />
+</menu>
