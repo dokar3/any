@@ -113,9 +113,16 @@ jobs:
           [ -e $KEYSTORE_PATH ] && rm $KEYSTORE_PATH
         shell: bash
 
-      - name: Upload APKs
+      - name: "Upload APK: arm64-v8a"
         if: ${{ inputs.release }}
         uses: actions/upload-artifact@v3
         with:
-          name: apk
-          path: android/app/build/outputs/apk/release/*.apk
+          name: "Apk: arm64-v8a"
+          path: android/app/build/outputs/apk/release/app-arm64-v8a-release.apk
+
+      - name: "Upload APK: x86_64"
+        if: ${{ inputs.release }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: "Apk: x86_64"
+          path: android/app/build/outputs/apk/release/app-x86_64-release.apk
