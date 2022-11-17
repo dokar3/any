@@ -145,7 +145,9 @@ function buildLocalDependencies() {
     }
 
     if (shouldBuildMain) {
-      console.log("Building local dependency \n" + projectDir);
+      console.log(
+        "Building local dependency: " + path.relative(JS_DIR, projectDir)
+      );
       process.chdir(projectDir);
       child_process.execSync("yarn tsc", { stdio: "inherit" });
       console.log();
