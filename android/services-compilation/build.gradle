@@ -126,6 +126,8 @@ task compileBuiltinJsServices() {
         if (ret.exitValue != 0) {
             throw new GradleException("Failed to compile builtin js services, details:\n" +
                     "stdout:\n${ret.stdout}\nerrorOut:\n${ret.errorOut}")
+        } else {
+            println(ret.stdout)
         }
         println("Compiled builtin js services, copied to: $outputDir")
     }
