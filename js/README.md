@@ -94,19 +94,15 @@ The `setup.js` script will do:
 **Run commands for all built-in projects**
 
 ```shell
-cd /path/to/services/dir/
-
 # Install dependencies for all projects
-node runInEachProject.js yarn
+node ./scripts/service/runInEachProject.js yarn
 
 # Upgrade 'typescript' for all projects
-node runInEachProject.js yarn up typescript
+node ./scripts/service/runInEachProject.js yarn up typescript
 ```
 
 **Build all built-in services:**
 
 ```shell
-cd /path/to/services/dir/
-
-node buildAll.js --platform=android --output=/path/to/output_dir
+node ./scripts/service/buildAll.js --platform=android --output=/path/to/output_dir
 ```
