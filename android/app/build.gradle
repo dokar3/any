@@ -117,7 +117,6 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
-    androidTestImplementation libs.compose.ui.test
 }
 
 apply from: "./build_services.gradle"

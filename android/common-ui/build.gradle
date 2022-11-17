@@ -53,6 +53,8 @@ dependencies {
     api libs.androidx.lifecycle.viewmodel.compose
     api libs.androidx.viewpager
     api libs.androidx.interpolator
+
+    api platform(libs.compose.bom)
     api libs.compose.ui.ui
     api libs.compose.ui.util
     api libs.compose.animation
