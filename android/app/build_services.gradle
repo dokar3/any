@@ -108,9 +108,13 @@ task cleanCompiledJs() {
 }
 
 project.afterEvaluate {
-    generateDebugAssets.dependsOn(compileBuiltinJsServices)
-    generateReleaseAssets.dependsOn(compileBuiltinJsServices)
-    lintVitalReportRelease.dependsOn(compileBuiltinJsServices)
+    def isAndroidLibrary = plugins.hasPlugin("com.android.library")
+    def variants = isAndroidLibrary ? android.libraryVariants : android.applicationVariants
+    variants.all { def variant ->
+        def targetName = variant.name.capitalize()
+        tasks.findByName("merge${targetName}Resources").dependsOn(compileBuiltinJsServices)
+        tasks.findByName("merge${targetName}Assets").dependsOn(compileBuiltinJsServices)
+    }
 }
 
 clean.dependsOn(cleanCompiledJs)
