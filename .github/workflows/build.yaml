@@ -110,8 +110,9 @@ jobs:
       - name: Cleanup keystore
         if: always()
         run: |
-          [ -e "$KEYSTORE_PATH" ] && rm -f $KEYSTORE_PATH
-        shell: bash
+          if [ -e "$KEYSTORE_PATH" ]; then
+            rm -f $KEYSTORE_PATH
+          fi
 
       - name: Create release from tag
         uses: softprops/action-gh-release@v1
