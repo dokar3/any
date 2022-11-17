@@ -72,13 +72,16 @@ function initYarn() {
       child_process.execSync(
         `corepack prepare yarn@${YARN_VERSION} --activate`
       );
+      console.log(
+        "Yarn installed, version: " + child_process.execSync("yarn -v")
+      );
       console.log();
     } catch (e) {
       // Install corepack
       console.log("Installing corepack...");
       child_process.execSync("npm i -g corepack");
       console.log();
-      initYarn();
+      installYarn();
     }
   }
 
