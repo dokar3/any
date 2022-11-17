@@ -5,6 +5,11 @@ import path from "path";
 import newServiceProject from "./new_service_project.js";
 import { fileURLToPath } from "url";
 
+const HELP = `Options:
+new           Create new service project from the template.
+-h, --help    Print help messages. 
+`;
+
 const argv = process.argv;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,11 +24,11 @@ if (argv.length >= 3) {
     }
     case "-h":
     case "--help": {
-      const message = `Options:\n
-        new           Create new service project from the template.
-        -h, --help    Print help messages. 
-        `;
-      console.log(message);
+      console.log(HELP);
+      break;
+    }
+    case "-t":
+    case "--test": {
       break;
     }
     default: {

@@ -118,9 +118,11 @@ task compileBuiltinJsServices() {
         println("Compiling builtin js services...")
         // Compile js files
         def outputDir = compiledJsDir().absolutePath
-        def buildCmd = "node buildAll.js --platform=android --output=${outputDir} " +
+        def buildCmd = "node scripts/service/buildAll.js " +
+                "--platform=android " +
+                "--output=${outputDir} " +
                 "--file-prefix=file:///android_asset/js/"
-        def ret = cmd(builtinServicesDir(), buildCmd)
+        def ret = cmd(rootProject.projectDir, buildCmd)
         if (ret.exitValue != 0) {
             throw new GradleException("Failed to compile builtin js services, details:\n" +
                     "stdout:\n${ret.stdout}\nerrorOut:\n${ret.errorOut}")

@@ -1,38 +1,66 @@
 #!/usr/bin/env node
 
-// Build all projects: node buildAll.js --platform=PLATFORM --output=/PATH/TO/OUTPUT/DIR
-//
-// Options:
-// --platform            [Required] The target platform, could be 'android', 'desktop' or 'browser'.
-// --output              [Required] The output dir to copy outputs.
-// --file-prefix         The prefix for the main source file and other resource files.
-// --minimize            Enable the minimize optimization. Defaults to true.
-// --ignore-unchanged    Force to run build command in projects even if source and output are not
-//                       changed.
-
 const fs = require("fs");
 const path = require("path");
 const process = require("process");
 const child_process = require("child_process");
 const forEachProjects = require("./forEachProjects.js");
 
+const HELP = `Build all builtin services
+Example:
+  node buildAll.js --platform=PLATFORM --output=/PATH/TO/OUTPUT/DIR
+
+Options:
+--platform            [Required] The target platform, could be 'android', 'desktop' or 'browser'.
+--output              [Required] The output dir to copy outputs.
+--file-prefix         The prefix for the main source file and other resource files.
+--minimize            Enable the minimize optimization. Defaults to true.
+--ignore-unchanged    Force to run build command in projects even if source and output are not changed.
+--help, -h            Print help messages`;
+
 const args = process.argv.slice(2);
+
+if (args[0] === "--help" || args[2] === "-h" || args.length <= 2) {
+  console.log(HELP);
+  return;
+}
+
+function err(msg) {
+  if (err != null) {
+    console.error(msg);
+  }
+  process.exit(1);
+}
+
+const CURRENT_DIR = process.cwd();
+const JS_DIR = path.join(CURRENT_DIR, "js");
+const SERVICES_DIR = path.join(JS_DIR, "services");
+
+if (!fs.existsSync(JS_DIR)) {
+  err(
+    "'js' folder is not found, Are you running this script in other location " +
+      "rather than project's root directory?"
+  );
+  return;
+}
 
 // -platform
 const argPlatform = args.find((arg) => arg.startsWith("--platform="));
 if (!argPlatform) {
-  throw "No platform specified, use '-platform' to specify the target platform";
+  err("No platform specified, use '-platform' to specify the target platform");
 }
 const PLATFORM = argPlatform.split("=")[1];
 
 // -output
 const argOutputDir = args.find((arg) => arg.startsWith("--output="));
 if (!argOutputDir) {
-  throw "No output path specified, use '-output=path/to/output/dir' to specify the path";
+  err(
+    "No output path specified, use '-output=path/to/output/dir' to specify the path"
+  );
 }
 const OUTPUT_DIR = argOutputDir.split("=")[1];
 if (!fs.existsSync(OUTPUT_DIR)) {
-  throw "Output path does not exist, path: " + OUTPUT_DIR;
+  err("Output path does not exist, path: " + OUTPUT_DIR);
 }
 
 // -file-prefix
@@ -61,60 +89,6 @@ if (argMinimize) {
 // --ignore-unchanged
 const IGNORE_UNCHANGED =
   args.find((arg) => arg === "--ignore-unchanged") !== undefined;
-
-const CURRENT_DIR = process.cwd();
-
-const PRE_BUILD_PATHS = [
-  "../any-service-api",
-  "../any-service-testing",
-  "../any-service-compile",
-];
-
-function preBuildLocalDependencies() {
-  for (const p of PRE_BUILD_PATHS) {
-    const projectDir = path.join(CURRENT_DIR, p);
-    if (!fs.existsSync(projectDir)) {
-      throw new Error(
-        "Pre-build local dependency does not exist, path: \n" + projectDir
-      );
-    }
-
-    const packageText = fs.readFileSync(path.join(projectDir, "package.json"));
-    const packageInfo = JSON.parse(packageText);
-
-    let shouldBuildMain = false;
-    if (packageInfo.main != null) {
-      const mainFile = path.join(projectDir, packageInfo.main);
-      shouldBuildMain = !fs.existsSync(mainFile);
-    }
-
-    let shouldInstallBin = false;
-    if (packageInfo.bin != null) {
-      const keys = Object.keys(packageInfo.bin);
-      if (keys.length > 0) {
-        shouldInstallBin = false;
-        for (const key of keys) {
-          const binPath = path.join(projectDir, `node_modules/.bin/${key}`);
-          if (!fs.existsSync(binPath)) {
-            shouldInstallBin = true;
-            break;
-          }
-        }
-      }
-    }
-
-    if (shouldBuildMain || shouldInstallBin) {
-      console.log("Building local dependency: \n" + projectDir);
-
-      process.chdir(projectDir);
-
-      child_process.execSync("yarn", { stdio: "inherit" });
-      if (shouldBuildMain) {
-        child_process.execSync("yarn tsc", { stdio: "inherit" });
-      }
-    }
-  }
-}
 
 function isManifestFile(filepath) {
   const filename = path.basename(filepath);
@@ -195,7 +169,7 @@ function copyBuiltServiceToOutputDir(projectDir, outputServicesPath) {
 }
 
 function getBuildInfoFile() {
-  const dir = path.join(CURRENT_DIR, ".build");
+  const dir = path.join(SERVICES_DIR, ".build");
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir);
   }
@@ -459,5 +433,4 @@ function buildAll() {
   process.exit(0);
 }
 
-preBuildLocalDependencies();
 buildAll();

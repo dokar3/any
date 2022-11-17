@@ -1,21 +1,25 @@
 #!/usr/bin/env node
 
-const HELP = `Run commands for every project in the current folder.
-Examples:
-- Install dependencies for all projects:
-    node runInEachProject.js yarn
-
-- Upgrade typescript for all projects without ask any interactive question:
-    node runInEachProject.js --no-interaction yarn up typescript`;
-
 const path = require("path");
 const process = require("process");
 const readline = require("readline");
 const child_process = require("child_process");
 const forEachProjects = require("./forEachProjects.js");
 
-const args = process.argv;
-if (args[2] === "--help" || args[2] === "-h" || args.length <= 2) {
+const HELP = `Run commands for built-in service projects.
+
+Examples:
+Install dependencies for all projects:
+  node runInEachProject.js yarn
+
+Upgrade typescript for all projects without ask any interactive question:
+  node runInEachProject.js --no-interaction yarn up typescript
+
+Options:
+--help, -h    Print help messages`;
+
+const args = process.argv.slice(2);
+if (args.length == 0 || args[0] === "--help" || args[0] === "-h") {
   console.log(HELP);
   return;
 }
@@ -63,14 +67,14 @@ async function askAndRun(cmd) {
   rl.close();
 }
 
-if (args[2] === "--no-interaction") {
-  if (args.length > 3) {
-    const cmd = args.slice(3).join(" ");
+if (args[0] === "--no-interaction") {
+  if (args.length > 1) {
+    const cmd = args.slice(1).join(" ");
     runCommandForAllProjects(cmd);
   } else {
     throw new Error("No command after '--no-interaction'");
   }
 } else {
-  const cmd = args.slice(2).join(" ");
+  const cmd = args.join(" ");
   askAndRun(cmd);
 }

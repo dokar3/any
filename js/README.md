@@ -42,35 +42,28 @@ Built-in services.
 - [Node.js](https://nodejs.org/) The JavaScript runtime for compiling and packing.
 - [yarn](https://yarnpkg.com/) The dependency management.
 
+**Setup:**
+
+```shell
+cd project/root/dir
+
+node ./scripts/service/setup.js
+```
+
+The `setup.js` script will do:
+
+1. Check and install `yarn` (if not)
+2. Install dependencies for projects in the `js/any-***` and `js/services/` folder
+3. Build local dependencies, e.g. `js/any-service-api`, `js/any-service-test`
+4. Link `js/any-service-cli` so you can use the `any-service-cli` command to create a new project
+
 **Create and run a new service:**
 
-
-1. Build local dependencies (Required on the first run, rebuild if dependencies have been updated):
-
-    ```shell
-    cd /path/to/any-service-api/
-    # Install dependencies
-    yarn
-    # Build
-    yarn tsc
-    
-    # Same for the 'any-service-testing'
-    cd /path/to/any-service-testing/
-    yarn
-    yarn tsc
-    ```
-
-2. Link the `any-service-cli` module (Required on the first run):
-
-    ```shell
-    cd /path/to/any-service-cli/
-    npm link --bin-links
-    ```
 
 3. Run `any-service-cli` command to create new project:
 
     ```shell
-    cd your/projects/dir
+    cd js/services/
     
     any-service-cli
     ```

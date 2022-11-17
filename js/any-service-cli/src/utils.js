@@ -59,14 +59,14 @@ function toPosixPath(originalPath) {
 }
 
 /**
- * Get version string from 'any-api'
+ * Get version string from 'any-service-api'
  *
  * @return {string} The version string.
  */
 function getCurrentApiVersion() {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const apiDir = path.join(__dirname, "../../any-api");
+  const apiDir = path.join(__dirname, "../../any-service-api");
   const json = fs.readFileSync(path.join(apiDir, "package.json"));
   return JSON.parse(json).version;
 }
