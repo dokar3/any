@@ -2,40 +2,6 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 import java.util.regex.Pattern
 
-plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-}
-
-android {
-    namespace 'any.services.compilation'
-    compileSdk libs.versions.compileSdk.get().toInteger()
-
-    defaultConfig {
-        minSdk 21
-        targetSdk libs.versions.targetSdk.get().toInteger()
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = '11'
-    }
-}
-
-dependencies {}
-
 def builtinServicesDir() {
     return new File(rootProject.projectDir, "js/services")
 }
@@ -142,8 +108,9 @@ task cleanCompiledJs() {
 }
 
 project.afterEvaluate {
-    packageDebugAssets.dependsOn(compileBuiltinJsServices)
-    packageReleaseAssets.dependsOn(compileBuiltinJsServices)
+    generateDebugAssets.dependsOn(compileBuiltinJsServices)
+    generateReleaseAssets.dependsOn(compileBuiltinJsServices)
+    lintVitalReportRelease.dependsOn(compileBuiltinJsServices)
 }
 
 clean.dependsOn(cleanCompiledJs)

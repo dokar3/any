@@ -107,7 +107,6 @@ dependencies {
     implementation projects.uiRunsql
     implementation projects.uiJslogger
     implementation projects.uiReadingbubble
-    implementation projects.servicesCompilation
 
     implementation libs.sheets
 
@@ -120,3 +119,5 @@ dependencies {
     androidTestImplementation libs.androidx.test.espresso
     androidTestImplementation libs.compose.ui.test
 }
+
+apply from: "./build_services.gradle"
