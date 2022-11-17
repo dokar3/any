@@ -33,6 +33,12 @@ jobs:
         with:
           node-version: 18
 
+      - name: Upgrade yarn
+        run: |
+          corepack enable
+          corepack prepare yarn@stable --activate
+          echo "yarn version: $(yarn -v)"
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get globalFolder)/cache" >> $GITHUB_OUTPUT
