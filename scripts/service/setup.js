@@ -58,8 +58,8 @@ function err(msg) {
 
 if (!fs.existsSync(JS_DIR)) {
   err(
-    "'js' folder is not found, Are you running this script in other location " +
-      "rather than project's root directory?"
+    "'js' folder is not found, Are you running this script another location " +
+      "rather than the project's root directory?"
   );
   return;
 }
@@ -68,13 +68,26 @@ function initYarn() {
   function installYarn() {
     try {
       child_process.execSync("corepack -v");
+      try {
+        child_process.execSync("corepack enable");
+      } catch (e) {
+        console.warn(
+          "Unable to run 'corepack enable', 'yarn' may fail to install. \nPlease " +
+            "try to run this script in administrator mode if it fails."
+        );
+      }
+
       console.log(`Installing yarn ${YARN_VERSION}`);
       child_process.execSync(
         `corepack prepare yarn@${YARN_VERSION} --activate`
       );
-      console.log(
-        "Yarn installed, version: " + child_process.execSync("yarn -v")
-      );
+
+      const currVer = child_process.execSync("yarn -v").toString().trim();
+      if (currVer != YARN_VERSION) {
+        err(`Failed to install yarn ${YARN_VERSION}`);
+        return;
+      }
+
       console.log();
     } catch (e) {
       // Install corepack
@@ -162,9 +175,9 @@ function initBinLinks() {
 const start = Date.now();
 
 initYarn();
-installDependencies();
-buildLocalDependencies();
-initBinLinks();
+// installDependencies();
+// buildLocalDependencies();
+// initBinLinks();
 
 const end = Date.now();
 console.log();

@@ -38,8 +38,8 @@ const SERVICES_DIR = path.join(JS_DIR, "services");
 
 if (!fs.existsSync(JS_DIR)) {
   err(
-    "'js' folder is not found, Are you running this script in other location " +
-      "rather than project's root directory?"
+    "'js' folder is not found, Are you running this script another location " +
+      "rather than the project's root directory?"
   );
   return;
 }
