@@ -18,11 +18,9 @@ android {
     buildTypes {
         debug {
             buildConfigField "long", "BUILT_AT", "${System.currentTimeMillis()}"
-            buildConfigField "String", "COMPOSE_VERSION", "\"${libs.versions.composeCompiler.get()}\""
         }
         release {
             buildConfigField "long", "BUILT_AT", "${System.currentTimeMillis()}"
-            buildConfigField "String", "COMPOSE_VERSION", "\"${libs.versions.composeCompiler.get()}\""
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

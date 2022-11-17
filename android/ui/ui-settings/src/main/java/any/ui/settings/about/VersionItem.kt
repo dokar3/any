@@ -67,16 +67,6 @@ internal fun VersionsItem(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Compose",
-                fontSize = headerFontSize,
-                color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
-            )
-
-            Text(text = BuildConfig.COMPOSE_VERSION, fontSize = headerFontSize)
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
                 stringResource(BaseR.string.build_time),
                 fontSize = headerFontSize,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
