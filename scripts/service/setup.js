@@ -175,9 +175,9 @@ function initBinLinks() {
 const start = Date.now();
 
 initYarn();
-// installDependencies();
-// buildLocalDependencies();
-// initBinLinks();
+installDependencies();
+buildLocalDependencies();
+initBinLinks();
 
 const end = Date.now();
 console.log();
