@@ -65,46 +65,49 @@ if (!fs.existsSync(JS_DIR)) {
 }
 
 function initYarn() {
-  function installYarn() {
+  function checkYarn() {
     try {
-      child_process.execSync("corepack -v");
-      try {
-        child_process.execSync("corepack enable");
-      } catch (e) {
-        console.warn(
-          "Unable to run 'corepack enable', 'yarn' may fail to install. \nPlease " +
-            "try to run this script in administrator mode if it fails."
-        );
-      }
-
-      console.log(`Installing yarn ${YARN_VERSION}`);
-      child_process.execSync(
-        `corepack prepare yarn@${YARN_VERSION} --activate`
-      );
-
       const currVer = child_process.execSync("yarn -v").toString().trim();
-      if (currVer != YARN_VERSION) {
-        err(`Failed to install yarn ${YARN_VERSION}`);
-        return;
-      }
-
-      console.log();
+      return currVer === YARN_VERSION;
     } catch (e) {
-      // Install corepack
-      console.log("Installing corepack...");
-      child_process.execSync("npm i -g corepack");
-      console.log();
-      installYarn();
+      return false;
     }
   }
 
-  try {
-    const out = child_process.execSync("yarn -v").toString().trim();
-    if (out != YARN_VERSION) {
-      installYarn();
+  function checkCorepack() {
+    try {
+      child_process.execSync("corepack -v");
+      return true;
+    } catch (e) {
+      return false;
     }
-  } catch (e) {
+  }
+
+  function installCorepack() {
+    console.log("Installing corepack...");
+    child_process.execSync("npm i -g corepack");
+  }
+
+  function installYarn() {
+    if (!checkCorepack()) {
+      installCorepack();
+    }
+    try {
+      child_process.execSync("corepack enable");
+    } catch (e) {
+      console.warn(
+        "Unable to run 'corepack enable', 'yarn' may fail to install. \nPlease " +
+          "try to run this script in administrator mode if it fails.\n"
+      );
+    }
+    console.log(`Installing yarn ${YARN_VERSION}`);
+    child_process.execSync(`corepack prepare yarn@${YARN_VERSION} --activate`);
+    console.log();
+  }
+
+  if (!checkYarn()) {
     installYarn();
+    initYarn();
   }
 }
 
@@ -112,13 +115,10 @@ function installDependencies() {
   forEachProjects(
     (projectDir) => {
       process.chdir(projectDir);
-
       console.log(
         "Install dependencies for " + path.relative(JS_DIR, projectDir)
       );
-
       child_process.execSync("yarn", { stdio: "inherit" });
-
       console.log();
     },
     () => {
@@ -146,11 +146,8 @@ function buildLocalDependencies() {
 
     if (shouldBuildMain) {
       console.log("Building local dependency \n" + projectDir);
-
       process.chdir(projectDir);
-
       child_process.execSync("yarn tsc", { stdio: "inherit" });
-
       console.log();
     }
   }
@@ -162,11 +159,8 @@ function initBinLinks() {
       const r = child_process.execSync(link.testCmd);
     } catch (e) {
       console.log("Linking project " + link.path);
-
       process.chdir(path.join(JS_DIR, link.path));
-
       child_process.execSync("npm link --bin-links");
-
       console.log();
     }
   }
@@ -181,4 +175,4 @@ initBinLinks();
 
 const end = Date.now();
 console.log();
-console.log("Setup finished in " + ((end - start) / 1000).toFixed(3) + "ms");
+console.log("Setup finished in " + ((end - start) / 1000).toFixed(3) + "s");
