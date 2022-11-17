@@ -65,7 +65,7 @@ android {
             enable !project.hasProperty("disableSplits")
             reset()
             include "arm64-v8a", "x86_64"
-            universalApk project.hasProperty("uniApk")
+            universalApk true
         }
     }
 

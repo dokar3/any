@@ -105,7 +105,7 @@ jobs:
         env:
           KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
           KEYSTORE_KEY_PASSWORD: ${{ secrets.keystore_key_password }}
-        run: ./gradlew app:assembleRelease -PuniApk
+        run: ./gradlew app:assembleRelease
 
       - name: Cleanup keystore
         if: always()
