@@ -60,7 +60,7 @@ class BuiltinServiceUpdater(
                     pageKeyOfPage2 = service.pageKeyOfPage2,
                     localResources = service.localResources,
                 )
-                if (service != partialBuiltin) {
+                if (service != partialBuiltin && partialBuiltin.buildTime > service.buildTime) {
                     // Nothing to update
                     updatableDbServices.add(service)
                 }
