@@ -212,9 +212,9 @@ class PostViewModel(
         )
     }
 
-    suspend fun canHandleUrlInApp(url: String): Boolean {
+    suspend fun canHandleUrlInApp(url: String): Boolean = withContext(workerDispatcher) {
         val service = findService(serviceId = null, postUrl = url)
-        return service != null && service.areApiVersionsCompatible
+        service != null && service.areApiVersionsCompatible
     }
 
     fun reversePages(reverse: Boolean) = viewModelScope.launch(workerDispatcher) {

@@ -53,7 +53,9 @@ object Routes {
 
     class Builder(private var route: String) {
         fun set(name: String, value: Any?): Builder {
-            route = route.replace("{${name}}", value?.toString() ?: "")
+            if (value != null) {
+                route = route.replace("{${name}}", value.toString())
+            }
             return this
         }
 
