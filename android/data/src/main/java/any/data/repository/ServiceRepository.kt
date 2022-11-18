@@ -20,15 +20,15 @@ class ServiceRepository(
 ) : ReactiveRepository<String, ServiceManifest>() {
     private val updateMutex = Mutex()
 
-    suspend fun loadBuiltinServices(): List<ServiceManifest> {
+    suspend fun getBuiltinServices(): List<ServiceManifest> {
         return runCatching { builtinServicesLoader.loadAll() }.getOrElse { emptyList() }
     }
 
-    suspend fun loadDbServices(): List<ServiceManifest> {
+    suspend fun getDbServices(): List<ServiceManifest> {
         return serviceDao.getAll()
     }
 
-    suspend fun loadServiceFromManifestUrl(
+    suspend fun fetchServiceFromManifestUrl(
         url: String,
     ): ServiceManifest? = withContext(Dispatchers.IO) {
         val manifestJson = Http.get(url) ?: return@withContext null

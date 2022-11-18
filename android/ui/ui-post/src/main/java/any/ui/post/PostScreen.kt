@@ -249,7 +249,7 @@ private fun PostScreenContent(
     val commentsSheetState = rememberBottomSheetState()
 
     LaunchedEffect(postUrl) {
-        viewModel.loadPost(serviceId, postUrl)
+        viewModel.fetchPost(serviceId, postUrl)
     }
 
     QuickReturnScreen(
@@ -504,7 +504,7 @@ private fun PostScreenContent(
         SwipeRefresh(
             state = refreshState,
             onRefresh = {
-                viewModel.loadPost(
+                viewModel.fetchPost(
                     serviceId = serviceId,
                     postUrl = postUrl,
                     networkPostOnly = true,
@@ -935,7 +935,7 @@ private fun PostContent(
 
             TextButton(
                 onClick = {
-                    viewModel.loadPost(
+                    viewModel.fetchPost(
                         serviceId = serviceId,
                         postUrl = postUrl,
                         networkPostOnly = true

@@ -42,9 +42,7 @@ class PostViewModel(
     private val postContentRepository: PostContentRepository,
     private val fileReader: FileReader,
     private val htmlParser: HtmlParser = DefaultHtmlParser(),
-    private val postContentParser: PostContentParser = PostContentParser(
-        htmlParser = htmlParser,
-    ),
+    private val postContentParser: PostContentParser = PostContentParser(htmlParser = htmlParser),
     private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
     private val _postUiState = MutableStateFlow(PostUiState())
@@ -69,14 +67,7 @@ class PostViewModel(
         }
     }
 
-    /**
-     * Load post
-     *
-     * If in memory cache contains the target post and it's content was loaded before,
-     * then just return. Otherwise, emit this item for display and load details from
-     * db or network.
-     */
-    fun loadPost(
+    fun fetchPost(
         serviceId: String?,
         postUrl: String?,
         networkPostOnly: Boolean = false
@@ -111,7 +102,7 @@ class PostViewModel(
                         it.copy(error = Exception(errorMessage))
                     }
                 } else {
-                    loadFreshPost(
+                    fetchPost(
                         service = service,
                         postServiceId = serviceId ?: service.id,
                         postUrl = postUrl,
@@ -122,7 +113,7 @@ class PostViewModel(
         }
     }
 
-    private suspend fun loadFreshPost(
+    private suspend fun fetchPost(
         service: ServiceManifest,
         postServiceId: String,
         postUrl: String,
@@ -163,9 +154,7 @@ class PostViewModel(
                     is FetchState.Loading -> {
                         val progressValue = state.progress.coerceIn(0f, 1f)
                         val progress = LoadingProgress(progressValue, state.message)
-                        _postUiState.update {
-                            it.copy(loadingProgress = progress)
-                        }
+                        _postUiState.update { it.copy(loadingProgress = progress) }
                     }
                 }
             }
@@ -215,7 +204,7 @@ class PostViewModel(
         serviceId: String?,
         postUrl: String
     ): ServiceManifest? = withContext(workerDispatcher) {
-        val services = serviceRepository.loadDbServices()
+        val services = serviceRepository.getDbServices()
         ServiceLookup.find(
             services = services,
             targetServiceId = serviceId,

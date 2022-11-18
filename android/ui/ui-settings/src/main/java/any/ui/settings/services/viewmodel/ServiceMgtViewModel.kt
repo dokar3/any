@@ -77,7 +77,7 @@ class ServiceMgtViewModel(
 
     fun loadDbServices() {
         viewModelScope.launch(workerDispatcher) {
-            val services = serviceRepository.loadDbServices()
+            val services = serviceRepository.getDbServices()
                 // Sorted by enabled state and name
                 .sortedWith { o1, o2 ->
                     val t1 = (if (o1.isEnabled) 0 else 1).toString() + o1.name
@@ -158,7 +158,7 @@ class ServiceMgtViewModel(
                 it.copy(isLoadingServiceToConfig = true)
             }
             val service = try {
-                serviceRepository.loadServiceFromManifestUrl(url)
+                serviceRepository.fetchServiceFromManifestUrl(url)
             } catch (e: Exception) {
                 e.printStackTrace()
                 _servicesUiState.update {
@@ -303,11 +303,11 @@ class ServiceMgtViewModel(
             _addServiceUiState.update {
                 it.copy(isLoadingAppendableServices = true)
             }
-            val localServiceIds = serviceRepository.loadDbServices()
+            val localServiceIds = serviceRepository.getDbServices()
                 .map { it.id }
                 .toHashSet()
             // Load builtin services
-            val builtinServices = serviceRepository.loadBuiltinServices()
+            val builtinServices = serviceRepository.getBuiltinServices()
                 .sortedWith(Comparators.serviceManifestNameComparator)
                 .map {
                     AppendableService(

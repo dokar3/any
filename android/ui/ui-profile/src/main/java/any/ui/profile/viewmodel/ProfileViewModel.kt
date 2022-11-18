@@ -104,7 +104,7 @@ class ProfileViewModel(
     ) {
         fetchUserJob?.cancel()
         fetchUserJob = viewModelScope.launch(workerDispatcher) {
-            val services = serviceRepository.loadDbServices()
+            val services = serviceRepository.getDbServices()
             val service = ServiceLookup.find(services = services, userUrl = userUrl)
             if (service == null) {
                 _uiState.update {

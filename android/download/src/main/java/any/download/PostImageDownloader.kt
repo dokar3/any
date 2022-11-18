@@ -476,7 +476,7 @@ class PostImageDownloader private constructor(
         serviceId: String,
         postUrl: String,
     ) {
-        val services = serviceRepository.loadDbServices()
+        val services = serviceRepository.getDbServices()
         val service = ServiceLookup.find(
             services = services,
             targetServiceId = serviceId,

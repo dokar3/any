@@ -56,7 +56,7 @@ class FilesAndDataViewModel(
      */
     fun cleanUpDatabase() {
         viewModelScope.launch(bgDispatcher) {
-            val services = serviceRepository.loadDbServices()
+            val services = serviceRepository.getDbServices()
                 .map(ServiceManifest::id)
                 .toHashSet()
             val now = System.currentTimeMillis()

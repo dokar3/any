@@ -144,7 +144,7 @@ class CommentsViewModel(
     private suspend fun findService(
         post: Post
     ): UiServiceManifest? = withContext(workerDispatcher) {
-        val services = serviceRepository.loadDbServices()
+        val services = serviceRepository.getDbServices()
         val service = ServiceLookup.find(
             services = services,
             targetServiceId = post.serviceId,

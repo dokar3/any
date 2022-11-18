@@ -17,7 +17,7 @@ class BuiltinServiceUpdater(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     suspend fun updateBuiltinServices(): List<ServiceManifest> = withContext(dispatcher) {
-        val services = serviceRepository.loadDbServices()
+        val services = serviceRepository.getDbServices()
         val builtinServices = builtinServicesLoader.loadAll()
         val updatableServices = getUpdatableBuiltinServices(services, builtinServices)
         if (updatableServices.isEmpty()) {
@@ -32,7 +32,7 @@ class BuiltinServiceUpdater(
     }
 
     suspend fun getUpdatableBuiltinServices() = withContext(dispatcher) {
-        val services = serviceRepository.loadDbServices()
+        val services = serviceRepository.getDbServices()
         val builtinServices = builtinServicesLoader.loadAll()
         getUpdatableBuiltinServices(services, builtinServices)
     }

@@ -88,7 +88,7 @@ class FreshViewModel(
 
     fun loadServices() {
         viewModelScope.launch(workerDispatcher) {
-            val services = serviceRepository.loadDbServices()
+            val services = serviceRepository.getDbServices()
                 .filter { it.isEnabled && it.areApiVersionsCompatible }
                 .sortedWith(Comparators.serviceManifestNameComparator)
                 .map { it.toUiManifest(fileReader, htmlParser) }

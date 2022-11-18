@@ -65,7 +65,7 @@ class DownloadsViewModel(
                 it.copy(isLoadingDownloads = true)
             }
 
-            val services = serviceRepository.loadDbServices().associateBy { it.id }
+            val services = serviceRepository.getDbServices().associateBy { it.id }
 
             val currDownloads = _downloadsUiState.value.downloads
                 .associateBy { it.serviceId + it.url }

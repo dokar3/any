@@ -64,7 +64,7 @@ class SearchViewModel(
         onlyIfNoSelectedService: Boolean = true,
     ) {
         viewModelScope.launch(workerDispatcher) {
-            val services = serviceRepository.loadDbServices()
+            val services = serviceRepository.getDbServices()
                 .filter { it.isEnabled && it.areApiVersionsCompatible }
                 .sortedBy { it.name }
                 .map { it.toUiManifest(fileReader, htmlParser) }
