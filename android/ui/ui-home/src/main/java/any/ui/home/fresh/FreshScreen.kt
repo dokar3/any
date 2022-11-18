@@ -362,7 +362,7 @@ internal fun FreshScreen(
         ServiceConfiguringDialog(
             onDismissRequest = { showConfigureServiceDialog = false },
             service = currentService,
-            isUpdate = true,
+            isAdded = true,
         )
     }
 }

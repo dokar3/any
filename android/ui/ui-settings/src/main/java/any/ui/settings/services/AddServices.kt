@@ -156,7 +156,7 @@ private fun AddServicesContent(
         ServiceConfiguringDialog(
             onDismissRequest = { serviceToConfigure = null },
             service = appendableService.service,
-            isUpdate = appendableService.isAdded,
+            isAdded = appendableService.isAdded,
             saveService = {
                 appendableService.saveService(it)
                 if (appendableService.isAdded) {

@@ -95,7 +95,7 @@ import kotlinx.coroutines.launch
 fun ServiceConfiguringDialog(
     onDismissRequest: () -> Unit,
     service: UiServiceManifest,
-    isUpdate: Boolean,
+    isAdded: Boolean,
     modifier: Modifier = Modifier,
     viewModel: ServiceViewModel = viewModel(
         factory = ServiceViewModel.Factory(LocalContext.current)
@@ -116,9 +116,9 @@ fun ServiceConfiguringDialog(
 
     var viewType by remember(service) { mutableStateOf(service.viewType) }
 
-    var runValidator by remember(service.forceConfigsValidation, isUpdate) {
+    var runValidator by remember(service.forceConfigsValidation, isAdded) {
         val force = service.forceConfigsValidation ?: false
-        mutableStateOf(force && !isUpdate)
+        mutableStateOf(force && !isAdded)
     }
 
     val requiredFields = remember(service.configs) {
@@ -169,7 +169,7 @@ fun ServiceConfiguringDialog(
                         fontSize = 14.sp,
                     )
                 }
-            } else if (isUpdate) {
+            } else if (isAdded) {
                 Text(stringResource(BaseR.string.update_service))
             } else {
                 Text(stringResource(BaseR.string.add_service))
@@ -192,7 +192,7 @@ fun ServiceConfiguringDialog(
                 text =
                 if (uiState.upgradeInfo != null) {
                     stringResource(BaseR.string.upgrade)
-                } else if (isUpdate) {
+                } else if (isAdded) {
                     stringResource(BaseR.string.update)
                 } else {
                     stringResource(BaseR.string.add)
@@ -214,7 +214,7 @@ fun ServiceConfiguringDialog(
     ) {
         ServiceFieldList(
             service = service,
-            isUpdate = isUpdate,
+            isAdded = isAdded,
             isUpgrade = uiState.upgradeInfo != null,
             serviceName = serviceName,
             serviceNameError = serviceNameError,
@@ -243,7 +243,7 @@ fun ServiceConfiguringDialog(
 @Composable
 private fun ServiceFieldList(
     service: UiServiceManifest,
-    isUpdate: Boolean,
+    isAdded: Boolean,
     isUpgrade: Boolean,
     serviceName: String,
     serviceNameError: String?,
@@ -312,7 +312,7 @@ private fun ServiceFieldList(
                             message = { Html(warning) },
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                    } else if (!isUpdate) {
+                    } else if (!isAdded) {
                         val warning = stringResource(BaseR.string.add_external_service_warning)
                         WarningMessage(
                             title = { Text(stringResource(BaseR.string.external_service)) },
@@ -386,7 +386,7 @@ private fun ServiceFieldList(
 
             if (!requiredFields.value.isNullOrEmpty() || !optionalFields.value.isNullOrEmpty()) {
                 item {
-                    val forceValidation = !isUpdate && service.forceConfigsValidation == true
+                    val forceValidation = !isAdded && service.forceConfigsValidation == true
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Row(

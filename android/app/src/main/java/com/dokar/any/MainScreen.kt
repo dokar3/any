@@ -164,7 +164,7 @@ fun MainScreen(
                 mainViewModel.setServiceManifestUrlToAdd(null)
             },
             service = serviceToConfigure.service,
-            isUpdate = serviceToConfigure.isAdded,
+            isAdded = serviceToConfigure.isAdded,
             saveService = { serviceToConfigure.saveService(it) },
         )
     }
