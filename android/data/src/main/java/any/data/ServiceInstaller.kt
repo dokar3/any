@@ -23,6 +23,7 @@ class ServiceInstaller(
     private val fileReader: FileReader,
     private val json: Json,
     private val servicesDir: File,
+    private val temporaryDir: File,
 ) {
     /**
      * Read all json manifests in the zip stream.
@@ -31,6 +32,7 @@ class ServiceInstaller(
         val zipInputStream = ZipInputStream(file.inputStream())
         return try {
             val manifests = mutableListOf<Manifest>()
+            // Read manifests
             ZipUtil.eachEntry(zipInputStream) { entry ->
                 if (!entry.isDirectory && isManifestFile(entry.name)) {
                     val name = entry.name
@@ -40,9 +42,37 @@ class ServiceInstaller(
                     }
                 }
             }
-            manifests
+
+            if (!temporaryDir.exists() && !temporaryDir.mkdirs()) {
+                throw IOException("Cannot create temporary dir to unzip service(s)")
+            }
+
+            // Extract resources to temporary dir
+            ZipUtil.unzip(file, temporaryDir)
+
+            // Clear extracted resources on exit
+            temporaryDir.walk()
+                .filter { it.isFile }
+                .forEach { it.deleteOnExit() }
+
+            // Resolve local resources
+            manifests.map { manifest ->
+                val service = manifest.service
+                val localResources = service.resources()
+                    .filterNot { it.path.isHttpUrl() }
+                    .mapNotNull {
+                        val localFile = File(temporaryDir, it.path)
+                        if (localFile.exists()) {
+                            it.copy(path = localFile.absolutePath)
+                        } else {
+                            null
+                        }
+                    }
+                val updatedService = service.copy(localResources = localResources)
+                manifest.copy(service = updatedService)
+            }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Logger.e(TAG, "Cannot read manifests from zip: $e")
             emptyList()
         } finally {
             zipInputStream.close()
@@ -83,7 +113,7 @@ class ServiceInstaller(
                     if (it.isDirectory) {
                         return@seekTo false
                     }
-                    if (!it.name.endsWith(".json")) {
+                    if (!isManifestFile(it.name)) {
                         return@seekTo false
                     }
                     target = parseManifest(zipIn)
@@ -258,6 +288,7 @@ class ServiceInstaller(
                     fileReader = AndroidFileReader(context),
                     json = Json,
                     servicesDir = Dirs.servicesDir(context),
+                    temporaryDir = Dirs.servicesTempDir(context),
                 ).also { instance = it }
             }
         }
