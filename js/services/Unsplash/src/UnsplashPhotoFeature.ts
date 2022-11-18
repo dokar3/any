@@ -1,4 +1,5 @@
 import {
+  AspectRatio,
   FetchFreshListParams,
   FetchPostParams,
   FetchResult,
@@ -77,19 +78,33 @@ export class UnsplashPhotoFeature extends PostFeature {
     const posts = new Array<Post>();
     items.forEach((item) => {
       const description = item.description ?? item.alt_description ?? null;
+      const width: number = item.width;
+      const height: number = item.height;
+      const aspectRatio: AspectRatio = `${width}:${height}`;
+
+      const content: Post.ContentElement[] = [
+        Post.ContentElement.image({ url: item.urls.full }),
+      ];
+      if (description != null) {
+        content.push(Post.ContentElement.text({ text: description }));
+      }
+      content.push(Post.ContentElement.text({ text: `${item.likes} likes` }));
+
       const post = new Post({
-        title: description ?? "",
+        title: "",
         url: item.links.html,
         author: item.user.name,
         authorId: item.user.username,
         avatar: item.user.profile_image.large,
         date: item.updated_at,
         summary: description,
-        media: [Post.Media.photo({ url: item.urls.thumb })],
-        content: [
-          Post.ContentElement.image({ url: item.urls.full }),
-          Post.ContentElement.text({ text: `${item.likes} likes` }),
+        media: [
+          Post.Media.photo({
+            url: item.urls.regular,
+            aspectRatio: aspectRatio,
+          }),
         ],
+        content: content,
       });
       posts.push(post);
     });
