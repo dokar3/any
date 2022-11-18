@@ -41,7 +41,6 @@ dependencies {
     implementation projects.base
     implementation projects.data
     implementation projects.commonUi
-    implementation libs.accompanist.swiperefresh
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit

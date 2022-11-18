@@ -60,7 +60,6 @@ dependencies {
     api libs.compose.animation
     api libs.compose.foundation
     api libs.compose.material
-    api libs.accompanist.swiperefresh
     api libs.sheets
 
     testImplementation libs.junit

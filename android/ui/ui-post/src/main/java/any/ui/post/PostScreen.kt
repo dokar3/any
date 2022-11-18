@@ -5,6 +5,7 @@ import any.ui.common.R as CommonUiR
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,9 +21,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalTextStyle
@@ -30,6 +33,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -105,6 +110,7 @@ import any.ui.common.widget.MessagePopup
 import any.ui.common.widget.PullToRefreshIndicator
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
+import any.ui.common.widget.rememberPullRefreshIndicatorOffset
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.imagepager.ImagePagerPositionController
 import any.ui.post.header.Header
@@ -132,8 +138,6 @@ import any.ui.readingbubble.ReadingBubbleService
 import any.ui.readingbubble.entity.ReadingPost
 import com.dokar.sheets.detectPointerPositionChanges
 import com.dokar.sheets.rememberBottomSheetState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -213,6 +217,7 @@ fun PostScreen(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun PostScreenContent(
     onNavigate: (NavEvent) -> Unit,
@@ -500,9 +505,8 @@ private fun PostScreenContent(
             )
         }
     ) {
-        val refreshState = rememberSwipeRefreshState(isRefreshing = uiState.isLoading)
-        SwipeRefresh(
-            state = refreshState,
+        val pullRefreshState = rememberPullRefreshState(
+            refreshing = uiState.isLoading,
             onRefresh = {
                 viewModel.fetchPost(
                     serviceId = serviceId,
@@ -510,15 +514,14 @@ private fun PostScreenContent(
                     networkPostOnly = true,
                 )
             },
-            swipeEnabled = !uiState.isLoading && uiState.service != null,
-            indicatorPadding = WindowInsets.statusBars.asPaddingValues(),
-            indicator = { state, refreshTriggerDp ->
-                PullToRefreshIndicator(
-                    refreshState = state,
-                    refreshTriggerDp = refreshTriggerDp,
-                    progress = uiState.loadingProgress?.value,
-                )
-            },
+        )
+        val indicatorOffset = rememberPullRefreshIndicatorOffset(state = pullRefreshState)
+
+        Box(
+            modifier = Modifier.pullRefresh(
+                state = pullRefreshState,
+                enabled = uiState.service != null,
+            ),
         ) {
             PostContent(
                 onNavigate = onNavigate,
@@ -536,8 +539,16 @@ private fun PostScreenContent(
                 drawerState = drawerState,
                 isRunningExitTransition = isRunningExitTransition,
                 modifier = Modifier.offset {
-                    IntOffset(0, refreshState.indicatorOffset.toInt())
+                    IntOffset(0, indicatorOffset)
                 },
+            )
+
+            PullToRefreshIndicator(
+                state = pullRefreshState,
+                indicatorOffset = indicatorOffset,
+                isRefreshing = uiState.isLoading,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+                loadingProgress = uiState.loadingProgress?.value,
             )
         }
     }

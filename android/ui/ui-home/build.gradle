@@ -48,7 +48,6 @@ dependencies {
     implementation projects.uiComments
     implementation projects.uiJslogger
 
-    implementation libs.accompanist.swiperefresh
     implementation libs.accompanist.flowlayout
 
     testImplementation projects.testing

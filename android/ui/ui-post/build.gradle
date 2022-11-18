@@ -48,9 +48,9 @@ dependencies {
     implementation projects.uiReadingbubble
     implementation projects.uiImagepager
 
-    implementation libs.accompanist.swiperefresh
     implementation libs.accompanist.pager
     implementation libs.accompanist.pager.indicators
+
     implementation libs.expandabletext
 
     testImplementation libs.junit

@@ -45,7 +45,6 @@ dependencies {
     implementation projects.navigation
     implementation projects.uiComments
 
-    implementation libs.accompanist.swiperefresh
     implementation libs.expandabletext
 
     testImplementation libs.junit

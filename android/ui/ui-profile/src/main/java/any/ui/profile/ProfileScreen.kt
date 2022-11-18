@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -51,11 +54,10 @@ import any.ui.common.theme.themeColorOrPrimary
 import any.ui.common.widget.EndOfList
 import any.ui.common.widget.PullToRefreshIndicator
 import any.ui.common.widget.UiMessagePopup
+import any.ui.common.widget.rememberPullRefreshIndicatorOffset
 import any.ui.profile.viewmodel.ProfileUiState
 import any.ui.profile.viewmodel.ProfileViewModel
 import com.dokar.sheets.rememberBottomSheetState
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
@@ -129,7 +131,7 @@ fun ProfileScreen(
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun ProfileScreenContent(
     uiState: ProfileUiState,
@@ -161,9 +163,14 @@ private fun ProfileScreenContent(
 
     var postToLoadComments: UiPost? by remember { mutableStateOf(null) }
 
-    val refreshState = rememberSwipeRefreshState(
-        isRefreshing = uiState.isLoadingUser || uiState.isLoadingPosts,
+    val isRefreshing = uiState.isLoadingUser || uiState.isLoadingPosts
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = onRefresh,
     )
+
+    val indicatorOffset = rememberPullRefreshIndicatorOffset(state = pullRefreshState)
 
     val commentsSheetState = rememberBottomSheetState()
 
@@ -172,144 +179,138 @@ private fun ProfileScreenContent(
         darkThemeColor = Color(uiState.user?.serviceDarkThemeColor ?: 0),
     )
 
-    SwipeRefresh(
-        state = refreshState,
-        onRefresh = onRefresh,
-        modifier = modifier,
-        indicator = { state, refreshTriggerDp ->
-            PullToRefreshIndicator(
-                refreshState = state,
-                refreshTriggerDp = refreshTriggerDp,
-                progress = null,
-                progressColor = themeColor,
-                textColor = Color.White,
-            )
-        },
-        indicatorPadding = WindowInsets.statusBars.asPaddingValues(),
-    ) {
-        Box {
-            var bannerHeight by remember { mutableStateOf(0) }
+    Box(modifier = modifier.pullRefresh(state = pullRefreshState)) {
+        var bannerHeight by remember { mutableStateOf(0) }
 
-            var listScrollY: Int? by remember { mutableStateOf(0) }
+        var listScrollY: Int? by remember { mutableStateOf(0) }
 
-            LaunchedEffect(scrollableState) {
-                snapshotFlow { scrollableState.visibleItemsInfo }
-                    .mapNotNull { it.firstOrNull() }
-                    .collect { first ->
-                        listScrollY = if (first.index == 0) {
-                            first.offset
-                        } else {
-                            null
-                        }
-                    }
-            }
-
-            ProfileHeaderBanner(
-                listScrollYProvider = { listScrollY },
-                contentOffsetYProvider = { refreshState.indicatorOffset },
-                heightUpdater = { bannerHeight = it },
-                url = uiState.user?.banner,
-            )
-
-            val listPadding = WindowInsets.navigationBars.asPaddingValues()
-
-            PostList(
-                state = scrollableState.gridState,
-                posts = ImmutableHolder(uiState.posts),
-                pageKey = ImmutableHolder(null),
-                viewType = service?.viewType ?: ServiceViewType.List,
-                defThumbAspectRatio = service?.mediaAspectRatio,
-                onCommentsClick = {
-                    postToLoadComments = it
-                    scope.launch { commentsSheetState.peek() }
-                },
-                onCollectClick = {
-                    if (it.isCollected()) {
-                        onDiscardPost(it)
+        LaunchedEffect(scrollableState) {
+            snapshotFlow { scrollableState.visibleItemsInfo }
+                .mapNotNull { it.firstOrNull() }
+                .collect { first ->
+                    listScrollY = if (first.index == 0) {
+                        first.offset
                     } else {
-                        onCollectPost(it)
+                        null
                     }
-                },
-                onMoreClick = { selectedPost = it },
-                onMediaClick = { post, index ->
-                    navigateToMedia(onNavigate, context, post.raw, index)
-                },
-                onUserClick = { serviceId, userId ->
-                    if (userId != uiState.user?.id) {
-                        navigateToUser(onNavigate, serviceId, userId)
-                    }
-                },
-                onLinkClick = { Intents.openInBrowser(context, it) },
-                onItemClick = { navigateToPost(onNavigate, context, it.raw) },
-                onItemLongClick = { selectedPost = it },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .offset { IntOffset(0, refreshState.indicatorOffset.toInt()) }
-                    .verticalScrollBar(
-                        state = scrollableState,
-                        padding = PaddingValues(
-                            top = WindowInsets.statusBars
-                                .asPaddingValues()
-                                .calculateTopPadding(),
-                            bottom = listPadding.calculateBottomPadding(),
-                        ),
-                    ),
-                headerContent = {
-                    ProfileHeader(
-                        onFollowClick = {
-                            if (uiState.user != null) {
-                                if (uiState.user.isFollowed()) {
-                                    onUnfollow()
-                                } else {
-                                    onFollow()
-                                }
-                            }
-                        },
-                        user = uiState.user,
-                        bannerHeight = bannerHeight,
-                        themeColor = themeColor,
-                    )
-                },
-                onLoadMore = {
-                    if (uiState.hasMore) {
-                        onFetchMore()
-                    }
-                },
-                loadMoreContent = {
-                    if (!uiState.hasMore && !uiState.isLoadingMorePosts) {
-                        EndOfList(
-                            onClick = onRetryPostsFetch,
-                        ) {
-                            Text(stringResource(R.string.no_more_posts))
-                        }
-                    } else if (!uiState.isLoadingMorePosts && uiState.isFailedToFetchPosts) {
-                        RetryItem(
-                            message = stringResource(R.string.load_failed),
-                            onClick = onRetryPostsFetch,
-                        )
-                    } else {
-                        LoadingItem()
-                    }
-                },
-                isLoadingMore = uiState.isLoadingMorePosts,
-                contentPadding = listPadding,
-            )
-
-            ScrollToTopFab(
-                scrollableState = scrollableState,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .fabOffset(),
-            )
-
-            TitleBar(
-                scrollProvider = { listScrollY ?: -bannerHeight },
-                onBack = { onNavigate(NavEvent.Back) },
-                title = uiState.user?.name,
-                fullyVisibleScrollY = -bannerHeight,
-            )
+                }
         }
+
+        ProfileHeaderBanner(
+            listScrollYProvider = { listScrollY },
+            contentOffsetYProvider = { indicatorOffset.toFloat() },
+            heightUpdater = { bannerHeight = it },
+            url = uiState.user?.banner,
+        )
+
+        val listPadding = WindowInsets.navigationBars.asPaddingValues()
+
+        PostList(
+            state = scrollableState.gridState,
+            posts = ImmutableHolder(uiState.posts),
+            pageKey = ImmutableHolder(null),
+            viewType = service?.viewType ?: ServiceViewType.List,
+            defThumbAspectRatio = service?.mediaAspectRatio,
+            onCommentsClick = {
+                postToLoadComments = it
+                scope.launch { commentsSheetState.peek() }
+            },
+            onCollectClick = {
+                if (it.isCollected()) {
+                    onDiscardPost(it)
+                } else {
+                    onCollectPost(it)
+                }
+            },
+            onMoreClick = { selectedPost = it },
+            onMediaClick = { post, index ->
+                navigateToMedia(onNavigate, context, post.raw, index)
+            },
+            onUserClick = { serviceId, userId ->
+                if (userId != uiState.user?.id) {
+                    navigateToUser(onNavigate, serviceId, userId)
+                }
+            },
+            onLinkClick = { Intents.openInBrowser(context, it) },
+            onItemClick = { navigateToPost(onNavigate, context, it.raw) },
+            onItemLongClick = { selectedPost = it },
+            modifier = Modifier
+                .fillMaxSize()
+                .offset { IntOffset(0, indicatorOffset) }
+                .verticalScrollBar(
+                    state = scrollableState,
+                    padding = PaddingValues(
+                        top = WindowInsets.statusBars
+                            .asPaddingValues()
+                            .calculateTopPadding(),
+                        bottom = listPadding.calculateBottomPadding(),
+                    ),
+                ),
+            headerContent = {
+                ProfileHeader(
+                    onFollowClick = {
+                        if (uiState.user != null) {
+                            if (uiState.user.isFollowed()) {
+                                onUnfollow()
+                            } else {
+                                onFollow()
+                            }
+                        }
+                    },
+                    user = uiState.user,
+                    bannerHeight = bannerHeight,
+                    themeColor = themeColor,
+                )
+            },
+            onLoadMore = {
+                if (uiState.hasMore) {
+                    onFetchMore()
+                }
+            },
+            loadMoreContent = {
+                if (!uiState.hasMore && !uiState.isLoadingMorePosts) {
+                    EndOfList(
+                        onClick = onRetryPostsFetch,
+                    ) {
+                        Text(stringResource(R.string.no_more_posts))
+                    }
+                } else if (!uiState.isLoadingMorePosts && uiState.isFailedToFetchPosts) {
+                    RetryItem(
+                        message = stringResource(R.string.load_failed),
+                        onClick = onRetryPostsFetch,
+                    )
+                } else {
+                    LoadingItem()
+                }
+            },
+            isLoadingMore = uiState.isLoadingMorePosts,
+            contentPadding = listPadding,
+        )
+
+        ScrollToTopFab(
+            scrollableState = scrollableState,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .fabOffset(),
+        )
+
+        TitleBar(
+            scrollProvider = { listScrollY ?: -bannerHeight },
+            onBack = { onNavigate(NavEvent.Back) },
+            title = uiState.user?.name,
+            fullyVisibleScrollY = -bannerHeight,
+        )
+
+        PullToRefreshIndicator(
+            state = pullRefreshState,
+            isRefreshing = isRefreshing,
+            indicatorOffset = indicatorOffset,
+            modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+            loadingProgress = null,
+            textColor = Color.White,
+            progressColor = themeColor,
+        )
     }
 
     UiMessagePopup(

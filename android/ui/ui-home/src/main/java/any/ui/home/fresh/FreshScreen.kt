@@ -3,9 +3,9 @@ package any.ui.home.fresh
 import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
 import android.app.Activity
-import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,9 +14,13 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -80,9 +84,6 @@ import any.ui.home.fresh.viewmodel.FreshUiState
 import any.ui.home.fresh.viewmodel.FreshViewModel
 import any.ui.jslogger.FloatingLoggerService
 import any.ui.service.ServiceConfiguringDialog
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -367,6 +368,7 @@ internal fun FreshScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @ExperimentalFoundationApi
 @Composable
 private fun FreshScreenContent(
@@ -395,57 +397,17 @@ private fun FreshScreenContent(
     val posts = if (service != null) uiState.posts else emptyList()
 
     val isRefreshing = uiState.isLoadingInitialPosts
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
-        swipeEnabled = service != null,
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
         onRefresh = { onFetchFirstPage(true) },
-        indicator = { state, trigger ->
-            var prevAlpha by remember { mutableStateOf(0f) }
-            val alphaAnim = remember { Animatable(0f) }
+    )
 
-            suspend fun animateAlpha() {
-                alphaAnim.snapTo(prevAlpha)
-                alphaAnim.animateTo(if (state.isRefreshing) 1f else 0f)
-                prevAlpha = alphaAnim.value
-            }
-
-            LaunchedEffect(state.isRefreshing) {
-                animateAlpha()
-            }
-
-            LaunchedEffect(state.isSwipeInProgress) {
-                if (!state.isSwipeInProgress) {
-                    animateAlpha()
-                }
-            }
-
-            SwipeRefreshIndicator(
-                state = state,
-                refreshTriggerDistance = trigger,
-                refreshingOffset = 8.dp,
-                fade = true,
-                modifier = Modifier.graphicsLayer {
-                    val swipeProgress = (state.indicatorOffset / (trigger.toPx() / 2f))
-                        .coerceIn(0f, 1f)
-                    alpha = if (state.isSwipeInProgress) {
-                        prevAlpha = swipeProgress
-                        swipeProgress
-                    } else {
-                        if (alphaAnim.isRunning) {
-                            alphaAnim.value
-                        } else {
-                            prevAlpha
-                        }
-                    }
-                    val height = appBarHeight()
-                    if (height >= statusBarHeight) {
-                        val minOffY = height - statusBarHeight
-                        val offY = appBarOffsetProvider().coerceIn(-minOffY, 0f)
-                        translationY = (height + offY)
-                    }
-                },
-            )
-        },
+    Box(
+        modifier = Modifier.pullRefresh(
+            state = pullRefreshState,
+            enabled = service != null,
+        )
     ) {
         FreshPostList(
             onNavigate = onNavigate,
@@ -462,6 +424,22 @@ private fun FreshScreenContent(
             headerContent = headerContent,
             contentPadding = listPadding,
             pageKey = ImmutableHolder(uiState.pageKey),
+        )
+
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullRefreshState,
+            scale = true,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .graphicsLayer {
+                    val height = appBarHeight()
+                    if (height >= statusBarHeight) {
+                        val minOffY = height - statusBarHeight
+                        val offY = appBarOffsetProvider().coerceIn(-minOffY, 0f)
+                        translationY = height + offY
+                    }
+                }
         )
     }
 
