@@ -72,20 +72,33 @@ class ServiceInstaller(
      * Extract and install service files from a zip file.
      *
      * @param zip The zip file.
-     * @param manifestName The manifest json file path in the zip.
+     * @param serviceId The target service id.
      * @return Extracted service resources.
      */
-    fun installFromZip(zip: File, manifestName: String): List<ServiceResource>? {
+    fun installFromZip(zip: File, serviceId: String): List<ServiceResource>? {
         try {
             var zipIn = ZipInputStream(zip.inputStream())
-            if (!ZipUtil.seekTo(zipIn) { !it.isDirectory && it.name == manifestName }) {
+            var target: ServiceManifest? = null
+            if (!ZipUtil.seekTo(zipIn) {
+                    if (it.isDirectory) {
+                        return@seekTo false
+                    }
+                    if (!it.name.endsWith(".json")) {
+                        return@seekTo false
+                    }
+                    target = parseManifest(zipIn)
+                    target?.id == serviceId
+                }
+            ) {
                 zipIn.close()
+                Logger.w(TAG, "Target manifest not found in the zip, id: $serviceId")
                 return null
             }
 
-            val service = parseManifest(zipIn)
             zipIn.close()
+            val service = target
             if (service == null) {
+                Logger.w(TAG, "Cannot parse manifest from the zip input stream")
                 return null
             }
 

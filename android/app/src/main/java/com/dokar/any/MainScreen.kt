@@ -165,7 +165,7 @@ fun MainScreen(
             },
             service = serviceToConfigure.service,
             isUpdate = serviceToConfigure.isAdded,
-            onServiceSaved = { serviceToConfigure.onServiceAdded(it) },
+            saveService = { serviceToConfigure.saveService(it) },
         )
     }
 }

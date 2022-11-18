@@ -32,9 +32,9 @@ data class AddServiceUiState(
 data class AppendableService(
     val service: UiServiceManifest,
     val isAdded: Boolean,
-    private val onServiceAdded: ((addedService: UiServiceManifest) -> Unit)? = null,
+    private val saveService: (toAdd: UiServiceManifest) -> Unit,
 ) {
-    fun onServiceAdded(addedService: UiServiceManifest) {
-        onServiceAdded?.invoke(addedService)
+    fun saveService(toAdd: UiServiceManifest) {
+        saveService.invoke(toAdd)
     }
 }

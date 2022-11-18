@@ -97,10 +97,10 @@ fun ServiceConfiguringDialog(
     service: UiServiceManifest,
     isUpdate: Boolean,
     modifier: Modifier = Modifier,
-    onServiceSaved: ((savedService: UiServiceManifest) -> Unit)? = null,
     viewModel: ServiceViewModel = viewModel(
         factory = ServiceViewModel.Factory(LocalContext.current)
     ),
+    saveService: (toSave: UiServiceManifest) -> Unit = { viewModel.saveService(it) },
 ) {
     val scope = rememberCoroutineScope()
 
@@ -139,9 +139,9 @@ fun ServiceConfiguringDialog(
         viewModel.checkUpgradeInfo(service)
     }
 
-    LaunchedEffect(uiState.savedService) {
-        uiState.savedService?.let {
-            onServiceSaved?.invoke(it)
+    LaunchedEffect(uiState.serviceToSave) {
+        uiState.serviceToSave?.let {
+            saveService(it)
             onDismissRequest()
         }
     }
@@ -328,7 +328,10 @@ private fun ServiceFieldList(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                ServiceInfo(service = service, onShowServiceDetailsClick = onShowServiceDetailsClick)
+                ServiceInfo(
+                    service = service,
+                    onShowServiceDetailsClick = onShowServiceDetailsClick
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
             }

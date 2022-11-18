@@ -122,7 +122,7 @@ class ServiceMgtViewModel(
                 AppendableService(
                     service = it,
                     isAdded = serviceRepository.findDbService(it.toStored().id) != null,
-                    onServiceAdded = { loadDbServices() },
+                    saveService = { loadDbServices() },
                 )
             }
             _servicesUiState.update {
@@ -138,7 +138,7 @@ class ServiceMgtViewModel(
                 val configuringService = AppendableService(
                     service = service.toUiManifest(fileReader, htmlParser),
                     isAdded = true,
-                    onServiceAdded = { loadDbServices() },
+                    saveService = { loadDbServices() },
                 )
                 _servicesUiState.update {
                     it.copy(servicesToConfigure = listOf(configuringService))
@@ -170,7 +170,7 @@ class ServiceMgtViewModel(
                 val configuringService = AppendableService(
                     service = service.toUiManifest(fileReader, htmlParser),
                     isAdded = serviceRepository.findDbService(service.toStored().id) != null,
-                    onServiceAdded = { loadDbServices() },
+                    saveService = { loadDbServices() },
                 )
                 _servicesUiState.update {
                     it.copy(
@@ -211,7 +211,7 @@ class ServiceMgtViewModel(
                 AppendableService(
                     service = service.toUiManifest(fileReader, htmlParser),
                     isAdded = serviceRepository.findDbService(service.toStored().id) != null,
-                    onServiceAdded = {
+                    saveService = {
                         viewModelScope.launch(workerDispatcher) {
                             installZipService(
                                 service = it.raw,
@@ -313,7 +313,7 @@ class ServiceMgtViewModel(
                     AppendableService(
                         service = it.toUiManifest(fileReader, htmlParser),
                         isAdded = localServiceIds.contains(it.id),
-                        onServiceAdded = { service ->
+                        saveService = { service ->
                             viewModelScope.launch(workerDispatcher) {
                                 installBuiltinService(service.raw)
                                 loadDbServices()
@@ -406,7 +406,7 @@ class ServiceMgtViewModel(
     ) = withContext(workerDispatcher) {
         val extractedResources = serviceInstaller.installFromZip(
             zip = zip,
-            manifestName = service.name,
+            serviceId = service.originalId,
         )
         if (extractedResources != null) {
             addToDbServices(service.copy(localResources = extractedResources))

@@ -11,7 +11,7 @@ data class ServiceUiState(
     val validations: Map<String, ValidationResult> = emptyMap(),
     val areAllValidationsPassed: Boolean = false,
     val updatedService: UiServiceManifest? = null,
-    val savedService: UiServiceManifest? = null,
+    val serviceToSave: UiServiceManifest? = null,
     val upgradeInfo: UpgradeInfo? = null,
 )
 

@@ -86,7 +86,8 @@ class ServiceViewModel(
         // Basic validations
         val basicResults = BasicServiceConfigsValidator.validate(configs)
 
-        val jsValidator = JsServiceConfigsValidator(serviceRunner = appRunner, service = service.raw)
+        val jsValidator =
+            JsServiceConfigsValidator(serviceRunner = appRunner, service = service.raw)
 
         val jsValidatorResults = if (runJsValidator &&
             basicResults.all { it is ValidationResult.Pass }
@@ -131,9 +132,10 @@ class ServiceViewModel(
         }
         val updatedService = updatedRawService.toUiManifest(fileReader, htmlParser)
 
-        if (areAllValidationsPassed) {
-            // All passed, save the service
-            saveService(updatedService)
+        val toSave = if (areAllValidationsPassed) {
+            updatedService.toStored()
+        } else {
+            null
         }
 
         _serviceUiState.update {
@@ -142,14 +144,14 @@ class ServiceViewModel(
                 areAllValidationsPassed = areAllValidationsPassed,
                 validations = validations,
                 updatedService = updatedService,
+                serviceToSave = toSave,
             )
         }
     }
 
-    private suspend fun saveService(service: UiServiceManifest) {
-        val toSave = service.toStored()
-        serviceRepository.upsertDbService(toSave.raw)
-        _serviceUiState.update { it.copy(savedService = toSave) }
+    fun saveService(service: UiServiceManifest) = viewModelScope.launch(workerDispatcher) {
+        serviceRepository.upsertDbService(service.raw)
+        _serviceUiState.update { it.copy(serviceToSave = null) }
     }
 
     fun clearValidationResult(config: ServiceConfig) = viewModelScope.launch(workerDispatcher) {
