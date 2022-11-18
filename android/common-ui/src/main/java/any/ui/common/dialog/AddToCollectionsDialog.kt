@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -196,7 +197,9 @@ private fun DialogContent(
             onSubmit = ::Chip,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .padding(top = 8.dp),
+            innerModifier = Modifier
+                .heightIn(max = 120.dp)
                 .verticalScroll(state = rememberScrollState()),
             chipStyle = ChipTextFieldDefaults.chipStyle(
                 shape = MaterialTheme.shapes.large,
