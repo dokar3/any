@@ -12,6 +12,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +28,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.Q)
+private val hasAndroidQ = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+
+@ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+private val hasAndroidT = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
 @Composable
 internal fun WebView(
@@ -50,12 +57,16 @@ internal fun WebView(
         webView?.goBack()
     }
 
+    @Suppress("deprecation")
     LaunchedEffect(forceDark) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (hasAndroidQ) {
             webView?.settings?.forceDark = if (forceDark) {
                 WebSettings.FORCE_DARK_ON
             } else {
                 WebSettings.FORCE_DARK_OFF
+            }
+            if (hasAndroidT) {
+                webView?.settings?.isAlgorithmicDarkeningAllowed = true
             }
         }
     }
@@ -124,7 +135,8 @@ private fun createWebView(
         with(settings) {
             javaScriptEnabled = true
 
-            if (forceDark && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            @Suppress("deprecation")
+            if (forceDark && hasAndroidQ) {
                 this.forceDark = WebSettings.FORCE_DARK_ON
             }
 
