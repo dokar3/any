@@ -49,7 +49,9 @@ class ServiceViewModel(
             val isUpgrade = currVer != localVer ||
                     local.main != service.main ||
                     local.mainChecksums != service.mainChecksums ||
-                    local.configs != service.configs
+                    local.configs != service.configs ||
+                    local.buildTime != service.buildTime ||
+                    local.addedAt != service.addedAt
             val upgradeInfo = if (isUpgrade) {
                 UpgradeInfo(
                     fromVersion = local.version,
