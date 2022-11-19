@@ -83,7 +83,10 @@ export class UnsplashPhotoFeature extends PostFeature {
       const aspectRatio: AspectRatio = `${width}:${height}`;
 
       const content: Post.ContentElement[] = [
-        Post.ContentElement.image({ url: item.urls.full }),
+        Post.ContentElement.image({
+          url: item.urls.full,
+          aspectRatio: aspectRatio,
+        }),
       ];
       if (description != null) {
         content.push(Post.ContentElement.text({ text: description }));
