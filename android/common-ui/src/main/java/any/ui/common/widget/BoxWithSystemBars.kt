@@ -1,4 +1,4 @@
-package any.ui.common
+package any.ui.common.widget
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope

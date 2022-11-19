@@ -23,10 +23,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import any.base.ImmutableHolder
 import any.domain.entity.UiServiceManifest
-import any.ui.common.ServiceDropdownButton
 import any.ui.common.theme.sizes
 import any.ui.common.widget.SearchBar
 import any.ui.common.widget.SearchBarState
+import any.ui.common.widget.ServiceDropdownButton
 import any.ui.search.viewmodel.SearchUiState
 
 @Composable

@@ -1,4 +1,4 @@
-package any.ui.common
+package any.ui.common.widget
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border

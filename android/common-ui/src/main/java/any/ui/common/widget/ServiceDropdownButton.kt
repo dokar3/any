@@ -1,4 +1,4 @@
-package any.ui.common
+package any.ui.common.widget
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.LocalTextStyle
@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
 import any.domain.entity.UiServiceManifest
-import any.ui.common.widget.DropdownButton
 
 @Composable
 fun ServiceDropdownButton(

@@ -81,12 +81,12 @@ import any.base.util.FileUtil
 import any.base.util.compose.performLongPress
 import any.base.util.isHttpUrl
 import any.domain.entity.UiServiceManifest
-import any.ui.common.CheckableItem
 import any.ui.common.modifier.fabOffset
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem
 import any.ui.common.widget.BasicDialog
+import any.ui.common.widget.CheckableItem
 import any.ui.common.widget.EditDialog
 import any.ui.common.widget.FlatSwitch
 import any.ui.common.widget.SimpleDialog

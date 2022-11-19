@@ -1,4 +1,4 @@
-package any.ui.common
+package any.ui.common.widget
 
 import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
@@ -58,9 +58,6 @@ import any.data.entity.ServiceResource
 import any.domain.entity.UiServiceManifest
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.divider
-import any.ui.common.widget.AnimatedPopup
-import any.ui.common.widget.Avatar
-import any.ui.common.widget.rememberAnimatedPopupDismissRequester
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable

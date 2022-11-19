@@ -32,11 +32,11 @@ import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
 import any.domain.entity.UiUser
-import any.ui.common.CheckableItem
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.secondaryText
 import any.ui.common.theme.themeColorOrPrimary
 import any.ui.common.widget.Avatar
+import any.ui.common.widget.CheckableItem
 import any.ui.home.HomeScreenDefaults
 
 @Composable

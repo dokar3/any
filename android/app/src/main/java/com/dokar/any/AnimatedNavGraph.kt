@@ -57,9 +57,9 @@ import any.navigation.serviceId
 import any.navigation.subSettings
 import any.navigation.userId
 import any.navigation.userUrl
-import any.ui.common.BoxWithSystemBars
 import any.ui.common.TintSystemBars
-import any.ui.common.rememberBarsColorController
+import any.ui.common.widget.BoxWithSystemBars
+import any.ui.common.widget.rememberBarsColorController
 import any.ui.home.FADE_TRANS_DURATION
 import any.ui.home.HomeScreen
 import any.ui.imagepager.ImagePager
