@@ -27,9 +27,31 @@ fun TintSystemBars(
     val context = LocalContext.current
     val window = (context as Activity).window
     val view = LocalView.current.rootView
-    LaunchedEffect(view, darkMode) {
-        context.setStatusBarColor(statusBarColor.toArgb(), animate = false)
-        context.setNavigationBarColor(navigationBarColor.toArgb(), animate = false)
+    LaunchedEffect(
+        window,
+        view,
+        darkMode,
+        statusBarColor,
+        navigationBarColor,
+        applyLightStatusBarAutomatically,
+        applyLightNavigationBarAutomatically,
+    ) {
+        val statusBarColorInt = if (statusBarColor.alpha == 0f) {
+            // Zero alpha colors may get ignored, so set the alpha to 1
+            statusBarColor.toArgb() and 0x00ffffff or 0x01000000
+        } else {
+            statusBarColor.toArgb()
+        }
+        window.setStatusBarColor(statusBarColorInt, animate = false)
+
+        val navigationBarColorInt = if (navigationBarColor.alpha == 0f) {
+            // Zero alpha colors may get ignored, so set the alpha to 1
+            navigationBarColor.toArgb() and 0x00ffffff or 0x01000000
+        } else {
+            navigationBarColor.toArgb()
+        }
+        window.setNavigationBarColor(navigationBarColorInt, animate = false)
+
         if (darkMode) {
             view.clearLightBars(window)
         } else {

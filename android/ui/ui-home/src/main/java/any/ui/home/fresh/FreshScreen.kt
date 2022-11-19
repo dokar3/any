@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -67,9 +66,7 @@ import any.navigation.settings
 import any.ui.common.ServiceDropdownButton
 import any.ui.common.lazy.LazyGridScrollableState
 import any.ui.common.lazy.rememberLazyGridScrollableState
-import any.ui.common.theme.statusBar
 import any.ui.common.theme.themeColorOrPrimary
-import any.ui.common.theme.topBarBackground
 import any.ui.common.widget.EditDialog
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.TitleActionButton
@@ -96,6 +93,7 @@ internal fun FreshScreen(
     onNavigate: (NavEvent) -> Unit,
     titleBarHeight: Dp,
     bottomBarHeight: Dp,
+    statusBarColor: Color,
     changeStatusBarColor: (Color) -> Unit,
     onBottomBarOffsetUpdate: (Int) -> Unit,
     isRunningTransitions: Boolean,
@@ -219,10 +217,8 @@ internal fun FreshScreen(
         var headerHeightPx by remember { mutableStateOf(0) }
         var firstItemOffsetY by remember { mutableStateOf(0) }
 
-        val statusBarColor = MaterialTheme.colors.statusBar
-        val topBarBackgroundColor = MaterialTheme.colors.topBarBackground
         LaunchedEffect(scrollableState, statusBarColor) {
-            val statusBarAlpha = statusBarColor.alpha
+            val topBarAlpha = statusBarColor.alpha
             launch {
                 snapshotFlow { scrollableState.visibleItemsInfo }
                     .mapNotNull { it.firstOrNull() }
@@ -232,7 +228,7 @@ internal fun FreshScreen(
                         if (!firstItemVisible) {
                             changeStatusBarColor(statusBarColor)
                             titleBarIconTintTheme = IconTintTheme.Auto
-                            titleBarBackgroundColor = topBarBackgroundColor
+                            titleBarBackgroundColor = statusBarColor
                             titleAlpha = 1f
                         }
                     }
@@ -245,7 +241,7 @@ internal fun FreshScreen(
                 .collect {
                     firstItemOffsetY = it
                     val progress = (-it.toFloat() / headerHeightPx).coerceIn(0f, 1f)
-                    val alpha = statusBarAlpha * progress
+                    val alpha = topBarAlpha * progress
                     changeStatusBarColor(statusBarColor.copy(alpha = alpha))
                     titleAlpha = alpha
                     titleBarIconTintTheme = if (alpha > 0.4f) {
@@ -253,7 +249,7 @@ internal fun FreshScreen(
                     } else {
                         IconTintTheme.Light
                     }
-                    titleBarBackgroundColor = topBarBackgroundColor.copy(alpha = alpha)
+                    titleBarBackgroundColor = statusBarColor.copy(alpha = alpha)
                 }
         }
 
@@ -439,7 +435,7 @@ private fun FreshScreenContent(
                         val offY = appBarOffsetProvider().coerceIn(-minOffY, 0f)
                         translationY = height + offY
                     }
-                }
+                },
         )
     }
 

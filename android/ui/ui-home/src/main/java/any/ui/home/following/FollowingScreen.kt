@@ -40,7 +40,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -328,11 +327,7 @@ private fun FollowingAppBar(
     selectedUserCount: Int,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.topBarBackground),
-    ) {
+    Column(modifier = modifier.fillMaxWidth()) {
         TitleBar(
             height = titleBarHeight,
             startActionButton = {
@@ -342,7 +337,6 @@ private fun FollowingAppBar(
                     },
                 )
             },
-            backgroundColor = Color.Transparent,
         ) {
             CompositionLocalProvider(
                 LocalTextStyle provides LocalTextStyle.current.copy(
@@ -369,6 +363,7 @@ private fun FollowingAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(selectionHeight)
+                    .background(MaterialTheme.colors.topBarBackground)
                     .padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -402,7 +397,9 @@ private fun FollowingAppBar(
                 },
                 showAsRow = true,
                 services = service,
-                modifier = Modifier.height(selectionHeight),
+                modifier = Modifier
+                    .height(selectionHeight)
+                    .background(MaterialTheme.colors.topBarBackground),
             )
         }
     }

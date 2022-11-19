@@ -119,6 +119,7 @@ internal fun BottomBar(
         ) {
             val selectedColor = MaterialTheme.colors.primary
             val unselectedColor = MaterialTheme.colors.onSurface
+
             items.forEach { item ->
                 val isSelected = currentRoute == item.route
                 NavigationItem(
@@ -174,11 +175,7 @@ internal fun BottomBar(
             }
         }
 
-        NavigationBarSpacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(backgroundColor)
-        )
+        NavigationBarSpacer()
     }
 
     val density = LocalDensity.current

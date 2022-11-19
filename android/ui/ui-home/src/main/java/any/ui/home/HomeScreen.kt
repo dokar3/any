@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
@@ -35,8 +36,11 @@ import any.ui.common.BarsColorController
 import any.ui.common.BoxWithSystemBars
 import any.ui.common.TintSystemBars
 import any.ui.common.rememberBarsColorController
+import any.ui.common.theme.bottomBarBackground
+import any.ui.common.theme.navigationBar
 import any.ui.common.theme.sizes
 import any.ui.common.theme.statusBar
+import any.ui.common.theme.topBarBackground
 import any.ui.home.collections.CollectionsScreen
 import any.ui.home.downloads.DownloadsScreen
 import any.ui.home.following.FollowingScreen
@@ -84,7 +88,24 @@ fun HomeScreen(
 
     val scrollToTopManager = remember { HomeScrollToTopManager() }
 
-    val barsColorController = rememberBarsColorController()
+    val statusBarColor = MaterialTheme.colors.statusBar
+    val topBarColor = MaterialTheme.colors.topBarBackground
+
+    val navigationBarColor = MaterialTheme.colors.navigationBar
+    val bottomBarColor = MaterialTheme.colors.bottomBarBackground
+
+    val compositedStatusBarColor = remember(statusBarColor, topBarColor) {
+        statusBarColor.compositeOver(topBarColor)
+    }
+
+    val compositedNavigationBarColor = remember(navigationBarColor, bottomBarColor) {
+        navigationBarColor.compositeOver(bottomBarColor)
+    }
+
+    val barsColorController = rememberBarsColorController(
+        statusBarColor = compositedStatusBarColor,
+        navigationBarColor = compositedNavigationBarColor,
+    )
 
     BoxWithSystemBars(
         barsColorController = barsColorController,
@@ -98,6 +119,7 @@ fun HomeScreen(
             freshScreen(
                 onNavigate = onNavigate,
                 barsColorController = barsColorController,
+                statusBarColor = compositedStatusBarColor,
                 darkMode = darkMode,
                 titleBarHeight = { titleBarHeight },
                 bottomBarHeight = { bottomBarHeight },
@@ -159,6 +181,7 @@ fun HomeScreen(
 private fun NavGraphBuilder.freshScreen(
     onNavigate: (NavEvent) -> Unit,
     barsColorController: BarsColorController,
+    statusBarColor: Color,
     darkMode: Boolean,
     titleBarHeight: () -> Dp,
     bottomBarHeight: () -> Dp,
@@ -194,6 +217,7 @@ private fun NavGraphBuilder.freshScreen(
             titleBarHeight = titleBarHeight(),
             bottomBarHeight = bottomBarHeight(),
             onBottomBarOffsetUpdate = onBottomBarOffsetUpdate,
+            statusBarColor = statusBarColor,
             changeStatusBarColor = {
                 barsColorController.statusBarColor = it
                 if (!darkMode) {
@@ -236,7 +260,7 @@ private fun NavGraphBuilder.commonScreen(
             navigationBarColor = Color.Transparent,
         )
 
-        val statusBarColor = MaterialTheme.colors.statusBar
+        val statusBarColor = MaterialTheme.colors.topBarBackground
         LaunchedEffect(barsColorController, statusBarColor) {
             animate(
                 typeConverter = Color.VectorConverter(statusBarColor.colorSpace),

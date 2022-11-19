@@ -112,15 +112,17 @@ internal fun TitleBar(
 
     val onSurface = MaterialTheme.colors.onSurface
 
-    Column(modifier = Modifier.drawBehind { drawRect(color = backgroundColor()) }) {
+    Column(modifier = Modifier) {
         StatusBarSpacer()
 
         SimpleTitleBar(
-            modifier = modifier.clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = {},
-            ),
+            modifier = modifier
+                .drawBehind { drawRect(color = backgroundColor()) }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {},
+                ),
             height = height,
             dividerColor = { onSurface.copy(alpha = 0.12f * dividerAlpha()) },
             contentPadding = contentPadding,

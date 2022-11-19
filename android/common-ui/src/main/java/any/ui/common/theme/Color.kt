@@ -1,12 +1,12 @@
 package any.ui.common.theme
 
-import android.os.Build
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import any.base.util.Sdk
 
 val PrimaryColors = listOf(
     Color(0xFF785FD5),
@@ -93,37 +93,26 @@ val Colors.link: Color
     @Composable
     get() = if (isLight) primary else secondary
 
-private const val BARS_ALPHA_LIGHT = 0.94f
-private const val BARS_ALPHA_DARK = 0.3f
+private const val BARS_ALPHA = 0.94f
 private const val BRAS_ALPHA_LEGACY = 0.2f
 
 val Colors.statusBar: Color
-    @Composable
-    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        if (isLight) {
-            background.copy(alpha = BARS_ALPHA_LIGHT)
-        } else {
-            background.copy(alpha = BARS_ALPHA_DARK)
-        }
+    get() = if (Sdk.hasAndroidM()) {
+        Color.Transparent
     } else {
         Color.Black.copy(alpha = BRAS_ALPHA_LEGACY)
     }
 
 val Colors.navigationBar: Color
-    @Composable
-    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        if (isLight) {
-            background.copy(alpha = BARS_ALPHA_LIGHT)
-        } else {
-            background.copy(alpha = BARS_ALPHA_DARK)
-        }
+    get() = if (Sdk.hasAndroidO()) {
+        Color.Transparent
     } else {
         Color.Black.copy(alpha = BRAS_ALPHA_LEGACY)
     }
 
 val Colors.topBarBackground: Color
     @Composable
-    get() = background.copy(alpha = BARS_ALPHA_LIGHT)
+    get() = background.copy(alpha = BARS_ALPHA)
 
 val Colors.bottomBarBackground: Color
     @Composable

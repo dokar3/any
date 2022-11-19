@@ -1,0 +1,10 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.Any" parent="@android:style/Theme.Material.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="android:colorPrimary">@color/purple_500</item>
+        <item name="android:colorPrimaryDark">@android:color/white</item>
+        <item name="android:statusBarColor">#01000000</item>
+        <item name="android:navigationBarColor">#01000000</item>
+    </style>
+</resources>

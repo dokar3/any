@@ -15,7 +15,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 fun View.hideBars(window: Window) {
     WindowCompat.getInsetsController(window, this).run {
         systemBarsBehavior =
-        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         hide(WindowInsetsCompat.Type.systemBars())
     }
 }
@@ -71,17 +71,21 @@ fun Context.getStatusBarColor(): Int {
 
 fun Context.setStatusBarColor(color: Int, animate: Boolean = false) {
     val activity = activityFromContext(this) ?: return
+    activity.window.setStatusBarColor(color, animate)
+}
+
+fun Window.setStatusBarColor(color: Int, animate: Boolean = false) {
     if (animate) {
-        ValueAnimator.ofArgb(activity.window.navigationBarColor, color).apply {
+        ValueAnimator.ofArgb(statusBarColor, color).apply {
             duration = 355L
             interpolator = DecelerateInterpolator(1.2f)
             addUpdateListener {
-                activity.window.statusBarColor = it.animatedValue as Int
+                statusBarColor = it.animatedValue as Int
             }
             start()
         }
     } else {
-        activity.window.statusBarColor = color
+        statusBarColor = color
     }
 }
 
@@ -92,17 +96,21 @@ fun Context.getNavigationBarColor(): Int {
 
 fun Context.setNavigationBarColor(color: Int, animate: Boolean = false) {
     val activity = activityFromContext(this) ?: return
+    activity.window.setNavigationBarColor(color, animate)
+}
+
+fun Window.setNavigationBarColor(color: Int, animate: Boolean = false) {
     if (animate) {
-        ValueAnimator.ofArgb(activity.window.navigationBarColor, color).apply {
+        ValueAnimator.ofArgb(navigationBarColor, color).apply {
             duration = 355L
             interpolator = DecelerateInterpolator(1.2f)
             addUpdateListener {
-                activity.window.navigationBarColor = it.animatedValue as Int
+                navigationBarColor = it.animatedValue as Int
             }
             start()
         }
     } else {
-        activity.window.navigationBarColor = color
+        navigationBarColor = color
     }
 }
 
@@ -111,9 +119,11 @@ private fun activityFromContext(context: Context): Activity? {
         is Activity -> {
             context
         }
+
         is ContextWrapper -> {
             activityFromContext(context.baseContext)
         }
+
         else -> {
             null
         }
