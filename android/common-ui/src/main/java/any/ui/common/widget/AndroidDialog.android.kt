@@ -1,3 +1,5 @@
+// Copied and modified from androidx.compose.material.AndroidAlertDialog.android.kt
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
