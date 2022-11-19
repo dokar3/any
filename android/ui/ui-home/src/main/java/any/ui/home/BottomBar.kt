@@ -119,7 +119,6 @@ internal fun BottomBar(
         ) {
             val selectedColor = MaterialTheme.colors.primary
             val unselectedColor = MaterialTheme.colors.onSurface
-
             items.forEach { item ->
                 val isSelected = currentRoute == item.route
                 NavigationItem(
@@ -200,7 +199,7 @@ private fun RowScope.NavigationItem(
     selectedContentColor: Color = MaterialTheme.colors.primary,
     unselectedContentColor: Color = MaterialTheme.colors.onSurface,
 ) {
-    val color = remember(selected) {
+    val color = remember(selected, selectedContentColor, unselectedContentColor) {
         if (selected) selectedContentColor else unselectedContentColor
     }
     val context = LocalContext.current

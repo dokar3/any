@@ -93,7 +93,7 @@ internal fun TitleBar(
 ) {
     val onBackground = MaterialTheme.colors.onBackground
 
-    val targetIconColor = remember(iconTintTheme) {
+    val targetIconColor = remember(iconTintTheme, onBackground) {
         when (iconTintTheme) {
             IconTintTheme.Light -> Color.White
             IconTintTheme.Dark -> Color(0xff212121)
