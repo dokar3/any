@@ -52,7 +52,7 @@ import any.ui.common.post.PostList
 import any.ui.common.post.RetryItem
 import any.ui.common.theme.themeColorOrPrimary
 import any.ui.common.widget.EndOfList
-import any.ui.common.widget.PullToRefreshIndicator
+import any.ui.common.widget.ProgressPullRefreshIndicator
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberPullRefreshIndicatorOffset
 import any.ui.profile.viewmodel.ProfileUiState
@@ -302,7 +302,7 @@ private fun ProfileScreenContent(
             fullyVisibleScrollY = -bannerHeight,
         )
 
-        PullToRefreshIndicator(
+        ProgressPullRefreshIndicator(
             state = pullRefreshState,
             isRefreshing = isRefreshing,
             indicatorOffset = indicatorOffset,

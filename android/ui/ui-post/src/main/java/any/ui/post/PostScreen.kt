@@ -107,7 +107,7 @@ import any.ui.common.widget.CommentCount
 import any.ui.common.widget.EditDialog
 import any.ui.common.widget.EmojiEmptyContent
 import any.ui.common.widget.MessagePopup
-import any.ui.common.widget.PullToRefreshIndicator
+import any.ui.common.widget.ProgressPullRefreshIndicator
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
 import any.ui.common.widget.rememberPullRefreshIndicatorOffset
@@ -543,7 +543,7 @@ private fun PostScreenContent(
                 },
             )
 
-            PullToRefreshIndicator(
+            ProgressPullRefreshIndicator(
                 state = pullRefreshState,
                 indicatorOffset = indicatorOffset,
                 isRefreshing = uiState.isLoading,

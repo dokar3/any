@@ -46,9 +46,12 @@ fun rememberPullRefreshIndicatorOffset(
     return indicatorOffset
 }
 
+/**
+ * A pull refresh indicator can also show the loading progress bar.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PullToRefreshIndicator(
+fun ProgressPullRefreshIndicator(
     state: PullRefreshState,
     isRefreshing: Boolean,
     indicatorOffset: Int,
