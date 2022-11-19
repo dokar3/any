@@ -75,9 +75,23 @@ jobs:
         if: ${{ inputs.check }}
         run: ./gradlew check
 
+      - name: Decode keystore
+        if: ${{ (inputs.build_release) || (inputs.gen_baseline_profile) }}
+        env:
+          ENCODED_KEYSTORE: ${{ secrets.keystore_base64 }}
+        run: |
+          if [ -z "$ENCODED_KEYSTORE" ]; then
+            echo "secret 'keystore_base64' is not set"
+            exit 1
+          fi
+          node ./scripts/file_base64_converter.js 2 $ENCODED_KEYSTORE $KEYSTORE_PATH
+
       - name: Generate baseline profile
         if: ${{ inputs.gen_baseline_profile }}
-        run: ./gradlew macrobenchmark:pixel2Api31BenchmarkAndroidTest -PdisableSplits
+        run: |
+          ./gradlew macrobenchmark:pixel2Api31BenchmarkAndroidTest\
+          -PdisableSplits\
+          -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
 
       - name: Copy baseline profile to app module
         if: ${{ inputs.gen_baseline_profile }}
@@ -90,17 +104,6 @@ jobs:
           
           cp "$profile_path" "$output_path"
         shell: bash
-
-      - name: Decode keystore
-        if: ${{ inputs.build_release }}
-        env:
-          ENCODED_KEYSTORE: ${{ secrets.keystore_base64 }}
-        run: |
-          if [ -z "$ENCODED_KEYSTORE" ]; then
-            echo "secret 'keystore_base64' is not set"
-            exit 1
-          fi
-          node ./scripts/file_base64_converter.js 2 $ENCODED_KEYSTORE $KEYSTORE_PATH
 
       - name: Build release APKs
         if: ${{ inputs.build_release }}

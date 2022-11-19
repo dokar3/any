@@ -45,7 +45,7 @@ class BaselineProfileGenerator {
         scrollList(followingList)
         device.waitForIdle()
 
-        val collectionTab = device.findObject(By.text("Collection"))
+        val collectionTab = device.findObject(By.text("Collections"))
         collectionTab.click()
         device.waitForIdle()
         val collectionList = device.findObject(By.desc("CollectionList"))
