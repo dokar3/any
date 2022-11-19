@@ -122,7 +122,11 @@ class ServiceMgtViewModel(
                 AppendableService(
                     service = it,
                     isAdded = serviceRepository.findDbService(it.toStored().id) != null,
-                    saveService = { loadDbServices() },
+                    saveService = {
+                        viewModelScope.launch {
+                            serviceRepository.updateDbService(it.raw)
+                        }
+                    },
                 )
             }
             _servicesUiState.update {
