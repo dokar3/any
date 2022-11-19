@@ -28,8 +28,8 @@ class ImageFetcher(
         }
 
         FrescoUtil.fetchBitmaps(frescoRequest) { bitmap, isFinalResult ->
+            trySend(bitmap)
             if (isFinalResult) {
-                trySend(bitmap)
                 channel.close()
             }
         }
