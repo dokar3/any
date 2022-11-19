@@ -1,11 +1,10 @@
 package any.ui.service.viewmodel
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import any.base.result.ValidationResult
 import any.domain.entity.UiServiceManifest
 
-@Stable
+@Immutable
 data class ServiceUiState(
     val isValidating: Boolean = false,
     val validations: Map<String, ValidationResult> = emptyMap(),
