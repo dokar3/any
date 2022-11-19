@@ -13,8 +13,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -26,7 +28,10 @@ import any.base.prefs.preferencesStore
 import any.base.prefs.primaryColor
 import any.base.util.applyLightStatusBar
 import any.base.util.clearLightStatusBar
+import any.ui.common.TintSystemBars
 import any.ui.common.theme.AnyTheme
+import any.ui.common.theme.bottomBarBackground
+import any.ui.common.theme.navigationBar
 
 class BrowserActivity : DarkModeAwareActivity() {
     private var hasSetResult = false
@@ -62,8 +67,20 @@ class BrowserActivity : DarkModeAwareActivity() {
                 primaryColor = primaryColor,
                 darkModePrimaryColor = darkModePrimaryColor,
             ) {
-                Surface {
-                    val backgroundColor = MaterialTheme.colors.background
+                val backgroundColor = MaterialTheme.colors.background
+
+                Surface(color = backgroundColor) {
+                    val navigationBarColor = MaterialTheme.colors.navigationBar
+                    val bottomBarColor = MaterialTheme.colors.bottomBarBackground
+
+                    val compositedBottomBarColor = remember(
+                        backgroundColor,
+                        bottomBarColor,
+                        navigationBarColor,
+                    ) {
+                        navigationBarColor.compositeOver(bottomBarColor)
+                            .compositeOver(backgroundColor)
+                    }
 
                     LaunchedEffect(view, isDark) {
                         if (isDark) {
@@ -74,6 +91,11 @@ class BrowserActivity : DarkModeAwareActivity() {
                         window.statusBarColor = backgroundColor.toArgb()
                     }
 
+                    TintSystemBars(
+                        darkMode = isDark,
+                        navigationBarColor = compositedBottomBarColor,
+                    )
+
                     BrowserScreen(
                         createWebView = shouldCreateWebView,
                         url = url,
@@ -81,6 +103,7 @@ class BrowserActivity : DarkModeAwareActivity() {
                         userAgent = userAgent,
                         forceDark = isDark,
                         onBackClick = { finish() },
+                        titleBarBackgroundColor = compositedBottomBarColor,
                     )
                 }
             }

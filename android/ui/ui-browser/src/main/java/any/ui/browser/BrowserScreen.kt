@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import any.base.util.BrowserType
@@ -35,6 +36,7 @@ internal fun BrowserScreen(
     onPageLoaded: ((String?) -> Unit)? = null,
     title: String? = null,
     userAgent: String? = null,
+    titleBarBackgroundColor: Color = MaterialTheme.colors.background,
 ) {
     val context = LocalContext.current
 
@@ -120,8 +122,7 @@ internal fun BrowserScreen(
                     CookieManager.getInstance().removeAllCookies(null)
                 }
             },
-            modifier = Modifier
-                .background(MaterialTheme.colors.onBackground.copy(alpha = 0.045f)),
+            modifier = Modifier.background(titleBarBackgroundColor),
         )
     }
 }
