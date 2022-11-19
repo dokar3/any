@@ -12,6 +12,7 @@ data class ServiceUiState(
     val areAllValidationsPassed: Boolean = false,
     val updatedService: UiServiceManifest? = null,
     val serviceToSave: UiServiceManifest? = null,
+    val savedService: UiServiceManifest? = null,
     val upgradeInfo: UpgradeInfo? = null,
 )
 

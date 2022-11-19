@@ -146,6 +146,12 @@ fun ServiceConfiguringDialog(
         }
     }
 
+    LaunchedEffect(uiState.savedService) {
+        if (uiState.savedService != null) {
+            onDismissRequest()
+        }
+    }
+
     DisposableEffect(viewModel) {
         onDispose {
             viewModel.resetUiState()
@@ -227,9 +233,7 @@ fun ServiceConfiguringDialog(
                 values[config.key] = value
                 viewModel.clearValidationResult(config)
             },
-            onShowServiceDetailsClick = {
-                scope.launch { serviceDetailsSheet.expand() }
-            },
+            onShowServiceDetailsClick = { scope.launch { serviceDetailsSheet.expand() } },
             runValidator = runValidator,
             onRunValidatorChange = { runValidator = it },
             isValidating = isValidating,

@@ -153,7 +153,12 @@ class ServiceViewModel(
 
     fun saveService(service: UiServiceManifest) = viewModelScope.launch(workerDispatcher) {
         serviceRepository.upsertDbService(service.raw)
-        _serviceUiState.update { it.copy(serviceToSave = null) }
+        _serviceUiState.update {
+            it.copy(
+                serviceToSave = null,
+                savedService = service,
+            )
+        }
     }
 
     fun clearValidationResult(config: ServiceConfig) = viewModelScope.launch(workerDispatcher) {
