@@ -20,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
@@ -33,10 +32,9 @@ import any.navigation.NavEvent
 import any.navigation.Routes
 import any.navigation.navigateAndReplace
 import any.ui.common.TintSystemBars
-import any.ui.common.theme.bottomBarBackground
-import any.ui.common.theme.navigationBar
+import any.ui.common.theme.compositedNavigationBarColor
+import any.ui.common.theme.compositedStatusBarColor
 import any.ui.common.theme.sizes
-import any.ui.common.theme.statusBar
 import any.ui.common.theme.topBarBackground
 import any.ui.common.widget.BarsColorController
 import any.ui.common.widget.BoxWithSystemBars
@@ -88,19 +86,8 @@ fun HomeScreen(
 
     val scrollToTopManager = remember { HomeScrollToTopManager() }
 
-    val statusBarColor = MaterialTheme.colors.statusBar
-    val topBarColor = MaterialTheme.colors.topBarBackground
-
-    val navigationBarColor = MaterialTheme.colors.navigationBar
-    val bottomBarColor = MaterialTheme.colors.bottomBarBackground
-
-    val compositedStatusBarColor = remember(statusBarColor, topBarColor) {
-        statusBarColor.compositeOver(topBarColor)
-    }
-
-    val compositedNavigationBarColor = remember(navigationBarColor, bottomBarColor) {
-        navigationBarColor.compositeOver(bottomBarColor)
-    }
+    val compositedStatusBarColor = MaterialTheme.colors.compositedStatusBarColor
+    val compositedNavigationBarColor = MaterialTheme.colors.compositedNavigationBarColor
 
     val barsColorController = rememberBarsColorController(
         statusBarColor = compositedStatusBarColor,

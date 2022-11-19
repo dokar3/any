@@ -118,6 +118,26 @@ val Colors.bottomBarBackground: Color
     @Composable
     get() = topBarBackground
 
+val Colors.compositedStatusBarColor: Color
+    @Composable
+    get() {
+        val foreground: Color = statusBar
+        val background: Color = topBarBackground
+        return remember(foreground, background) {
+            foreground.compositeOver(background)
+        }
+    }
+
+val Colors.compositedNavigationBarColor: Color
+    @Composable
+    get() {
+        val foreground: Color = navigationBar
+        val background: Color = bottomBarBackground
+        return remember(foreground, background) {
+            foreground.compositeOver(background)
+        }
+    }
+
 val Colors.divider: Color
     @Composable
     get() = if (isLight) Color(0xffdedede) else Color(0xff555555)

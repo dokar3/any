@@ -99,10 +99,13 @@ import any.ui.common.lazy.rememberLazyListScrollableState
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.richtext.Html
 import any.ui.common.richtext.RichTextStyle
+import any.ui.common.theme.compositedNavigationBarColor
+import any.ui.common.theme.compositedStatusBarColor
 import any.ui.common.toDpOffset
 import any.ui.common.visibleItemRange
 import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem
+import any.ui.common.widget.BoxWithSystemBars
 import any.ui.common.widget.CommentCount
 import any.ui.common.widget.EditDialog
 import any.ui.common.widget.EmojiEmptyContent
@@ -110,6 +113,7 @@ import any.ui.common.widget.MessagePopup
 import any.ui.common.widget.ProgressPullRefreshIndicator
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
+import any.ui.common.widget.rememberBarsColorController
 import any.ui.common.widget.rememberPullRefreshIndicatorOffset
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.imagepager.ImagePagerPositionController
@@ -167,19 +171,26 @@ fun PostScreen(
 
     val scrollableState = rememberLazyListScrollableState()
 
-    PostScreenContent(
-        onNavigate = onNavigate,
-        viewModel = viewModel,
-        bookmarkViewModel = bookmarkViewModel,
-        positionController = positionController,
-        postUrl = postUrl,
-        serviceId = serviceId,
-        initialElementIndex = initialElementIndex,
-        initialElementScrollOffset = initialElementScrollOffset,
-        scrollableState = scrollableState,
-        drawerState = postDrawerState,
-        isRunningExitTransition = isRunningExitTransition,
-    )
+    BoxWithSystemBars(
+        barsColorController = rememberBarsColorController(
+            statusBarColor = MaterialTheme.colors.compositedStatusBarColor,
+            navigationBarColor = MaterialTheme.colors.compositedNavigationBarColor,
+        ),
+    ) {
+        PostScreenContent(
+            onNavigate = onNavigate,
+            viewModel = viewModel,
+            bookmarkViewModel = bookmarkViewModel,
+            positionController = positionController,
+            postUrl = postUrl,
+            serviceId = serviceId,
+            initialElementIndex = initialElementIndex,
+            initialElementScrollOffset = initialElementScrollOffset,
+            scrollableState = scrollableState,
+            drawerState = postDrawerState,
+            isRunningExitTransition = isRunningExitTransition,
+        )
+    }
 
     val uiState by viewModel.postUiState.collectAsState()
     val bookmarkUiState by bookmarkViewModel.bookmarkUiState.collectAsState()

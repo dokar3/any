@@ -122,11 +122,7 @@ internal fun BottomBar(
             }
         }
 
-        NavigationBarSpacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(backgroundColor)
-        )
+        NavigationBarSpacer(modifier = Modifier.fillMaxWidth())
     }
 }
 

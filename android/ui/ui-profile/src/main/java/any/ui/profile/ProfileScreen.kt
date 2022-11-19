@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -50,10 +51,14 @@ import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.post.LoadingItem
 import any.ui.common.post.PostList
 import any.ui.common.post.RetryItem
+import any.ui.common.theme.compositedNavigationBarColor
+import any.ui.common.theme.statusBar
 import any.ui.common.theme.themeColorOrPrimary
+import any.ui.common.widget.BoxWithSystemBars
 import any.ui.common.widget.EndOfList
 import any.ui.common.widget.ProgressPullRefreshIndicator
 import any.ui.common.widget.UiMessagePopup
+import any.ui.common.widget.rememberBarsColorController
 import any.ui.common.widget.rememberPullRefreshIndicatorOffset
 import any.ui.profile.viewmodel.ProfileUiState
 import any.ui.profile.viewmodel.ProfileViewModel
@@ -75,26 +80,33 @@ fun ProfileScreen(
         viewModel.fetchProfile(serviceId = serviceId, userId = userId)
     }
 
-    ProfileScreenContent(
-        uiState = viewModel.uiState.collectAsState().value,
-        onNavigate = onNavigate,
-        onFollow = viewModel::followUser,
-        onUnfollow = viewModel::unfollowUser,
-        onRefresh = {
-            viewModel.fetchProfile(
-                serviceId = serviceId,
-                userId = userId,
-                remoteOnly = true,
-            )
-        },
-        onFetchMore = viewModel::fetchMorePosts,
-        onRetryPostsFetch = viewModel::retryPostsFetch,
-        onClearMessage = viewModel::clearMessage,
-        onCollectPost = viewModel::collectPost,
-        onDiscardPost = viewModel::discardPost,
-        onAddPostToFolder = viewModel::addToFolder,
-        modifier = modifier,
-    )
+    BoxWithSystemBars(
+        barsColorController = rememberBarsColorController(
+            statusBarColor = MaterialTheme.colors.statusBar,
+            navigationBarColor = MaterialTheme.colors.compositedNavigationBarColor,
+        ),
+    ) {
+        ProfileScreenContent(
+            uiState = viewModel.uiState.collectAsState().value,
+            onNavigate = onNavigate,
+            onFollow = viewModel::followUser,
+            onUnfollow = viewModel::unfollowUser,
+            onRefresh = {
+                viewModel.fetchProfile(
+                    serviceId = serviceId,
+                    userId = userId,
+                    remoteOnly = true,
+                )
+            },
+            onFetchMore = viewModel::fetchMorePosts,
+            onRetryPostsFetch = viewModel::retryPostsFetch,
+            onClearMessage = viewModel::clearMessage,
+            onCollectPost = viewModel::collectPost,
+            onDiscardPost = viewModel::discardPost,
+            onAddPostToFolder = viewModel::addToFolder,
+            modifier = modifier,
+        )
+    }
 }
 
 @Composable
