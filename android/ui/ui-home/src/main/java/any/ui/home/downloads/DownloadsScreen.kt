@@ -69,7 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.ImmutableHolder
 import any.base.image.ImageRequest
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.navigation.NavEvent
 import any.navigation.Routes
 import any.navigation.navPushEvent

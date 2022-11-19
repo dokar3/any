@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.data.ThumbAspectRatio
 import any.data.entity.Post
 import any.data.entity.ServiceViewType

@@ -30,7 +30,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.domain.entity.UiUser
 import any.ui.common.CheckableItem
 import any.ui.common.modifier.verticalScrollBar

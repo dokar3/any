@@ -51,7 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.ui.common.theme.pass
 import any.ui.common.theme.secondaryText
 import any.ui.common.theme.warn

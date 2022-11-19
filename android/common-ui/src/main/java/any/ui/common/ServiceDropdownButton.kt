@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.domain.entity.UiServiceManifest
 import any.ui.common.widget.DropdownButton
 

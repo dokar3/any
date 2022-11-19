@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import any.base.prefs.postFontScale
 import any.base.prefs.postLineSpacingMultiplier
 import any.base.prefs.preferencesStore
-import any.base.util.performTextHandleMove
+import any.base.util.compose.performTextHandleMove
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.BottomSheetTitle
 import com.dokar.sheets.BottomSheet

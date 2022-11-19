@@ -26,7 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import any.base.prefs.preferencesStore
 import any.base.prefs.showDevOptions
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.navigation.NavEvent
 import any.navigation.Routes
 import any.navigation.SettingsRoute

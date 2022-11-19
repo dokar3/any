@@ -57,7 +57,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import any.base.ImmutableHolder
 import any.base.util.ClipboardUtil
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.data.db.AppDatabase
 import any.data.db.PostContentDatabase
 import any.ui.common.widget.AnimatedPopup

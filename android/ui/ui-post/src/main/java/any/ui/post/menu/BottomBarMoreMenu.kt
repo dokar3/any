@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import any.base.ImmutableHolder
-import any.base.util.performTextHandleMove
+import any.base.util.compose.performTextHandleMove
 import any.domain.entity.UiPost
 import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem

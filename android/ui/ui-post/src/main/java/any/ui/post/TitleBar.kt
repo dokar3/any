@@ -22,13 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.domain.entity.UiPost
 import any.ui.common.dialog.AddToCollectionsDialog
 import any.ui.common.widget.CollectButton
@@ -60,6 +61,8 @@ internal fun TitleBar(
 
             val imageButtonBgColor = MaterialTheme.colors.background.copy(alpha = 0.83f)
 
+            val currentOnBackLongClick = rememberUpdatedState(onBackLongClick)
+
             // Back button
             Box(
                 modifier = Modifier
@@ -68,9 +71,11 @@ internal fun TitleBar(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = false),
                         onClick = onBackClick,
-                        onLongClick = {
-                            hapticFeedback.performLongPress()
-                            onBackLongClick?.invoke()
+                        onLongClick = remember {
+                            {
+                                hapticFeedback.performLongPress()
+                                currentOnBackLongClick.value?.invoke()
+                            }
                         },
                     )
                     .background(imageButtonBgColor, shape = CircleShape),
@@ -101,9 +106,11 @@ internal fun TitleBar(
                         color = imageButtonBgColor,
                         shape = CircleShape
                     ),
-                    onLongClick = {
-                        hapticFeedback.performLongPress()
-                        showCollectionDialog = true
+                    onLongClick = remember {
+                        {
+                            hapticFeedback.performLongPress()
+                            showCollectionDialog = true
+                        }
                     },
                     size = iconSize,
                 )

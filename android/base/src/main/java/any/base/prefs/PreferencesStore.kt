@@ -1,7 +1,9 @@
 package any.base.prefs
 
+import androidx.compose.runtime.Stable
 import kotlinx.coroutines.flow.Flow
 
+@Stable
 interface PreferencesStore {
     val values: MutableMap<String, PreferenceValue<*>>
 

@@ -1,6 +1,7 @@
 package any.ui.common.widget
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,12 +16,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshDefaults
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.R
 import any.ui.common.theme.secondaryText
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -37,13 +40,34 @@ fun rememberPullRefreshIndicatorOffset(
     refreshThreshold: Dp = PullRefreshDefaults.RefreshThreshold,
 ): Int {
     val density = LocalDensity.current
-    val indicatorOffset by remember(state, density) {
-        derivedStateOf {
-            val dp = refreshThreshold * state.progress
-            with(density) { dp.roundToPx() }
-        }
+
+    val thresholdPx = with(density) { refreshThreshold.roundToPx() }
+
+    val prevProgress = remember { mutableStateOf(0f) }
+
+    val indicatorOffset = remember { mutableStateOf(0) }
+
+    LaunchedEffect(state, thresholdPx) {
+        snapshotFlow { state.progress }
+            .collect { progress ->
+                if (progress == 0f) {
+                    launch {
+                        animate(
+                            initialValue = prevProgress.value,
+                            targetValue = progress,
+                        ) { value, _ ->
+                            indicatorOffset.value = (thresholdPx * value).toInt()
+                        }
+                        prevProgress.value = progress
+                    }
+                } else {
+                    prevProgress.value = progress
+                    indicatorOffset.value = (thresholdPx * progress).toInt()
+                }
+            }
     }
-    return indicatorOffset
+
+    return indicatorOffset.value
 }
 
 /**
@@ -54,7 +78,7 @@ fun rememberPullRefreshIndicatorOffset(
 fun ProgressPullRefreshIndicator(
     state: PullRefreshState,
     isRefreshing: Boolean,
-    indicatorOffset: Int,
+    indicatorOffsetProvider: () -> Int,
     modifier: Modifier = Modifier,
     loadingProgress: Float? = null,
     progressColor: Color = MaterialTheme.colors.primary,
@@ -74,8 +98,8 @@ fun ProgressPullRefreshIndicator(
                     color = progressColor,
                 )
             }
-        } else if (indicatorOffset > 0) {
-            val refreshProgress = state.progress
+        } else {
+            val refreshProgress = state.progress.coerceIn(0f, 1f)
             Row(
                 modifier = Modifier
                     .layout { measurable, constraints ->
@@ -83,6 +107,7 @@ fun ProgressPullRefreshIndicator(
                         val width = placeable.width
                         val height = placeable.height
                         layout(width, height) {
+                            val indicatorOffset = indicatorOffsetProvider()
                             val h = height - 16.dp.toPx()
                             val offsetY = if (indicatorOffset > h) {
                                 ((indicatorOffset - h) / 2).toInt()
@@ -92,9 +117,9 @@ fun ProgressPullRefreshIndicator(
                             placeable.placeRelative(0, offsetY)
                         }
                     }
+                    .graphicsLayer { alpha = refreshProgress }
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .alpha(refreshProgress),
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.Center,
             ) {
                 ProgressBar(
@@ -106,7 +131,7 @@ fun ProgressPullRefreshIndicator(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
-                    text = if (refreshProgress.coerceIn(0f, 1f) == 1f) {
+                    text = if (refreshProgress == 1f) {
                         stringResource(R.string.release_to_refresh)
                     } else {
                         stringResource(R.string.pull_to_refresh)

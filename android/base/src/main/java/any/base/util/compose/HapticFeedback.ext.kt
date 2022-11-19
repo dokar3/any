@@ -1,4 +1,4 @@
-package any.base.util
+package any.base.util.compose
 
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType

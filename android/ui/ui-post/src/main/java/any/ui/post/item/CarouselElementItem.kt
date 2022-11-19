@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.image.ImageRequest
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.domain.entity.UiContentElement
 import any.ui.common.R
 import any.ui.common.image.AsyncImage

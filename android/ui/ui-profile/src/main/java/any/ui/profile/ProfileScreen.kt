@@ -305,7 +305,7 @@ private fun ProfileScreenContent(
         ProgressPullRefreshIndicator(
             state = pullRefreshState,
             isRefreshing = isRefreshing,
-            indicatorOffset = indicatorOffset,
+            indicatorOffsetProvider = { indicatorOffset },
             modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
             loadingProgress = null,
             textColor = Color.White,

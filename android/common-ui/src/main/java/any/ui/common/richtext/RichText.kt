@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import any.base.util.compose.copy
-import any.base.util.performLongPress
+import any.base.util.compose.performLongPress
 import any.richtext.LinkMark
 import any.richtext.RichContent
 import any.richtext.RichElement

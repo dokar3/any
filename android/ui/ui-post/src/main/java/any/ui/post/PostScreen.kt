@@ -270,8 +270,8 @@ private fun PostScreenContent(
                         showDebugMenu = true
                     }
                 },
-                onCollectRequest = { viewModel.collectPost(it) },
-                onDiscardRequest = { viewModel.discardPost(it) },
+                onCollectRequest = viewModel::collectPost,
+                onDiscardRequest = viewModel::discardPost,
                 modifier = Modifier.onSizeChanged {
                     titleBarHeight = with(density) { it.height.toDp() }
                 },
@@ -545,7 +545,7 @@ private fun PostScreenContent(
 
             ProgressPullRefreshIndicator(
                 state = pullRefreshState,
-                indicatorOffset = indicatorOffset,
+                indicatorOffsetProvider = { indicatorOffset },
                 isRefreshing = uiState.isLoading,
                 modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
                 loadingProgress = uiState.loadingProgress?.value,
