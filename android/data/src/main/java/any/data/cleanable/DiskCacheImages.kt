@@ -17,7 +17,7 @@ class DiskCacheImages : Cleanable {
         val mainDiskCacheConfig = Fresco.getImagePipeline().config.mainDiskCacheConfig
         val maxSize = mainDiskCacheConfig.defaultSizeLimit
         val dir = mainDiskCacheConfig.baseDirectoryPathSupplier.get()
-        val size = FileUtil.folderSize(dir)
+        val size = FileUtil.directorySize(dir)
         val available = min(maxSize - size, dir.freeSpace)
         SpaceInfo(size, maxSize, available)
     }

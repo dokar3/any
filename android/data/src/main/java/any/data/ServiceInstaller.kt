@@ -50,11 +50,6 @@ class ServiceInstaller(
             // Extract resources to temporary dir
             ZipUtil.unzip(file, temporaryDir)
 
-            // Clear extracted resources on exit
-            temporaryDir.walk()
-                .filter { it.isFile }
-                .forEach { it.deleteOnExit() }
-
             // Resolve local resources
             manifests.map { manifest ->
                 val service = manifest.service

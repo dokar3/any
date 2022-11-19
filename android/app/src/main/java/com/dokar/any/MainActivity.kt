@@ -22,6 +22,8 @@ import any.base.prefs.darkModePrimaryColor
 import any.base.prefs.isSecureScreenEnabled
 import any.base.prefs.preferencesStore
 import any.base.prefs.primaryColor
+import any.base.util.Dirs
+import any.base.util.FileUtil
 import any.navigation.Routes
 import any.navigation.navPushEvent
 import any.navigation.search
@@ -29,6 +31,9 @@ import any.navigation.userProfile
 import any.ui.common.theme.AnyTheme
 import any.ui.jslogger.FloatingLoggerService
 import any.ui.readingbubble.ReadingBubbleService
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -166,6 +171,11 @@ class MainActivity : DarkModeAwareActivity() {
         FloatingLoggerService.dismiss()
         ReadingBubbleService.dismiss()
         ReadingBubbleService.removeNavListener(this)
+        @OptIn(DelicateCoroutinesApi::class)
+        GlobalScope.launch(Dispatchers.IO) {
+            FileUtil.clearDirectory(Dirs.backupTempDir(this@MainActivity))
+            FileUtil.clearDirectory(Dirs.servicesTempDir(this@MainActivity))
+        }
     }
 
     companion object {

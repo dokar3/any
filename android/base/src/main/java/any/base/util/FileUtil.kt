@@ -40,19 +40,30 @@ object FileUtil {
         }
     }
 
-    fun folderSize(folder: File): Long {
-        return if (folder.isDirectory) {
+    fun clearDirectory(dir: File) {
+        if (dir.isFile) return
+        dir.listFiles()?.forEach {
+            if (it.isDirectory) {
+                it.deleteRecursively()
+            } else {
+                it.delete()
+            }
+        }
+    }
+
+    fun directorySize(dir: File): Long {
+        return if (dir.isDirectory) {
             var len = 0L
-            folder.listFiles()?.forEach {
+            dir.listFiles()?.forEach {
                 len += if (it.isDirectory) {
-                    folderSize(it)
+                    directorySize(it)
                 } else {
                     it.length()
                 }
             }
             len
         } else {
-            folder.length()
+            dir.length()
         }
     }
 
