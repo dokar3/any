@@ -75,7 +75,7 @@ import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.home.HomeScrollToTopManager
 import any.ui.home.IconTintTheme
-import any.ui.home.ScrollToTopHandler
+import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
 import any.ui.home.fresh.viewmodel.FreshUiState
@@ -156,7 +156,7 @@ internal fun FreshScreen(
     }
 
     DisposableEffect(scrollToTopManager) {
-        val handler = ScrollToTopHandler {
+        val handler = ScrollToTopResponder {
             scope.launch {
                 screenState.resetBars()
                 scrollableState.quickScrollToTop()

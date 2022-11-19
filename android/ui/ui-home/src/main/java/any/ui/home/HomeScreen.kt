@@ -51,19 +51,19 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 const val FADE_TRANS_DURATION = 275
 
-internal fun interface ScrollToTopHandler {
+internal fun interface ScrollToTopResponder {
     fun onRequestScrollToTop()
 }
 
 @Stable
 internal class HomeScrollToTopManager {
-    private val handlers = mutableListOf<ScrollToTopHandler>()
+    private val handlers = mutableListOf<ScrollToTopResponder>()
 
-    fun addHandler(handler: ScrollToTopHandler) {
+    fun addHandler(handler: ScrollToTopResponder) {
         handlers.add(handler)
     }
 
-    fun removeHandler(handler: ScrollToTopHandler) {
+    fun removeHandler(handler: ScrollToTopResponder) {
         handlers.remove(handler)
     }
 

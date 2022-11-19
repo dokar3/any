@@ -95,7 +95,7 @@ import any.ui.common.widget.TitleActionButton
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.home.HomeScreenDefaults
 import any.ui.home.HomeScrollToTopManager
-import any.ui.home.ScrollToTopHandler
+import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
 import any.ui.home.downloads.viewmodel.DownloadsViewModel
@@ -145,7 +145,7 @@ internal fun DownloadsScreen(
     }
 
     DisposableEffect(scrollableState, scrollToTopManager) {
-        val handler = ScrollToTopHandler {
+        val handler = ScrollToTopResponder {
             scope.launch {
                 scrollableState.quickScrollToTop()
             }

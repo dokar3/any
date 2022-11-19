@@ -105,7 +105,7 @@ import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.TooltipBox
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.home.HomeScrollToTopManager
-import any.ui.home.ScrollToTopHandler
+import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
 import any.ui.home.collections.viewmodel.CollectionsViewModel
@@ -183,7 +183,7 @@ internal fun CollectionsScreen(
     }
 
     DisposableEffect(scrollToTopManager) {
-        val handler = ScrollToTopHandler {
+        val handler = ScrollToTopResponder {
             scope.launch {
                 screenState.resetBars()
                 gridStateProvider.get().quickScrollToTop()

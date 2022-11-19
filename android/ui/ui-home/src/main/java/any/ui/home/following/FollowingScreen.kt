@@ -71,7 +71,7 @@ import any.ui.common.widget.SearchBar
 import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.home.HomeScrollToTopManager
-import any.ui.home.ScrollToTopHandler
+import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
 import any.ui.home.following.viewmodel.FollowingUiState
@@ -103,15 +103,15 @@ internal fun FollowingScreen(
     }
 
     DisposableEffect(scrollToTopManager) {
-        val scrollToTopHandler = ScrollToTopHandler {
+        val scrollToTopResponder = ScrollToTopResponder {
             scope.launch {
                 screenState.resetBars()
                 scrollableState.listState.quickScrollToTop()
             }
         }
-        scrollToTopManager.addHandler(scrollToTopHandler)
+        scrollToTopManager.addHandler(scrollToTopResponder)
         onDispose {
-            scrollToTopManager.removeHandler(scrollToTopHandler)
+            scrollToTopManager.removeHandler(scrollToTopResponder)
         }
     }
 
