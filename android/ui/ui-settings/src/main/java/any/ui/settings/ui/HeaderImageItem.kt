@@ -50,8 +50,8 @@ import any.base.ImmutableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
 import any.base.image.ImageState
-import any.base.prefs.forceHeaderImageForAllServices
 import any.base.prefs.headerImage
+import any.base.prefs.overrideServiceHeaderImage
 import any.base.prefs.preferencesStore
 import any.base.util.queryName
 import any.base.util.writeToFile
@@ -117,7 +117,7 @@ private fun HeaderPicSelector(
     val headerPicUrl by preferencesStore.headerImage
         .asStateFlow(scope)
         .collectAsState()
-    val forceForAll by preferencesStore.forceHeaderImageForAllServices
+    val forceForAll by preferencesStore.overrideServiceHeaderImage
         .asStateFlow(scope)
         .collectAsState()
 
@@ -258,7 +258,7 @@ private fun HeaderPicSelector(
                         interactionSource = checkInteractionSource,
                         indication = null,
                         onClick = {
-                            preferencesStore.forceHeaderImageForAllServices.value = !forceForAll
+                            preferencesStore.overrideServiceHeaderImage.value = !forceForAll
                         }
                     ),
                 verticalAlignment = Alignment.CenterVertically,
@@ -266,11 +266,11 @@ private fun HeaderPicSelector(
                 Checkbox(
                     checked = forceForAll,
                     onCheckedChange = {
-                        preferencesStore.forceHeaderImageForAllServices.value = it
+                        preferencesStore.overrideServiceHeaderImage.value = it
                     },
                     interactionSource = checkInteractionSource,
                 )
-                Text(stringResource(BaseR.string.force_for_all_services))
+                Text(stringResource(BaseR.string.override_service_header_image))
             }
 
             Spacer(modifier = Modifier.height(8.dp))

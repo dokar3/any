@@ -49,8 +49,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.ImmutableHolder
 import any.base.image.ImageRequest
-import any.base.prefs.forceHeaderImageForAllServices
 import any.base.prefs.headerImage
+import any.base.prefs.overrideServiceHeaderImage
 import any.base.prefs.preferencesStore
 import any.base.util.Permissions
 import any.base.util.isHttpUrl
@@ -483,7 +483,7 @@ private fun ServiceHeaderItem(
         fallback = { currentService.headerImage }
     )
     val globalHeaderImage = preferencesStore.headerImage.value
-    val forceHeaderImageForAll = preferencesStore.forceHeaderImageForAllServices.value
+    val forceHeaderImageForAll = preferencesStore.overrideServiceHeaderImage.value
     val headerPicUrl = if (forceHeaderImageForAll || serviceHeaderImage.isNullOrEmpty()) {
         globalHeaderImage
     } else {

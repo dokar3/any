@@ -247,7 +247,7 @@
     <string name="text_style">Text style</string>
     <string name="line_spacing">Line spacing</string>
     <string name="font_scale">Font scale</string>
-    <string name="force_for_all_services">Force for all services</string>
+    <string name="override_service_header_image">Override service header image</string>
     <string name="nothing_to_loading">Nothing to load</string>
     <string name="page_is_loading">Page is loading</string>
     <string name="secure">Secure</string>

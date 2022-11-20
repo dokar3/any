@@ -146,8 +146,8 @@ val PreferencesStore.isSecureScreenEnabled
         boolValue(this, key, defaultValue = true)
     }
 
-val PreferencesStore.forceHeaderImageForAllServices
-    get() = prefValueOf("force_header_image_for_all_services") { key ->
+val PreferencesStore.overrideServiceHeaderImage
+    get() = prefValueOf("override_service_header_image") { key ->
         boolValue(this, key, defaultValue = false)
     }
 
