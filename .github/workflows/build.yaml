@@ -89,8 +89,8 @@ jobs:
       - name: Generate baseline profile
         if: ${{ inputs.gen_baseline_profile }}
         run: |
-          ./gradlew macrobenchmark:pixel2Api31BenchmarkAndroidTest\
-          -PdisableSplits\
+          ./gradlew macrobenchmark:pixel2Api31BenchmarkAndroidTest \
+          -PdisableSplits \
           -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
 
       - name: Copy baseline profile to app module
