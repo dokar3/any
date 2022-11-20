@@ -97,10 +97,10 @@ fun ServiceConfiguringDialog(
     service: UiServiceManifest,
     isAdded: Boolean,
     modifier: Modifier = Modifier,
+    onSaveService: suspend (toSave: ServiceManifest) -> ServiceManifest? = { it },
     viewModel: ServiceViewModel = viewModel(
         factory = ServiceViewModel.Factory(LocalContext.current)
     ),
-    saveService: (toSave: UiServiceManifest) -> Unit = { viewModel.saveService(it) },
 ) {
     val scope = rememberCoroutineScope()
 
@@ -141,8 +141,12 @@ fun ServiceConfiguringDialog(
 
     LaunchedEffect(uiState.serviceToSave) {
         uiState.serviceToSave?.let {
-            saveService(it)
-            onDismissRequest()
+            val updated = onSaveService(it)
+            if (updated != null) {
+                viewModel.saveService(updated)
+            } else {
+                onDismissRequest()
+            }
         }
     }
 

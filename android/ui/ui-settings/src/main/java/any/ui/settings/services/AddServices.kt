@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import any.base.ImmutableHolder
+import any.data.entity.ServiceManifest
 import any.domain.entity.UiServiceManifest
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.MSG_POPUP_DURATION
@@ -98,8 +99,8 @@ internal fun AddServices(
 @Composable
 private fun AddServicesContent(
     onUpdateSearchQuery: (TextFieldValue) -> Unit,
-    onServiceAdded: (UiServiceManifest) -> Unit,
-    onServiceUpdated: (UiServiceManifest) -> Unit,
+    onServiceAdded: (ServiceManifest) -> Unit,
+    onServiceUpdated: (ServiceManifest) -> Unit,
     uiState: AddServiceUiState,
     modifier: Modifier = Modifier,
 ) {
@@ -157,13 +158,13 @@ private fun AddServicesContent(
             onDismissRequest = { serviceToConfigure = null },
             service = appendableService.service,
             isAdded = appendableService.isAdded,
-            saveService = {
-                appendableService.saveService(it)
+            onSaveService = {
                 if (appendableService.isAdded) {
                     onServiceUpdated(it)
                 } else {
                     onServiceAdded(it)
                 }
+                appendableService.onSaveService(it)
             },
         )
     }

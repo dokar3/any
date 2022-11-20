@@ -4,19 +4,15 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import any.base.file.AndroidFileReader
-import any.base.file.FileReader
 import any.base.result.ValidationResult
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceConfigValue
+import any.data.entity.ServiceManifest
 import any.data.js.ServiceRunner
 import any.data.js.validator.BasicServiceConfigsValidator
 import any.data.js.validator.JsServiceConfigsValidator
 import any.data.repository.ServiceRepository
 import any.domain.entity.UiServiceManifest
-import any.domain.service.toUiManifest
-import any.richtext.html.DefaultHtmlParser
-import any.richtext.html.HtmlParser
 import com.vdurmont.semver4j.Semver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +23,6 @@ import kotlinx.coroutines.launch
 class ServiceViewModel(
     private val serviceRepository: ServiceRepository,
     private val appRunner: ServiceRunner,
-    private val fileReader: FileReader,
-    private val htmlParser: HtmlParser = DefaultHtmlParser(),
     private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
     private val _serviceUiState = MutableStateFlow(ServiceUiState())
@@ -75,9 +69,11 @@ class ServiceViewModel(
         if (serviceConfigs.isNullOrEmpty()) {
             // Nothing to validate
             _serviceUiState.update {
-                it.copy(areAllValidationsPassed = true)
+                it.copy(
+                    areAllValidationsPassed = true,
+                    serviceToSave = service.raw,
+                )
             }
-            saveService(service)
             return@launch
         }
 
@@ -123,7 +119,7 @@ class ServiceViewModel(
         }
 
         val areAllValidationsPassed = results.all { it is ValidationResult.Pass }
-        val updatedRawService = if (areAllValidationsPassed) {
+        val updatedService = if (areAllValidationsPassed) {
             val updatedService = jsValidator.getUpdatedService()
             val updatedConfigs = updatedService.configs?.map {
                 it.copy(value = values[it.key] ?: it.value)
@@ -132,7 +128,6 @@ class ServiceViewModel(
         } else {
             service.raw
         }
-        val updatedService = updatedRawService.toUiManifest(fileReader, htmlParser)
 
         val toSave = if (areAllValidationsPassed) {
             updatedService.toStored()
@@ -145,14 +140,13 @@ class ServiceViewModel(
                 isValidating = false,
                 areAllValidationsPassed = areAllValidationsPassed,
                 validations = validations,
-                updatedService = updatedService,
                 serviceToSave = toSave,
             )
         }
     }
 
-    fun saveService(service: UiServiceManifest) = viewModelScope.launch(workerDispatcher) {
-        serviceRepository.upsertDbService(service.raw)
+    fun saveService(service: ServiceManifest) = viewModelScope.launch(workerDispatcher) {
+        serviceRepository.upsertDbService(service)
         _serviceUiState.update {
             it.copy(
                 serviceToSave = null,
@@ -183,7 +177,6 @@ class ServiceViewModel(
             return ServiceViewModel(
                 serviceRepository = ServiceRepository.getDefault(context),
                 appRunner = ServiceRunner.getDefault(context),
-                fileReader = AndroidFileReader(context),
             ) as T
         }
     }

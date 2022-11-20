@@ -483,9 +483,9 @@ internal fun ServiceManagement(
             onDismissRequest = { viewModel.clearServicesToConfigure() },
             service = service,
             isAdded = isAdded,
-            saveService = {
+            onSaveService = {
                 viewModel.clearMessage()
-                appendableService.saveService(it)
+                appendableService.onSaveService(it)
             },
         )
     }

@@ -3,6 +3,7 @@ package any.ui.settings.services.viewmodel
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
 import any.base.UiMessage
+import any.data.entity.ServiceManifest
 import any.domain.entity.UiServiceManifest
 
 @Stable
@@ -32,9 +33,9 @@ data class AddServiceUiState(
 data class AppendableService(
     val service: UiServiceManifest,
     val isAdded: Boolean,
-    private val saveService: (toAdd: UiServiceManifest) -> Unit,
+    private val onSaveService: suspend (toAdd: ServiceManifest) -> ServiceManifest?,
 ) {
-    fun saveService(toAdd: UiServiceManifest) {
-        saveService.invoke(toAdd)
+    suspend fun onSaveService(toAdd: ServiceManifest): ServiceManifest? {
+        return onSaveService.invoke(toAdd)
     }
 }

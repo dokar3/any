@@ -118,15 +118,11 @@ class ServiceMgtViewModel(
 
     fun setServicesToConfigure(services: List<UiServiceManifest>) {
         viewModelScope.launch {
-            val servicesToConfigure = services.map {
+            val servicesToConfigure = services.map { service ->
                 AppendableService(
-                    service = it,
-                    isAdded = serviceRepository.findDbService(it.toStored().id) != null,
-                    saveService = {
-                        viewModelScope.launch {
-                            serviceRepository.updateDbService(it.raw)
-                        }
-                    },
+                    service = service,
+                    isAdded = serviceRepository.findDbService(service.toStored().id) != null,
+                    onSaveService = { it },
                 )
             }
             _servicesUiState.update {
@@ -142,7 +138,7 @@ class ServiceMgtViewModel(
                 val configuringService = AppendableService(
                     service = service.toUiManifest(fileReader, htmlParser),
                     isAdded = true,
-                    saveService = { loadDbServices() },
+                    onSaveService = { it },
                 )
                 _servicesUiState.update {
                     it.copy(servicesToConfigure = listOf(configuringService))
@@ -174,7 +170,7 @@ class ServiceMgtViewModel(
                 val configuringService = AppendableService(
                     service = service.toUiManifest(fileReader, htmlParser),
                     isAdded = serviceRepository.findDbService(service.toStored().id) != null,
-                    saveService = { loadDbServices() },
+                    onSaveService = { it },
                 )
                 _servicesUiState.update {
                     it.copy(
@@ -215,14 +211,12 @@ class ServiceMgtViewModel(
                 AppendableService(
                     service = service.toUiManifest(fileReader, htmlParser),
                     isAdded = serviceRepository.findDbService(service.toStored().id) != null,
-                    saveService = {
-                        viewModelScope.launch(workerDispatcher) {
-                            installZipService(
-                                service = it.raw,
-                                zip = zip,
-                                deleteZipAfterAdding = deleteZipAfterAdding,
-                            )
-                        }
+                    onSaveService = {
+                        installZipService(
+                            service = it,
+                            zip = zip,
+                            deleteZipAfterAdding = deleteZipAfterAdding,
+                        )
                     }
                 )
             }
@@ -232,22 +226,6 @@ class ServiceMgtViewModel(
                     isLoadingServiceToConfig = false,
                 )
             }
-        }
-    }
-
-    private fun addToDbServices(service: ServiceManifest) {
-        viewModelScope.launch(workerDispatcher) {
-            val addedService = service.toStored()
-            serviceRepository.upsertDbService(addedService)
-            loadDbServices()
-            val services = (allAppendableServices ?: emptyList()).toMutableList()
-            for (i in services.indices) {
-                val item = services[i]
-                if (item.service.id == addedService.id) {
-                    services[i] = item.copy(isAdded = true)
-                }
-            }
-            updateAppendableServices(services)
         }
     }
 
@@ -317,12 +295,7 @@ class ServiceMgtViewModel(
                     AppendableService(
                         service = it.toUiManifest(fileReader, htmlParser),
                         isAdded = localServiceIds.contains(it.id),
-                        saveService = { service ->
-                            viewModelScope.launch(workerDispatcher) {
-                                installBuiltinService(service.raw)
-                                loadDbServices()
-                            }
-                        },
+                        onSaveService = { service -> installBuiltinService(service) },
                     )
                 }
             updateAppendableServices(builtinServices)
@@ -407,35 +380,37 @@ class ServiceMgtViewModel(
         service: ServiceManifest,
         zip: File,
         deleteZipAfterAdding: Boolean,
-    ) = withContext(workerDispatcher) {
+    ): ServiceManifest? = withContext(workerDispatcher) {
         val extractedResources = serviceInstaller.installFromZip(
             zip = zip,
             serviceId = service.originalId,
         )
         if (extractedResources != null) {
-            addToDbServices(service.copy(localResources = extractedResources))
             if (deleteZipAfterAdding) {
                 zip.delete()
             }
+            service.copy(localResources = extractedResources)
         } else {
             _servicesUiState.update {
                 val msg = strings(BaseR.string.cannot_unpack_service)
                 it.copy(message = UiMessage.Error(msg))
             }
+            null
         }
     }
 
     private suspend fun installBuiltinService(
         service: ServiceManifest
-    ) = withContext(workerDispatcher) {
+    ): ServiceManifest? = withContext(workerDispatcher) {
         val extractedResources = serviceInstaller.installFromAssets(service)
         if (extractedResources != null) {
-            addToDbServices(service.copy(localResources = extractedResources))
+            service.copy(localResources = extractedResources)
         } else {
             _servicesUiState.update { uiState ->
                 val msg = strings(BaseR.string.cannot_install_service)
                 uiState.copy(message = UiMessage.Error(msg))
             }
+            null
         }
     }
 
