@@ -121,6 +121,8 @@ internal fun FreshScreen(
         PaddingValues(bottom = bottomBarHeight + bottomInset)
     }
 
+    var firstItemOffsetY by remember { mutableStateOf(0) }
+
     var showCommandDialog by rememberSaveable(inputs = emptyArray()) {
         mutableStateOf(false)
     }
@@ -135,8 +137,12 @@ internal fun FreshScreen(
 
     fun selectService(service: UiServiceManifest) {
         viewModel.setCurrentService(service)
-        // scroll to top
-        scope.launch { scrollableState.quickScrollToTop() }
+        // Scroll to top
+        firstItemOffsetY = 0
+        scope.launch {
+            screenState.resetBars(animate = true)
+            scrollableState.quickScrollToTop()
+        }
     }
 
     fun navigateToServiceManagement() {
@@ -216,7 +222,6 @@ internal fun FreshScreen(
         bottomBar = { onBottomBarOffsetUpdate(it) },
     ) {
         var headerHeightPx by remember { mutableStateOf(0) }
-        var firstItemOffsetY by remember { mutableStateOf(0) }
 
         LaunchedEffect(scrollableState, statusBarColor) {
             val topBarAlpha = statusBarColor.alpha
@@ -225,8 +230,8 @@ internal fun FreshScreen(
                     .mapNotNull { it.firstOrNull() }
                     .map { it.index == 0 }
                     .distinctUntilChanged()
-                    .collect { firstItemVisible ->
-                        if (!firstItemVisible) {
+                    .collect { isFirstItemVisible ->
+                        if (!isFirstItemVisible) {
                             changeStatusBarColor(statusBarColor)
                             titleBarIconTintTheme = IconTintTheme.Auto
                             titleBarBackgroundColor = statusBarColor
@@ -241,6 +246,9 @@ internal fun FreshScreen(
                 .distinctUntilChanged()
                 .collect {
                     firstItemOffsetY = it
+                    if (headerHeightPx == 0) {
+                        return@collect
+                    }
                     val progress = (-it.toFloat() / headerHeightPx).coerceIn(0f, 1f)
                     val alpha = topBarAlpha * progress
                     changeStatusBarColor(statusBarColor.copy(alpha = alpha))
@@ -302,7 +310,7 @@ internal fun FreshScreen(
             service = currentService,
             scrollableState = scrollableState,
             headerContent = {
-                HeaderContent(
+                ServiceHeaderItem(
                     scrollProvider = { firstItemOffsetY },
                     services = ImmutableHolder(services),
                     currentService = currentService,
@@ -458,7 +466,7 @@ private fun FreshScreenContent(
 }
 
 @Composable
-private fun HeaderContent(
+private fun ServiceHeaderItem(
     scrollProvider: () -> Int,
     services: ImmutableHolder<List<UiServiceManifest>>,
     currentService: UiServiceManifest?,
