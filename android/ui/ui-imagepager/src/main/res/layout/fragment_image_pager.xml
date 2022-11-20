@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
-    <androidx.viewpager.widget.ViewPager
+    <any.ui.imagepager.HackyViewPager
         android:id="@+id/image_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
