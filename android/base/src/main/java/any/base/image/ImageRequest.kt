@@ -44,6 +44,9 @@ sealed class ImageRequest(
         abstract fun build(): T
     }
 
+    /**
+     * The universal image request that supports http url, file path and uri string.
+     */
     @Immutable
     class Url(
         val url: String,
@@ -83,6 +86,9 @@ sealed class ImageRequest(
         }
     }
 
+    /**
+     * Image request to load an image [android.net.Uri].
+     */
     @Immutable
     class Uri(
         val uri: android.net.Uri,
@@ -122,6 +128,9 @@ sealed class ImageRequest(
         }
     }
 
+    /**
+     * Image request to load an image resource.
+     */
     @Immutable
     class Res(
         val resId: Int,
@@ -161,6 +170,9 @@ sealed class ImageRequest(
         }
     }
 
+    /**
+     * Image request to load an image file.
+     */
     @Immutable
     class File(
         val file: java.io.File,
@@ -200,11 +212,23 @@ sealed class ImageRequest(
         }
     }
 
+    /**
+     * Image request will first try to fetch the image from the downloaded image directory, then
+     * try to request image using the image framework.
+     *
+     * Only http urls are supported.
+     */
     class Downloadable(
         val url: String,
         memoryCacheEnabled: Boolean = true,
         diskCacheEnabled: Boolean = true,
     ) : ImageRequest(memoryCacheEnabled, diskCacheEnabled) {
+        init {
+            require(url.startsWith("http://") || url.startsWith("https://")) {
+                "The url must starts with 'http://' or 'https://'"
+            }
+        }
+
         override fun toString(): String {
             return "Downloadable($url)"
         }

@@ -179,7 +179,7 @@ private fun HeaderPicSelector(
                                 .diskCacheEnabled(false)
                                 .build()
                         } else {
-                            ImageRequest.Downloadable(text)
+                            ImageRequest.Url(text)
                         },
                         contentDescription = stringResource(BaseR.string.header_image),
                         modifier = Modifier.background(MaterialTheme.colors.placeholder),
