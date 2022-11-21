@@ -122,9 +122,9 @@ object ImageLoader {
         Fresco.getImagePipeline().evictFromDiskCache(frescoRequest)
     }
 
-    fun fetchBitmap(request: ImageRequest): Flow<Bitmap> {
+    fun fetchBitmap(request: ImageRequest, finalResultOnly: Boolean = false): Flow<Bitmap> {
         return requireNotNull(imageFetcher) { "ImageLoader is not set up yet" }
-            .fetchBitmap(request, findRequestSize(request))
+            .fetchBitmap(request, findRequestSize(request), finalResultOnly)
     }
 
     fun fetchBitmapFromCache(request: ImageRequest): Bitmap? {

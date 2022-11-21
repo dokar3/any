@@ -17,7 +17,11 @@ class ImageFetcher(
     private val downloadedFetcher: DownloadedImageFetcher,
     private val subsamplingImageCache: TwoTypesCache<String, InputStream, File>?,
 ) {
-    fun fetchBitmap(request: ImageRequest, size: Size?): Flow<Bitmap> = channelFlow {
+    fun fetchBitmap(
+        request: ImageRequest,
+        size: Size?,
+        finalResultOnly: Boolean = false,
+    ): Flow<Bitmap> = channelFlow {
         val frescoRequest = request.toFrescoRequest(size)
 
         val cached = FrescoUtil.fetchFromBitmapCache(frescoRequest)
@@ -28,7 +32,9 @@ class ImageFetcher(
         }
 
         FrescoUtil.fetchBitmaps(frescoRequest) { bitmap, isFinalResult ->
-            trySend(bitmap)
+            if (!finalResultOnly || isFinalResult) {
+                trySend(bitmap)
+            }
             if (isFinalResult) {
                 channel.close()
             }

@@ -325,7 +325,10 @@ fun DefaultServiceHeader(
                     return@launch
                 }
                 semaphore.withPermit {
-                    val bitmap = ImageLoader.fetchBitmap(icons.value[i]).firstOrNull()
+                    val bitmap = ImageLoader.fetchBitmap(
+                        request = icons.value[i],
+                        finalResultOnly = true,
+                    ).firstOrNull()
                     if (bitmap != null) {
                         mutex.withLock { iconImages[i] = bitmap.asImageBitmap() }
                     } else {
