@@ -29,10 +29,10 @@ import any.ui.common.R
 import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.coroutineContext
 
 internal val addBookmarkItem by lazy {
@@ -74,8 +74,8 @@ private val shareImageItem by lazy {
 internal fun PostImageOptionsPopup(
     onDismissRequest: () -> Unit,
     onAddToBookmarkClick: () -> Unit,
-    onPrepareToShare: () -> Unit,
-    onReadyToShare: () -> Unit,
+    onShareStarted: (shareImageJob: Job) -> Unit,
+    onShareFinished: () -> Unit,
     postTitle: String?,
     selectedImage: String,
     contentImages: StableHolder<List<String>>,
@@ -126,15 +126,14 @@ internal fun PostImageOptionsPopup(
             addBookmarkItem -> {
                 onAddToBookmarkClick()
             }
+
             saveImageItem -> {
-                val ret = withContext(Dispatchers.IO) {
-                    PostImageSaver.saveToPicturesDir(
-                        imageFetcher = PostImageDownloader.get(context),
-                        postTitle = postTitle,
-                        imageIndex = page,
-                        url = selectedImage,
-                    )
-                }
+                val ret = PostImageSaver.saveToPicturesDir(
+                    imageFetcher = PostImageDownloader.get(context),
+                    postTitle = postTitle,
+                    imageIndex = page,
+                    url = selectedImage,
+                )
                 if (!coroutineContext.isActive) {
                     return
                 }
@@ -152,10 +151,12 @@ internal fun PostImageOptionsPopup(
                     ).show()
                 }
             }
+
             copyImageUrlItem -> {
                 clipboardManager.setText(AnnotatedString(selectedImage))
                 Toast.makeText(context, BaseR.string.url_copied, Toast.LENGTH_SHORT).show()
             }
+
             glensItem,
             shareImageItem -> {
                 val packageName = if (item == glensItem) {
@@ -164,16 +165,24 @@ internal fun PostImageOptionsPopup(
                     null
                 }
                 if (isShareEnabled) {
-                    onPrepareToShare()
-                    Intents.shareImage(
-                        context = context,
-                        imageFetcher = PostImageDownloader.get(context),
-                        url = selectedImage,
-                        packageName = packageName,
-                    )
-                    onReadyToShare()
+                    coroutineScope {
+                        val job = launch {
+                            Intents.shareImage(
+                                context = context,
+                                imageFetcher = PostImageDownloader.get(context),
+                                url = selectedImage,
+                                packageName = packageName,
+                            )
+                        }.also {
+                            it.invokeOnCompletion {
+                                onShareFinished()
+                            }
+                        }
+                        onShareStarted(job)
+                    }
                 }
             }
+
             else -> {}
         }
     }

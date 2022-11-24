@@ -438,11 +438,11 @@ class ImagePagerFragment : DialogFragment() {
     }
 
     private fun saveImage() {
-        val progressDialog = ProgressDialog(activity).also {
-            it.setMessage(resources.getString(BaseR.string.saving))
+        val progressDialog = ProgressDialog(activity).apply {
+            setMessage(resources.getString(BaseR.string.saving))
+            setCanceledOnTouchOutside(false)
         }
-        progressDialog.show()
-        coroutineScope.launch {
+        val saveJob = coroutineScope.launch {
             val start = System.currentTimeMillis()
 
             val result = PostImageSaver.saveToPicturesDir(
@@ -457,7 +457,6 @@ class ImagePagerFragment : DialogFragment() {
                 delay(300 - (end - start))
             }
 
-            progressDialog.dismiss()
 
             if (!isActive) {
                 return@launch
@@ -472,7 +471,17 @@ class ImagePagerFragment : DialogFragment() {
                     Toast.makeText(activity, BaseR.string.save_failed, Toast.LENGTH_SHORT).show()
                 }
             }
+        }.also {
+            it.invokeOnCompletion {
+                progressDialog.dismiss()
+            }
         }
+        progressDialog.setOnDismissListener {
+            if  (saveJob.isActive) {
+                saveJob.cancel()
+            }
+        }
+        progressDialog.show()
     }
 
     private fun shareImage(targetPackage: String? = null) {

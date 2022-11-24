@@ -4,6 +4,7 @@ import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
 import android.app.Activity
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -143,6 +146,7 @@ import any.ui.readingbubble.entity.ReadingPost
 import com.dokar.sheets.detectPointerPositionChanges
 import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -639,6 +643,8 @@ private fun PostContent(
 
     var isPreparingToShare by remember { mutableStateOf(false) }
 
+    var shareImageJob by remember { mutableStateOf<Job?>(null) }
+
     val post = uiState.post
 
     var postToCollect by remember { mutableStateOf<UiPost?>(null) }
@@ -887,8 +893,14 @@ private fun PostContent(
             onAddToBookmarkClick = {
                 indexToAddBookmark = uiState.contentElements.indexOf(selectedImage)
             },
-            onPrepareToShare = { isPreparingToShare = true },
-            onReadyToShare = { isPreparingToShare = false },
+            onShareStarted = {
+                shareImageJob = it
+                isPreparingToShare = true
+            },
+            onShareFinished = {
+                shareImageJob = null
+                isPreparingToShare = false
+            },
             postTitle = post?.title,
             selectedImage = selectedImageUrl,
             contentImages = StableHolder(contentImages),
@@ -904,16 +916,30 @@ private fun PostContent(
         onDismissed = {},
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
+            val iconTint = MaterialTheme.colors.onPrimary.copy(alpha = LocalContentAlpha.current)
             Icon(
                 painter = painterResource(CommonUiR.drawable.ic_baseline_share_24),
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colors.onPrimary.copy(alpha = LocalContentAlpha.current),
+                tint = iconTint,
             )
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Text(stringResource(BaseR.string.preparing_to_share))
+            Text(
+                text = stringResource(BaseR.string.preparing_to_share),
+                modifier = Modifier.weight(weight = 1f, fill = false),
+                color = iconTint,
+            )
+
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable { shareImageJob?.cancel() },
+                tint = iconTint,
+            )
         }
     }
 
