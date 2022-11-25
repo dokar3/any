@@ -17,9 +17,10 @@ import com.facebook.imagepipeline.image.CloseableAnimatedImage
 import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.image.CloseableImage
 import com.facebook.imagepipeline.request.ImageRequest
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import java.io.File
 import java.io.InputStream
-import java.util.concurrent.CountDownLatch
 
 object FrescoUtil {
     fun fetchCachedFile(request: ImageRequest): File? {
@@ -68,29 +69,25 @@ object FrescoUtil {
         return bitmap
     }
 
-    /**
-     * Fetch bitmap(s), this method is synchronous.
-     */
-    fun fetchBitmaps(
-        request: ImageRequest,
-        onBitmap: (bitmap: Bitmap, isFinalResult: Boolean) -> Unit,
-    ) {
+    fun fetchBitmaps(request: ImageRequest): Flow<Pair<Bitmap, Boolean>> = channelFlow {
         if (request.sourceUri.toString().isEmpty()) {
-            return
+            channel.close()
+            return@channelFlow
         }
-        val latch = CountDownLatch(1)
         val source = Fresco.getImagePipeline().fetchDecodedImage(request, null)
-        try {
-            val subscriber = object : DataSubscriber<CloseableReference<CloseableImage>> {
-                override fun onNewResult(
-                    dataSource: DataSource<CloseableReference<CloseableImage>>
-                ) {
-                    dataSource.result?.use { ref ->
-                        val image = ref.get()
-                        if (image is CloseableBitmap) {
+
+        val subscriber = object : DataSubscriber<CloseableReference<CloseableImage>> {
+            override fun onNewResult(
+                dataSource: DataSource<CloseableReference<CloseableImage>>
+            ) {
+                dataSource.result?.use { ref ->
+                    when (val image = ref.get()) {
+                        is CloseableBitmap -> {
                             val bitmap = image.underlyingBitmap
-                            onBitmap(bitmap.copy(bitmap.config, false), dataSource.isFinished)
-                        } else if (image is CloseableAnimatedImage) {
+                            trySend(bitmap.copy(bitmap.config, false) to dataSource.isFinished)
+                        }
+
+                        is CloseableAnimatedImage -> {
                             val firstFrame = image.image?.getFrame(0)
                             if (firstFrame != null) {
                                 val width = firstFrame.width
@@ -101,44 +98,44 @@ object FrescoUtil {
                                     image.image!!.animatedBitmapConfig ?: Bitmap.Config.ARGB_8888,
                                 )
                                 firstFrame.renderFrame(width, height, bitmap)
-                                onBitmap(bitmap, dataSource.isFinished)
+                                trySend(bitmap to dataSource.isFinished)
                             }
-                        } else {
+                            Unit
+                        }
+
+                        else -> {
                             Logger.w("FrescoUtil", "fetchBitmaps(): Unsupported result: $image")
                         }
                     }
-                    if (dataSource.isFinished) {
-                        latch.countDown()
-                    }
                 }
-
-                override fun onFailure(
-                    dataSource: DataSource<CloseableReference<CloseableImage>>
-                ) {
-                    latch.countDown()
-                    dataSource.failureCause?.let { error ->
-                        throw error
-                    }
-                }
-
-                override fun onCancellation(
-                    dataSource: DataSource<CloseableReference<CloseableImage>>
-                ) {
-                    latch.countDown()
-                }
-
-                override fun onProgressUpdate(
-                    dataSource: DataSource<CloseableReference<CloseableImage>>
-                ) {
+                if (dataSource.isFinished) {
+                    dataSource.close()
+                    channel.close()
                 }
             }
 
-            source.subscribe(subscriber, CallerThreadExecutor.getInstance())
+            override fun onFailure(
+                dataSource: DataSource<CloseableReference<CloseableImage>>
+            ) {
+                dataSource.close()
+                dataSource.failureCause?.let { error ->
+                    throw error
+                }
+            }
 
-            latch.await()
-        } finally {
-            source.close()
+            override fun onCancellation(
+                dataSource: DataSource<CloseableReference<CloseableImage>>
+            ) {
+                dataSource.close()
+                channel.close()
+            }
+
+            override fun onProgressUpdate(
+                dataSource: DataSource<CloseableReference<CloseableImage>>
+            ) {
+            }
         }
+        source.subscribe(subscriber, CallerThreadExecutor.getInstance())
     }
 }
 

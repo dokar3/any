@@ -31,7 +31,7 @@ class ImageFetcher(
             return@channelFlow
         }
 
-        FrescoUtil.fetchBitmaps(frescoRequest) { bitmap, isFinalResult ->
+        FrescoUtil.fetchBitmaps(frescoRequest).collect { (bitmap, isFinalResult) ->
             if (!finalResultOnly || isFinalResult) {
                 trySend(bitmap)
             }
@@ -134,7 +134,7 @@ class ImageFetcher(
 
         if (sources.contains(PostImageSources.network())) {
             // Load the image from network or cache
-            FrescoUtil.fetchBitmaps(frescoRequest) { bitmap, isFinalResult ->
+            FrescoUtil.fetchBitmaps(frescoRequest).collect { (bitmap, isFinalResult) ->
                 if (!haveSentBitmap && !isFinalResult) {
                     // Send progressive rendering bitmaps
                     trySend(ImageResult.Bitmap(bitmap))

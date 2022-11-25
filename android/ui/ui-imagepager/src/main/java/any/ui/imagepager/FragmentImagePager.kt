@@ -485,10 +485,11 @@ class ImagePagerFragment : DialogFragment() {
     }
 
     private fun shareImage(targetPackage: String? = null) {
-        val progressDialog = ProgressDialog(activity).also {
-            it.setMessage(resources.getString(BaseR.string.preparing_to_share))
+        val progressDialog = ProgressDialog(activity).apply {
+            setMessage(resources.getString(BaseR.string.preparing_to_share))
+            setCanceledOnTouchOutside(false)
         }
-        coroutineScope.launch {
+        val shareImageJob = coroutineScope.launch {
             val showSharingDialog = launch {
                 delay(100)
                 progressDialog.show()
@@ -500,7 +501,13 @@ class ImagePagerFragment : DialogFragment() {
                 packageName = targetPackage,
             )
             showSharingDialog.cancel()
-            progressDialog.dismiss()
+        }.also {
+            it.invokeOnCompletion {
+                progressDialog.dismiss()
+            }
+        }
+        progressDialog.setOnDismissListener {
+            shareImageJob.cancel()
         }
     }
 

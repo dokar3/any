@@ -5,6 +5,7 @@ import any.ui.common.R as CommonUiR
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -932,12 +934,20 @@ private fun PostContent(
                 color = iconTint,
             )
 
+            Spacer(modifier = Modifier.size(8.dp))
+
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(20.dp)
-                    .clickable { shareImageJob?.cancel() },
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false),
+                        onClick = {
+                            shareImageJob?.cancel()
+                            isPreparingToShare = false
+                        }
+                    ),
                 tint = iconTint,
             )
         }

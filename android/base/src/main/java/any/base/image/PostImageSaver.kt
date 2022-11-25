@@ -68,19 +68,19 @@ object PostImageSaver {
         imageFetcher: DownloadedImageFetcher,
         url: String,
         targetFile: File,
-    ): Boolean {
+    ): Boolean = withContext(Dispatchers.IO) {
         val downloadedFile = imageFetcher.getDownloadedFile(url = url)
         if (downloadedFile != null) {
             downloadedFile.copyTo(target = targetFile, overwrite = true)
-            return true
+            return@withContext true
         }
 
         val request = ImageRequest.Downloadable(url = url)
         val sources = PostImageSources.all() - PostImageSources.memory()
         val result = ImageLoader.fetchImage(request = request, sources = sources)
             .catch { it.printStackTrace() }
-            .firstOrNull() ?: return false
-        return when (result) {
+            .firstOrNull() ?: return@withContext false
+        when (result) {
             is ImageResult.Bitmap -> {
                 throw IllegalStateException("Should not receive a bitmap")
             }
