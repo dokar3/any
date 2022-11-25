@@ -37,18 +37,20 @@ fun rememberLazyGridColumnCount(
 }
 
 /**
- * We do not set contentPadding or [Arrangement.spacedBy] to the grid because we may
- * have a full-width header, so we need calculate and set paddings for items manually.
+ * We do not set the contentPadding or arrangement = [Arrangement.spacedBy] to the grid because
+ * we may have some full-width headers/footers, in this case, we need manually calculate and set
+ * paddings for the items.
  */
 fun Modifier.gridItemPadding(
     spacing: Dp,
     columnCount: Int,
     index: Int,
+    firstRowTopSpacing: Dp = spacing,
 ): Modifier {
     val itemPaddings = RowItemPaddings.get(spacing, columnCount)
     return padding(
         start = itemPaddings.start(index),
-        top = spacing,
+        top = if (index < columnCount) firstRowTopSpacing else spacing,
         end = itemPaddings.end(index),
     )
 }

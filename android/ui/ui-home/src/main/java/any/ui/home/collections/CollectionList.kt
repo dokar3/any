@@ -104,7 +104,9 @@ internal fun CollectionList(
         state = state,
         contentPadding = contentPadding,
     ) {
-        if (!folder.isRoot()) {
+        val showFolderBar = !folder.isRoot()
+
+        if (showFolderBar) {
             item(
                 span = { GridItemSpan(maxLineSpan) },
                 key = "folder_nav_bar",
@@ -130,6 +132,11 @@ internal fun CollectionList(
                 modifier = Modifier
                     .gridItemPadding(
                         spacing = gridCellSpacing,
+                        firstRowTopSpacing = if (showFolderBar) {
+                            gridCellSpacing
+                        } else {
+                            gridCellSpacing / 2
+                        },
                         columnCount = columnCount,
                         index = index,
                     ),

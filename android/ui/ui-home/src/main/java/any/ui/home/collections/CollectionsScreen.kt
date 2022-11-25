@@ -144,7 +144,7 @@ internal fun CollectionsScreen(
     val tagSelectionHeight = 48.dp
 
     val listPadding = PaddingValues(
-        top = topInset + titleBarHeight + tagSelectionHeight + 8.dp,
+        top = topInset + titleBarHeight + tagSelectionHeight,
         bottom = bottomBarHeight + bottomInset,
     )
 
