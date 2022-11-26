@@ -115,6 +115,7 @@ internal fun CollectionList(
                 FolderNavigationBar(
                     currentFolder = folder,
                     onFolderClick = { onFolderClick(it) },
+                    modifier = Modifier.padding(top = gridCellSpacing / 2)
                 )
             }
         }
