@@ -52,16 +52,16 @@ object FileUtil {
         }
     }
 
-    fun directorySize(dir: File): Long {
+    fun length(file: File): Long {
         val queue = LinkedList<File>()
-        queue.add(dir)
+        queue.add(file)
         var len = 0L
         while (queue.isNotEmpty()) {
-            val file = queue.remove()
-            if (file.isDirectory) {
-                queue.addAll(file.listFiles() ?: emptyArray())
+            val f = queue.remove()
+            if (f.isDirectory) {
+                queue.addAll(f.listFiles() ?: emptyArray())
             } else {
-                len += file.length()
+                len += f.length()
             }
         }
         return len

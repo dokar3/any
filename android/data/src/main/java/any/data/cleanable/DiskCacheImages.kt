@@ -25,7 +25,7 @@ class DiskCacheImages : Cleanable {
             mainDiskCacheConfig.baseDirectoryPathSupplier.get(),
             mainDiskCacheConfig.baseDirectoryName,
         )
-        val size = FileUtil.directorySize(dir)
+        val size = FileUtil.length(dir)
         val available = min(maxSize - size, dir.freeSpace)
         SpaceInfo(size, maxSize, available)
     }
