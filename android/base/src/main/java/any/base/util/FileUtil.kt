@@ -12,6 +12,7 @@ import java.io.InputStream
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
+import java.util.LinkedList
 
 object FileUtil {
     private const val KB = 1024
@@ -52,19 +53,18 @@ object FileUtil {
     }
 
     fun directorySize(dir: File): Long {
-        return if (dir.isDirectory) {
-            var len = 0L
-            dir.listFiles()?.forEach {
-                len += if (it.isDirectory) {
-                    directorySize(it)
-                } else {
-                    it.length()
-                }
+        val queue = LinkedList<File>()
+        queue.add(dir)
+        var len = 0L
+        while (queue.isNotEmpty()) {
+            val file = queue.remove()
+            if (file.isDirectory) {
+                queue.addAll(file.listFiles() ?: emptyArray())
+            } else {
+                len += file.length()
             }
-            len
-        } else {
-            dir.length()
         }
+        return len
     }
 
     fun writeBitmap(output: File, bitmap: Bitmap) {
