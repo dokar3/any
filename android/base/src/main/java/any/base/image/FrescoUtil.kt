@@ -17,12 +17,15 @@ import com.facebook.imagepipeline.image.CloseableAnimatedImage
 import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.image.CloseableImage
 import com.facebook.imagepipeline.request.ImageRequest
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.callbackFlow
 import java.io.File
 import java.io.InputStream
 
 object FrescoUtil {
+    private const val TAG = "FrescoUtil"
+
     fun fetchCachedFile(request: ImageRequest): File? {
         val cacheKey = DefaultCacheKeyFactory.getInstance()
             .getEncodedCacheKey(request, null)
@@ -69,11 +72,12 @@ object FrescoUtil {
         return bitmap
     }
 
-    fun fetchBitmaps(request: ImageRequest): Flow<Pair<Bitmap, Boolean>> = channelFlow {
+    fun fetchBitmaps(request: ImageRequest): Flow<Pair<Bitmap, Boolean>> = callbackFlow {
         if (request.sourceUri.toString().isEmpty()) {
             channel.close()
-            return@channelFlow
+            return@callbackFlow
         }
+
         val source = Fresco.getImagePipeline().fetchDecodedImage(request, null)
 
         val subscriber = object : DataSubscriber<CloseableReference<CloseableImage>> {
@@ -83,40 +87,38 @@ object FrescoUtil {
                 dataSource.result?.use { ref ->
                     when (val image = ref.get()) {
                         is CloseableBitmap -> {
-                            val bitmap = image.underlyingBitmap
-                            trySend(bitmap.copy(bitmap.config, false) to dataSource.isFinished)
+                            val bitmap = image.underlyingBitmap.let { it.copy(it.config, false) }
+                            trySend(bitmap to dataSource.isFinished)
                         }
 
                         is CloseableAnimatedImage -> {
-                            val firstFrame = image.image?.getFrame(0)
-                            if (firstFrame != null) {
-                                val width = firstFrame.width
-                                val height = firstFrame.height
-                                val bitmap = Bitmap.createBitmap(
-                                    width,
-                                    height,
-                                    image.image!!.animatedBitmapConfig ?: Bitmap.Config.ARGB_8888,
-                                )
-                                firstFrame.renderFrame(width, height, bitmap)
-                                trySend(bitmap to dataSource.isFinished)
-                            }
-                            Unit
+                            val firstFrame = image.image?.getFrame(0) ?: return@use
+                            val width = firstFrame.width
+                            val height = firstFrame.height
+                            val bitmap = Bitmap.createBitmap(
+                                width,
+                                height,
+                                image.image!!.animatedBitmapConfig ?: Bitmap.Config.ARGB_8888,
+                            )
+                            firstFrame.renderFrame(width, height, bitmap)
+                            trySend(bitmap to dataSource.isFinished)
                         }
 
                         else -> {
-                            Logger.w("FrescoUtil", "fetchBitmaps(): Unsupported result: $image")
+                            Logger.w(TAG, "fetchBitmaps(): Unsupported result: $image")
                         }
                     }
                 }
                 if (dataSource.isFinished) {
-                    dataSource.close()
                     channel.close()
+                    dataSource.close()
                 }
             }
 
             override fun onFailure(
                 dataSource: DataSource<CloseableReference<CloseableImage>>
             ) {
+                channel.close()
                 dataSource.close()
                 dataSource.failureCause?.let { error ->
                     throw error
@@ -126,8 +128,8 @@ object FrescoUtil {
             override fun onCancellation(
                 dataSource: DataSource<CloseableReference<CloseableImage>>
             ) {
-                dataSource.close()
                 channel.close()
+                dataSource.close()
             }
 
             override fun onProgressUpdate(
@@ -136,6 +138,8 @@ object FrescoUtil {
             }
         }
         source.subscribe(subscriber, CallerThreadExecutor.getInstance())
+
+        awaitClose { source.close() }
     }
 }
 

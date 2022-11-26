@@ -9,7 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import java.io.File
 import java.io.InputStream
 
@@ -21,24 +24,17 @@ class ImageFetcher(
         request: ImageRequest,
         size: Size?,
         finalResultOnly: Boolean = false,
-    ): Flow<Bitmap> = channelFlow {
+    ): Flow<Bitmap> {
         val frescoRequest = request.toFrescoRequest(size)
 
         val cached = FrescoUtil.fetchFromBitmapCache(frescoRequest)
         if (cached != null) {
-            send(cached)
-            channel.close()
-            return@channelFlow
+            return flowOf(cached)
         }
 
-        FrescoUtil.fetchBitmaps(frescoRequest).collect { (bitmap, isFinalResult) ->
-            if (!finalResultOnly || isFinalResult) {
-                trySend(bitmap)
-            }
-            if (isFinalResult) {
-                channel.close()
-            }
-        }
+        return FrescoUtil.fetchBitmaps(frescoRequest)
+            .filter { (_, isFinialResult) -> !finalResultOnly || isFinialResult }
+            .map { it.first }
     }
 
     fun fetchBitmapFromCache(request: ImageRequest, size: Size?): Bitmap? {
