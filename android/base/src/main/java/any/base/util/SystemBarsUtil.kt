@@ -1,9 +1,7 @@
 package any.base.util
 
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.graphics.Color
 import android.view.View
 import android.view.Window
@@ -65,12 +63,12 @@ fun View.clearLightNavBar(window: Window) {
 }
 
 fun Context.getStatusBarColor(): Int {
-    val activity = activityFromContext(this) ?: return Color.TRANSPARENT
+    val activity = getActivityOrNull() ?: return Color.TRANSPARENT
     return activity.window.statusBarColor
 }
 
 fun Context.setStatusBarColor(color: Int, animate: Boolean = false) {
-    val activity = activityFromContext(this) ?: return
+    val activity = getActivityOrNull() ?: return
     activity.window.setStatusBarColor(color, animate)
 }
 
@@ -90,12 +88,12 @@ fun Window.setStatusBarColor(color: Int, animate: Boolean = false) {
 }
 
 fun Context.getNavigationBarColor(): Int {
-    val activity = activityFromContext(this) ?: return Color.TRANSPARENT
+    val activity = getActivityOrNull() ?: return Color.TRANSPARENT
     return activity.window.navigationBarColor
 }
 
 fun Context.setNavigationBarColor(color: Int, animate: Boolean = false) {
-    val activity = activityFromContext(this) ?: return
+    val activity = getActivityOrNull() ?: return
     activity.window.setNavigationBarColor(color, animate)
 }
 
@@ -111,21 +109,5 @@ fun Window.setNavigationBarColor(color: Int, animate: Boolean = false) {
         }
     } else {
         navigationBarColor = color
-    }
-}
-
-private fun activityFromContext(context: Context): Activity? {
-    return when (context) {
-        is Activity -> {
-            context
-        }
-
-        is ContextWrapper -> {
-            activityFromContext(context.baseContext)
-        }
-
-        else -> {
-            null
-        }
     }
 }

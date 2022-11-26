@@ -44,7 +44,7 @@ import any.base.image.toFrescoRequestBuilder
 import any.base.util.ClipboardUtil
 import any.base.util.Intents
 import any.base.util.PackageUtil
-import any.base.util.asActivity
+import any.base.util.getActivity
 import any.base.util.hideBars
 import any.base.util.showBars
 import any.data.cache.SubsamplingImageCache
@@ -90,7 +90,7 @@ fun FragmentImagePager(
 
     val context = LocalContext.current
 
-    val fragmentManger = context.asActivity().fragmentManager
+    val fragmentManger = context.getActivity().fragmentManager
 
     val fragment = remember { ImagePagerFragment() }
 
