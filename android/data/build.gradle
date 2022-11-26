@@ -73,6 +73,7 @@ dependencies {
     implementation libs.disklrucache
     implementation libs.crc
     implementation libs.duktape
+    implementation libs.bolts.tasks
 
     testImplementation libs.junit
     androidTestImplementation libs.duktape
