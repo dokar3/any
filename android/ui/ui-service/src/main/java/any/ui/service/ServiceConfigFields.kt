@@ -1,6 +1,7 @@
 package any.ui.service
 
 import android.webkit.WebSettings
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -30,8 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -122,6 +122,7 @@ internal fun OptionFieldItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .alpha(if (enabled) 1f else ContentAlpha.disabled)
+                .clip(TextFieldDefaults.OutlinedTextFieldShape)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = rememberRipple(),
@@ -130,15 +131,17 @@ internal fun OptionFieldItem(
                     },
                     enabled = enabled,
                 )
-                .drawBehind {
-                    val indicatorStrokeWidth = 1.dp.toPx()
-                    drawRect(
-                        color = indicatorColor,
-                        topLeft = Offset(0f, size.height - indicatorStrokeWidth),
-                        size = size.copy(height = 1.dp.toPx()),
-                    )
-                }
-                .padding(vertical = 8.dp),
+                .border(
+                    shape = TextFieldDefaults.OutlinedTextFieldShape,
+                    color = indicatorColor,
+                    width = 1.dp,
+                )
+                .padding(
+                    start = 16.dp,
+                    top = 12.dp,
+                    end = 8.dp,
+                    bottom = 12.dp,
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(value)
