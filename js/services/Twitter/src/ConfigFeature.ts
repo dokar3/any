@@ -1,7 +1,7 @@
-import { ConfigFeature, ValidationError } from "any-service-api";
+import { AnyConfigFeature, ValidationError } from "any-service-api";
 import { CommonFeature } from "./CommonFeature";
 
-export class TwitterConfigFeature extends ConfigFeature {
+export class ConfigFeature extends AnyConfigFeature {
   validateConfigs(): ValidationError | ValidationError[] {
     const commonFeature = this.service.getFeature(CommonFeature);
     if (!commonFeature.checkLogin()) {

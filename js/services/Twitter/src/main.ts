@@ -1,6 +1,6 @@
 import { ServiceRegistry } from "any-service-api";
 import { find } from "./Array.find.js";
-import TwitterService from "./TwitterService";
+import Service from "./Service";
 
 if (!Array.prototype.find) {
   Object.defineProperty(Array.prototype, "find", {
@@ -8,4 +8,4 @@ if (!Array.prototype.find) {
   });
 }
 
-ServiceRegistry.register(TwitterService);
+ServiceRegistry.register(Service);

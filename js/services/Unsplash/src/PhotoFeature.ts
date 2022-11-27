@@ -1,4 +1,5 @@
 import {
+  AnyPostFeature,
   AspectRatio,
   FetchFreshListParams,
   FetchPostParams,
@@ -6,13 +7,12 @@ import {
   NotImplementedError,
   PagedResult,
   Post,
-  PostFeature,
   SearchPostsParams,
 } from "any-service-api";
-import { BASE_URL } from "./UnsplashService";
 import { CommonFeature } from "./CommonFeature";
+import { BASE_URL } from "./Service";
 
-export class UnsplashPhotoFeature extends PostFeature {
+export class PhotoFeature extends AnyPostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {
     throw new NotImplementedError("open in browser instead");
   }

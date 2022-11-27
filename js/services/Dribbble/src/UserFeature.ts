@@ -5,12 +5,12 @@ import {
   PagedResult,
   Post,
   User,
-  UserFeature,
+  AnyUserFeature,
 } from "any-service-api";
-import { BASE_URL } from "./DribbbleService";
+import { BASE_URL } from "./Service";
 import { parseShots } from "./ShotParsing";
 
-export class DribbbleUserFeature extends UserFeature {
+export class UserFeature extends AnyUserFeature {
   fetchById(params: FetchUserByIdParams): FetchResult<User> {
     const id = params.userId;
     const url = BASE_URL + (id[0] === "/" ? "" : "/") + id + "/about";

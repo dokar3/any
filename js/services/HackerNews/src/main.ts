@@ -1,4 +1,4 @@
 import { ServiceRegistry } from "any-service-api";
-import HNService from "./HnService";
+import HNService from "./Service";
 
 ServiceRegistry.register(HNService);

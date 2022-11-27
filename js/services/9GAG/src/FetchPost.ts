@@ -60,6 +60,7 @@ function parsePosts(data: any): PagedResult<Post[]> {
       category: item.postSection.name,
       tags: item.tags.map((tag: any) => tag.key),
       media: media,
+      openInBrowser: true,
     });
     posts.push(post);
   }

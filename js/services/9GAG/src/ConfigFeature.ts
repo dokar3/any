@@ -1,9 +1,9 @@
-import { ConfigFeature, ValidationError } from "any-service-api";
-import { NineGAGPostFeature } from "./9GAGPostFeature";
+import { AnyConfigFeature, ValidationError } from "any-service-api";
+import { PostFeature } from "./PostFeature";
 
-export class NineGAGConfigFeature extends ConfigFeature {
+export class ConfigFeature extends AnyConfigFeature {
   validateConfigs(): ValidationError | ValidationError[] {
-    const postFeature = this.service.getFeature(NineGAGPostFeature);
+    const postFeature = this.service.getFeature(PostFeature);
     const section = this.service.configs;
     const tag = this.service.configs.tag;
     if (typeof tag == "string" && tag.length > 0) {

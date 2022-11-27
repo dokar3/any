@@ -1,8 +1,8 @@
 import { AnyService } from "./AnyService";
 import { Feature } from "./feature/Feature";
-import { ConfigFeature } from "./feature/ConfigFeature";
-import { PostFeature } from "./feature/PostFeature";
-import { UserFeature } from "./feature/UserFeature";
+import { AnyConfigFeature } from "./feature/ConfigFeature";
+import { AnyPostFeature } from "./feature/PostFeature";
+import { AnyUserFeature } from "./feature/UserFeature";
 
 /**
  * The service feature manager.
@@ -39,9 +39,9 @@ export class Features {
     const proto = ctor.prototype;
     if (
       proto === Feature.prototype ||
-      proto === ConfigFeature.prototype ||
-      proto === PostFeature.prototype ||
-      proto === UserFeature.prototype
+      proto === AnyConfigFeature.prototype ||
+      proto === AnyPostFeature.prototype ||
+      proto === AnyUserFeature.prototype
     ) {
       throw `Cannot register a builtin feature: ${ctor.name}`;
     }

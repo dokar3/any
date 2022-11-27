@@ -1,4 +1,4 @@
 import { ServiceRegistry } from "any-service-api";
-import MyService from "./MyService";
+import Service from "./Service";
 
-ServiceRegistry.register(MyService);
+ServiceRegistry.register(Service);

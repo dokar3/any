@@ -2,10 +2,10 @@ import { ConfigsUpdater } from "../config/ConfigsUpdater";
 import { ManifestUpdater } from "../manifest/ManifestUpdater";
 import { ServiceManifest } from "../manifest/ServiceManifest";
 import { AnyService } from "./AnyService";
-import { ConfigFeature } from "./feature/ConfigFeature";
+import { AnyConfigFeature } from "./feature/ConfigFeature";
 import { Feature } from "./feature/Feature";
-import { PostFeature } from "./feature/PostFeature";
-import { UserFeature } from "./feature/UserFeature";
+import { AnyPostFeature } from "./feature/PostFeature";
+import { AnyUserFeature } from "./feature/UserFeature";
 import { LoadingProgressUpdater } from "./LoadingProgressUpdater";
 
 /// #if platform == 'android'
@@ -42,9 +42,9 @@ export class ServiceRegistry {
     this._exportCreateService(serviceClass);
 
     // Export builtin features to the global scope
-    this._exportFeature("ConfigFeature", ConfigFeature);
-    this._exportFeature("PostFeature", PostFeature);
-    this._exportFeature("UserFeature", UserFeature);
+    this._exportFeature("AnyConfigFeature", AnyConfigFeature);
+    this._exportFeature("AnyPostFeature", AnyPostFeature);
+    this._exportFeature("AnyUserFeature", AnyUserFeature);
   }
 
   /** @internal */

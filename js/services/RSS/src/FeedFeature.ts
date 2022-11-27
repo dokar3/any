@@ -4,12 +4,12 @@ import {
   FetchResult,
   PagedResult,
   Post,
-  PostFeature,
+  AnyPostFeature,
 } from "any-service-api";
 
 const MAX_SUMMARY_LEN = 500;
 
-export class FeedFeature extends PostFeature {
+export class FeedFeature extends AnyPostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {
     throw "Not supported yet, please click open in browser";
   }

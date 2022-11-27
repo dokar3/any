@@ -7,12 +7,12 @@ import {
   FetchResult,
   PagedResult,
   Post,
-  PostFeature,
+  AnyPostFeature,
   SearchPostsParams,
 } from "any-service-api";
-import { BASE_URL } from "./HnService";
+import { BASE_URL } from "./Service";
 
-export class HnNewsFeature extends PostFeature {
+export class NewsFeature extends AnyPostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {
     const results = /item\?id=(\d+)/.exec(params.url);
     if (results === null) {
@@ -119,7 +119,7 @@ export class HnNewsFeature extends PostFeature {
     if (doc === null) {
       return PagedResult.err({ error: "Cannot parse the news page" });
     }
-    return HnNewsFeature.parseNews(doc, page);
+    return NewsFeature.parseNews(doc, page);
   }
 
   static parseNews(doc: DomElement, page: number): PagedResult<Post[]> {

@@ -1,5 +1,5 @@
 import { DomElement, PagedResult, Post } from "any-service-api";
-import { BASE_URL } from "./DribbbleService";
+import { BASE_URL } from "./Service";
 
 /**
  * Fetch and parse shots.

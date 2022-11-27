@@ -1,8 +1,8 @@
 import {
+  AnyPostFeature,
   FetchFreshListParams,
   PagedResult,
   Post,
-  PostFeature,
   SearchPostsParams,
 } from "any-service-api";
 import { CommonFeature } from "./CommonFeature";
@@ -10,7 +10,7 @@ import { parseTweet } from "./ParseTweet";
 
 const TWEETS_PER_PAGE = 20;
 
-export class TweetFeature extends PostFeature {
+export class TweetFeature extends AnyPostFeature {
   fetchFreshList(params: FetchFreshListParams): PagedResult<Post[]> {
     return this.fetchTweets(() => {
       return (

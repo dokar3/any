@@ -1,4 +1,4 @@
 import { ServiceRegistry } from "any-service-api";
-import DribbbleService from "./DribbbleService";
+import Service from "./Service";
 
-ServiceRegistry.register(DribbbleService);
+ServiceRegistry.register(Service);

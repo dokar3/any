@@ -1,4 +1,4 @@
 import { ServiceRegistry } from "any-service-api";
-import UnsplashService from "./UnsplashService";
+import Service from "./Service";
 
-ServiceRegistry.register(UnsplashService);
+ServiceRegistry.register(Service);

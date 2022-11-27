@@ -7,12 +7,12 @@ import {
   NotImplementedError,
   PagedResult,
   Post,
-  PostFeature,
+  AnyPostFeature,
 } from "any-service-api";
 import { fetchPostComments } from "./FetchComments";
 import { fetchPosts } from "./FetchPost";
 
-export class NineGAGPostFeature extends PostFeature {
+export class PostFeature extends AnyPostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {
     throw new NotImplementedError("Implement this function");
   }

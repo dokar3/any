@@ -1,16 +1,16 @@
 import { describe, expect, test } from "@jest/globals";
-import { PostFeature } from "any-service-api";
+import { AnyPostFeature } from "any-service-api";
 import { createTestService } from "any-service-testing";
-import MyService from "../src/MyService";
+import Service from "../src/Service";
 
 describe("MyService", () => {
   test("test fetch posts", () => {
     const service = createTestService({
-      serviceClass: MyService,
+      serviceClass: Service,
       manifestPath: "manifest.json",
     });
     const result = service
-      .getFeature(PostFeature)
+      .getFeature(AnyPostFeature)
       .fetchFreshList({ pageKey: null });
     expect(result.isOk()).toBe(true);
   });

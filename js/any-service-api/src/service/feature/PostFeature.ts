@@ -123,7 +123,7 @@ export class FetchCommentsParams {
  *
  * @since 0.1.0
  */
-export class PostFeature extends Feature {
+export class AnyPostFeature extends Feature {
   /**
    * Fetch the detailed post.
    *

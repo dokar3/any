@@ -1,11 +1,11 @@
 import { describe, expect, test } from "@jest/globals";
-import { AnyService, PostFeature, UserFeature } from "any-service-api";
+import { AnyService, AnyPostFeature, AnyUserFeature } from "any-service-api";
 import { createTestService } from "any-service-testing";
-import DribbbleService from "../src/DribbbleService";
+import Service from "../src/Service";
 
 function service(): AnyService {
   return createTestService({
-    serviceClass: DribbbleService,
+    serviceClass: Service,
     manifestPath: "manifest.json",
   });
 }
@@ -13,7 +13,7 @@ function service(): AnyService {
 describe("DribbleService", () => {
   test("test fetch shots", () => {
     const result = service()
-      .getFeature(PostFeature)
+      .getFeature(AnyPostFeature)
       .fetchFreshList({ pageKey: null });
     expect(result.isOk()).toBe(true);
     expect(result.data).toHaveLength(24);
@@ -21,7 +21,7 @@ describe("DribbleService", () => {
 
   test("test fetch user", () => {
     const result = service()
-      .getFeature(UserFeature)
+      .getFeature(AnyUserFeature)
       .fetchById({ userId: "Ramotion" });
     expect(result.isOk()).toBe(true);
     expect(result.data?.name).toBe("Ramotion");

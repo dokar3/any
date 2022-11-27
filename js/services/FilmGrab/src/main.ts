@@ -1,4 +1,4 @@
 import { ServiceRegistry } from "any-service-api";
-import FilmGrabService from "./FilmGrabService";
+import Service from "./Service";
 
-ServiceRegistry.register(FilmGrabService);
+ServiceRegistry.register(Service);

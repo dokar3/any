@@ -30,11 +30,11 @@ export class ValidationError {
 }
 
 /**
- * The service configuration related service.
+ * Service configuration related feature.
  *
  * @since 0.1.0
  */
-export class ConfigFeature extends Feature {
+export class AnyConfigFeature extends Feature {
   /**
    * Validate service configs.
    *

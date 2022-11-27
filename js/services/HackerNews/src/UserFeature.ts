@@ -6,12 +6,12 @@ import {
   PagedResult,
   Post,
   User,
-  UserFeature,
+  AnyUserFeature,
 } from "any-service-api";
-import { BASE_URL } from "./HnService";
-import { HnNewsFeature } from "./HnNewsFeature";
+import { BASE_URL } from "./Service";
+import { NewsFeature } from "./NewsFeature";
 
-export class HnUserFeature extends UserFeature {
+export class UserFeature extends AnyUserFeature {
   fetchByUrl(params: FetchUserByUrlParams): FetchResult<User> {
     const result = /user?id=(.+)/g.exec(params.userUrl);
     if (result === null) {
@@ -65,7 +65,7 @@ export class HnUserFeature extends UserFeature {
       return PagedResult.err({ error: "Cannot parse the news page" });
     }
 
-    const result = HnNewsFeature.parseNews(doc, -1);
+    const result = NewsFeature.parseNews(doc, -1);
     if (result.isOk()) {
       result.nextKey = doc.select("tr td a.morelink")?.attr("href") ?? null;
     }

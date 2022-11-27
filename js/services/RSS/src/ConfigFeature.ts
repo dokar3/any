@@ -1,6 +1,6 @@
-import { ConfigFeature, ValidationError } from "any-service-api";
+import { AnyConfigFeature, ValidationError } from "any-service-api";
 
-export class RssConfigFeature extends ConfigFeature {
+export class ConfigFeature extends AnyConfigFeature {
   validateConfigs(): ValidationError | ValidationError[] {
     if (!this.service.configs.url) {
       return new ValidationError({

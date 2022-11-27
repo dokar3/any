@@ -1,16 +1,16 @@
 import {
+  AnyUserFeature,
   FetchResult,
   FetchUserByIdParams,
   FetchUserPostsParams,
   PagedResult,
   Post,
   User,
-  UserFeature,
 } from "any-service-api";
 import { CommonFeature } from "./CommonFeature";
 import { TweetFeature } from "./TweetFeature";
 
-export class TwitterUserFeature extends UserFeature {
+export class UserFeature extends AnyUserFeature {
   fetchById(params: FetchUserByIdParams): FetchResult<User> {
     const commonFeature = this.service.getFeature(CommonFeature);
     if (!commonFeature.checkLogin()) {

@@ -1,14 +1,14 @@
 import {
+  AnyPostFeature,
   FetchFreshListParams,
   FetchPostParams,
   FetchResult,
   NotImplementedError,
   PagedResult,
   Post,
-  PostFeature,
 } from "any-service-api";
 
-export class MyPostFeature extends PostFeature {
+export class PostFeature extends AnyPostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {
     throw new NotImplementedError("Implement this function");
   }

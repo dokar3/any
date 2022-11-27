@@ -6,13 +6,13 @@ import {
   FetchResult,
   PagedResult,
   Post,
-  PostFeature,
+  AnyPostFeature,
   SearchPostsParams,
 } from "any-service-api";
-import { BASE_URL } from "./DribbbleService";
+import { BASE_URL } from "./Service";
 import { fetchShots, parseShotPage } from "./ShotParsing";
 
-export class DribbbleShotFeature extends PostFeature {
+export class ShotFeature extends AnyPostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {
     const html = http.get(params.url).text;
     if (html === null) {

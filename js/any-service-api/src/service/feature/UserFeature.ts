@@ -86,7 +86,7 @@ export class FetchUserPostsParams {
  *
  * @since 0.1.0
  */
-export class UserFeature extends Feature {
+export class AnyUserFeature extends Feature {
   /**
    * Fetch user by the user id.
    *

@@ -1,4 +1,5 @@
 import {
+  AnyUserFeature,
   FetchResult,
   FetchUserByIdParams,
   FetchUserByUrlParams,
@@ -6,13 +7,12 @@ import {
   PagedResult,
   Post,
   User,
-  UserFeature,
 } from "any-service-api";
-import { BASE_URL } from "./UnsplashService";
 import { CommonFeature } from "./CommonFeature";
-import { UnsplashPhotoFeature } from "./UnsplashPhotoFeature";
+import { BASE_URL } from "./Service";
+import { PhotoFeature } from "./PhotoFeature";
 
-export class UnsplashUserFeature extends UserFeature {
+export class UserFeature extends AnyUserFeature {
   fetchByUrl(params: FetchUserByUrlParams): FetchResult<User> {
     const userUrl = params.userUrl;
     const results = /@(.+)/g.exec(userUrl);
@@ -55,7 +55,7 @@ export class UnsplashUserFeature extends UserFeature {
     const url =
       `${BASE_URL}users/${params.userId}/photos` +
       `?page=${page}&per_page=${countPerPage}`;
-    const postFeature = this.service.getFeature(UnsplashPhotoFeature);
+    const postFeature = this.service.getFeature(PhotoFeature);
     return postFeature.fetchPhotos(url, page);
   }
 }

@@ -4,11 +4,11 @@ import {
   FetchFreshListParams,
   PagedResult,
   Post,
-  PostFeature,
+  AnyPostFeature,
   SearchPostsParams,
 } from "any-service-api";
 
-export class FilmGrabPostFeature extends PostFeature {
+export class PostFeature extends AnyPostFeature {
   fetchFreshList(params: FetchFreshListParams): PagedResult<Post[]> {
     const page = (params.pageKey as number) ?? 1;
     const url = `https://film-grab.com/page/${page}`;

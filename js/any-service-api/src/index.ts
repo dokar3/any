@@ -5,7 +5,7 @@ export { AnyService } from "./service/AnyService";
 export { Feature } from "./service/feature/Feature";
 
 export {
-  PostFeature,
+  AnyPostFeature,
   FetchPostParams,
   FetchFreshListParams,
   FetchCommentsParams,
@@ -13,14 +13,14 @@ export {
 } from "./service/feature/PostFeature";
 
 export {
-  UserFeature,
+  AnyUserFeature,
   FetchUserByIdParams,
   FetchUserByUrlParams,
   FetchUserPostsParams,
 } from "./service/feature/UserFeature";
 
 export {
-  ConfigFeature,
+  AnyConfigFeature,
   ValidationError,
 } from "./service/feature/ConfigFeature";
 
