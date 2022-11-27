@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import any.ui.common.LocalFontScale
 
 @Composable
-internal fun SectionElementItem(
+internal fun SectionItem(
     chapterName: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

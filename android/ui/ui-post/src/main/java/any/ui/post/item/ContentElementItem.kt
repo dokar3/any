@@ -38,7 +38,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_TEXT,
             ) {
-                TextElementItem(text = element.value)
+                TextItem(text = element.value)
             }
         }
 
@@ -46,7 +46,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_RICH_TEXT,
             ) {
-                RichElementItem(
+                RichStringItem(
                     richString = element.text,
                     onLinkClick = onLinkClick,
                 ) { text, textLayoutUpdater, clickModifier ->
@@ -64,7 +64,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_BLOCK_QUOTE,
             ) {
-                RichElementItem(
+                RichStringItem(
                     richString = element.text,
                     onLinkClick = onLinkClick,
                 ) { text, textLayoutUpdater, clickModifier ->
@@ -110,7 +110,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_OL,
             ) {
-                RichElementItem(
+                RichStringItem(
                     richString = element.text,
                     onLinkClick = onLinkClick,
                 ) { text, textLayoutUpdater, clickModifier ->
@@ -132,7 +132,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_UL,
             ) {
-                RichElementItem(
+                RichStringItem(
                     richString = element.text,
                     onLinkClick = onLinkClick,
                 ) { text, textLayoutUpdater, clickModifier ->
@@ -153,7 +153,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_IMAGE,
             ) {
-                ImageElementItem(
+                ImageItem(
                     url = element.url,
                     defaultImageRatio = element.aspectRatio ?: (4 / 5f),
                     onDetectImageSize = onDetectedPicSize,
@@ -167,7 +167,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_FULL_WIDTH_IMAGE,
             ) {
-                FullWidthImageElementItem(
+                FullWidthImageItem(
                     url = element.url,
                     imageIndex = imageIndex,
                     showIndex = showIndexOnFullWidthImage,
@@ -184,7 +184,7 @@ internal fun LazyListScope.contentElementItem(
                 contentType = CONTENT_TYPE_CAROUSEL,
             ) {
                 val context = LocalContext.current
-                CarouselElementItem(
+                CarouselItem(
                     carousel = element,
                     onPlayVideoClick = { url -> Intents.playVideo(context, url) },
                     onImageClick = { url -> onImageClick(null, url) },
@@ -198,7 +198,7 @@ internal fun LazyListScope.contentElementItem(
                 contentType = CONTENT_TYPE_VIDEO,
             ) {
                 val context = LocalContext.current
-                VideoElementItem(
+                VideoItem(
                     video = element,
                     onPlayClick = { Intents.playVideo(context, element.url) },
                 )
@@ -209,7 +209,7 @@ internal fun LazyListScope.contentElementItem(
             item(
                 contentType = CONTENT_TYPE_SECTION,
             ) {
-                SectionElementItem(
+                SectionItem(
                     chapterName = element.title,
                     onClick = onClick,
                 )

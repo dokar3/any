@@ -54,7 +54,7 @@ import kotlin.math.min
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-internal fun CarouselElementItem(
+internal fun CarouselItem(
     carousel: UiContentElement.Carousel,
     onPlayVideoClick: (url: String) -> Unit,
     onImageClick: (url: String) -> Unit,

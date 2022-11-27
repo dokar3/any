@@ -46,7 +46,7 @@ internal fun HeadingItem(
         }
     }
 
-    RichElementItem(
+    RichStringItem(
         richString = richString,
         onLinkClick = onLinkClick,
         onOtherTextClick = { showMoreButton = true },

@@ -13,7 +13,7 @@ import any.richtext.RichString
 import any.ui.common.richtext.RichTextStyle
 
 @Composable
-internal fun RichElementItem(
+internal fun RichStringItem(
     richString: RichString,
     onLinkClick: (String) -> Unit,
     onOtherTextClick: (() -> Unit)? = null,

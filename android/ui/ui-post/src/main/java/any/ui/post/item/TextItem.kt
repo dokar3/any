@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import any.ui.common.LocalFontScale
 
 @Composable
-internal fun TextElementItem(
+internal fun TextItem(
     text: String?,
     modifier: Modifier = Modifier,
 ) {

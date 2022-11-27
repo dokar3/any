@@ -27,8 +27,9 @@ import any.ui.common.image.AsyncImage
 import any.ui.common.theme.imagePlaceholder
 import any.ui.common.theme.thumb
 
+// TODO: Implement the in-app video playback
 @Composable
-internal fun VideoElementItem(
+internal fun VideoItem(
     video: UiContentElement.Video,
     modifier: Modifier = Modifier,
     onPlayClick: () -> Unit,
