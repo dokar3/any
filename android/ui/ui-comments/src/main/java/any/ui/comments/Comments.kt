@@ -57,6 +57,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.ImmutableHolder
 import any.base.StableHolder
 import any.base.image.ImageRequest
+import any.data.ThumbAspectRatio
+import any.data.entity.Post
 import any.domain.entity.UiPost
 import any.domain.entity.UiServiceManifest
 import any.navigation.NavEvent
@@ -151,16 +153,15 @@ fun CommentsSheet(
                     onCollapseReplies = { viewModel.collapseReplies(it) },
                     comments = StableHolder(comments),
                     pageKey = ImmutableHolder(uiState.pageKey),
-                    onImageClick = { comment, url ->
-                        val images = comment.images
+                    onImageClick = { comment, index ->
+                        val images = comment.media
                         if (!images.isNullOrEmpty()) {
-                            val index = images.indexOf(url)
                             val navEvent = NavEvent.PushImagePager(
                                 route = Routes.imagePager(
                                     title = comment.content,
                                     currPage = index
                                 ),
-                                images = images,
+                                images = images.map { it.url },
                             )
                             onNavigate(navEvent)
                         }
@@ -199,7 +200,7 @@ private fun CommentList(
     comments: StableHolder<List<UiComment>>,
     pageKey: ImmutableHolder<Any?>,
     modifier: Modifier = Modifier,
-    onImageClick: ((UiComment.Comment, String) -> Unit)? = null,
+    onImageClick: ((UiComment.Comment, Int) -> Unit)? = null,
     loadMoreEnabled: Boolean = true,
     onLoadMore: (() -> Unit)? = null,
     avatarSize: Dp = 40.dp,
@@ -314,7 +315,7 @@ private fun CommentList(
 
 @Composable
 private fun CommentItem(
-    onImageClick: (String) -> Unit,
+    onImageClick: (index: Int) -> Unit,
     comment: UiComment.Comment,
     avatarSize: Dp,
     modifier: Modifier = Modifier,
@@ -375,10 +376,10 @@ private fun CommentItem(
                 }
             }
 
-            val images = comment.images
+            val images = comment.media
             if (!images.isNullOrEmpty()) {
                 CommentImages(
-                    images = StableHolder(images),
+                    images = ImmutableHolder(images),
                     onImageClick = onImageClick,
                 )
             }
@@ -388,26 +389,33 @@ private fun CommentItem(
 
 @Composable
 private fun CommentImages(
-    images: StableHolder<List<String>>,
+    images: ImmutableHolder<List<Post.Media>>,
     modifier: Modifier = Modifier,
-    onImageClick: ((String) -> Unit)? = null,
+    onImageClick: ((index: Int) -> Unit)? = null,
 ) {
     val columns = when (images.value.size) {
         1 -> 1
         2 -> 2
         else -> 3
     }
-    val chunked = images.value.chunked(columns)
+    val chunked = remember(images) { images.value.chunked(columns) }
     Column(modifier = modifier.fillMaxWidth()) {
-        for (rowImages in chunked) {
+        for (i in chunked.indices) {
+            val rowImages = chunked[i]
             Row(modifier = Modifier.fillMaxWidth()) {
-                for (image in rowImages) {
+                for (j in rowImages.indices) {
+                    val image = rowImages[j]
+                    val aspectRatio = if (columns == 1) {
+                        ThumbAspectRatio.parseOrNull(image.aspectRatio) ?: 1f
+                    } else {
+                        1f
+                    }
                     AsyncImage(
-                        request = ImageRequest.Url(image),
+                        request = ImageRequest.Url(image.url),
                         contentDescription = stringResource(BaseR.string.comment_image),
                         modifier = Modifier
                             .weight(1f)
-                            .aspectRatio(1f)
+                            .aspectRatio(aspectRatio)
                             .padding(4.dp)
                             .clip(MaterialTheme.shapes.thumb)
                             .border(
@@ -418,11 +426,11 @@ private fun CommentImages(
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
-                                onClick = { onImageClick?.invoke(image) }
+                                onClick = { onImageClick?.invoke(i * columns + j) }
                             )
                     )
                 }
-                for (i in 0 until (columns - rowImages.size)) {
+                repeat(columns - rowImages.size) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }

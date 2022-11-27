@@ -1,4 +1,4 @@
-import { Comment, PagedResult } from "any-service-api";
+import { Comment, PagedResult, Post } from "any-service-api";
 
 export function fetchPostComments(
   postId: string,
@@ -42,13 +42,19 @@ export function fetchPostComments(
 function parseComments(data: any): PagedResult<Comment[]> {
   const comments: Comment[] = [];
   for (const item of data.comments) {
-    const images: string[] = [];
+    const media: Post.Media[] = [];
     if (item.media != null) {
-      for (const image of item.media) {
-        const url = image.imageMetaByType?.image?.url;
-        if (url != null) {
-          images.push(url);
+      for (const imageItem of item.media) {
+        const image = imageItem.imageMetaByType?.image;
+        if (image == null) {
+          continue;
         }
+        media.push(
+          Post.Media.photo({
+            url: image.url,
+            aspectRatio: `${parseInt(image.width)}:${parseInt(image.height)}`,
+          })
+        );
       }
     }
     const comment = new Comment({
@@ -57,7 +63,7 @@ function parseComments(data: any): PagedResult<Comment[]> {
       content: item.text,
       upvotes: item.likeCount,
       downvotes: item.dislikeCount,
-      images: images,
+      media: media,
     });
     comments.push(comment);
   }

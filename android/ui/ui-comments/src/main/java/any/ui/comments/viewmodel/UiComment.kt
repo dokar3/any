@@ -2,6 +2,7 @@ package any.ui.comments.viewmodel
 
 import androidx.compose.runtime.Immutable
 import any.data.entity.Comment
+import any.data.entity.Post
 import java.util.UUID
 
 @Immutable
@@ -12,7 +13,7 @@ sealed class UiComment {
         val username: String = "",
         val content: String = "",
         val avatar: String? = null,
-        val images: List<String>? = null,
+        val media: List<Post.Media>? = null,
         val date: Long = 0,
         val upvotes: Int = 0,
         val downvote: Int = 0,
@@ -25,7 +26,7 @@ sealed class UiComment {
         val username: String = "",
         val content: String = "",
         val avatar: String? = null,
-        val images: List<String>? = null,
+        val media: List<Post.Media>? = null,
         val date: Long = 0,
         val upvotes: Int = 0,
         val downvote: Int = 0,
@@ -63,7 +64,7 @@ private fun List<Comment>.toUiComments(
                     username = username,
                     avatar = avatar,
                     content = content,
-                    images = images,
+                    media = media,
                     date = date,
                     upvotes = upvotes,
                     downvote = downvote,
@@ -75,7 +76,7 @@ private fun List<Comment>.toUiComments(
                     username = username,
                     avatar = avatar,
                     content = content,
-                    images = images,
+                    media = media,
                     date = date,
                     upvotes = upvotes,
                     downvote = downvote,

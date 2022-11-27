@@ -40,7 +40,7 @@ export type { PostProps } from "./post/Post";
 
 export { User } from "./user/User";
 
-export { Comment } from "./post/Comment";
+export { Comment, CommentProps } from "./post/Comment";
 
 export { DomElement, StringOrVoid } from "./global/DomElement";
 

@@ -1,9 +1,11 @@
+import { Post } from "./Post";
+
 /**
- * The post comment entity.
+ * Properties of {@link Comment}
  *
  * @since 0.1.0
  */
-export class Comment {
+export type CommentProps = {
   /**
    * Username.
    *
@@ -25,11 +27,11 @@ export class Comment {
   avatar?: string | null;
 
   /**
-   * Comment images.
+   * Comment media list.
    *
    * @since 0.1.0
    */
-  images?: string[] | null;
+  media?: Post.Media[] | null;
 
   /**
    * Created date in milliseconds.
@@ -58,14 +60,40 @@ export class Comment {
    * @since 0.1.0
    */
   replies?: Comment[] | null;
+};
 
-  /**
-   * The copy constructor.
-   *
-   * @param other The source comment to copy.
-   * @since 0.1.0
-   */
-  constructor(other: Comment) {
-    Object.assign(this, other);
+/**
+ * The post comment entity.
+ *
+ * @since 0.1.0
+ */
+export class Comment {
+  username: string;
+  content: string;
+  avatar?: string | null;
+  media?: Post.Media[] | null;
+  date?: number | null;
+  upvotes?: number | null;
+  downvotes?: number | null;
+  replies?: Comment[] | null;
+
+  constructor({
+    username,
+    content,
+    avatar,
+    media,
+    date,
+    upvotes,
+    downvotes,
+    replies,
+  }: CommentProps) {
+    this.username = username;
+    this.content = content;
+    this.avatar = avatar;
+    this.media = media;
+    this.date = date;
+    this.upvotes = upvotes;
+    this.downvotes = downvotes;
+    this.replies = replies;
   }
 }

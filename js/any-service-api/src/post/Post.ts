@@ -5,7 +5,7 @@ import { AspectRatio } from "../util";
  *
  * @since 0.1.0
  */
-export interface PostProps {
+export type PostProps = {
   /**
    * Title of post.
    *
