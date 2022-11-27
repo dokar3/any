@@ -23,6 +23,8 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.compose.animation.core.EaseOutQuint
+import androidx.compose.animation.core.Easing
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -49,7 +51,6 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import any.ui.common.R
-import any.ui.common.anim.FastOutExtraSlowInInterpolator
 import kotlin.math.abs
 
 class FloatingView(private val context: Context) : LifecycleOwner, SavedStateRegistryOwner {
@@ -299,7 +300,6 @@ class FloatingView(private val context: Context) : LifecycleOwner, SavedStateReg
                     targetX = targetX,
                     targetY = targetY,
                     duration = 525L,
-                    interpolator = FastOutSlowInInterpolator(),
                 )
             } else {
                 animateFabToTopCenter()
@@ -500,7 +500,7 @@ class FloatingView(private val context: Context) : LifecycleOwner, SavedStateReg
         targetX: Float,
         targetY: Float,
         duration: Long = 375,
-        interpolator: TimeInterpolator = FastOutExtraSlowInInterpolator(),
+        easing: Easing = EaseOutQuint,
     ) {
         val fab = checkNotNull(this.fab)
 
@@ -529,7 +529,9 @@ class FloatingView(private val context: Context) : LifecycleOwner, SavedStateReg
 
         ValueAnimator.ofFloat(0f, pathMeasure.length).apply {
             this.duration = duration
-            this.interpolator = interpolator
+            this.interpolator = TimeInterpolator {
+                easing.transform(it)
+            }
             addUpdateListener {
                 val distance = it.animatedValue as Float
                 pathMeasure.getPosTan(distance, position, null)
