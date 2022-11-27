@@ -35,7 +35,13 @@ export class PostFeature extends AnyPostFeature {
   }
 
   fetchSectionPosts(name: string, pageKey: string | null): PagedResult<Post[]> {
-    const url = "https://9gag.com/v1/feed-posts/type/" + name.toLowerCase();
+    const type = name.toLocaleLowerCase();
+    let url: string;
+    if (type === "home") {
+      url = "https://9gag.com/v1/feed-posts/type/home";
+    } else {
+      url = "https://9gag.com/v1/group-posts/type/" + type;
+    }
     return fetchPosts(this.pagedUrl(url, pageKey));
   }
 
