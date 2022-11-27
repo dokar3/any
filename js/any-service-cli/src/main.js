@@ -14,7 +14,7 @@ const argv = process.argv;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const templateDir = path.join(__dirname, "../../any-template");
+const templateDir = path.join(__dirname, "../../any-service-template");
 
 if (argv.length >= 3) {
   switch (argv[2]) {

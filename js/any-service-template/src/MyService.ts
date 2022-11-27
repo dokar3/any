@@ -1,4 +1,4 @@
-import { AnyService } from "any-api";
+import { AnyService } from "any-service-api";
 import { MyPostFeature } from "./MyPostFeature";
 
 export default class MyService extends AnyService {

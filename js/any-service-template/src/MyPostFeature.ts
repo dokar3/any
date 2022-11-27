@@ -6,15 +6,15 @@ import {
   PagedResult,
   Post,
   PostFeature,
-} from "any-api";
+} from "any-service-api";
 
 export class MyPostFeature extends PostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {
-    throw new NotImplementedError("Implmenet this function");
+    throw new NotImplementedError("Implement this function");
   }
 
   fetchFreshList(params: FetchFreshListParams): PagedResult<Post[]> {
-    throw new NotImplementedError("Implmenet this function");
+    throw new NotImplementedError("Implement this function");
   }
 
   // Implement other functions if needed

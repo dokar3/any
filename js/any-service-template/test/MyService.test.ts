@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
-import { PostFeature } from "any-api";
-import { createTestService } from "any-testing";
+import { PostFeature } from "any-service-api";
+import { createTestService } from "any-service-testing";
 import MyService from "../src/MyService";
 
 describe("MyService", () => {
