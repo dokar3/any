@@ -444,7 +444,7 @@ private fun DownloadItemContent(
         if (!thumbnail.isNullOrEmpty()) {
             AsyncImage(
                 request = ImageRequest.Url(download.thumbnail),
-                contentDescription = stringResource(BaseR.string.cover),
+                contentDescription = null,
                 modifier = Modifier
                     .width(thumbnailWidth)
                     .aspectRatio(download.thumbnailAspectRatio ?: defThumbAspectRatio)

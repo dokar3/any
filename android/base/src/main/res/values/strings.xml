@@ -50,7 +50,6 @@
     <string name="remove_selected">Remove selected</string>
     <string name="download">Download</string>
     <string name="downloads">Downloads</string>
-    <string name="cover">Cover</string>
     <string name="delete_downloaded_files">Delete downloaded files</string>
     <string name="remove_selected_downloads_alert">Are you sure to remove all selected downloads?</string>
     <string name="remove_downloads">Remove downloads</string>

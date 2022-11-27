@@ -108,7 +108,7 @@ internal fun ComicHeader(
             var previousThumb: String? by remember { mutableStateOf(null) }
             AsyncImage(
                 request = ImageRequest.Url(thumbnail),
-                contentDescription = stringResource(BaseR.string.cover),
+                contentDescription = null,
                 modifier = Modifier
                     .width(180.dp)
                     .height(225.dp)
