@@ -126,6 +126,7 @@ private fun createWebView(
         )
 
         with(settings) {
+            domStorageEnabled = true
             javaScriptEnabled = true
 
             @Suppress("deprecation")
