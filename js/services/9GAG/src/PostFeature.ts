@@ -8,6 +8,7 @@ import {
   PagedResult,
   Post,
   AnyPostFeature,
+  SearchPostsParams,
 } from "any-service-api";
 import { fetchPostComments } from "./FetchComments";
 import { fetchPosts } from "./FetchPost";
@@ -34,6 +35,10 @@ export class PostFeature extends AnyPostFeature {
     }
   }
 
+  search(params: SearchPostsParams): PagedResult<Post[]> {
+    return this.searchPosts(params.query, params.pageKey as string);
+  }
+
   fetchSectionPosts(name: string, pageKey: string | null): PagedResult<Post[]> {
     const type = name.toLocaleLowerCase();
     let url: string;
@@ -47,6 +52,12 @@ export class PostFeature extends AnyPostFeature {
 
   fetchTagHotPosts(name: string, pageKey: string | null): PagedResult<Post[]> {
     const url = `https://9gag.com/v1/tag-posts/tag/${name.toLowerCase()}/type/hot`;
+    return fetchPosts(this.pagedUrl(url, pageKey));
+  }
+
+  searchPosts(query: string, pageKey: string | null): PagedResult<Post[]> {
+    const url =
+      "https://9gag.com/v1/search-posts?query=" + encodeURIComponent(query);
     return fetchPosts(this.pagedUrl(url, pageKey));
   }
 
