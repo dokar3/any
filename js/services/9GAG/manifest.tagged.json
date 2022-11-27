@@ -1,0 +1,26 @@
+{
+  "id": "any.9gag.{tag}",
+  "name": "9GAG - tagged",
+  "description": "Browse tagged posts on 9gag.com",
+  "developer": "Any",
+  "version": "1.0.0",
+  "minApiVersion": "0.1.0",
+  "maxApiVersion": "",
+  "isPageable": true,
+  "viewType": "full_width",
+  "mediaAspectRatio": "5:4",
+  "main": "src/main.ts",
+  "icon": "src/assets/logo.png",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "forceConfigsValidation": true,
+  "configs": [
+    {
+      "name": "Tag",
+      "key": "tag",
+      "description": "A tag like 'cat', 'meme'",
+      "type": "text",
+      "required": true
+    }
+  ]
+}

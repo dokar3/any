@@ -1,0 +1,43 @@
+{
+  "id": "any.9gag.{section}",
+  "name": "9GAG",
+  "description": "Browse posts on 9gag.com",
+  "developer": "Any",
+  "version": "1.0.0",
+  "minApiVersion": "0.1.0",
+  "maxApiVersion": "",
+  "isPageable": true,
+  "viewType": "full_width",
+  "mediaAspectRatio": "5:4",
+  "main": "src/main.ts",
+  "icon": "src/assets/logo.png",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "configs": [
+    {
+      "name": "Section",
+      "key": "section",
+      "type": "option",
+      "value": "home",
+      "required": true,
+      "extras": [
+        {
+          "name": "Home",
+          "value": "home"
+        },
+        {
+          "name": "Trending",
+          "value": "trending"
+        },
+        {
+          "name": "Fresh",
+          "value": "top"
+        },
+        {
+          "name": "Top",
+          "value": "top"
+        }
+      ]
+    }
+  ]
+}
