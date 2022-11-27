@@ -39,6 +39,7 @@ import any.ui.common.theme.imagePlaceholder
 internal fun FullWidthImageElementItem(
     url: String,
     imageIndex: Int,
+    showIndex: Boolean,
     defaultImageRatio: Float,
     onDetectImageSize: (IntSize) -> Unit,
     onClick: () -> Unit,
@@ -111,8 +112,8 @@ internal fun FullWidthImageElementItem(
             showProgressbar = true,
         )
 
-        if (!isLoaded) {
-            // Pic number
+        if (!isLoaded && showIndex) {
+            // Image number
             val align = if (isEvenItem) {
                 Alignment.BottomStart
             } else {

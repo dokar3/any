@@ -816,8 +816,6 @@ private fun PostContent(
                 }
 
                 contentElementItem(
-                    imageIndex = imageIndex,
-                    element = element,
                     onDetectedPicSize = {},
                     onClick = {
                         when (element) {
@@ -856,6 +854,9 @@ private fun PostContent(
                         selectedImage = element
                     },
                     onAddToBookmarkClick = { indexToAddBookmark = index },
+                    imageIndex = imageIndex,
+                    showIndexOnFullWidthImage = post?.type == Post.Type.Comic,
+                    element = element,
                 )
             }
         }

@@ -30,6 +30,7 @@ internal fun LazyListScope.contentElementItem(
     onImageLongClick: (images: List<String>?, url: String) -> Unit,
     onAddToBookmarkClick: () -> Unit,
     imageIndex: Int,
+    showIndexOnFullWidthImage: Boolean,
     element: UiContentElement,
 ) {
     when (element) {
@@ -169,6 +170,7 @@ internal fun LazyListScope.contentElementItem(
                 FullWidthImageElementItem(
                     url = element.url,
                     imageIndex = imageIndex,
+                    showIndex = showIndexOnFullWidthImage,
                     defaultImageRatio = element.aspectRatio ?: (4 / 5f),
                     onDetectImageSize = onDetectedPicSize,
                     onClick = { onImageClick(null, element.url) },
