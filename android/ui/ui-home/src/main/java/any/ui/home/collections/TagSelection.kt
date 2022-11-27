@@ -1,24 +1,16 @@
 package any.ui.home.collections
 
 import any.base.R as BaseR
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -32,11 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import any.base.StableHolder
@@ -44,6 +32,7 @@ import any.ui.common.modifier.fadingEdge
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.SimpleDialog
 import any.ui.home.HomeScreenDefaults
+import any.ui.home.SelectionChip
 import any.ui.home.collections.viewmodel.SelectableTag
 
 @Composable
@@ -102,6 +91,7 @@ internal fun TagSelection(
                 onShowAllTagsClick = onShowAllTagsClick
             )
         }
+
         TagsLayout.Flow -> {
             FlowTags(
                 tags = mutableTags,
@@ -152,10 +142,9 @@ private fun FlowTags(
     ) {
         itemsIndexed(tags) { index, tag ->
             TagItem(
-                index = index,
                 tag = tag,
-                onClick = onTagClick,
-                onLongClick = onTagLongClick,
+                onClick = { onTagClick(index, tag) },
+                onLongClick = { onTagLongClick?.invoke(tag) },
                 modifier = Modifier.padding(bottom = 8.dp),
             )
         }
@@ -179,10 +168,9 @@ private fun RowTags(
         ) {
             itemsIndexed(items = tags) { index, tag ->
                 TagItem(
-                    index = index,
                     tag = tag,
-                    onClick = onTagClick,
-                    onLongClick = onTagLongClick,
+                    onClick = { onTagClick(index, tag) },
+                    onLongClick = { onTagLongClick?.invoke(tag) },
                 )
             }
         }
@@ -204,52 +192,20 @@ private fun RowTags(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun TagItem(
-    index: Int,
     tag: SelectableTag,
-    onClick: (index: Int, tag: SelectableTag) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onLongClick: ((SelectableTag) -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
 ) {
-    val hapticFeedback = LocalHapticFeedback.current
-    val borderColor = if (tag.isSelected) {
-        MaterialTheme.colors.primary
-    } else {
-        MaterialTheme.colors.onBackground
-    }
-    val textColor = if (tag.isSelected) {
-        Color.White
-    } else {
-        MaterialTheme.colors.onBackground
-    }
-    Column(
-        modifier = modifier
-            .padding(end = 8.dp)
-            .height(32.dp)
-            .border(1.dp, borderColor, CircleShape)
-            .clip(CircleShape)
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = { onClick(index, tag) },
-                onLongClick = {
-                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    onLongClick?.invoke(tag)
-                },
-            )
-            .let {
-                if (tag.isSelected) {
-                    it.background(borderColor)
-                } else {
-                    it
-                }
-            }
-            .padding(16.dp, 0.dp),
-        verticalArrangement = Arrangement.Center
+    SelectionChip(
+        isSelected = tag.isSelected,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        modifier = modifier,
     ) {
-        Text("${tag.name} (${tag.count})", maxLines = 1, color = textColor)
+        Text("${tag.name} (${tag.count})", maxLines = 1)
     }
 }
 

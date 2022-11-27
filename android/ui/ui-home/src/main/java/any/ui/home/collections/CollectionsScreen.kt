@@ -133,6 +133,7 @@ internal fun CollectionsScreen(
     viewModel: CollectionsViewModel = viewModel(
         factory = CollectionsViewModel.Factory(LocalContext.current),
     ),
+    tagSelectionHeight: Dp = 48.dp,
 ) {
     val topInset = WindowInsets.statusBars
         .asPaddingValues()
@@ -141,7 +142,6 @@ internal fun CollectionsScreen(
         .asPaddingValues()
         .calculateBottomPadding()
 
-    val tagSelectionHeight = 48.dp
 
     val listPadding = PaddingValues(
         top = topInset + titleBarHeight + tagSelectionHeight,

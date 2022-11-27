@@ -324,4 +324,5 @@
     <string name="preparing">Preparing</string>
     <string name="ignore">Ignore</string>
     <string name="baseline_profile">Baseline profile</string>
+    <string name="downloading">Downloading</string>
 </resources>

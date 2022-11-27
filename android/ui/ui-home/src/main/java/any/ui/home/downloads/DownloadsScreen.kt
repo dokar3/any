@@ -85,6 +85,7 @@ import any.ui.common.theme.secondaryText
 import any.ui.common.theme.sizes
 import any.ui.common.theme.thumb
 import any.ui.common.theme.thumbBorder
+import any.ui.common.theme.topBarBackground
 import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.CheckableItem
 import any.ui.common.widget.EmojiEmptyContent
@@ -113,6 +114,7 @@ internal fun DownloadsScreen(
     viewModel: DownloadsViewModel = viewModel(
         factory = DownloadsViewModel.Factory(LocalContext.current)
     ),
+    typeSelectionHeight: Dp = 48.dp,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -122,7 +124,7 @@ internal fun DownloadsScreen(
     val topInset = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     val bottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val listPadding = PaddingValues(
-        top = topInset + titleBarHeight,
+        top = topInset + titleBarHeight + typeSelectionHeight,
         bottom = bottomBarHeight + bottomInset,
     )
 
@@ -205,15 +207,18 @@ internal fun DownloadsScreen(
                     val selectedCount = uiState.selectedDownloadUrls.size
                     Text(stringResource(BaseR.string._selected, selectedCount))
                 } else {
-                    Row {
-                        Text(stringResource(BaseR.string.downloads))
-                        Text(
-                            text = " (${uiState.downloads.size})",
-                            color = MaterialTheme.colors.secondaryText,
-                        )
-                    }
+                    Text(stringResource(BaseR.string.downloads))
                 }
             }
+
+            TypeSelection(
+                onSelect = viewModel::selectDownloadType,
+                types = ImmutableHolder(uiState.downloadTypes),
+                selectedType = uiState.selectedDownloadType,
+                modifier = Modifier
+                    .height(typeSelectionHeight)
+                    .background(MaterialTheme.colors.topBarBackground),
+            )
         },
         bottomBar = {
             onBottomBarOffsetUpdate(it)

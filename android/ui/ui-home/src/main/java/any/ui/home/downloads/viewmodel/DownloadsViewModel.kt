@@ -34,6 +34,8 @@ class DownloadsViewModel(
     private val _downloadsUiState = MutableStateFlow(DownloadsUiState())
     val downloadsUiState: StateFlow<DownloadsUiState> = _downloadsUiState
 
+    private var allDownloads: List<PostDownload>? = null
+
     private var observeJob: Job? = null
 
     init {
@@ -103,12 +105,9 @@ class DownloadsViewModel(
                 }
                 .sortedByDescending(PostDownload::sortKey)
 
-            _downloadsUiState.update {
-                it.copy(
-                    isLoadingDownloads = false,
-                    downloads = downloads,
-                )
-            }
+            allDownloads = downloads
+
+            updateDownloads(downloads) { it.copy(isLoadingDownloads = false) }
 
             observeJob?.cancel()
             observeJob = launch { observeDownloads(inDownloadPosts) }
@@ -117,7 +116,7 @@ class DownloadsViewModel(
 
     private suspend fun observeDownloads(posts: List<Post>) {
         downloader.getDownloadStatus(posts).collect { (postUrl, status) ->
-            val downloads = _downloadsUiState.value.downloads.toMutableList()
+            val downloads = allDownloads?.toMutableList() ?: return@collect
             if (downloads.isEmpty()) return@collect
             val idx = downloads.indexOfFirst { it.url == postUrl }
             if (idx == -1) return@collect
@@ -143,10 +142,55 @@ class DownloadsViewModel(
 
             downloads.sortByDescending(PostDownload::sortKey)
 
-            _downloadsUiState.update {
-                it.copy(downloads = downloads)
-            }
+            allDownloads = downloads
+
+            updateDownloads(downloads)
         }
+    }
+
+    private inline fun updateDownloads(
+        downloads: List<PostDownload>,
+        update: (DownloadsUiState) -> DownloadsUiState = { it },
+    ) {
+        val downloadTypes = resolveDownloadTypes(downloads)
+        val selectedType = reselectDownloadType(downloadTypes)
+        _downloadsUiState.update {
+            update(
+                it.copy(
+                    downloads = downloads.filterByType(selectedType),
+                    downloadTypes = downloadTypes,
+                    selectedDownloadType = selectedType,
+                )
+            )
+        }
+    }
+
+    private fun resolveDownloadTypes(downloads: List<PostDownload>): List<DownloadType> {
+        val allCount = downloads.size
+        val downloadingCount = downloads.count { !it.isComplete }
+        return listOf(
+            DownloadType.All(allCount),
+            DownloadType.Downloading(downloadingCount),
+            DownloadType.Downloaded(allCount - downloadingCount),
+        )
+    }
+
+    private fun reselectDownloadType(types: List<DownloadType>): DownloadType {
+        val curr = _downloadsUiState.value.selectedDownloadType
+        return requireNotNull(types.find { it::class.java == curr::class.java })
+    }
+
+    private fun List<PostDownload>.filterByType(type: DownloadType): List<PostDownload> {
+        return when (type) {
+            is DownloadType.Downloading -> filter { !it.isComplete }
+            is DownloadType.Downloaded -> filter { it.isComplete }
+            else -> this
+        }
+    }
+
+    fun selectDownloadType(type: DownloadType) {
+        _downloadsUiState.update { it.copy(selectedDownloadType = type) }
+        updateDownloads(allDownloads ?: emptyList())
     }
 
     fun selectAll() = viewModelScope.launch(ioDispatcher) {
