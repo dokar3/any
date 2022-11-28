@@ -54,6 +54,7 @@ dependencies {
     implementation libs.compose.ui.tooling
     implementation libs.accompanist.flowlayout
     implementation libs.androidx.profileinstaller
+    implementation libs.guava
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit

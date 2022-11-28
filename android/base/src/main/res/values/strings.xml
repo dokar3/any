@@ -325,4 +325,5 @@
     <string name="ignore">Ignore</string>
     <string name="baseline_profile">Baseline profile</string>
     <string name="downloading">Downloading</string>
+    <string name="_playback_error">Playback error, code: %s</string>
 </resources>

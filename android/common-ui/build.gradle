@@ -50,6 +50,10 @@ dependencies {
     implementation libs.accompanist.pager
     implementation libs.accompanist.pager.indicators
     implementation libs.chiptextfield
+    implementation libs.exoplayer.core
+    implementation libs.exoplayer.ui
+    implementation libs.guava
+
     api libs.androidx.lifecycle.viewmodel.compose
     api libs.androidx.viewpager
     api libs.androidx.interpolator

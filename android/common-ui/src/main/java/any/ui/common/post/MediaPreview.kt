@@ -1,6 +1,6 @@
 package any.ui.common.post
 
-import any.base.R as BaseR
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -32,6 +31,8 @@ import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.ui.common.image.AsyncImage
 import any.ui.common.theme.imagePlaceholder
+import any.ui.common.video.VideoView
+import any.ui.common.video.rememberVideoPlaybackState
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -180,34 +181,39 @@ private fun MediaPreviewItem(
     fadeIn: Boolean = true,
 ) {
     Box(modifier = modifier) {
-        AsyncImage(
-            request = ImageRequest.Url(media.thumbnail ?: media.url),
-            contentDescription = contentDescription,
-            modifier = Modifier
-                .aspectRatio(aspectRatio)
-                .background(MaterialTheme.colors.imagePlaceholder)
-                .run {
-                    if (onClick != null) {
-                        clickable { onClick() }
-                    } else {
-                        this
-                    }
-                },
-            fadeIn = fadeIn,
-            contentScale = contentScale,
-        )
-
-        val tag = when (media.type) {
-            Post.Media.Type.Photo -> null
-            Post.Media.Type.Gif -> "gif"
-            Post.Media.Type.Video -> stringResource(BaseR.string.video)
+        if (media.type == Post.Media.Type.Video && media.url.isNotEmpty()) {
+            val playbackState = rememberVideoPlaybackState(uri = Uri.parse(media.url))
+            VideoView(
+                state = playbackState,
+                modifier = Modifier.background(MaterialTheme.colors.imagePlaceholder),
+                aspectRatio = aspectRatio,
+                thumbnail = media.thumbnail,
+            )
+        } else {
+            AsyncImage(
+                request = ImageRequest.Url(media.thumbnail ?: media.url),
+                contentDescription = contentDescription,
+                modifier = Modifier
+                    .aspectRatio(aspectRatio)
+                    .background(MaterialTheme.colors.imagePlaceholder)
+                    .run {
+                        if (onClick != null) {
+                            clickable { onClick() }
+                        } else {
+                            this
+                        }
+                    },
+                fadeIn = fadeIn,
+                contentScale = contentScale,
+            )
         }
-        if (tag != null) {
+
+        if (media.type == Post.Media.Type.Gif) {
             MediaTag(
-                text = tag,
+                text = "GIF",
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .offset(x = tagMargin, y = -tagMargin),
+                    .offset(tagMargin, -tagMargin),
                 fontSize = tagFontSize,
                 fontWeight = tagFontWeight,
             )

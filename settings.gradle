@@ -31,3 +31,4 @@ file("android").eachDir { dir ->
 include ':download'
 include ':services-compilation'
 include ':testing'
+include ':ui-video'

@@ -22,6 +22,7 @@ chiptextfield = "0.4.3"
 expandabletext = "0.2.7"
 flick = "1.7.0"
 fresco = "2.6.0"
+exoplayer = "2.18.2"
 
 [libraries]
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -87,6 +88,11 @@ fresco-animated-base = { module = "com.facebook.fresco:animated-base", version.r
 fresco-gif = { module = "com.facebook.fresco:animated-gif", version.ref = "fresco" }
 fresco-webpsupport = { module = "com.facebook.fresco:webpsupport", version.ref = "fresco" }
 fresco-imagepipeline-okhttp = { module = "com.facebook.fresco:imagepipeline-okhttp3", version.ref = "fresco" }
+
+exoplayer-core = { module = "com.google.android.exoplayer:exoplayer-core", version.ref = "exoplayer" }
+exoplayer-ui = { module = "com.google.android.exoplayer:exoplayer-ui", version.ref = "exoplayer" }
+
+guava = { module = "com.google.guava:guava", version = "31.1-android" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
