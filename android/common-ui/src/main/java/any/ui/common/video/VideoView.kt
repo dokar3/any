@@ -115,8 +115,6 @@ fun VideoView(
                     }
                 }
 
-                Lifecycle.Event.ON_STOP -> state.release()
-
                 else -> {}
             }
         }
