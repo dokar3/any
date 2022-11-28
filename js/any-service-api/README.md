@@ -72,7 +72,7 @@ a service project from scratch.**
      "developer": "Author",
      "version": "1.0.0",
      "isPageable": true,
-     "viewType": "card",
+     "postsViewType": "card",
      "mediaAspectRatio": "12:7",
      "main": "src/main.ts"
    }
@@ -137,31 +137,31 @@ a service project from scratch.**
 
 _the `*` mark means it is required_
 
-| Name                     | Type     | Description                                                                                                                                                                          |
-|--------------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id` \*                  | string   | The unique service id. e.g. `com.name.myservice`, `io.name.myservice`. To use a dynamic id based on user configurations, see the [Dynamic service id](#dynamic-service-id) section   |
-| `minApiVersion` \*       | string   | Minimum version of `any-service-api`. e.g. `1.0.0`                                                                                                                                   |
-| `maxApiVersion`          | string   | Maximum version of `any-service-api`. e.g. `1.0.0`                                                                                                                                   |
-| `version` \*             | string   | Version of the service, e.g. `1.0.0`, `0.0.1`                                                                                                                                        |
-| `name` \*                | string   | Service name                                                                                                                                                                         |
-| `description` \*         | string   | A description text, markdown is supported.                                                                                                                                           |
-| `developer` \*           | string   | The name of developer/author                                                                                                                                                         |
-| `developerUrl`           | string   | The url of developer/author                                                                                                                                                          |
-| `developerAvatar`        | string   | The avatar url of developer/author                                                                                                                                                   |
-| `homepage`               | string   | The home page or repository url of the service                                                                                                                                       |
-| `changelog`              | string   | The changelog, could be raw text, markdown text, local text file path, local markdown file path or http url (starts with 'http://' or 'https://')                                    |
-| `isPageable` \*          | boolean  | `true` if the service can load multiple pages of posts. Page number starts with 1                                                                                                    |
-| `viewType` \*            | string   | View type of the post list. `list`, `grid`, `card` and`full_width` are supported                                                                                                     |
-| `mediaAspectRatio` \*    | string   | Default aspect ratio of post media objects (thumbnails), e.g. `5:3`, `1024:720`                                                                                                      |
-| `main` \*                | string   | The program entry point, service should be registered in the main source file. Both local file path and http url are supported. e.g. `src/main.js`, `https://my.main.js`             |
-| `icon`                   | string   | Service's icon, both local file path and http url are supported. e.g. `/src/assets/icon.png`, `https://my.icon.png`                                                                  |
-| `headerImage`            | string   | Service's header image, both local file path and http url are supported. e.g. `src/assets/header.jpg`, `https://my.header.jpg`                                                       |
-| `themeColor`             | string   | A hex color value string used to stylize service-specific UI                                                                                                                         |
-| `darkThemeColor`         | string   | A hex color value string used to stylize service-specific UI under the dark theme                                                                                                    |
-| `languages`              | string[] | [IETF BCP 47 language tags](https://en.wikipedia.org/wiki/IETF_language_tag) of this service or its content                                                                          |
-| `supportedPostUrls`      | string[] | A string array of post urls supported by this service, wildcards are supported. e.g. `["https://my.website.com/post/*.html"]`                                                        |
-| `supportedUserUrls`      | string[] | A string array of user urls supported by this service, wildcards are supported. e.g. `["https://my.website.com/user/*"]`                                                             |
-| `configs`                | object[] | Configurable fields for this service. See [Service configurations](#service-configurations) for details                                                                              |
+| Name                     | Type     | Description                                                  |
+| ------------------------ | -------- | ------------------------------------------------------------ |
+| `id` \*                  | string   | The unique service id. e.g. `com.name.myservice`, `io.name.myservice`. To use a dynamic id based on user configurations, see the [Dynamic service id](#dynamic-service-id) section |
+| `minApiVersion` \*       | string   | Minimum version of `any-service-api`. e.g. `1.0.0`           |
+| `maxApiVersion`          | string   | Maximum version of `any-service-api`. e.g. `1.0.0`           |
+| `version` \*             | string   | Version of the service, e.g. `1.0.0`, `0.0.1`                |
+| `name` \*                | string   | Service name                                                 |
+| `description` \*         | string   | A description text, markdown is supported.                   |
+| `developer` \*           | string   | The name of developer/author                                 |
+| `developerUrl`           | string   | The url of developer/author                                  |
+| `developerAvatar`        | string   | The avatar url of developer/author                           |
+| `homepage`               | string   | The home page or repository url of the service               |
+| `changelog`              | string   | The changelog, could be raw text, markdown text, local text file path, local markdown file path or http url (starts with 'http://' or 'https://') |
+| `isPageable` \*          | boolean  | `true` if the service can load multiple pages of posts. Page number starts with 1 |
+| `postsViewType` \*       | string   | View type of the post list. `list`, `grid`, `card` and`full_width` are supported |
+| `mediaAspectRatio` \*    | string   | Default aspect ratio of post media objects (thumbnails), e.g. `5:3`, `1024:720` |
+| `main` \*                | string   | The program entry point, service should be registered in the main source file. Both local file path and http url are supported. e.g. `src/main.js`, `https://my.main.js` |
+| `icon`                   | string   | Service's icon, both local file path and http url are supported. e.g. `/src/assets/icon.png`, `https://my.icon.png` |
+| `headerImage`            | string   | Service's header image, both local file path and http url are supported. e.g. `src/assets/header.jpg`, `https://my.header.jpg` |
+| `themeColor`             | string   | A hex color value string used to stylize service-specific UI |
+| `darkThemeColor`         | string   | A hex color value string used to stylize service-specific UI under the dark theme |
+| `languages`              | string[] | [IETF BCP 47 language tags](https://en.wikipedia.org/wiki/IETF_language_tag) of this service or its content |
+| `supportedPostUrls`      | string[] | A string array of post urls supported by this service, wildcards are supported. e.g. `["https://my.website.com/post/*.html"]` |
+| `supportedUserUrls`      | string[] | A string array of user urls supported by this service, wildcards are supported. e.g. `["https://my.website.com/user/*"]` |
+| `configs`                | object[] | Configurable fields for this service. See [Service configurations](#service-configurations) for details |
 | `forceConfigsValidation` | boolean  | If true, `ConfigFeature.validateConfigs()` will always be called before adding the service, defaults to false. If `validateConfigs()` is not implemented, validation will be skipped |
 
 # Service configurations
@@ -170,16 +170,16 @@ _the `*` mark means it is required_
 
 _the `*` mark means it is required_
 
-| Name            | Type                    | Description                                                                                                  |
-| --------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `name` \*       | string                  | Name of this configuration                                                                                   |
-| `key` \*        | string                  | Key for reading configuration value in code                                                                  |
+| Name            | Type                    | Description                                                  |
+| --------------- | ----------------------- | ------------------------------------------------------------ |
+| `name` \*       | string                  | Name of this configuration                                   |
+| `key` \*        | string                  | Key for reading configuration value in code                  |
 | `type` \*       | string                  | The configuration type. `text`, `url`, `number`, `boolean`, `option`, `cookie` and `cookie_ua` are supported |
-| `description`   | string                  | Short description text to describe this configuration                                                        |
-| `required`      | boolean                 | `true` if this configuration is required (cannot be null or empty). Defaults to `false`                      |
-| `visibleToUser` | boolean                 | `true` if user can view and edit this configuration. Defaults to `true`                                      |
-| `value`         | string\|boolean\|number | The default/preset value                                                                                     |
-| `extras`        | object                  | Extra data for this configuration. Used if the `type` is `option`, `cookie` or `cookie_ua`.                  |
+| `description`   | string                  | Short description text to describe this configuration        |
+| `required`      | boolean                 | `true` if this configuration is required (cannot be null or empty). Defaults to `false` |
+| `visibleToUser` | boolean                 | `true` if user can view and edit this configuration. Defaults to `true` |
+| `value`         | string\|boolean\|number | The default/preset value                                     |
+| `extras`        | object                  | Extra data for this configuration. Used if the `type` is `option`, `cookie` or `cookie_ua`. |
 
 ### Usages
 

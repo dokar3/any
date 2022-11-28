@@ -95,8 +95,8 @@ class ManifestManager {
       manifestUpdater.updateIsPageable(newValue);
     });
 
-    defineObservableProp("viewType", (newValue) => {
-      manifestUpdater.updateViewType(newValue);
+    defineObservableProp("postsViewType", (newValue) => {
+      manifestUpdater.updatePostsViewType(newValue);
     });
 
     defineObservableProp("mediaAspectRatio", (newValue) => {

@@ -61,7 +61,7 @@ import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
 import any.data.entity.Post
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
 import any.ui.common.richtext.RichText
@@ -297,7 +297,7 @@ private fun CoverListPostItem(
         Row(modifier = Modifier.padding(bottom = 8.dp)) {
             MediaPreview(
                 media = ImmutableHolder(listOf(thumbnail)),
-                viewType = ServiceViewType.List,
+                viewType = PostsViewType.List,
                 defaultAspectRatio = defThumbAspectRatio,
                 modifier = Modifier
                     .width(120.dp)

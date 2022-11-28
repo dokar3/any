@@ -1,7 +1,7 @@
 package any.data.js.plugin
 
+import any.data.entity.PostsViewType
 import any.data.entity.ServiceManifest
-import any.data.entity.ServiceViewType
 
 class MemoryServiceManifestUpdater(
     private val latest: () -> ServiceManifest,
@@ -39,9 +39,9 @@ class MemoryServiceManifestUpdater(
         update(latest().copy(isPageable = newValue))
     }
 
-    override fun updateViewType(newValue: String?) {
-        val viewType = ServiceViewType.values().find { type -> type.value == newValue }
-        update(latest().copy(viewType = viewType))
+    override fun updatePostsViewType(newValue: String?) {
+        val viewType = PostsViewType.values().find { type -> type.value == newValue }
+        update(latest().copy(postsViewType = viewType))
     }
 
     override fun updateMediaAspectRatio(newValue: String) {

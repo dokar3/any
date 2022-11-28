@@ -1,20 +1,20 @@
 package any.data.db.converter
 
 import androidx.room.TypeConverter
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 
 class ServiceViewTypeConverter {
     @TypeConverter
-    fun toString(viewType: ServiceViewType): String {
+    fun toString(viewType: PostsViewType): String {
         return viewType.name
     }
 
     @TypeConverter
-    fun fromString(value: String): ServiceViewType {
+    fun fromString(value: String): PostsViewType {
         return try {
-            ServiceViewType.valueOf(value)
+            PostsViewType.valueOf(value)
         } catch (e: IllegalArgumentException) {
-            ServiceViewType.List
+            PostsViewType.List
         }
     }
 }

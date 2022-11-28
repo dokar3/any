@@ -32,7 +32,7 @@ fun ServiceManifest.toJsManifestObject(): String = buildString {
     appendStringField("maxApiVersion", maxApiVersion)
     appendField("mainChecksums", mainChecksums.toJsObject())
     appendField("isPageable", isPageable)
-    appendStringField("view", viewType?.value)
+    appendStringField("view", postsViewType?.value)
     appendStringField("coverAspectRatio", mediaAspectRatio)
     appendStringField("icon", icon)
     appendStringField("headerImage", headerImage)

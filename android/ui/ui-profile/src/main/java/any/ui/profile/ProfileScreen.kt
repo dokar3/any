@@ -34,7 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.ImmutableHolder
 import any.base.R
 import any.base.util.Intents
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.navigation.NavEvent
 import any.navigation.navigateToMedia
@@ -221,7 +221,7 @@ private fun ProfileScreenContent(
             state = scrollableState.gridState,
             posts = ImmutableHolder(uiState.posts),
             pageKey = ImmutableHolder(null),
-            viewType = service?.viewType ?: ServiceViewType.List,
+            viewType = service?.postsViewType ?: PostsViewType.List,
             defThumbAspectRatio = service?.mediaAspectRatio,
             onCommentsClick = {
                 postToLoadComments = it

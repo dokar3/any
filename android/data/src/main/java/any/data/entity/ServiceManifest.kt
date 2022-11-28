@@ -37,7 +37,7 @@ data class ServiceManifest(
     val minApiVersion: String,
     val maxApiVersion: String?,
     val isPageable: Boolean,
-    val viewType: ServiceViewType?,
+    val postsViewType: PostsViewType?,
     val mediaAspectRatio: String,
     val icon: String?,
     val headerImage: String?,

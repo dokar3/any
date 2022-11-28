@@ -1,7 +1,7 @@
 package any.data.js.plugin
 
+import any.data.entity.PostsViewType
 import any.data.entity.ServiceManifest
-import any.data.entity.ServiceViewType
 import any.data.repository.ServiceRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -45,10 +45,10 @@ class LocalServiceManifestUpdater(
         updateLatestService { it.copy(isPageable = newValue) }
     }
 
-    override fun updateViewType(newValue: String?) {
+    override fun updatePostsViewType(newValue: String?) {
         updateLatestService {
-            val viewType = ServiceViewType.values().find { type -> type.value == newValue }
-            it.copy(viewType = viewType)
+            val viewType = PostsViewType.values().find { type -> type.value == newValue }
+            it.copy(postsViewType = viewType)
         }
     }
 

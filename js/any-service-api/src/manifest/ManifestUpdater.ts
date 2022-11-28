@@ -74,7 +74,7 @@ export class ManifestUpdater {
    * @param {string|null} newValue New view type.
    * @since 0.1.0
    */
-  updateViewType(newValue: string | null): void {}
+  updatePostsViewType(newValue: string | null): void {}
 
   /**
    * Update default media aspect ratio.

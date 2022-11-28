@@ -33,7 +33,7 @@ import any.base.StableHolder
 import any.base.image.ImageRequest
 import any.data.ThumbAspectRatio
 import any.data.entity.Folder
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.domain.post.containsRaw
 import any.ui.common.image.AsyncImage
@@ -70,7 +70,7 @@ internal fun FolderItem(
                 }
             ),
     ) {
-        val ratio = ThumbAspectRatio.defaultAspectRatio(ServiceViewType.Grid)
+        val ratio = ThumbAspectRatio.defaultAspectRatio(PostsViewType.Grid)
         val cols = 2
         val rows = 2
         Column(

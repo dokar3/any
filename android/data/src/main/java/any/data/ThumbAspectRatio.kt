@@ -1,6 +1,6 @@
 package any.data
 
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 
 object ThumbAspectRatio {
     private const val DEFAULT_LIST_COVER_RATIO = 5f / 4
@@ -79,12 +79,12 @@ object ThumbAspectRatio {
     }
 
     fun defaultAspectRatio(
-        viewType: ServiceViewType?,
+        viewType: PostsViewType?,
     ): Float {
         return when (viewType) {
-            ServiceViewType.FullWidth -> DEFAULT_FULL_WIDTH_COVER_RATIO
-            ServiceViewType.Grid -> DEFAULT_GRID_COVER_RATIO
-            ServiceViewType.Card -> DEFAULT_CARD_COVER_RATIO
+            PostsViewType.FullWidth -> DEFAULT_FULL_WIDTH_COVER_RATIO
+            PostsViewType.Grid -> DEFAULT_GRID_COVER_RATIO
+            PostsViewType.Card -> DEFAULT_CARD_COVER_RATIO
             else -> DEFAULT_LIST_COVER_RATIO
         }
     }

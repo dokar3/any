@@ -13,7 +13,7 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const VIEW_TYPES = ["list", "grid", "card", "full_width"];
+const POSTS_VIEW_TYPES = ["list", "grid", "card", "full_width"];
 
 const QUESTIONS = [
   {
@@ -76,11 +76,11 @@ const QUESTIONS = [
     default: "true",
   },
   {
-    name: "viewType",
+    name: "postsViewType",
     type: "list",
     message: "Post list view type",
-    choices: VIEW_TYPES,
-    default: VIEW_TYPES[0],
+    choices: POSTS_VIEW_TYPES,
+    default: POSTS_VIEW_TYPES[0],
   },
   {
     name: "mediaAspectRatio",

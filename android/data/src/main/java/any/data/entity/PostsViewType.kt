@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = false)
-enum class ServiceViewType(val value: String) {
+enum class PostsViewType(val value: String) {
     @Json(name = "grid")
     Grid("grid"),
 

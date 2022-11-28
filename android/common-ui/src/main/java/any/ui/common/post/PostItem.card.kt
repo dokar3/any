@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
 import any.ui.common.richtext.RichText
@@ -101,7 +101,7 @@ fun CardPostItem(
         if (!media.isNullOrEmpty()) {
             MediaPreview(
                 media = ImmutableHolder(media),
-                viewType = ServiceViewType.Card,
+                viewType = PostsViewType.Card,
                 defaultAspectRatio = defThumbAspectRatio,
                 onClick = { onMediaClick?.invoke(post, it) },
             )

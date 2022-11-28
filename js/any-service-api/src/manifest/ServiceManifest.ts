@@ -105,7 +105,7 @@ export class ServiceManifest {
    *
    * @since 0.1.0
    */
-  viewType: string | null;
+  postsViewType: string | null;
 
   /**
    * Default aspect ratio for the post media objects (thumbnails).

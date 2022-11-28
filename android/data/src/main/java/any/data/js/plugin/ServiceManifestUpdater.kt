@@ -17,7 +17,7 @@ interface ServiceManifestUpdater {
 
     fun updateIsPageable(newValue: Boolean)
 
-    fun updateViewType(newValue: String?)
+    fun updatePostsViewType(newValue: String?)
 
     fun updateMediaAspectRatio(newValue: String)
 

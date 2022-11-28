@@ -7,7 +7,7 @@
   "homepage": "https://github.com/dokar3/Any/tree/main/js/apps/Unsplash",
   "version": "1.0.0",
   "isPageable": true,
-  "viewType": "full_width",
+  "postsViewType": "full_width",
   "mediaAspectRatio": "5:4",
   "icon": "src/assets/icon.jpg",
   "main": "src/main.ts",

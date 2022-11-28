@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "3e76c8cf114f030deb2c99c69a220093",
+    "identityHash": "cb4b55c8eaf945bf9367913f33950f56",
     "entities": [
       {
         "tableName": "User",
@@ -322,7 +322,7 @@
       },
       {
         "tableName": "Service",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `originalId` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `developer` TEXT NOT NULL, `developerUrl` TEXT, `developerAvatar` TEXT, `homepage` TEXT, `changelog` TEXT, `version` TEXT NOT NULL, `minApiVersion` TEXT NOT NULL, `maxApiVersion` TEXT, `isPageable` INTEGER NOT NULL, `viewType` TEXT, `mediaAspectRatio` TEXT NOT NULL, `icon` TEXT, `headerImage` TEXT, `themeColor` TEXT, `darkThemeColor` TEXT, `main` TEXT NOT NULL, `mainChecksums` TEXT NOT NULL, `supportedPostUrls` TEXT, `supportedUserUrls` TEXT, `configs` TEXT, `forceConfigsValidation` INTEGER, `isEnabled` INTEGER NOT NULL, `pageKeyOfPage2` TEXT, `upgradeUrl` TEXT, `buildTime` INTEGER NOT NULL, `addedAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `source` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `originalId` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `developer` TEXT NOT NULL, `developerUrl` TEXT, `developerAvatar` TEXT, `homepage` TEXT, `changelog` TEXT, `version` TEXT NOT NULL, `minApiVersion` TEXT NOT NULL, `maxApiVersion` TEXT, `isPageable` INTEGER NOT NULL, `postsViewType` TEXT, `mediaAspectRatio` TEXT NOT NULL, `icon` TEXT, `headerImage` TEXT, `themeColor` TEXT, `darkThemeColor` TEXT, `main` TEXT NOT NULL, `mainChecksums` TEXT NOT NULL, `languages` TEXT, `supportedPostUrls` TEXT, `supportedUserUrls` TEXT, `configs` TEXT, `forceConfigsValidation` INTEGER, `isEnabled` INTEGER NOT NULL, `pageKeyOfPage2` TEXT, `upgradeUrl` TEXT, `buildTime` INTEGER NOT NULL, `addedAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, `source` TEXT NOT NULL, `localResources` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -403,8 +403,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "viewType",
-            "columnName": "viewType",
+            "fieldPath": "postsViewType",
+            "columnName": "postsViewType",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -449,6 +449,12 @@
             "columnName": "mainChecksums",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "languages",
+            "columnName": "languages",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "supportedPostUrls",
@@ -515,6 +521,12 @@
             "columnName": "source",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "localResources",
+            "columnName": "localResources",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -562,7 +574,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e76c8cf114f030deb2c99c69a220093')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb4b55c8eaf945bf9367913f33950f56')"
     ]
   }
 }

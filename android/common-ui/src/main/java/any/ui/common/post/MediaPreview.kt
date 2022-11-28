@@ -28,7 +28,7 @@ import any.base.ImmutableHolder
 import any.base.image.ImageRequest
 import any.data.ThumbAspectRatio
 import any.data.entity.Post
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.ui.common.image.AsyncImage
 import any.ui.common.theme.imagePlaceholder
@@ -42,7 +42,7 @@ private const val MIN_ASPECT_RATIO = 1f / 1.618f
 @Composable
 internal fun MediaPreview(
     media: ImmutableHolder<List<UiPost.Media>>,
-    viewType: ServiceViewType,
+    viewType: PostsViewType,
     defaultAspectRatio: Float?,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
@@ -102,7 +102,7 @@ internal fun MediaPreview(
 @Composable
 private fun MediaPreviewPager(
     media: ImmutableHolder<List<UiPost.Media>>,
-    viewType: ServiceViewType,
+    viewType: PostsViewType,
     defaultAspectRatio: Float?,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,

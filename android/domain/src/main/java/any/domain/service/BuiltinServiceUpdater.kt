@@ -87,7 +87,7 @@ class BuiltinServiceUpdater(
             minApiVersion = builtin.minApiVersion,
             maxApiVersion = builtin.maxApiVersion,
             isPageable = builtin.isPageable,
-            viewType = builtin.viewType,
+            postsViewType = builtin.postsViewType,
             mediaAspectRatio = builtin.mediaAspectRatio,
             icon = builtin.icon,
             headerImage = builtin.headerImage,

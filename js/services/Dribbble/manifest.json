@@ -7,7 +7,7 @@
   "homepage": "https://github.com/dokar3/Any/tree/main/js/apps/Dribbble",
   "version": "1.0.0",
   "isPageable": true,
-  "viewType": "grid",
+  "postsViewType": "grid",
   "mediaAspectRatio": "330:247",
   "icon": "src/assets/icon.png",
   "themeColor": "#E34A85",

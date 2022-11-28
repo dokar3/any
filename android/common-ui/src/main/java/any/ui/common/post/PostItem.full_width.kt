@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
 import any.ui.common.richtext.RichText
@@ -217,7 +217,7 @@ fun FullWidthPostItem(
             if (!media.isNullOrEmpty()) {
                 MediaPreview(
                     media = ImmutableHolder(media),
-                    viewType = ServiceViewType.FullWidth,
+                    viewType = PostsViewType.FullWidth,
                     defaultAspectRatio = defThumbAspectRatio,
                     onClick = { onMediaClick?.invoke(post, it) },
                     modifier = Modifier.padding(mediaPadding),

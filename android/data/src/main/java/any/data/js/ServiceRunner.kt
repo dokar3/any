@@ -4,8 +4,8 @@ import android.content.Context
 import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
 import any.data.js.code.ServiceCodeLoaderImpl
+import any.data.js.engine.DuktapeJsEngine
 import any.data.js.engine.JsEngine
-import any.data.js.engine.JsEngineFactories
 import any.data.js.plugin.DefaultHttpPlugin
 import any.data.js.plugin.DefaultLogPlugin
 import any.data.js.plugin.DomPlugin
@@ -101,7 +101,7 @@ class ServiceRunner(
                     httpPlugin = DefaultHttpPlugin(),
                     domPlugin = JsoupDomPlugin(),
                     logPlugin = DefaultLogPlugin,
-                    jsEngineFactory = JsEngineFactories.getDefault(),
+                    jsEngineFactory = DuktapeJsEngine.Factory(),
                 ).also {
                     instance = it
                 }

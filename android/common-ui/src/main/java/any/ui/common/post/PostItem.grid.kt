@@ -49,7 +49,7 @@ import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
 import any.data.ThumbAspectRatio
 import any.data.entity.Post
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
 import any.ui.common.rememberScale
@@ -159,7 +159,7 @@ private fun TextGridPostItem(
                 .background(contentBackgroundColor),
         ) {
             val aspectRatio = defThumbAspectRatio
-                ?: ThumbAspectRatio.defaultAspectRatio(ServiceViewType.Grid)
+                ?: ThumbAspectRatio.defaultAspectRatio(PostsViewType.Grid)
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -300,7 +300,7 @@ private fun CoverGridPostItem(
 
         MediaPreview(
             media = ImmutableHolder(listOf(thumbnail)),
-            viewType = ServiceViewType.Grid,
+            viewType = PostsViewType.Grid,
             defaultAspectRatio = defThumbAspectRatio,
             modifier = Modifier
                 .shadow(MaterialTheme.sizes.thumbElevation)

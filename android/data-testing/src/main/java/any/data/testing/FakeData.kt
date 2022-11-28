@@ -2,8 +2,8 @@ package any.data.testing
 
 import any.data.entity.Checksums
 import any.data.entity.Post
+import any.data.entity.PostsViewType
 import any.data.entity.ServiceManifest
-import any.data.entity.ServiceViewType
 import java.util.UUID
 
 object FakeData {
@@ -17,7 +17,7 @@ object FakeData {
             minApiVersion = "0.1.0",
             maxApiVersion = null,
             isPageable = true,
-            viewType = ServiceViewType.List,
+            postsViewType = PostsViewType.List,
             mediaAspectRatio = "1:1",
             icon = null,
             headerImage = null,

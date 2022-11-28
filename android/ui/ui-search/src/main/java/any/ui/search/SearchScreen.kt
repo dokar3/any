@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.ImmutableHolder
 import any.base.util.Intents
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.navigation.NavEvent
 import any.navigation.Routes
@@ -172,7 +172,7 @@ fun SearchScreen(
                     state = scrollableState.gridState,
                     posts = ImmutableHolder(uiState.posts),
                     pageKey = ImmutableHolder(uiState.pageKey),
-                    viewType = uiState.currentService?.viewType ?: ServiceViewType.List,
+                    viewType = uiState.currentService?.postsViewType ?: PostsViewType.List,
                     defThumbAspectRatio = uiState.currentService?.mediaAspectRatio,
                     modifier = Modifier
                         .windowInsetsPadding(WindowInsets.navigationBars)

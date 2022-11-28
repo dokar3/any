@@ -7,7 +7,7 @@
   "minApiVersion": "{{minApiVersion}}",
   "maxApiVersion": "{{maxApiVersion}}",
   "isPageable": {{isPageable}},
-  "viewType": "{{viewType}}",
+  "postsViewType": "{{postsViewType}}",
   "mediaAspectRatio": "{{mediaAspectRatio}}",
   "main": "src/main.ts",
   "languages": ["en"],

@@ -7,7 +7,7 @@
   "minApiVersion": "0.1.0",
   "maxApiVersion": "",
   "isPageable": true,
-  "viewType": "full_width",
+  "postsViewType": "full_width",
   "mediaAspectRatio": "5:4",
   "main": "src/main.ts",
   "icon": "src/assets/logo.png",

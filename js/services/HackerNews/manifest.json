@@ -7,7 +7,7 @@
   "version": "1.0.0",
   "minApiVersion": "0.1.0",
   "isPageable": true,
-  "viewType": "list",
+  "postsViewType": "list",
   "mediaAspectRatio": "5:4",
   "icon": "src/assets/icon.png",
   "themeColor": "#FF6600",

@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import any.base.ImmutableHolder
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.ui.common.modifier.gridItemPadding
 import any.ui.common.modifier.rememberLazyGridColumnCount
@@ -59,7 +59,7 @@ fun PostList(
     state: LazyGridState,
     posts: ImmutableHolder<List<UiPost>>,
     pageKey: ImmutableHolder<Any?>,
-    viewType: ServiceViewType,
+    viewType: PostsViewType,
     defThumbAspectRatio: Float?,
     onCommentsClick: ((UiPost) -> Unit)?,
     onCollectClick: ((UiPost) -> Unit)?,
@@ -111,7 +111,7 @@ private fun PostListImpl(
     state: LazyGridState,
     posts: ImmutableHolder<List<UiPost>>,
     pageKey: ImmutableHolder<Any?>,
-    viewType: ServiceViewType,
+    viewType: PostsViewType,
     defThumbAspectRatio: Float?,
     onCommentsClick: ((UiPost) -> Unit)?,
     onCollectClick: ((UiPost) -> Unit)?,
@@ -173,7 +173,7 @@ private fun PostListImpl(
         }
 
         when (viewType) {
-            ServiceViewType.Grid -> {
+            PostsViewType.Grid -> {
                 itemsIndexed(
                     items = posts.value,
                     key = { _, post -> post.url },
@@ -201,7 +201,7 @@ private fun PostListImpl(
                 }
             }
 
-            ServiceViewType.FullWidth -> {
+            PostsViewType.FullWidth -> {
                 itemsIndexed(
                     items = posts.value,
                     key = { _, post -> post.url },
@@ -227,7 +227,7 @@ private fun PostListImpl(
                 }
             }
 
-            ServiceViewType.Card -> {
+            PostsViewType.Card -> {
                 itemsIndexed(
                     items = posts.value,
                     key = { _, post -> post.url },
@@ -252,7 +252,7 @@ private fun PostListImpl(
                 }
             }
 
-            ServiceViewType.List -> {
+            PostsViewType.List -> {
                 itemsIndexed(
                     items = posts.value,
                     key = { _, post -> post.url },

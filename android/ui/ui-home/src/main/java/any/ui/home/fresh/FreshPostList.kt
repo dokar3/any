@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.R
 import any.base.util.Intents
-import any.data.entity.ServiceViewType
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.domain.entity.UiServiceManifest
 import any.navigation.NavEvent
@@ -187,7 +187,7 @@ internal fun FreshPostList(
         state = scrollableState.gridState,
         posts = posts,
         pageKey = pageKey,
-        viewType = service?.viewType ?: ServiceViewType.List,
+        viewType = service?.postsViewType ?: PostsViewType.List,
         defThumbAspectRatio = service?.mediaAspectRatio,
         modifier = modifier
             .semantics { contentDescription = "FreshPostList" }

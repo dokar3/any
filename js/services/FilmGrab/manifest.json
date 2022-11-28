@@ -7,7 +7,7 @@
   "homepage": "https://github.com/dokar3/Any/tree/main/js/apps/FilmGrab",
   "version": "1.0.0",
   "isPageable": true,
-  "viewType": "full_width",
+  "postsViewType": "full_width",
   "mediaAspectRatio": "18:9",
   "main": "src/main.ts",
   "languages": ["en"],

@@ -3,10 +3,10 @@ package any.domain.entity
 import androidx.compose.runtime.Immutable
 import any.data.entity.Checksums
 import any.data.entity.JsPageKey
+import any.data.entity.PostsViewType
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
-import any.data.entity.ServiceViewType
 import any.richtext.RichContent
 
 @Immutable
@@ -30,7 +30,7 @@ data class UiServiceManifest(
     val minApiVersion: String get() = raw.minApiVersion
     val maxApiVersion: String? get() = raw.maxApiVersion
     val isPageable: Boolean get() = raw.isPageable
-    val viewType: ServiceViewType? get() = raw.viewType
+    val postsViewType: PostsViewType? get() = raw.postsViewType
     val icon: String? get() = raw.icon
     val headerImage: String? get() = raw.headerImage
     val main: String get() = raw.main
@@ -61,7 +61,7 @@ data class UiServiceManifest(
         minApiVersion: String = this.minApiVersion,
         maxApiVersion: String? = this.maxApiVersion,
         isPageable: Boolean = this.isPageable,
-        viewType: ServiceViewType? = this.viewType,
+        postsViewType: PostsViewType? = this.postsViewType,
         icon: String? = this.icon,
         headerImage: String? = this.headerImage,
         main: String = this.main,
@@ -91,7 +91,7 @@ data class UiServiceManifest(
             minApiVersion = minApiVersion,
             maxApiVersion = maxApiVersion,
             isPageable = isPageable,
-            viewType = viewType,
+            postsViewType = postsViewType,
             icon = icon,
             headerImage = headerImage,
             main = main,

@@ -67,12 +67,12 @@ import any.base.image.ImageState
 import any.base.result.ValidationResult
 import any.base.util.Intents
 import any.data.Json
+import any.data.entity.PostsViewType
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceConfigType
 import any.data.entity.ServiceConfigValue
 import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
-import any.data.entity.ServiceViewType
 import any.data.js.ServiceApiVersion
 import any.domain.entity.UiServiceManifest
 import any.richtext.RichContent
@@ -114,7 +114,7 @@ fun ServiceConfiguringDialog(
     var serviceNameError: String? by remember { mutableStateOf(null) }
     var serviceName by remember(service.name) { mutableStateOf(service.name) }
 
-    var viewType by remember(service) { mutableStateOf(service.viewType) }
+    var viewType by remember(service) { mutableStateOf(service.postsViewType) }
 
     var runValidator by remember(service.forceConfigsValidation, isAdded) {
         val force = service.forceConfigsValidation ?: false
@@ -212,7 +212,7 @@ fun ServiceConfiguringDialog(
         onConfirmClick = {
             if (serviceName.isNotEmpty()) {
                 viewModel.tryValidateConfigsAndSave(
-                    service = service.copy(name = serviceName, viewType = viewType),
+                    service = service.copy(name = serviceName, postsViewType = viewType),
                     values = values,
                     runJsValidator = runValidator,
                 )
@@ -256,8 +256,8 @@ private fun ServiceFieldList(
     serviceName: String,
     serviceNameError: String?,
     onServiceNameChange: (String) -> Unit,
-    viewType: ServiceViewType?,
-    onServiceViewTypeChange: (ServiceViewType) -> Unit,
+    viewType: PostsViewType?,
+    onServiceViewTypeChange: (PostsViewType) -> Unit,
     requiredFields: StableHolder<List<ServiceConfig>?>,
     optionalFields: StableHolder<List<ServiceConfig>?>,
     onConfigValueChange: (ServiceConfig, ServiceConfigValue) -> Unit,
@@ -525,8 +525,8 @@ private fun LazyListScope.fieldsItems(
 @Composable
 private fun ServiceViewTypeSelector(
     enabled: Boolean,
-    viewType: ServiceViewType?,
-    onSelected: (ServiceViewType) -> Unit,
+    viewType: PostsViewType?,
+    onSelected: (PostsViewType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showSelector by remember { mutableStateOf(false) }
@@ -534,22 +534,22 @@ private fun ServiceViewTypeSelector(
     val items = remember {
         listOf(
             ServiceViewTypeEntity(
-                viewType = ServiceViewType.List,
+                viewType = PostsViewType.List,
                 icon = CommonUiR.drawable.ic_view_list,
                 title = BaseR.string.list,
             ),
             ServiceViewTypeEntity(
-                viewType = ServiceViewType.Grid,
+                viewType = PostsViewType.Grid,
                 icon = CommonUiR.drawable.ic_view_grid,
                 title = BaseR.string.grid,
             ),
             ServiceViewTypeEntity(
-                viewType = ServiceViewType.FullWidth,
+                viewType = PostsViewType.FullWidth,
                 icon = CommonUiR.drawable.ic_view_full_width,
                 title = BaseR.string.full_width,
             ),
             ServiceViewTypeEntity(
-                viewType = ServiceViewType.Card,
+                viewType = PostsViewType.Card,
                 icon = CommonUiR.drawable.ic_view_card,
                 title = BaseR.string.card,
             ),
@@ -588,7 +588,7 @@ private fun ServiceViewTypeSelectorPopup(
     onDismissRequest: () -> Unit,
     items: StableHolder<List<ServiceViewTypeEntity>>,
     selectedItem: ServiceViewTypeEntity,
-    onSelected: (ServiceViewType) -> Unit,
+    onSelected: (PostsViewType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     DropdownMenu(
@@ -618,19 +618,19 @@ private fun ServiceViewTypeSelectorPopup(
                     .padding(16.dp),
             ) {
                 when (preselected.viewType) {
-                    ServiceViewType.List -> {
+                    PostsViewType.List -> {
                         ListViewPlaceholder()
                     }
 
-                    ServiceViewType.Grid -> {
+                    PostsViewType.Grid -> {
                         GridViewPlaceholder()
                     }
 
-                    ServiceViewType.FullWidth -> {
+                    PostsViewType.FullWidth -> {
                         FullWidthViewPlaceholder()
                     }
 
-                    ServiceViewType.Card -> {
+                    PostsViewType.Card -> {
                         CardViewPlaceholder()
                     }
                 }
@@ -856,7 +856,7 @@ private fun FieldItem(
 
 @Immutable
 private data class ServiceViewTypeEntity(
-    val viewType: ServiceViewType,
+    val viewType: PostsViewType,
     @DrawableRes
     val icon: Int,
     @StringRes
