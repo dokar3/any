@@ -7,9 +7,13 @@ interface Cache<K, V> {
 
     fun remove(key: K)
 
-    fun get(key: K): V?
+    operator fun get(key: K): V?
 
     fun getAll(): List<V>
 
     fun clear()
+
+    operator fun set(key: K, value: V) {
+        put(key, value)
+    }
 }

@@ -56,16 +56,16 @@ internal fun ImageItem(
     ) {
         var reloadFactor by remember { mutableStateOf(0) }
 
-        var picSize by remember(url) { mutableStateOf(IntSize.Zero) }
+        var imgSize by remember(url) { mutableStateOf(IntSize.Zero) }
         var error: Throwable? by remember(url) { mutableStateOf(null) }
 
         val ratio = if (ImageSizeCache.contains(url)) {
-            val size = ImageSizeCache.get(url)!!
+            val size = ImageSizeCache[url]!!
             size.width.toFloat() / size.height
-        } else if (picSize.width != 0 && picSize.height != 0) {
-            onDetectImageSize?.invoke(picSize)
-            ImageSizeCache.put(url, picSize)
-            picSize.width.toFloat() / picSize.height
+        } else if (imgSize.width != 0 && imgSize.height != 0) {
+            onDetectImageSize?.invoke(imgSize)
+            ImageSizeCache[url] = imgSize
+            imgSize.width.toFloat() / imgSize.height
         } else {
             defaultImageRatio
         }
@@ -98,13 +98,15 @@ internal fun ImageItem(
                     is ImageState.Failure -> {
                         error = newState.error
                     }
+
                     is ImageState.Loading -> {
                         error = null
-                        picSize = newState.size ?: IntSize.Zero
+                        imgSize = newState.size ?: IntSize.Zero
                     }
+
                     is ImageState.Success -> {
                         error = null
-                        picSize = newState.size
+                        imgSize = newState.size
                     }
                 }
             },

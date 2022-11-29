@@ -61,6 +61,10 @@ fun VideoView(
     state: VideoPlaybackState,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    /**
+     * Lambda return: resizeVideoSurface: Boolean, if true, the video surface will be resized
+     */
+    onVideoAspectRatioAvailable: ((Float) -> Boolean)? = null,
     thumbnail: String? = null,
     playImmediately: Boolean = false,
 ) {
@@ -79,6 +83,8 @@ fun VideoView(
     var size by remember { mutableStateOf(IntSize.Zero) }
 
     var textureViewRotation by remember { mutableStateOf(0) }
+
+    var isPlayerViewResized by remember { mutableStateOf(false) }
 
     val onLayoutChangeListener = remember {
         View.OnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
@@ -111,6 +117,12 @@ fun VideoView(
             // In this case, the output video's width and height will be swapped.
             mutVideoAspectRatio = 1 / mutVideoAspectRatio
         }
+
+        if (onVideoAspectRatioAvailable != null) {
+            val resizeVideoSurface = onVideoAspectRatioAvailable(mutVideoAspectRatio)
+            if (!resizeVideoSurface) return
+        }
+
         if (textureViewRotation != 0) {
             view.removeOnLayoutChangeListener(onLayoutChangeListener)
         }
@@ -123,7 +135,8 @@ fun VideoView(
         TextureViewUtil.applyTextureViewRotation(view, textureViewRotation)
 
         view.layoutParams.run {
-            if (mutVideoAspectRatio > 1) {
+            val containerAspectRatio = containerSize.width.toFloat() / containerSize.height
+            if (mutVideoAspectRatio > containerAspectRatio) {
                 width = containerSize.width
                 height = (containerSize.width / mutVideoAspectRatio).toInt()
             } else {
@@ -132,6 +145,8 @@ fun VideoView(
             }
         }
         view.requestLayout()
+        isPlayerViewResized = true
+        view.alpha = 1f
     }
 
     LaunchedEffect(state.isPlaying, playerView) {
@@ -139,17 +154,15 @@ fun VideoView(
         view.keepScreenOn = state.isPlaying
     }
 
-    LaunchedEffect(state.videoSize, playerView) {
+    LaunchedEffect(state.videoSize, playerView, size) {
+        if (size.width == 0 || size.height == 0) return@LaunchedEffect
         val view = playerView ?: return@LaunchedEffect
         val videoSize = state.videoSize
-        val width: Int = videoSize.width
-        val height: Int = videoSize.height
-        val unappliedRotationDegrees: Int = videoSize.unappliedRotationDegrees
-        val videoAspectRatio: Float = if (height != 0 && width != 0) {
-            width * videoSize.pixelWidthHeightRatio / height
-        } else {
-            0f
-        }
+        val width = videoSize.width
+        val height = videoSize.height
+        if (width == 0 || height == 0) return@LaunchedEffect
+        val unappliedRotationDegrees = videoSize.unappliedRotationDegrees
+        val videoAspectRatio = width * videoSize.pixelWidthHeightRatio / height
         if (videoAspectRatio > 0f) {
             applyAspectRatio(view, videoAspectRatio, unappliedRotationDegrees)
         }
@@ -221,6 +234,7 @@ fun VideoView(
                 AndroidView(
                     factory = { context ->
                         val textureView = TextureView(context)
+                        textureView.alpha = 0f
                         playerView = textureView
 
                         FrameLayout(context).apply {
@@ -237,7 +251,9 @@ fun VideoView(
                 )
             }
 
-            if (!thumbnail.isNullOrEmpty() && !state.isRenderedFirstFrame) {
+            if (!thumbnail.isNullOrEmpty() &&
+                (!state.isRenderedFirstFrame || !isPlayerViewResized)
+            ) {
                 AsyncImage(
                     request = ImageRequest.Url(thumbnail),
                     contentDescription = null,

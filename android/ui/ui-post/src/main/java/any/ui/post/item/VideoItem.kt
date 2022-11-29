@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import any.base.image.ImageRequest
@@ -18,7 +22,6 @@ import any.ui.common.theme.thumb
 import any.ui.common.video.VideoView
 import any.ui.common.video.rememberVideoPlaybackState
 
-// TODO: Implement the in-app video playback
 @Composable
 internal fun VideoItem(
     video: UiContentElement.Video,
@@ -26,6 +29,14 @@ internal fun VideoItem(
     onPlayClick: () -> Unit,
     defaultAspectRatio: Float = 16f / 9,
 ) {
+    var aspectRatio by remember {
+        mutableStateOf(
+            video.aspectRatio
+                ?: VideoAspectRatioCache[video.url]
+                ?: defaultAspectRatio
+        )
+    }
+
     Box(
         modifier = modifier
             .padding(
@@ -33,7 +44,7 @@ internal fun VideoItem(
                 vertical = ItemsDefaults.ItemVerticalSpacing,
             )
             .fillMaxWidth()
-            .aspectRatio(video.aspectRatio ?: defaultAspectRatio)
+            .aspectRatio(aspectRatio)
             .clip(MaterialTheme.shapes.thumb)
             .background(MaterialTheme.colors.imagePlaceholder),
     ) {
@@ -42,6 +53,12 @@ internal fun VideoItem(
             VideoView(
                 state = rememberVideoPlaybackState(url = video.url),
                 modifier = Modifier.fillMaxSize(),
+                onVideoAspectRatioAvailable = {
+                    val resizeSurface = aspectRatio == it
+                    aspectRatio = it
+                    VideoAspectRatioCache[video.url] = it
+                    resizeSurface
+                },
             )
         } else if (!thumb.isNullOrEmpty()) {
             AsyncImage(

@@ -62,12 +62,12 @@ internal fun FullWidthImageItem(
 
         val w = constraints.maxWidth
         val ratio = if (ImageSizeCache.contains(url)) {
-            val size = ImageSizeCache.get(url)!!
+            val size = ImageSizeCache[url]!!
             size.width.toFloat() / size.height
         } else if (picSize.width != 0 && picSize.height != 0) {
             val size = IntSize(picSize.width, picSize.height)
             onDetectImageSize(size)
-            ImageSizeCache.put(url, size)
+            ImageSizeCache[url] = size
             picSize.width.toFloat() / picSize.height
         } else {
             defaultImageRatio
