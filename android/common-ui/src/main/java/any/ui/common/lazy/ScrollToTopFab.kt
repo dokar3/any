@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -53,9 +54,10 @@ fun ScrollToTopFab(
 
     val currThreshold = rememberUpdatedState(toggleScrollThreshold)
 
-    val showScrollToTopButton by remember(density) {
+    val itemHeights = rememberSaveable(inputs = emptyArray()) { TreeMap<Int, Int>() }
+
+    val showScrollToTopButton by remember(scrollableState, density) {
         val threshold = with(density) { -(currThreshold.value.roundToPx()) }
-        val itemHeights = TreeMap<Int, Int>()
         derivedStateOf {
             scrollableState.visibleItemsInfo.let { items ->
                 if (items.isEmpty()) {
@@ -75,6 +77,9 @@ fun ScrollToTopFab(
                         if (invisibleItemsHeight > abs(threshold)) {
                             return@let true
                         }
+                    } else {
+                        // Safely break the loop because the map is a TreeMap
+                        break
                     }
                 }
                 -invisibleItemsHeight + items.first().offset < threshold
