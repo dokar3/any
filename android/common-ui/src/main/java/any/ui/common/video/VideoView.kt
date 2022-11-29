@@ -17,7 +17,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,7 +63,6 @@ fun VideoView(
     onClick: (() -> Unit)? = null,
     thumbnail: String? = null,
     playImmediately: Boolean = false,
-    aspectRatio: Float = 16f / 9,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -189,7 +187,6 @@ fun VideoView(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(aspectRatio)
             .onSizeChanged { size = it }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },

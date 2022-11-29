@@ -35,6 +35,17 @@ private const val DEFAULT_TICK_INTERVAL = 100L
 
 @Composable
 fun rememberVideoPlaybackState(
+    url: String,
+    progressTickInterval: Long = DEFAULT_TICK_INTERVAL,
+): VideoPlaybackState {
+    return rememberVideoPlaybackState(
+        uri = Uri.parse(url),
+        progressTickInterval = progressTickInterval,
+    )
+}
+
+@Composable
+fun rememberVideoPlaybackState(
     uri: Uri,
     progressTickInterval: Long = DEFAULT_TICK_INTERVAL,
 ): VideoPlaybackState {

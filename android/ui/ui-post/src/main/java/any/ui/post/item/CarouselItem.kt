@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +43,8 @@ import any.ui.common.theme.imagePlaceholder
 import any.ui.common.theme.secondaryText
 import any.ui.common.theme.sizes
 import any.ui.common.theme.thumb
+import any.ui.common.video.VideoView
+import any.ui.common.video.rememberVideoPlaybackState
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -125,24 +126,20 @@ internal fun CarouselItem(
             val image = item.image
             val video = item.video
 
-            Box {
-                if (image != null) {
-                    AsyncImage(
-                        request = ImageRequest.Downloadable(image),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(if (it % 2 == 0) evenColor else oddColor),
-                        showProgressbar = true,
-                    )
-                }
-
-                if (video != null) {
-                    VideoPlaybackButton(
-                        onPlayClick = { onPlayVideoClick(video) },
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                }
+            if (!video.isNullOrEmpty()) {
+                VideoView(
+                    state = rememberVideoPlaybackState(url = video),
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else if (!image.isNullOrEmpty()) {
+                AsyncImage(
+                    request = ImageRequest.Downloadable(image),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(if (it % 2 == 0) evenColor else oddColor),
+                    showProgressbar = true,
+                )
             }
         }
 

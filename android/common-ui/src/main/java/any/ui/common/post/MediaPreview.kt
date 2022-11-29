@@ -1,6 +1,5 @@
 package any.ui.common.post
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -182,11 +181,13 @@ private fun MediaPreviewItem(
 ) {
     Box(modifier = modifier) {
         if (media.type == Post.Media.Type.Video && media.url.isNotEmpty()) {
-            val playbackState = rememberVideoPlaybackState(uri = Uri.parse(media.url))
+            val playbackState = rememberVideoPlaybackState(url = media.url)
             VideoView(
                 state = playbackState,
-                modifier = Modifier.background(MaterialTheme.colors.imagePlaceholder),
-                aspectRatio = aspectRatio,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(aspectRatio)
+                    .background(MaterialTheme.colors.imagePlaceholder),
                 thumbnail = media.thumbnail,
             )
         } else {
