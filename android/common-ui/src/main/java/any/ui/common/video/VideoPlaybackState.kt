@@ -38,7 +38,9 @@ fun rememberVideoPlaybackState(
     progressTickInterval: Long = DEFAULT_TICK_INTERVAL,
 ): VideoPlaybackState {
     val context = LocalContext.current
+
     val scope = rememberCoroutineScope()
+
     val state = remember(uri) {
         VideoPlaybackState(context, scope, progressTickInterval, uri)
     }
@@ -77,13 +79,15 @@ private object PlaybackStateManager {
 }
 
 @Stable
-class VideoPlaybackState(
+class VideoPlaybackState internal constructor(
     private val context: Context,
     private val tickScope: CoroutineScope,
     internal var tickInterval: Long,
     val uri: Uri,
 ) : Player.Listener {
     private var player: ExoPlayer? = null
+
+    private var isReleased = false
 
     var isRenderedFirstFrame by mutableStateOf(false)
         private set
@@ -232,7 +236,7 @@ class VideoPlaybackState(
     }
 
     fun release() {
-        if (player == null) return
+        if (player == null || isReleased) return
         withPlayer {
             removeListener(this@VideoPlaybackState)
             release()
@@ -242,10 +246,12 @@ class VideoPlaybackState(
         isBuffering = false
         isPlaying = false
         player = null
+        isReleased = true
     }
 
     private inline fun <T> withPlayer(block: ExoPlayer.() -> T): T {
-        val player = checkNotNull(player) { "ExoPlayer is not initialized" }
+        check(!isReleased) { "Player is released" }
+        val player = checkNotNull(player) { "Player is not initialized" }
         return block(player)
     }
 }

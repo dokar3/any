@@ -24,6 +24,7 @@ import any.base.prefs.preferencesStore
 import any.base.prefs.primaryColor
 import any.base.util.Dirs
 import any.base.util.FileUtil
+import any.data.cache.ExoVideoCache
 import any.navigation.Routes
 import any.navigation.navPushEvent
 import any.navigation.search
@@ -175,6 +176,7 @@ class MainActivity : DarkModeAwareActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             FileUtil.clearDirectory(Dirs.backupTempDir(this@MainActivity))
             FileUtil.clearDirectory(Dirs.servicesTempDir(this@MainActivity))
+            ExoVideoCache.release()
         }
     }
 
