@@ -321,7 +321,7 @@ internal fun CollectionsScreen(
             }
 
             // Current folder has changed and the data is ready, navigate to next folder
-            screenState.resetTopBar()
+            screenState.resetBars()
             val route = ROUTE.replace("{folder}", currentFolder.path.urlEncode())
             if (currentFolder.isTheSameOrSubFolder(previousFolder)) {
                 subNavController.popBackStackUtil { entry ->
