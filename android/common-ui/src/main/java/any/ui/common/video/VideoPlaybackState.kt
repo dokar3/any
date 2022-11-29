@@ -110,12 +110,11 @@ class VideoPlaybackState internal constructor(
     var progress: Float by mutableStateOf(-1f)
         private set
 
-    private var _isMuted by mutableStateOf(false)
     var isMuted: Boolean
-        get() = _isMuted
+        get() = globalIsMuted
         set(value) {
-            withPlayer { volume = if (value) 0f else 1f }
-            _isMuted = value
+            withPlayer { setMuted(value) }
+            globalIsMuted = value
         }
 
     private var tickJob: Job? = null
@@ -187,6 +186,7 @@ class VideoPlaybackState internal constructor(
                 prepare()
                 playWhenReady = true
             }
+            setMuted(globalIsMuted)
             play()
         }
         tickProgress()
@@ -249,9 +249,17 @@ class VideoPlaybackState internal constructor(
         isReleased = true
     }
 
+    private fun Player.setMuted(isMuted: Boolean) {
+        volume = if (isMuted) 0f else 1f
+    }
+
     private inline fun <T> withPlayer(block: ExoPlayer.() -> T): T {
         check(!isReleased) { "Player is released" }
         val player = checkNotNull(player) { "Player is not initialized" }
         return block(player)
+    }
+
+    companion object {
+        private var globalIsMuted by mutableStateOf(false)
     }
 }
