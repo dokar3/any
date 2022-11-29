@@ -5,6 +5,7 @@ import any.base.util.Dirs
 import any.data.entity.SpaceInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.math.min
 
 class DownloadedImages(
     context: Context
@@ -23,7 +24,7 @@ class DownloadedImages(
         val dir = Dirs.postImageDownloadDir(context)
         val occupied = dir.walkTopDown().fold(0L) { acc, file -> acc + file.length() }
         val max = dir.totalSpace
-        val available = dir.freeSpace
+        val available = min(dir.freeSpace, (max - occupied).coerceAtLeast(0L))
         SpaceInfo(occupied, max, available)
     }
 }

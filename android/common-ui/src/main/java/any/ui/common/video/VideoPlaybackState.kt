@@ -12,27 +12,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import any.base.util.MB
+import any.data.cache.ExoVideoCache
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.database.StandaloneDatabaseProvider
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.FileDataSource
-import com.google.android.exoplayer2.upstream.cache.Cache
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.File
 import kotlin.math.max
 
 private const val DEFAULT_TICK_INTERVAL = 100L
@@ -122,7 +117,7 @@ class VideoPlaybackState(
     private var tickJob: Job? = null
 
     private val cacheDataSourceFactory by lazy {
-        val cache = ExoCache.get(context)
+        val cache = ExoVideoCache.get(context)
         val cacheSink = CacheDataSink.Factory().setCache(cache)
         val upstreamFactory = DefaultDataSource.Factory(context, DefaultHttpDataSource.Factory())
         CacheDataSource.Factory()
@@ -252,26 +247,5 @@ class VideoPlaybackState(
     private inline fun <T> withPlayer(block: ExoPlayer.() -> T): T {
         val player = checkNotNull(player) { "ExoPlayer is not initialized" }
         return block(player)
-    }
-}
-
-private object ExoCache {
-    private const val VIDEO_CACHE_DIR = "exoCache"
-
-    private val MAX_CACHE_SIZE = 500.MB
-
-    @Volatile
-    private var cache: Cache? = null
-
-    fun get(context: Context): Cache {
-        return cache ?: synchronized(VideoPlaybackState::class.java) {
-            cache ?: SimpleCache(
-                File(context.cacheDir, VIDEO_CACHE_DIR),
-                LeastRecentlyUsedCacheEvictor(MAX_CACHE_SIZE),
-                StandaloneDatabaseProvider(context)
-            ).also {
-                cache = it
-            }
-        }
     }
 }

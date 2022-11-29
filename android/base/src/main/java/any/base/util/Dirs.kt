@@ -37,6 +37,10 @@ object Dirs {
         }
     }
 
+    fun videoCacheDir(context: Context): File {
+        return File(context.cacheDir, "video_cache")
+    }
+
     fun postImageDownloadDir(context: Context): File {
         return File(context.getExternalFilesDir(null), "Download/images")
     }
@@ -47,7 +51,7 @@ object Dirs {
     }
 
     fun subsamplingImageTempDir(context: Context): File {
-        return File(context.cacheDir, "subsampling").also {
+        return File(context.cacheDir, "image_subsampling").also {
             if (!it.exists()) {
                 it.mkdirs()
             }

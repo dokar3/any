@@ -109,13 +109,18 @@ class FilesAndDataViewModel(
             strings(BaseR.string.downloaded_images),
             strings(BaseR.string.downloaded_images_clean_alert)
         )
-        val coilDiskImagesInfo = Pair(
+        val diskCacheImagesInfo = Pair(
             strings(BaseR.string.image_cache),
             strings(BaseR.string.image_cache_clean_alert)
         )
+        val diskCacheVideosInfo = Pair(
+            strings(BaseR.string.video_cache),
+            strings(BaseR.string.video_cache_clean_alert)
+        )
         val items = listOf(
             cleanableProvider.get(Cleanable.Type.DownloadedImage) to downloadedImagesInfo,
-            cleanableProvider.get(Cleanable.Type.DiskCacheImages) to coilDiskImagesInfo,
+            cleanableProvider.get(Cleanable.Type.DiskCacheImages) to diskCacheImagesInfo,
+            cleanableProvider.get(Cleanable.Type.DiskCacheVideos) to diskCacheVideosInfo,
         ).map {
             val cleanable = it.first
             val info = it.second

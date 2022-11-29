@@ -74,6 +74,8 @@ dependencies {
     implementation libs.crc
     implementation libs.duktape
     implementation libs.bolts.tasks
+    implementation libs.exoplayer.database
+    implementation libs.exoplayer.datasource
 
     testImplementation libs.junit
     androidTestImplementation libs.duktape

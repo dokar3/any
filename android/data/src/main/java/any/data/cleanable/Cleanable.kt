@@ -9,6 +9,7 @@ interface Cleanable {
 
     enum class Type {
         DiskCacheImages,
+        DiskCacheVideos,
         DownloadedImage,
     }
 }

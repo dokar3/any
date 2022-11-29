@@ -190,6 +190,8 @@
     <string name="post_contents_clean_alert">Invalid post contents will be cleared, images are not included.</string>
     <string name="image_cache">Image cache</string>
     <string name="image_cache_clean_alert">All cached images will be cleared, downloaded images are not included.</string>
+    <string name="video_cache">Video cache</string>
+    <string name="video_cache_clean_alert">All cached videos will be cleared</string>
     <string name="no_new_posts">No new posts</string>
     <string name="_loaded_new_posts">Loaded %d new posts</string>
     <string name="_network_error">Network error: %s</string>

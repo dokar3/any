@@ -8,6 +8,7 @@ class CleanableProviderImpl(context: Context) : CleanableProvider {
     override fun get(type: Cleanable.Type): Cleanable {
         return when (type) {
             Cleanable.Type.DiskCacheImages -> DiskCacheImages()
+            Cleanable.Type.DiskCacheVideos -> DiskCacheVideos(context)
             Cleanable.Type.DownloadedImage -> DownloadedImages(context)
         }
     }
