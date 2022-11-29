@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,14 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import any.base.prefs.DarkMode
 import any.base.prefs.darkMode
-import any.base.prefs.darkModeEnabledFlow
 import any.base.prefs.darkModeFlow
-import any.base.prefs.darkenedImages
 import any.base.prefs.preferencesStore
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
 import com.google.accompanist.flowlayout.FlowRow
-import kotlinx.coroutines.flow.drop
 
 @Composable
 internal fun DarkModeItem(
@@ -43,12 +39,6 @@ internal fun DarkModeItem(
         { mode ->
             preferencesStore.darkMode = mode
         }
-    }
-
-    LaunchedEffect(preferencesStore) {
-        preferencesStore.darkModeEnabledFlow(context, this)
-            .drop(1)
-            .collect { preferencesStore.darkenedImages.value = it }
     }
 
     SettingsItem(

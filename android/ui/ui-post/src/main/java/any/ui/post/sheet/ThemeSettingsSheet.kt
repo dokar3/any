@@ -86,7 +86,6 @@ private fun ThemePanel(
         SwitchItem(
             checked = darkMode,
             onCheckedChange = {
-                preferencesStore.darkenedImages.value = it
                 preferencesStore.darkMode = if (it) DarkMode.Yes else DarkMode.No
             }
         ) {
