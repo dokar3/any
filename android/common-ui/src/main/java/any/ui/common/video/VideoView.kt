@@ -1,23 +1,21 @@
 package any.ui.common.video
 
 import any.base.R as BaseR
-import android.content.Context
+import android.view.Gravity
+import android.view.TextureView
+import android.view.View
+import android.widget.FrameLayout
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,17 +24,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,16 +38,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -62,10 +54,7 @@ import any.base.image.ImageRequest
 import any.ui.common.R
 import any.ui.common.image.AsyncImage
 import any.ui.common.rememberScale
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import kotlinx.coroutines.delay
-
-private const val CONTROL_BACKGROUND_OPACITY = 0.6f
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -79,9 +68,7 @@ fun VideoView(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var playerView by remember {
-        mutableStateOf<StyledPlayerView?>(null)
-    }
+    var playerView by remember { mutableStateOf<TextureView?>(null) }
 
     val scrimColor by animateColorAsState(
         if (state.error != null) {
@@ -91,6 +78,80 @@ fun VideoView(
         }
     )
 
+    var size by remember { mutableStateOf(IntSize.Zero) }
+
+    var textureViewRotation by remember { mutableStateOf(0) }
+
+    val onLayoutChangeListener = remember {
+        View.OnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
+            TextureViewUtil.applyTextureViewRotation(
+                view as TextureView,
+                textureViewRotation
+            )
+        }
+    }
+
+    /**
+     * Copied from StyledPlayerView.updateAspectRatio()
+     */
+    fun applyAspectRatio(
+        view: TextureView,
+        videoAspectRatio: Float,
+        unappliedRotationDegrees: Int,
+    ) {
+        val containerSize = size
+        if (containerSize.width == 0 || containerSize.height == 0) {
+            return
+        }
+
+        var mutVideoAspectRatio = videoAspectRatio
+        // Try to apply rotation transformation when our surface is a TextureView.
+        if (mutVideoAspectRatio > 0
+            && (unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270)
+        ) {
+            // We will apply a rotation 90/270 degree to the output texture of the TextureView.
+            // In this case, the output video's width and height will be swapped.
+            mutVideoAspectRatio = 1 / mutVideoAspectRatio
+        }
+        if (textureViewRotation != 0) {
+            view.removeOnLayoutChangeListener(onLayoutChangeListener)
+        }
+        textureViewRotation = unappliedRotationDegrees
+        if (textureViewRotation != 0) {
+            // The texture view's dimensions might be changed after layout step.
+            // So add an OnLayoutChangeListener to apply rotation after layout step.
+            view.addOnLayoutChangeListener(onLayoutChangeListener)
+        }
+        TextureViewUtil.applyTextureViewRotation(view, textureViewRotation)
+
+        view.layoutParams.run {
+            if (mutVideoAspectRatio > 1) {
+                width = containerSize.width
+                height = (containerSize.width / mutVideoAspectRatio).toInt()
+            } else {
+                height = containerSize.height
+                width = (containerSize.height * mutVideoAspectRatio).toInt()
+            }
+        }
+        view.requestLayout()
+    }
+
+    LaunchedEffect(state.videoSize, playerView) {
+        val view = playerView ?: return@LaunchedEffect
+        val videoSize = state.videoSize
+        val width: Int = videoSize.width
+        val height: Int = videoSize.height
+        val unappliedRotationDegrees: Int = videoSize.unappliedRotationDegrees
+        val videoAspectRatio: Float = if (height != 0 && width != 0) {
+            width * videoSize.pixelWidthHeightRatio / height
+        } else {
+            0f
+        }
+        if (videoAspectRatio > 0f) {
+            applyAspectRatio(view, videoAspectRatio, unappliedRotationDegrees)
+        }
+    }
+
     DisposableEffect(state, playerView) {
         val view = playerView
         if (view != null) {
@@ -98,6 +159,7 @@ fun VideoView(
         }
         onDispose {
             if (view != null) {
+                view.removeOnLayoutChangeListener(onLayoutChangeListener)
                 state.detachFromView(view)
             }
         }
@@ -128,6 +190,7 @@ fun VideoView(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(aspectRatio)
+            .onSizeChanged { size = it }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -153,15 +216,24 @@ fun VideoView(
             if (state.isPlayed) {
                 AndroidView(
                     factory = { context ->
-                        createPlayerView(context).also {
-                            playerView = it
+                        val textureView = TextureView(context)
+                        playerView = textureView
+
+                        FrameLayout(context).apply {
+                            val params = FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                                FrameLayout.LayoutParams.MATCH_PARENT
+                            ).also {
+                                it.gravity = Gravity.CENTER
+                            }
+                            addView(textureView, params)
                         }
                     },
                     modifier = Modifier.fillMaxSize(),
                 )
             }
 
-            if (!state.isRenderedFirstFrame && !thumbnail.isNullOrEmpty()) {
+            if (!thumbnail.isNullOrEmpty() && !state.isRenderedFirstFrame) {
                 AsyncImage(
                     request = ImageRequest.Url(thumbnail),
                     contentDescription = null,
@@ -237,147 +309,16 @@ fun VideoView(
             }
         }
 
-        ControlBar(
+        VideoControlBar(
             onShowRequest = { controlsVisible = true },
             onMuteClick = { state.isMuted = !state.isMuted },
-            onFullScreenClick = {},
+            onFullscreenClick = {},
             controlsVisible = controlsVisible,
             duration = state.duration,
             progress = state.progress,
             isMuted = state.isMuted,
-            showFullScreenButton = state.isPlayed,
+            showFullscreenButton = state.isPlayed,
             modifier = Modifier.align(Alignment.BottomCenter),
         )
-    }
-}
-
-@Composable
-private fun ControlBar(
-    onShowRequest: () -> Unit,
-    onMuteClick: () -> Unit,
-    onFullScreenClick: () -> Unit,
-    controlsVisible: Boolean,
-    duration: Long,
-    progress: Float,
-    isMuted: Boolean,
-    showFullScreenButton: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .run {
-                 if (!controlsVisible) {
-                     clickable(
-                         interactionSource = remember { MutableInteractionSource() },
-                         indication = null,
-                         onClick = onShowRequest,
-                     )
-                 } else {
-                     this
-                 }
-            },
-    ) {
-        val controlsAlpha by animateFloatAsState(
-            targetValue = if (controlsVisible) 1f else 0f,
-            animationSpec = if (controlsVisible) {
-                tween(durationMillis = 175)
-            } else {
-                tween(durationMillis = 575)
-            },
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .graphicsLayer {
-                    alpha = controlsAlpha
-                },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            if (duration >= 0 && progress >= 0f) {
-                val rest = (duration * (1f - progress)).toLong()
-                val minutes = rest / 1000 / 60
-                val seconds = (rest - minutes * 1000 * 60) / 1000
-                Text(
-                    text = String.format("%d:%02d", minutes, seconds),
-                    modifier = Modifier
-                        .background(
-                            color = Color.Black.copy(alpha = CONTROL_BACKGROUND_OPACITY),
-                            shape = MaterialTheme.shapes.small,
-                        )
-                        .padding(
-                            horizontal = 8.dp,
-                            vertical = 2.dp
-                        ),
-                    fontSize = 14.sp,
-                    color = Color.White,
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            ControlButton(onClick = onMuteClick) {
-                Icon(
-                    painter = painterResource(
-                        if (isMuted) {
-                            R.drawable.ic_baseline_volume_off_24
-                        } else {
-                            R.drawable.ic_baseline_volume_up_24
-                        }
-                    ),
-                    contentDescription = null,
-                )
-            }
-
-            if (showFullScreenButton) {
-                Spacer(modifier = Modifier.width(8.dp))
-
-                ControlButton(onClick = onFullScreenClick) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_baseline_fullscreen_24),
-                        contentDescription = null,
-                    )
-                }
-            }
-        }
-
-        if (progress >= 0f) {
-            LinearProgressIndicator(
-                progress = progress,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
-                backgroundColor = Color.Transparent,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ControlButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .clip(CircleShape)
-            .background(Color.Black.copy(0.6f))
-            .clickable(onClick = onClick)
-            .padding(4.dp),
-    ) {
-        CompositionLocalProvider(
-            LocalContentColor provides Color.White,
-        ) {
-            icon()
-        }
-    }
-}
-
-private fun createPlayerView(context: Context): StyledPlayerView {
-    return StyledPlayerView(context).also {
-        it.useController = false
     }
 }

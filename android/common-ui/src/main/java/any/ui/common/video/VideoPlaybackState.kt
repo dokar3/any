@@ -2,6 +2,7 @@ package any.ui.common.video
 
 import android.content.Context
 import android.net.Uri
+import android.view.TextureView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
@@ -18,12 +19,12 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
+import com.google.android.exoplayer2.video.VideoSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -117,6 +118,9 @@ class VideoPlaybackState internal constructor(
             globalIsMuted = value
         }
 
+    var videoSize: VideoSize by mutableStateOf(VideoSize.UNKNOWN)
+        private set
+
     private var tickJob: Job? = null
 
     private val cacheDataSourceFactory by lazy {
@@ -137,6 +141,10 @@ class VideoPlaybackState internal constructor(
 
     override fun onRenderedFirstFrame() {
         this.isRenderedFirstFrame = true
+    }
+
+    override fun onVideoSizeChanged(videoSize: VideoSize) {
+        this.videoSize = videoSize
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
@@ -164,13 +172,17 @@ class VideoPlaybackState internal constructor(
         this.error = error
     }
 
-    fun attachToView(view: StyledPlayerView) {
-        view.player = player
+    fun attachToView(view: TextureView) {
+        withPlayer {
+            setVideoTextureView(view)
+        }
     }
 
-    fun detachFromView(view: StyledPlayerView) {
+    fun detachFromView(view: TextureView) {
+        withPlayer {
+            clearVideoTextureView(view)
+        }
         release()
-        view.player = null
     }
 
     fun play() {

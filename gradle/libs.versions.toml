@@ -92,7 +92,6 @@ fresco-imagepipeline-okhttp = { module = "com.facebook.fresco:imagepipeline-okht
 exoplayer-core = { module = "com.google.android.exoplayer:exoplayer-core", version.ref = "exoplayer" }
 exoplayer-database = { module = "com.google.android.exoplayer:exoplayer-database", version.ref = "exoplayer" }
 exoplayer-datasource = { module = "com.google.android.exoplayer:exoplayer-datasource", version.ref = "exoplayer" }
-exoplayer-ui = { module = "com.google.android.exoplayer:exoplayer-ui", version.ref = "exoplayer" }
 
 guava = { module = "com.google.guava:guava", version = "31.1-android" }
 
