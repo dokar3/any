@@ -8,7 +8,7 @@ import {
   AnyUserFeature,
 } from "any-service-api";
 import { BASE_URL } from "./Service";
-import { parseShots } from "./ShotParsing";
+import { parseShots } from "./ParseShot";
 
 export class UserFeature extends AnyUserFeature {
   fetchById(params: FetchUserByIdParams): FetchResult<User> {

@@ -10,7 +10,7 @@ import {
   SearchPostsParams,
 } from "any-service-api";
 import { BASE_URL } from "./Service";
-import { fetchShots, parseShotPage } from "./ShotParsing";
+import { fetchShots, parseShotPage } from "./ParseShot";
 
 export class ShotFeature extends AnyPostFeature {
   fetch(params: FetchPostParams): FetchResult<Post> {

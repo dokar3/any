@@ -122,9 +122,13 @@ export function parseShotPage(content: DomElement): Post.ContentElement[] {
         const video = block.select("video");
         if (video !== null) {
           const aspectRatio = resolveAspectRatioFromStyle(block);
+          let videoUrl = video.attr("src");
+          if (videoUrl.length == 0) {
+            videoUrl = video.attr("data-src");
+          }
           elements.push(
             Post.ContentElement.video({
-              url: video.attr("src"),
+              url: videoUrl,
               aspectRatio: aspectRatio,
             })
           );
@@ -175,7 +179,11 @@ function parseShotMediaContainer(media: DomElement): Post.ContentElement {
 
     const video = media.select(".media-content video");
     if (video != null) {
-      return Post.ContentElement.video({ url: video.attr("src") });
+      let videoUrl = video.attr("src");
+      if (videoUrl.length == 0) {
+        videoUrl = video.attr("data-src");
+      }
+      return Post.ContentElement.video({ url: videoUrl });
     }
 
     return parseShotCarousel_block_media(media);
