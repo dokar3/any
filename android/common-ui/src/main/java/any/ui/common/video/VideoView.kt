@@ -134,6 +134,11 @@ fun VideoView(
         view.requestLayout()
     }
 
+    LaunchedEffect(state.isPlaying, playerView) {
+        val view = playerView ?: return@LaunchedEffect
+        view.keepScreenOn = state.isPlaying
+    }
+
     LaunchedEffect(state.videoSize, playerView) {
         val view = playerView ?: return@LaunchedEffect
         val videoSize = state.videoSize
@@ -150,6 +155,7 @@ fun VideoView(
         }
     }
 
+
     DisposableEffect(state, playerView) {
         val view = playerView
         if (view != null) {
@@ -157,6 +163,7 @@ fun VideoView(
         }
         onDispose {
             if (view != null) {
+                view.keepScreenOn = false
                 view.removeOnLayoutChangeListener(onLayoutChangeListener)
                 state.detachFromView(view)
             }
