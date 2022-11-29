@@ -228,7 +228,7 @@ fun VideoView(
 
         var controlsVisible by remember { mutableStateOf(true) }
 
-        LaunchedEffect(state.isPlaying) {
+        LaunchedEffect(state.isPlaying, controlsVisible) {
             controlsVisible = if (state.isPlaying) {
                 delay(2000)
                 false
@@ -238,6 +238,7 @@ fun VideoView(
         }
 
         ControlBar(
+            onShowRequest = { controlsVisible = true },
             onMuteClick = { state.isMuted = !state.isMuted },
             onFullScreenClick = {},
             controlsVisible = controlsVisible,
@@ -252,6 +253,7 @@ fun VideoView(
 
 @Composable
 private fun ControlBar(
+    onShowRequest: () -> Unit,
     onMuteClick: () -> Unit,
     onFullScreenClick: () -> Unit,
     controlsVisible: Boolean,
@@ -261,7 +263,21 @@ private fun ControlBar(
     showFullScreenButton: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier = modifier.fillMaxWidth()) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .run {
+                 if (!controlsVisible) {
+                     clickable(
+                         interactionSource = remember { MutableInteractionSource() },
+                         indication = null,
+                         onClick = onShowRequest,
+                     )
+                 } else {
+                     this
+                 }
+            },
+    ) {
         val controlsAlpha by animateFloatAsState(
             targetValue = if (controlsVisible) 1f else 0f,
             animationSpec = if (controlsVisible) {
