@@ -93,6 +93,7 @@ class BrowserActivity : DarkModeAwareActivity() {
 
                     TintSystemBars(
                         darkMode = isDark,
+                        statusBarColor = MaterialTheme.colors.background,
                         navigationBarColor = compositedBottomBarColor,
                     )
 
