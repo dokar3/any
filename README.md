@@ -20,15 +20,6 @@ App for collecting news, articles, feeds and web pages. Currently, it's still in
 - Dark mode
 - Image filters
 
-# Technologies
-
-- Kotlin + TypeScript/JavaScript
-- JavaScript runs on the Duktape engine, CashApp's Duktape-Android was used.
-- MVVM architecture
-- Jetpack Compose for the UI
-- Kotlin Coroutines for async operations
-- Room, OkHttp, Moshi, Fresco, Jsoup and other libraries are used.
-
 # Build requirements
 
 - Android Studio
