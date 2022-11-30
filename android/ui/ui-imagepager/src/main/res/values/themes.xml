@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="FullScreenDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@color/system_bars_background</item>
+        <item name="android:navigationBarColor">@color/system_bars_background</item>
+        <!-- Remove black bar on high version android (api 28+, maybe) -->
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">
+            shortEdges
+        </item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowAnimationStyle">@style/DialogAnimationStyle</item>
+    </style>
+
+    <style name="DialogAnimationStyle">
+        <item name="android:windowEnterAnimation">@anim/fragment_enter</item>
+        <item name="android:windowExitAnimation">@anim/fragment_exit</item>
+    </style>
+</resources>

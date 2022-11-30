@@ -1,0 +1,19 @@
+{
+  "id": "any.hackernews",
+  "name": "Hacker News",
+  "description": "Top stories on <a href=\"https://news.ycombinator.com/\">Hacker News</a>",
+  "developer": "Any",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/HackerNews",
+  "version": "1.0.0",
+  "minApiVersion": "0.1.0",
+  "isPageable": true,
+  "postsViewType": "list",
+  "mediaAspectRatio": "5:4",
+  "icon": "src/assets/icon.png",
+  "themeColor": "#FF6600",
+  "main": "src/main.ts",
+  "languages": ["en"],
+  "supportedPostUrls": ["https://news.ycombinator.com/item?id=*"],
+  "supportedUserUrls": ["https://news.ycombinator.com/user?id=*"],
+  "configs": []
+}

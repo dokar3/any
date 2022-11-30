@@ -1,0 +1,14 @@
+{
+  "name": "any-service-cli",
+  "version": "1.0.0",
+  "description": "Any service project generator",
+  "main": "src/main.js",
+  "type": "module",
+  "author": "Any",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "handlebars": "^4.7.7",
+    "inquirer": "^8.2.4"
+  },
+  "bin": "./src/main.js"
+}

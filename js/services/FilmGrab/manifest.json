@@ -1,0 +1,16 @@
+{
+  "id": "any.filmgrab",
+  "minApiVersion": "0.1.0",
+  "name": "FilmGrab",
+  "description": "Browse film pictures on <a href=\"https://film-grab.com/\">film-grab.com</a>",
+  "developer": "Any",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/FilmGrab",
+  "version": "1.0.0",
+  "isPageable": true,
+  "postsViewType": "full_width",
+  "mediaAspectRatio": "18:9",
+  "main": "src/main.ts",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "configs": []
+}

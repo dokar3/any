@@ -1,0 +1,22 @@
+-keepclassmembernames class any.data.entity.Post { *; }
+-keepclassmembernames class any.data.entity.Comment { *; }
+-keepclassmembernames class any.data.entity.JsPost { *; }
+-keepclassmembernames class any.data.entity.ContentElement { *; }
+-keepclassmembernames class any.data.entity.Bookmark { *; }
+-keepclassmembernames class any.data.entity.ServiceManifest { *; }
+-keepclassmembernames class any.data.entity.ServiceConfig { *; }
+-keepclassmembernames class any.data.entity.ServiceViewType { *; }
+-keepclassmembernames class any.data.entity.ServiceConfigOption { *; }
+-keepclassmembernames class any.data.entity.ServiceConfigType { *; }
+-keepclasseswithmembers class any.data.js.plugin.HttpPlugin { *; }
+-keepclassmembernames class any.data.js.plugin.HttpPlugin$HttpRequest { *; }
+-keepclassmembernames class any.data.js.plugin.HttpPlugin$HttpResponse { *; }
+-keepclasseswithmembers class any.data.js.plugin.DomPlugin { *; }
+-keepclasseswithmembers class any.data.js.plugin.LogPlugin { *; }
+-keepclasseswithmembers class any.data.js.plugin.ProgressPlugin { *; }
+-keepclasseswithmembers class any.data.js.plugin.ServiceConfigsUpdater { *; }
+-keepclasseswithmembers class any.data.js.plugin.ServiceManifestUpdater { *; }
+
+-keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache { *; }
+-keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache$Editor { *; }
+-keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache$Entry { *; }

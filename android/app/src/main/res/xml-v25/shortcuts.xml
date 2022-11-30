@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_search"
+        android:shortcutId="search"
+        android:shortcutLongLabel="@string/search"
+        android:shortcutShortLabel="@string/search">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.dokar.any.MainActivity"
+            android:targetPackage="com.dokar.any">
+            <extra
+                android:name="extra.target_destination"
+                android:value="search"/>
+        </intent>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_download"
+        android:shortcutId="downloads"
+        android:shortcutLongLabel="@string/downloads"
+        android:shortcutShortLabel="@string/downloads">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.dokar.any.MainActivity"
+            android:targetPackage="com.dokar.any">
+            <extra
+                android:name="extra.target_destination"
+                android:value="download"/>
+        </intent>
+    </shortcut>
+</shortcuts>

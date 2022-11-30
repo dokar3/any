@@ -1,0 +1,123 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+import java.util.regex.Pattern
+
+def builtinServicesDir() {
+    return new File(rootProject.projectDir, "js/services")
+}
+
+def assetsDir() {
+    return new File(project.projectDir, "src/main/assets")
+}
+
+def compiledJsDir() {
+    return new File(assetsDir(), "js")
+}
+
+class ExecRet {
+    int exitValue
+    String stdout
+    String errorOut
+
+    ExecRet(int exitValue, String stdout, String errorOut) {
+        this.exitValue = exitValue
+        this.stdout = stdout
+        this.errorOut = errorOut
+    }
+}
+
+def cmd(File dir, String command) {
+    def stdout = new ByteArrayOutputStream()
+    def errorOut = new ByteArrayOutputStream()
+    def commandArgs
+    if (DefaultNativePlatform.currentOperatingSystem.isWindows()) {
+        commandArgs = ["powershell", command]
+    } else {
+        commandArgs = ["sh", "-c", command]
+    }
+    def ret = exec {
+        workingDir dir
+        commandLine commandArgs
+        standardOutput stdout
+        errorOutput errorOut
+        ignoreExitValue true
+    }
+    return new ExecRet(
+            ret.exitValue,
+            stdout.toString().trim(),
+            errorOut.toString().trim(),
+    )
+}
+
+def checkNodeJs() {
+    def check = "node -v"
+    def out = cmd(builtinServicesDir(), check).stdout
+    return Pattern.compile("v\\d+\\.\\d+\\.\\d+").matcher(out).matches()
+}
+
+def checkYarn() {
+    def check = "yarn -v"
+    def out = cmd(builtinServicesDir(), check).stdout
+    return Pattern.compile("\\d+\\.\\d+\\.\\d+").matcher(out).matches()
+}
+
+task compileBuiltinJsServices() {
+    def inputFiles = fileTree(builtinServicesDir()) {
+        include "/*/src/**/*"
+        include "/*/*.*"
+    }
+    inputs.files(inputFiles)
+    outputs.dir(compiledJsDir())
+    doLast {
+        // Check nodejs
+        println("Checking node.js")
+        if (!checkNodeJs()) {
+            throw new GradleException("Node.js is not installed, please install it " +
+                    "manually: https://nodejs.org")
+        }
+
+        if (!checkYarn()) {
+            throw new GradleException("Yarn is not installed, please install it " +
+                    "manually: https://yarnpkg.com/getting-started/install")
+        }
+
+        println("Compiling builtin js services...")
+        // Compile js files
+        def outputDir = compiledJsDir().absolutePath
+        def buildCmd = "node scripts/service/buildAll.js " +
+                "--platform=android " +
+                "--output=${outputDir} " +
+                "--file-prefix=file:///android_asset/js/"
+        def ret = cmd(rootProject.projectDir, buildCmd)
+        if (ret.exitValue != 0) {
+            throw new GradleException("Failed to compile builtin js services, details:\n" +
+                    "stdout:\n${ret.stdout}\nerrorOut:\n${ret.errorOut}")
+        } else {
+            println(ret.stdout)
+        }
+        println("Compiled builtin js services, copied to: $outputDir")
+    }
+}
+
+task cleanCompiledJs() {
+    doLast {
+        println("Clean compiled js services....")
+        delete compiledJsDir()
+        delete new File(builtinServicesDir(), ".build")
+    }
+}
+
+project.afterEvaluate {
+    def isAndroidLibrary = plugins.hasPlugin("com.android.library")
+    def variants = isAndroidLibrary ? android.libraryVariants : android.applicationVariants
+    variants.all { def variant ->
+        def targetName = variant.name.capitalize()
+        tasks.findByName("merge${targetName}Resources").dependsOn(compileBuiltinJsServices)
+        tasks.findByName("merge${targetName}Assets").dependsOn(compileBuiltinJsServices)
+    }
+}
+
+clean.dependsOn(cleanCompiledJs)
+
+check.dependsOn(cleanCompiledJs)
+check.dependsOn(compileBuiltinJsServices)

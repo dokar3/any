@@ -1,0 +1,18 @@
+{
+  "id": "any.dribbble",
+  "minApiVersion": "0.1.0",
+  "name": "Dribbble",
+  "description": "Browse shots on <a href=\"https://dribbble.com/\">Dribbble</a>",
+  "developer": "Any",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/Dribbble",
+  "version": "1.0.0",
+  "isPageable": true,
+  "postsViewType": "grid",
+  "mediaAspectRatio": "330:247",
+  "icon": "src/assets/icon.png",
+  "themeColor": "#E34A85",
+  "main": "src/main.ts",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "configs": []
+}

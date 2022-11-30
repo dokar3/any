@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Service runner</title>
+    <link rel="stylesheet" type="text/css" href="./css/index.css" />
+    <link rel="stylesheet" type="text/css" href="./css/prism.css" />
+    <script src="./index.bundle.js"></script>
+  </head>
+  <body onclick="hideManifestDropDown();">
+    <div class="title-bar">
+      <span class="title">Runner for Any service</span>
+    </div>
+    <div class="panel-container">
+      <div class="panel">
+        <div id="app-info" class="panel-card">
+          <div class="info-title">
+            <p class="panel-title">Service info</p>
+            <div
+              class="title-bar-button btn-run-on-phone"
+              onclick="compileService()"
+            ></div>
+          </div>
+
+          <div class="info-header">
+            <div id="icon">
+              <img />
+            </div>
+            <div class="app-name-wrapper">
+              <p id="name" onclick="showManifestDropDown();"></p>
+              <ul id="manifest-dropdown" style="display: none"></ul>
+            </div>
+          </div>
+
+          <div class="info-rows">
+            <div class="info-item">
+              <span class="info-heading">Id</span>
+              <span id="id"></span>
+            </div>
+            <div class="info-item">
+              <span class="info-heading">Developer</span>
+              <span id="developer"></span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-heading">Version</span>
+              <span id="version"></span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-heading">Description</span>
+              <span id="description"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="app-configs-panel" class="panel-card">
+          <p class="panel-title">Configs</p>
+          <div id="app-configs-fields">
+            <div
+              class="config-item"
+              id="app-configs-template-item"
+              style="display: none"
+            >
+              <span class="config-name">Config</span>
+              <input class="config-value" />
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <p class="panel-title">Actions</p>
+
+          <div class="app-action">
+            <input
+              type="number"
+              id="inputPage"
+              value="1"
+              min="1"
+              placeholder="page"
+            />
+            <button onclick="fetchLatestPosts()" id="btnFetchLatestPosts">
+              fetch latest posts
+            </button>
+          </div>
+
+          <div class="app-action">
+            <input type="text" id="inputUrl" placeholder="https://" />
+            <button onclick="fetchPostContent()" id="btnFetchPostContent">
+              fetch post content
+            </button>
+          </div>
+
+          <div class="app-action">
+            <input type="text" id="inputKeywords" placeholder="keywords" />
+            <button onclick="searchPosts()" id="btnSearchPosts">search</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <p class="panel-title">Output</p>
+        <pre id="output" class="transparent-scrollbar"></pre>
+      </div>
+    </div>
+
+    <div
+      id="app-compile-result-overlay"
+      class="fullscreen-overlay"
+      onclick="hideServiceCompileResult()"
+      style="display: none"
+    >
+      <div id="app-compile-result-container" onclick="event.stopPropagation()">
+        <div id="compiled-app-tab-container"></div>
+        <p class="add-app-hint heading">Add or update service to phone</p>
+
+        <div style="height: 8px"></div>
+
+        <p class="add-app-hint">
+          1. Install the Any app on your phone, install ADB on your PC.
+        </p>
+
+        <div style="height: 8px"></div>
+
+        <p class="add-app-hint">2. Connect your phone to your PC via USB.</p>
+
+        <div style="height: 8px"></div>
+
+        <p class="add-app-hint">3. Run the following command in a terminal:</p>
+
+        <div style="height: 8px"></div>
+
+        <pre id="add-app-command"></pre>
+
+        <div style="height: 8px"></div>
+
+        <div class="add-app-command-options">
+          <p class="add-app-command-option" id="run-add-app-command"></p>
+          <p class="add-app-command-option" id="copy-add-app-command"></p>
+        </div>
+
+        <div style="height: 8px"></div>
+
+        <p class="add-app-hint">
+          4. A service configuring dialog will be displayed in the Any app, then
+          click 'Add' (or 'Update') button.
+        </p>
+
+        <div style="height: 16px"></div>
+
+        <p class="add-app-hint heading">Already added to phone?</p>
+
+        <div style="height: 8px"></div>
+
+        <p class="add-app-hint">
+          1. Need to recompile code after changing the code by clicking deploy
+          button.
+          <br />
+          2. No need to add service multiple times when changing the code, unless
+          the service manifest has changed.
+        </p>
+      </div>
+    </div>
+
+    <div id="compile-overlay" class="fullscreen-overlay" style="display: none">
+      <p class="compile-message">Compiling...</p>
+    </div>
+  </body>
+</html>

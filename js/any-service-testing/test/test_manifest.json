@@ -1,0 +1,13 @@
+{
+  "name": "MyService",
+  "id": "me.service",
+  "main": "main.ts",
+  "configs": [
+    {
+      "name": "Post count per page",
+      "key": "postCountPerPage",
+      "type": "number",
+      "value": 10
+    }
+  ]
+}

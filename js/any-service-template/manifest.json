@@ -1,0 +1,16 @@
+{
+  "id": "{{serviceId}}",
+  "name": "{{serviceName}}",
+  "description": "{{description}}",
+  "developer": "{{author}}",
+  "version": "{{version}}",
+  "minApiVersion": "{{minApiVersion}}",
+  "maxApiVersion": "{{maxApiVersion}}",
+  "isPageable": {{isPageable}},
+  "postsViewType": "{{postsViewType}}",
+  "mediaAspectRatio": "{{mediaAspectRatio}}",
+  "main": "src/main.ts",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "configs": []
+}

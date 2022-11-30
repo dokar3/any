@@ -1,0 +1,39 @@
+{
+  "id": "any.unsplash",
+  "minApiVersion": "0.1.0",
+  "name": "Unsplash",
+  "description": "Browse photos on <a href=\"https://unsplash.com/\">Unsplash</a>",
+  "developer": "Any",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/Unsplash",
+  "version": "1.0.0",
+  "isPageable": true,
+  "postsViewType": "full_width",
+  "mediaAspectRatio": "5:4",
+  "icon": "src/assets/icon.jpg",
+  "main": "src/main.ts",
+  "themeColor": "#000000",
+  "darkThemeColor": "#cccccc",
+  "languages": ["en"],
+  "supportedPostUrls": [],
+  "supportedUserUrls": ["https://unsplash.com/@*"],
+  "configs": [
+    {
+      "key": "accessKey",
+      "name": "Access key",
+      "description": "Unsplash developer access key",
+      "type": "text",
+      "required": true,
+      "value": "{{UNSPLASH_ACCESS_KEY}}",
+      "visibleToUser": false
+    },
+    {
+      "key": "countPerPage",
+      "name": "Count per page",
+      "description": "Default is 20",
+      "type": "number",
+      "required": true,
+      "value": 20,
+      "visibleToUser": false
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+}
+
+android {
+    namespace 'any.ui.home'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        minSdk 21
+        targetSdk libs.versions.targetSdk.get().toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
+    }
+}
+
+dependencies {
+
+    implementation projects.base
+    implementation projects.data
+    implementation projects.domain
+    implementation projects.download
+    implementation projects.navigation
+    implementation projects.commonUi
+    implementation projects.uiService
+    implementation projects.uiComments
+    implementation projects.uiJslogger
+
+    implementation libs.accompanist.flowlayout
+
+    testImplementation projects.baseTesting
+    testImplementation projects.dataTesting
+    testImplementation libs.junit
+    testImplementation libs.turbine
+    testImplementation libs.kotlinx.coroutines.test
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}

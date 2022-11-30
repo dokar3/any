@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ComposeDialogTheme" parent="@android:style/Theme.DeviceDefault.Dialog">
+        <item name="android:windowAnimationStyle">@style/ComposeDialogAnimation</item>
+    </style>
+
+    <style name="ComposeDialogTheme.Large">
+        <item name="android:windowMinWidthMajor">65%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="ComposeDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+</resources>

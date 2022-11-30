@@ -1,0 +1,91 @@
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'com.google.devtools.ksp' version '1.7.20-1.0.6'
+}
+
+android {
+    namespace 'any.data'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdk 21
+        targetSdk libs.versions.targetSdk.get().toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "JS_SERVICE_API_VERSION", "\"${currentJsServiceApiVersion()}\""
+        }
+
+        release {
+            buildConfigField "String", "JS_SERVICE_API_VERSION", "\"${currentJsServiceApiVersion()}\""
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
+    }
+    lint {
+        // https://issuetracker.google.com/issues/220326924
+        disable "FlowOperatorInvokedInComposition"
+        disable "UnusedTransitionTargetStateParameter"
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas".toString())
+}
+
+dependencies {
+
+    implementation projects.base
+
+    api libs.kotlinx.coroutines.android
+    api libs.room.runtime
+    api libs.room.ktx
+    ksp libs.room.compiler
+    implementation libs.okhttp
+    implementation libs.compose.runtime
+    implementation libs.semver
+    implementation libs.moshi
+    ksp libs.moshi.kotlin.codegen
+    implementation libs.fresco
+    implementation libs.jsoup
+    implementation libs.disklrucache
+    implementation libs.crc
+    implementation libs.duktape
+    implementation libs.bolts.tasks
+    implementation libs.exoplayer.database
+    implementation libs.exoplayer.datasource
+
+    testImplementation libs.junit
+    androidTestImplementation libs.duktape
+    androidTestImplementation projects.dataTesting
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}
+
+def currentJsServiceApiVersion() {
+    def packageFile = new File(rootProject.projectDir, "js/any-service-api/package.json")
+    def packageInfo = new JsonSlurper().parseText(packageFile.text)
+    return packageInfo.version
+}
