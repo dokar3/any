@@ -44,7 +44,7 @@ internal fun VersionsItem(
     ) {
         Column {
             Text(
-                text = stringResource(BaseR.string.version),
+                text = stringResource(BaseR.string.app_version),
                 fontSize = headerFontSize,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f)
             )
