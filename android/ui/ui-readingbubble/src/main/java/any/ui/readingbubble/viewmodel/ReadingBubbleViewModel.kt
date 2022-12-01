@@ -1,23 +1,23 @@
 package any.ui.readingbubble.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import any.ui.readingbubble.entity.ReadingPost
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ReadingBubbleViewModel(
-    private val bgDispatcher: CoroutineDispatcher = Dispatchers.Default,
-) : ViewModel() {
+internal class ReadingBubbleViewModel(
+    private val viewModelScope: CoroutineScope,
+    private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
+) {
     private val _uiState = MutableStateFlow(ReadingBubbleUiState())
     val uiState: StateFlow<ReadingBubbleUiState> = _uiState
 
     fun addPost(post: ReadingPost) {
-        viewModelScope.launch(bgDispatcher) {
+        viewModelScope.launch(workerDispatcher) {
             val p = _uiState.value.posts.indexOfFirst {
                 it.serviceId == post.serviceId && it.url == post.url
             }
@@ -29,7 +29,7 @@ class ReadingBubbleViewModel(
     }
 
     fun removePost(post: ReadingPost) {
-        viewModelScope.launch(bgDispatcher) {
+        viewModelScope.launch(workerDispatcher) {
             val posts = _uiState.value.posts.toMutableList()
             val idx = posts.indexOfFirst {
                 it.serviceId == post.serviceId && it.url == post.url

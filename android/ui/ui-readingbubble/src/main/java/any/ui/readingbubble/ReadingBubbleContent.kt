@@ -24,8 +24,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,22 +48,22 @@ import any.ui.common.theme.thumb
 import any.ui.common.theme.thumbBorder
 import any.ui.common.widget.EmojiEmptyContent
 import any.ui.readingbubble.entity.ReadingPost
-import any.ui.readingbubble.viewmodel.ReadingBubbleViewModel
+import any.ui.readingbubble.viewmodel.ReadingBubbleUiState
 
 @Composable
 internal fun ReadingBubbleContent(
-    viewModel: ReadingBubbleViewModel,
     onPostClick: (ReadingPost) -> Unit,
+    onRemovePost: (ReadingPost) -> Unit,
+    onClearPosts: () -> Unit,
+    uiState: ReadingBubbleUiState,
     modifier: Modifier = Modifier,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
     val listState = rememberLazyListState()
 
     Column(modifier = modifier.fillMaxSize()) {
         TitleBar(
             showClearAll = uiState.posts.isNotEmpty(),
-            onClearAllClick = { viewModel.clearPosts() },
+            onClearAllClick = onClearPosts,
         )
 
         if (uiState.posts.isNotEmpty()) {
@@ -80,7 +78,7 @@ internal fun ReadingBubbleContent(
                     ReadingItem(
                         post = post,
                         onClick = { onPostClick(post) },
-                        onRemoveClick = { viewModel.removePost(post) },
+                        onRemoveClick = { onRemovePost(post) },
                     )
                 }
             }
