@@ -10,16 +10,15 @@ Command line tool to create a service from template.
 
 `/any-service-api`
 
-The APIs module. Providing both Android and browser APIs to run service. Write in TypeScript.
+The service API module, written in TypeScript.
 
 `/any-service-compile`
 
-Compile and bundle service. Using `webpack`, `babel` and other tools to build compatible JS bundle
-for `duktape` JS engine.
+Using `webpack`, `babel` and other tools to compile and bundle services.
 
 `/any-service-runner`
 
-(WIP) Service runner for browsers. Providing web GUI to run services.
+(WIP) Service runner for browsers. Providing web ui to run services.
 
 `/any-service-template`
 
@@ -27,7 +26,7 @@ The service template module.
 
 `/any-service-testing`
 
-Provides test utilities like `createTestService()` to test services on the node environment. 
+Provides test utility functions like `createTestService()` to test services on the node environment. 
 
 `/services`
 
