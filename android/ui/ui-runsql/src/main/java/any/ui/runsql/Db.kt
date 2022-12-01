@@ -1,12 +1,11 @@
 package any.ui.runsql
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.room.RoomDatabase
 
-@Immutable
-internal data class Db(
-    val name: String,
-    private val creator: () -> RoomDatabase,
-) {
-    fun create(): RoomDatabase = creator()
+@Stable
+internal interface Db {
+    val name: String
+
+    fun create(): RoomDatabase
 }

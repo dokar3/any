@@ -146,14 +146,14 @@ fun RunSqlScreen(modifier: Modifier = Modifier) {
 
     val dbs = remember {
         listOf(
-            Db(
-                name = "App",
-                creator = { AppDatabase.get(context) },
-            ),
-            Db(
-                name = "Post Content",
-                creator = { PostContentDatabase.get(context) },
-            ),
+            object : Db {
+                override val name: String = "App"
+                override fun create(): RoomDatabase = AppDatabase.get(context)
+            },
+            object : Db {
+                override val name: String = "Post Content"
+                override fun create(): RoomDatabase = PostContentDatabase.get(context)
+            },
         )
     }
 
