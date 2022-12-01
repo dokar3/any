@@ -1,6 +1,6 @@
 ### API key required
 
-Following steps may help to get and set your own key:
+You need an API key (`access key`) to make this service work, the following steps may help to get and set your own key:
 
 1. Request your own access key on Unsplash: [https://unsplash.com/developers](https://unsplash.com/developers)
 
