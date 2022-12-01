@@ -11,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,14 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.ui.common.R
 import any.ui.floatingbubble.BubbleFab
-import any.ui.readingbubble.viewmodel.ReadingBubbleViewModel
 
 @Composable
 internal fun Bubble(
-    viewModel: ReadingBubbleViewModel,
+    postCount: Int,
     modifier: Modifier = Modifier,
 ) {
-    val postCount = viewModel.uiState.collectAsState().value.posts.size
     BubbleFab(
         modifier = modifier,
         backgroundColor = Color(0xFF0CCC72),

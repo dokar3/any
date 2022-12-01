@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.os.RemoteCallbackList
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import any.ui.floatingbubble.FloatingView
 import any.ui.floatingbubble.FloatingViewManager
 import any.ui.readingbubble.entity.ReadingPost
@@ -26,13 +28,13 @@ import java.util.concurrent.TimeUnit
 class ReadingBubbleService : Service() {
     private val binder = IReadingBubbleServiceImpl(this)
 
-    private val viewModel = ReadingBubbleViewModel()
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    private val viewModel = ReadingBubbleViewModel(viewModelScope = coroutineScope)
 
     private val floatingView = FloatingView(this)
 
     private val navigateListeners = RemoteCallbackList<INavigateToPostListener>()
-
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
@@ -58,16 +60,22 @@ class ReadingBubbleService : Service() {
             stopSelf()
         }
         floatingView.setContent(
-            bubble = { Bubble(viewModel = viewModel) },
+            bubble = {
+                val postCount = viewModel.uiState.collectAsState().value.posts.size
+                Bubble(postCount = postCount)
+            },
             expandedContent = {
+                val uiState by viewModel.uiState.collectAsState()
                 ReadingBubbleContent(
-                    viewModel = viewModel,
+                    uiState =uiState,
                     onPostClick = {
                         floatingView.hideContentView(
                             restoreFabPosition = true,
                             onAnimationEnd = { navigateToPost(it) },
                         )
                     },
+                    onRemovePost = viewModel::removePost,
+                    onClearPosts = viewModel::clearPosts,
                 )
             }
         )
