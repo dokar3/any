@@ -1,6 +1,6 @@
 ### API key required
 
-Following steps may help to get and set your own key:
+You need an API key (`client id`) to make this service work, the following steps may help to get and set your own key:
 
 1. Create a developer account and login: [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard)
 
