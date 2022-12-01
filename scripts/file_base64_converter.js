@@ -5,9 +5,9 @@ const process = require("process")
 
 const args = process.argv;
 
-const OPT_FILE_TO_BASE64_TXT = "1";
-const OPT_BASE64_STRING_TO_FILE = "2";
-const OPT_BASE64_TXT_FILE_TO_FILE = "3";
+const OPT_FILE_TO_BASE64_TXT = "f2txt";
+const OPT_BASE64_STRING_TO_FILE = "str2f";
+const OPT_BASE64_TXT_FILE_TO_FILE = "txt2f";
 
 const HELP = `Usage:
 Convert a file to a base 64 encoded text file:

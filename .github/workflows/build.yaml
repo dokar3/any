@@ -88,7 +88,7 @@ jobs:
             echo "secret 'keystore_base64' is not set"
             exit 1
           fi
-          node ./scripts/file_base64_converter.js 2 $ENCODED_KEYSTORE $KEYSTORE_PATH
+          node ./scripts/file_base64_converter.js str2f $ENCODED_KEYSTORE $KEYSTORE_PATH
 
       - name: Generate baseline profile
         if: ${{ inputs.gen_baseline_profile }}
