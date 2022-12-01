@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-open class ImagePagerViewModel : ViewModel() {
+class ImagePagerViewModel : ViewModel() {
     private val positionUpdaters = mutableSetOf<ImagePagerPositionController>()
 
     var images: List<String>? = null
