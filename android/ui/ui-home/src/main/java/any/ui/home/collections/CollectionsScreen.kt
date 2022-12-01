@@ -116,7 +116,6 @@ import com.dokar.sheets.rememberBottomSheetState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val ROUTE = "collections?folder={folder}"
@@ -767,38 +766,20 @@ private fun PostSelectionPanel(
     }
 
     if (showRemovalDialog) {
-        var isConfirmEnabled by remember { mutableStateOf(false) }
-        var countDownText by remember { mutableStateOf("") }
-
-        LaunchedEffect(Unit) {
-            for (i in 3 downTo 1) {
-                countDownText = " ($i)"
-                delay(1000)
-            }
-            countDownText = ""
-            isConfirmEnabled = true
-        }
-
         SimpleDialog(
             onDismissRequest = { showRemovalDialog = false },
-            title = { Text(stringResource(BaseR.string.remove)) },
+            title = { Text(stringResource(BaseR.string.remove_selected)) },
             text = {
                 Text(stringResource(BaseR.string.remove_selected_posts_from_collections_alert))
             },
             confirmText = {
                 Text(
-                    text = stringResource(BaseR.string._remove_with_countdown, countDownText),
-                    modifier = Modifier.alpha(if (isConfirmEnabled) 1f else 0.5f),
+                    text = stringResource(BaseR.string.remove),
                     color = MaterialTheme.colors.error,
                 )
             },
             cancelText = { Text(stringResource(android.R.string.cancel)) },
-            onConfirmClick = {
-                if (isConfirmEnabled) {
-                    onRemoveSelected()
-                }
-            },
-            confirmEnabled = isConfirmEnabled,
+            onConfirmClick = onRemoveSelected,
         )
     }
 
