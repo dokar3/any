@@ -6,7 +6,6 @@
   "description": "Check tweets from your account",
   "developer": "Any",
   "homepage": "https://github.com/dokar3/any/tree/main/js/services/Twitter",
-  "changelog": "CHANGELOG.md",
   "version": "1.0.0",
   "isPageable": true,
   "postsViewType": "full_width",
