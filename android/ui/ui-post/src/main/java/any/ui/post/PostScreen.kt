@@ -979,7 +979,7 @@ private fun PostContent(
         ) {
             Html(
                 html = stringResource(
-                    BaseR.string._load_failed_with_message,
+                    BaseR.string._failed_to_load_with_message,
                     error.message ?: "Unknown error: $error"
                 ),
                 onLinkClick = { Intents.openInBrowser(context, it) },

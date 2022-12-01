@@ -146,7 +146,7 @@ internal fun PostImageOptionsPopup(
                 } else {
                     Toast.makeText(
                         context,
-                        BaseR.string.save_failed,
+                        BaseR.string.failed_to_save,
                         Toast.LENGTH_SHORT,
                     ).show()
                 }

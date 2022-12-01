@@ -276,7 +276,7 @@ internal fun FreshPostList(
                 }
             } else if (!uiState.isLoading() && !uiState.isSuccess) {
                 RetryItem(
-                    message = stringResource(R.string.load_failed),
+                    message = stringResource(R.string.failed_to_load),
                     onClick = { onFetchMore(true) },
                 )
             } else if (uiState.requireRefreshInitialPage) {

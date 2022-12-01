@@ -234,7 +234,7 @@ fun SearchScreen(
                             }
                         } else if (!uiState.isLoadingMore && !uiState.isSuccess) {
                             RetryItem(
-                                message = stringResource(BaseR.string.load_failed),
+                                message = stringResource(BaseR.string.failed_to_load),
                                 onClick = { viewModel.fetchNextPage() },
                             )
                         } else {
