@@ -7,9 +7,7 @@ dependencyResolutionManagement {
         mavenLocal()
         google()
         mavenCentral()
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
+        maven {url 'https://oss.sonatype.org/content/repositories/snapshots/'}
         maven { url "https://www.jitpack.io" }
         maven { url 'https://androidx.dev/snapshots/builds/8593961/artifacts/repository' }
     }
@@ -28,7 +26,3 @@ file("android").eachDir { dir ->
     include dir.name
     project(":${dir.name}").projectDir = dir
 }
-include ':download'
-include ':services-compilation'
-include ':testing'
-include ':ui-video'
