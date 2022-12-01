@@ -4,7 +4,7 @@
   "name": "Unsplash",
   "description": "Browse photos on <a href=\"https://unsplash.com/\">Unsplash</a>",
   "developer": "Any",
-  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/Unsplash",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/services/Unsplash",
   "version": "1.0.0",
   "isPageable": true,
   "postsViewType": "full_width",

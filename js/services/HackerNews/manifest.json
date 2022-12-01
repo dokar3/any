@@ -3,7 +3,7 @@
   "name": "Hacker News",
   "description": "Top stories on <a href=\"https://news.ycombinator.com/\">Hacker News</a>",
   "developer": "Any",
-  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/HackerNews",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/services/HackerNews",
   "version": "1.0.0",
   "minApiVersion": "0.1.0",
   "isPageable": true,

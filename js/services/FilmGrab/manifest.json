@@ -4,7 +4,7 @@
   "name": "FilmGrab",
   "description": "Browse film pictures on <a href=\"https://film-grab.com/\">film-grab.com</a>",
   "developer": "Any",
-  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/FilmGrab",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/services/FilmGrab",
   "version": "1.0.0",
   "isPageable": true,
   "postsViewType": "full_width",
