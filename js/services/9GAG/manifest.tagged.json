@@ -3,7 +3,7 @@
   "name": "9GAG - tagged",
   "description": "Browse tagged posts on 9gag.com",
   "developer": "Any",
-  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/9GAG",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/services/9GAG",
   "version": "1.0.0",
   "minApiVersion": "0.1.0",
   "maxApiVersion": "",

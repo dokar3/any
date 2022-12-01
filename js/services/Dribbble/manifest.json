@@ -4,7 +4,7 @@
   "name": "Dribbble",
   "description": "Browse shots on <a href=\"https://dribbble.com/\">Dribbble</a>",
   "developer": "Any",
-  "homepage": "https://github.com/dokar3/any/tree/main/js/apps/Dribbble",
+  "homepage": "https://github.com/dokar3/any/tree/main/js/services/Dribbble",
   "version": "1.0.0",
   "isPageable": true,
   "postsViewType": "grid",
