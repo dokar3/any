@@ -468,7 +468,7 @@ class ImagePagerFragment : DialogFragment() {
 
                 result.isFailure -> {
                     Log.e(TAG, "Failed to save image: ${result.exceptionOrNull()?.message}")
-                    Toast.makeText(activity, BaseR.string.save_failed, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, BaseR.string.failed_to_save, Toast.LENGTH_SHORT).show()
                 }
             }
         }.also {
@@ -555,7 +555,7 @@ class ImagePagerFragment : DialogFragment() {
             if (!isAdded) return
             binding.loadFailedContainer.visibility = View.VISIBLE
             binding.tvErrorMessage.text = resources.getString(
-                BaseR.string._load_failed_with_message,
+                BaseR.string._failed_to_load_with_message,
                 e?.message ?: ""
             )
         }

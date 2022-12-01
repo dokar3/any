@@ -288,7 +288,7 @@ private fun ProfileScreenContent(
                     }
                 } else if (!uiState.isLoadingMorePosts && uiState.isFailedToFetchPosts) {
                     RetryItem(
-                        message = stringResource(R.string.load_failed),
+                        message = stringResource(R.string.failed_to_load),
                         onClick = onRetryPostsFetch,
                     )
                 } else {

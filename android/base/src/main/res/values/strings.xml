@@ -1,10 +1,7 @@
 <resources>
     <string name="app_name">Any</string>
-
     <string name="file_provider_authorities" translatable="false">com.dokar.any.fileprovider</string>
-
     <string name="sample_image_info"><![CDATA[Photo by <a href="https://unsplash.com/@vimal_saran">Vimal S</a> on <a href="https://unsplash.com">Unsplash</a>]]></string>
-
     <string name="search">Search</string>
     <string name="no_services">No services</string>
     <string name="please_add_or_enable_services">Please add or enable some services.</string>
@@ -12,7 +9,7 @@
     <string name="no_posts">No posts</string>
     <string name="reload">Reload</string>
     <string name="no_more_posts">No more posts</string>
-    <string name="load_failed">Load failed</string>
+    <string name="failed_to_load">Failed to load</string>
     <string name="you_are_browsing">You\'re\nbrowsing</string>
     <string name="switch_service">Switch service</string>
     <string name="fresh">Fresh</string>
@@ -113,7 +110,7 @@
     <string name="jump_to_page">Jump to page</string>
     <string name="release_to_refresh">Release to refresh</string>
     <string name="pull_to_refresh">Pull to refresh</string>
-    <string name="_load_failed_with_message">Load failed: %s</string>
+    <string name="_failed_to_load_with_message">Failed to load: %s</string>
     <string name="_no_service_found_for_url">No service found for this URL: %s</string>
     <string name="no_sections">No sections</string>
     <string name="theme">Theme</string>
@@ -188,7 +185,6 @@
     <string name="downloaded_images">Downloaded images</string>
     <string name="downloaded_images_clean_alert">All the downloaded images will be deleted.</string>
     <string name="post_contents">Post contents</string>
-    <string name="post_contents_clean_alert">Invalid post contents will be cleared, images are not included.</string>
     <string name="image_cache">Image cache</string>
     <string name="image_cache_clean_alert">All cached images will be cleared, downloaded images are not included.</string>
     <string name="video_cache">Video cache</string>
@@ -208,7 +204,7 @@
     <string name="preparing_to_share">Preparing to share…</string>
     <string name="save_image">Save image</string>
     <string name="image_saved">Image saved</string>
-    <string name="save_failed">Save failed</string>
+    <string name="failed_to_save">Failed to save</string>
     <string name="list">List</string>
     <string name="grid">Grid</string>
     <string name="full_width">Full-width</string>
@@ -276,7 +272,6 @@
     <string name="follow">Follow</string>
     <string name="followers">Followers</string>
     <string name="following">Following</string>
-    <string name="video">Video</string>
     <string name="users">Users</string>
     <string name="unfollow">Unfollow</string>
     <string name="unfollow_selected">Unfollow selected</string>
