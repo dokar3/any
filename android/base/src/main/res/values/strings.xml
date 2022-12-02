@@ -36,7 +36,7 @@
     <string name="settings">Settings</string>
     <string name="header_image">Header image</string>
     <string name="lets_go">Let\'s go</string>
-    <string name="enter_a_url_or_command">Enter a URL or command</string>
+    <string name="enter_an_url_or_command">Enter an URL or command</string>
     <string name="_remove_tag">Remove tag %s</string>
     <string name="remove_tag_alert">Are you sure to remove this tag from current posts?</string>
     <string name="more">More</string>
