@@ -22,7 +22,6 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalMinimumTouchTargetEnforcement
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
@@ -392,6 +391,7 @@ private fun PostInfo(
     showCollectButton: Boolean,
     showMoreButton: Boolean,
     modifier: Modifier = Modifier,
+    buttonSize: Dp = 42.dp,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -462,15 +462,13 @@ private fun PostInfo(
 
         CompositionLocalProvider(
             LocalMinimumTouchTargetEnforcement provides false,
-            LocalContentAlpha provides 0.7f,
         ) {
             Row {
-                val iconSize = 42.dp
                 if (post.commentsKey != null) {
                     CommentsButton(
                         onClick = { onCommentsClick?.invoke() },
                         commentCount = post.commentCount,
-                        modifier = Modifier.size(iconSize),
+                        modifier = Modifier.size(buttonSize),
                         iconAlpha = PostItemDefaults.IconButtonsOpacity,
                     )
                 }
@@ -480,20 +478,19 @@ private fun PostInfo(
                         isCollected = post.isCollected(),
                         onClick = { onCollectClick?.invoke() },
                         uncollectedIconAlpha = PostItemDefaults.IconButtonsOpacity,
-                        size = iconSize,
+                        size = buttonSize,
                     )
                 }
 
                 if (showMoreButton) {
                     IconButton(
                         onClick = { onMoreClick?.invoke() },
-                        modifier = Modifier
-                            .size(iconSize)
-                            .alpha(PostItemDefaults.IconButtonsOpacity),
+                        modifier = Modifier.size(buttonSize),
                     ) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = stringResource(BaseR.string.more_options),
+                            modifier = Modifier.alpha(PostItemDefaults.IconButtonsOpacity),
                         )
                     }
                 }

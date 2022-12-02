@@ -39,6 +39,7 @@ fun CollectButton(
     animationDuration: Int = 255,
     collectedIconAlpha: Float = 1f,
     uncollectedIconAlpha: Float = 1f,
+    rippleRadius: Dp = ButtonRippleRadius,
 ) {
     val currIcon: Int
     val targetIcon: Int
@@ -73,7 +74,7 @@ fun CollectButton(
             .size(size)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = false),
+                indication = rememberRipple(bounded = false, radius = rippleRadius),
                 onClick = {
                     if (transition.isRunning) {
                         return@combinedClickable

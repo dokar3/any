@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.ui.common.R
@@ -31,12 +32,13 @@ fun CommentsButton(
     commentCount: Int,
     modifier: Modifier = Modifier,
     iconAlpha: Float = 1f,
+    rippleRadius: Dp = ButtonRippleRadius,
 ) {
     Box(
         modifier = modifier
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = false),
+                indication = rememberRipple(bounded = false, radius = rippleRadius),
                 onClick = onClick,
             )
     ) {
