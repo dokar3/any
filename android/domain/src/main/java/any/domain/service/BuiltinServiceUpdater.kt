@@ -53,6 +53,7 @@ class BuiltinServiceUpdater(
                 val partialBuiltin = builtin.copy(
                     id = service.id,
                     name = service.name,
+                    postsViewType = service.postsViewType,
                     configs = builtin.configs?.map {
                         it.copy(value = serviceConfigMap[it.key]?.value ?: it.value)
                     },
