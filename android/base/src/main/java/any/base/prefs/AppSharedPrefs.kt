@@ -76,7 +76,12 @@ private val PreferencesStore.darkModePrefValue
 
 var PreferencesStore.darkMode: DarkMode
     get() {
-        return DarkMode.valueOf(darkModePrefValue.value)
+        return try {
+            DarkMode.valueOf(darkModePrefValue.value)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            DarkMode.System
+        }
     }
     set(value) {
         darkModePrefValue.value = value.name
@@ -168,7 +173,12 @@ private val PreferencesStore.postSortingPrefValue
 
 var PreferencesStore.postSorting: PostSorting
     get() {
-        return PostSorting.valueOf(postSortingPrefValue.value)
+        return try {
+            PostSorting.valueOf(postSortingPrefValue.value)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            PostSorting.ByAddTime
+        }
     }
     set(value) {
         postSortingPrefValue.value = value.name
@@ -187,7 +197,12 @@ private val PreferencesStore.defaultFolderViewTypePrefValue
 
 var PreferencesStore.defaultFolderViewType: FolderViewType
     get() {
-        return FolderViewType.valueOf(defaultFolderViewTypePrefValue.value)
+        return try {
+            FolderViewType.valueOf(defaultFolderViewTypePrefValue.value)
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            FolderViewType.List
+        }
     }
     set(value) {
         defaultFolderViewTypePrefValue.value = value.name
@@ -201,7 +216,12 @@ private val PreferencesStore.forcedFolderViewTypePrefValue
 var PreferencesStore.forcedFolderViewType: FolderViewType?
     get() {
         return forcedFolderViewTypePrefValue.value?.let {
-            FolderViewType.valueOf(it)
+            try {
+                FolderViewType.valueOf(it)
+            } catch (e: IllegalArgumentException) {
+                e.printStackTrace()
+                null
+            }
         }
     }
     set(value) {
