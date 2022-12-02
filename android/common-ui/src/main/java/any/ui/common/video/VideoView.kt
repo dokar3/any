@@ -61,12 +61,14 @@ fun VideoView(
     state: VideoPlaybackState,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    onFullscreenClick: (() -> Unit)? = null,
     /**
      * Lambda return: resizeVideoSurface: Boolean, if true, the video surface will be resized
      */
     onVideoAspectRatioAvailable: ((Float) -> Boolean)? = null,
     thumbnail: String? = null,
     playImmediately: Boolean = false,
+    showFullscreenButton: Boolean = onFullscreenClick != null,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -332,12 +334,12 @@ fun VideoView(
         VideoControlBar(
             onShowRequest = { controlsVisible = true },
             onMuteClick = { state.isMuted = !state.isMuted },
-            onFullscreenClick = {},
+            onFullscreenClick = { onFullscreenClick?.invoke() },
             controlsVisible = controlsVisible,
             duration = state.duration,
             progress = state.progress,
             isMuted = state.isMuted,
-            showFullscreenButton = state.isPlayed,
+            showFullscreenButton = showFullscreenButton && state.isPlayed,
             modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
