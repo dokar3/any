@@ -210,7 +210,7 @@ class ServiceMgtViewModel(
                 val service = manifest.service
                 AppendableService(
                     service = service.toUiManifest(fileReader, htmlParser),
-                    isAdded = serviceRepository.findDbService(service.toStored().id) != null,
+                    isAdded = serviceRepository.findDbService(service.id) != null,
                     onSaveService = {
                         installZipService(
                             service = it,

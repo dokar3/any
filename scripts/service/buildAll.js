@@ -274,13 +274,13 @@ function calcDirLastModifiedAt(directory, excludes) {
 }
 
 /**
- * Check if project source or output has changed.
+ * Check if the project source has changed.
  *
  * @param {object[]} buildInfo Build infos.
  * @param {string} projectDir Service project directory.
  * @returns {boolean}
  */
-function isSourceOrOutputChanged(buildInfos, projectDir) {
+function isSourceChanged(buildInfos, projectDir) {
   const info = buildInfos.find((info) => info.projectDir === projectDir);
   if (!info) {
     return true;
@@ -376,7 +376,7 @@ function buildAll() {
 
       if (
         !IGNORE_UNCHANGED &&
-        !isSourceOrOutputChanged(buildItemsForRead, projectDir)
+        !isSourceChanged(buildItemsForRead, projectDir)
       ) {
         console.log("UP-TO-DATE");
         copyCompiledSourceAndResources(projectDir);

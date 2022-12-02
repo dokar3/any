@@ -37,16 +37,13 @@ class ServiceViewModel(
                 }
                 return@launch
             }
-
-            val localVer = Semver(local.version)
-            val currVer = Semver(service.version)
-            val isUpgrade = currVer != localVer ||
+            val isUpgrading = Semver(local.version) != Semver(service.version) ||
                     local.main != service.main ||
                     local.mainChecksums != service.mainChecksums ||
                     local.configs != service.configs ||
-                    local.buildTime != service.buildTime ||
-                    local.addedAt != service.addedAt
-            val upgradeInfo = if (isUpgrade) {
+                    local.addedAt != service.addedAt ||
+                    local.source != service.source
+            val upgradeInfo = if (isUpgrading) {
                 UpgradeInfo(
                     fromVersion = local.version,
                     toVersion = service.version,
