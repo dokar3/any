@@ -42,7 +42,7 @@ import any.ui.common.widget.MSG_POPUP_DURATION
 import any.ui.common.widget.MessagePopup
 import any.ui.common.widget.ProgressBar
 import any.ui.common.widget.SearchBar
-import any.ui.service.ServiceConfiguringDialog
+import any.ui.service.ServiceDialog
 import any.ui.settings.services.viewmodel.AddServiceUiState
 import any.ui.settings.services.viewmodel.AppendableService
 import any.ui.settings.services.viewmodel.ServiceMgtViewModel
@@ -154,7 +154,7 @@ private fun AddServicesContent(
 
     if (serviceToConfigure != null) {
         val appendableService = serviceToConfigure!!
-        ServiceConfiguringDialog(
+        ServiceDialog(
             onDismissRequest = { serviceToConfigure = null },
             service = appendableService.service,
             isAdded = appendableService.isAdded,

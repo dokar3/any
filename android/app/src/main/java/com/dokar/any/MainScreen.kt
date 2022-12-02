@@ -26,7 +26,7 @@ import any.navigation.navigateAndReplace
 import any.navigation.post
 import any.ui.common.widget.SimpleDialog
 import any.ui.imagepager.ImagePagerViewModel
-import any.ui.service.ServiceConfiguringDialog
+import any.ui.service.ServiceDialog
 import any.ui.settings.services.viewmodel.ServiceMgtViewModel
 import any.ui.settings.services.viewmodel.ServicesUiState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -157,7 +157,7 @@ fun MainScreen(
 
     val serviceToConfigure = servicesUiState.servicesToConfigure.firstOrNull()
     if (serviceToConfigure != null) {
-        ServiceConfiguringDialog(
+        ServiceDialog(
             onDismissRequest = {
                 serviceMgtViewModel.clearServicesToConfigure()
                 mainViewModel.setServiceIdToConfigure(null)

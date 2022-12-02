@@ -81,7 +81,7 @@ import any.ui.home.TitleBar
 import any.ui.home.fresh.viewmodel.FreshUiState
 import any.ui.home.fresh.viewmodel.FreshViewModel
 import any.ui.jslogger.FloatingLoggerService
-import any.ui.service.ServiceConfiguringDialog
+import any.ui.service.ServiceDialog
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -365,7 +365,7 @@ internal fun FreshScreen(
     }
 
     if (showConfigureServiceDialog && currentService != null) {
-        ServiceConfiguringDialog(
+        ServiceDialog(
             onDismissRequest = { showConfigureServiceDialog = false },
             service = currentService,
             isAdded = true,
