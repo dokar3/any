@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidColorFilter
@@ -78,6 +79,8 @@ import java.io.File
 import java.io.InputStream
 import kotlin.math.absoluteValue
 
+private const val FRAGMENT_TAG = "ImagePager"
+
 @Composable
 fun FragmentImagePager(
     onBack: () -> Unit,
@@ -86,15 +89,25 @@ fun FragmentImagePager(
     images: List<String>,
     initialPage: Int = 0,
 ) {
-    var fragmentAdded by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
 
-    val fragmentManger = context.getActivity().fragmentManager
+    val activity = context.getActivity()
 
-    val fragment = remember { ImagePagerFragment() }
+    val fragmentManager = activity.fragmentManager
 
-    var currentPage: Int by remember { mutableStateOf(initialPage) }
+    val fragment = remember(fragmentManager) {
+        val curr = fragmentManager.findFragmentByTag(FRAGMENT_TAG)
+        if (curr != null) {
+            (curr as DialogFragment).dismiss()
+        }
+        ImagePagerFragment()
+    }
+
+    var currentPage: Int by rememberSaveable(
+        inputs = arrayOf(initialPage),
+    ) {
+        mutableStateOf(initialPage)
+    }
 
     val onPageChangeListener = remember {
         object : ViewPager.SimpleOnPageChangeListener() {
@@ -106,45 +119,37 @@ fun FragmentImagePager(
 
     val colorFilter = rememberImageColorFilter()
 
-    LaunchedEffect(title) {
+    LaunchedEffect(fragment, title) {
         fragment.title = title ?: ""
     }
 
-    LaunchedEffect(images) {
+    LaunchedEffect(fragment, images) {
         fragment.images = images
     }
 
-    LaunchedEffect(initialPage) {
-        fragment.initialPage = initialPage
-    }
-
-    LaunchedEffect(colorFilter) {
+    LaunchedEffect(fragment, colorFilter) {
         fragment.imageColorFilter = colorFilter?.asAndroidColorFilter()
     }
 
-    LaunchedEffect(fragment, fragmentAdded) {
-        if (!fragmentAdded) {
-            fragment.onBack = {
-                onBack()
-                currentIndexUpdater(currentPage)
-            }
-            fragment.onTranslucentBackground = {
-                currentIndexUpdater(currentPage)
-            }
-            fragment.addOnPageChangeListener(onPageChangeListener)
-            fragment.show(fragmentManger, "ImagePager")
-            fragmentAdded = true
+    DisposableEffect(fragment) {
+        fragment.onBack = {
+            onBack()
+            currentIndexUpdater(currentPage)
         }
-    }
-
-    DisposableEffect(fragment, fragmentAdded) {
+        fragment.onTranslucentBackground = {
+            currentIndexUpdater(currentPage)
+        }
+        fragment.initialPage = currentPage
+        fragment.addOnPageChangeListener(onPageChangeListener)
+        fragment.show(fragmentManager, FRAGMENT_TAG)
         onDispose {
-            if (fragmentAdded) {
-                fragment.onBack = null
-                fragment.onTranslucentBackground = null
-                fragment.removeOnPageChangeListener(onPageChangeListener)
+            fragment.onBack = null
+            fragment.onTranslucentBackground = null
+            fragment.removeOnPageChangeListener(onPageChangeListener)
+            try {
                 fragment.dismiss()
-                fragmentAdded = false
+            } catch (e: IllegalStateException) {
+                e.printStackTrace()
             }
         }
     }
@@ -339,7 +344,6 @@ class ImagePagerFragment : DialogFragment() {
         onBack?.invoke()
     }
 
-
     private fun initImagePager() {
         binding.imagePager.apply {
             onPageChangeListeners.forEach {
@@ -477,7 +481,7 @@ class ImagePagerFragment : DialogFragment() {
             }
         }
         progressDialog.setOnDismissListener {
-            if  (saveJob.isActive) {
+            if (saveJob.isActive) {
                 saveJob.cancel()
             }
         }
@@ -585,14 +589,14 @@ class ImagePagerFragment : DialogFragment() {
         val photoView = binding.photoView
         setupSubsamplingScale(photoView, gestureHandler)
         photoView.setOnImageEventListener(object : OnImageEventListener {
-            override fun onReady() {}
-
-            override fun onImageLoaded() {
+            override fun onReady() {
                 updatePreview(photoView) { preview ->
                     preview.visibility = View.GONE
                     preview.recycle()
                 }
             }
+
+            override fun onImageLoaded() {}
 
             override fun onPreviewLoadError(e: java.lang.Exception?) {}
 
@@ -644,9 +648,7 @@ class ImagePagerFragment : DialogFragment() {
             ImageLoader.fetchImage(request = request)
                 .catch { onRequestShowError(it) }
                 .collect { onImageResult(position, request, onRequestShowError, it) }
-
             imageLoadingJobs.remove(position)
-
             onRequestHideLoading()
         }
         imageLoadingJobs[position] = job

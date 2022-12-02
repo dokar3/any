@@ -35,11 +35,11 @@ fun ImagePager(
     images: List<String>,
     initialPage: Int = 0,
 ) {
-        FragmentImagePager(
-            onBack = onBack,
-            currentIndexUpdater = currentIndexUpdater,
-            title = title,
-            images = images,
-            initialPage = initialPage,
-        )
+    FragmentImagePager(
+        onBack = onBack,
+        currentIndexUpdater = currentIndexUpdater,
+        title = title,
+        images = images,
+        initialPage = initialPage,
+    )
 }
