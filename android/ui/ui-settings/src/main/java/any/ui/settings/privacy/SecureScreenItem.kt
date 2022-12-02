@@ -54,7 +54,7 @@ internal fun SecureScreenItem(
             Text(stringResource(BaseR.string.secure_screen))
             if (isSecureScreenEnabled) {
                 Text(
-                    text = stringResource(BaseR.string.secure_screen_on_hint),
+                    text = stringResource(BaseR.string.secure_screen_on_summary),
                     fontSize = 13.sp,
                     color = MaterialTheme.colors.onBackground.copy(alpha = 0.6f),
                 )
