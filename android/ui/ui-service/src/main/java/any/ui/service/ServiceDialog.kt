@@ -324,7 +324,7 @@ private fun ServiceFieldList(
                         val warning = stringResource(BaseR.string.add_external_service_warning)
                         WarningMessage(
                             title = { Text(stringResource(BaseR.string.external_service)) },
-                            message = { Text(warning) },
+                            message = { Html(warning) },
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
