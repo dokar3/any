@@ -92,7 +92,7 @@ import any.ui.common.widget.FlatSwitch
 import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
-import any.ui.service.ServiceConfiguringDialog
+import any.ui.service.ServiceDialog
 import any.ui.settings.menu.ActionMenuController
 import any.ui.settings.menu.ActionMenuItem
 import any.ui.settings.services.viewmodel.AppendableService
@@ -479,7 +479,7 @@ internal fun ServiceManagement(
         val appendableService = configuringService!!
         val service = appendableService.service
         val isAdded = appendableService.isAdded
-        ServiceConfiguringDialog(
+        ServiceDialog(
             onDismissRequest = { viewModel.clearServicesToConfigure() },
             service = service,
             isAdded = isAdded,

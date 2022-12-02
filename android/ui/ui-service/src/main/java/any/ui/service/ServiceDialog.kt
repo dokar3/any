@@ -92,7 +92,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.launch
 
 @Composable
-fun ServiceConfiguringDialog(
+fun ServiceDialog(
     onDismissRequest: () -> Unit,
     service: UiServiceManifest,
     isAdded: Boolean,
