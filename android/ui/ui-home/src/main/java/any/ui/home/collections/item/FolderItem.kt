@@ -38,7 +38,7 @@ import any.domain.entity.UiPost
 import any.domain.post.containsRaw
 import any.ui.common.image.AsyncImage
 import any.ui.common.modifier.drawCheckMark
-import any.ui.common.rememberScale
+import any.ui.common.rememberScaleIndication
 import any.ui.common.theme.imagePlaceholder
 import any.ui.common.theme.placeholder
 import any.ui.common.theme.sizes
@@ -62,7 +62,7 @@ internal fun FolderItem(
         modifier = modifier
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberScale(),
+                indication = rememberScaleIndication(),
                 onClick = { onClick?.invoke() },
                 onLongClick = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)

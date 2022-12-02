@@ -52,7 +52,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import any.base.image.ImageRequest
 import any.ui.common.R
 import any.ui.common.image.AsyncImage
-import any.ui.common.rememberScale
+import any.ui.common.rememberScaleIndication
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -275,7 +275,7 @@ fun VideoView(
                     .size(96.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberScale(targetScale = 0.8f),
+                        indication = rememberScaleIndication(targetScale = 0.8f),
                         onClick = { state.play() }
                     ),
                 tint = Color.White,
