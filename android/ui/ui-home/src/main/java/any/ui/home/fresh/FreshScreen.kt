@@ -137,7 +137,6 @@ internal fun FreshScreen(
 
     fun selectService(service: UiServiceManifest) {
         viewModel.setCurrentService(service)
-        // Scroll to top
         firstItemOffsetY = 0
         scope.launch {
             screenState.resetBars(animate = true)
@@ -333,7 +332,7 @@ internal fun FreshScreen(
             value = text,
             onValueChange = { text = it },
             title = { Text(stringResource(BaseR.string.lets_go)) },
-            label = { Text(stringResource(BaseR.string.enter_a_url_or_command)) },
+            label = { Text(stringResource(BaseR.string.enter_an_url_or_command)) },
             onConfirmClick = {
                 if (text.isEmpty()) {
                     return@EditDialog
@@ -477,14 +476,13 @@ private fun ServiceHeaderItem(
     modifier: Modifier = Modifier,
 ) {
     val preferencesStore = LocalContext.current.preferencesStore()
-
     val serviceHeaderImage = currentService?.localFirstResourcePath(
         type = ServiceResource.Type.HeaderImage,
         fallback = { currentService.headerImage }
     )
     val globalHeaderImage = preferencesStore.headerImage.value
-    val forceHeaderImageForAll = preferencesStore.overrideServiceHeaderImage.value
-    val headerPicUrl = if (forceHeaderImageForAll || serviceHeaderImage.isNullOrEmpty()) {
+    val overrideServiceHeaderImage = preferencesStore.overrideServiceHeaderImage.value
+    val headerPicUrl = if (overrideServiceHeaderImage || serviceHeaderImage.isNullOrEmpty()) {
         globalHeaderImage
     } else {
         serviceHeaderImage
