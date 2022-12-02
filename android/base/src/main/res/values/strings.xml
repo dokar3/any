@@ -143,7 +143,7 @@
     <string name="incorrect_password">Incorrect password</string>
     <string name="privacy_settings">Privacy settings</string>
     <string name="secure_screen">Secure screen</string>
-    <string name="secure_screen_on_hint">Preview in the recent app list and screenshot are disabled</string>
+    <string name="secure_screen_on_summary">Recording, screenshot and recent task preview are disabled while using the app</string>
     <string name="version">Version</string>
     <string name="app_version">App version</string>
     <string name="build_time">Build time</string>
