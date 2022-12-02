@@ -59,9 +59,11 @@ class BuiltinServiceUpdater(
                     isEnabled = service.isEnabled,
                     pageKeyOfPage2 = service.pageKeyOfPage2,
                     localResources = service.localResources,
+                    addedAt = service.addedAt,
+                    updatedAt = service.updatedAt,
+                    buildTime = service.buildTime, // Is this a good idea to ignore this field?
                 )
-                if (service != partialBuiltin && partialBuiltin.buildTime > service.buildTime) {
-                    // Nothing to update
+                if (service != partialBuiltin) {
                     updatableDbServices.add(service)
                 }
             }
