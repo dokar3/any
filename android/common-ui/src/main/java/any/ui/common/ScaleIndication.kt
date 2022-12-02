@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.scale
 
 @Composable
-fun rememberScale(targetScale: Float = 0.95f): Indication {
+fun rememberScaleIndication(targetScale: Float = 0.95f): Indication {
     return remember(targetScale) { ScaleIndication(targetScale) }
 }
 

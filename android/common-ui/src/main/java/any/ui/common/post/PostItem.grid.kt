@@ -52,7 +52,7 @@ import any.data.entity.Post
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
-import any.ui.common.rememberScale
+import any.ui.common.rememberScaleIndication
 import any.ui.common.richtext.RichText
 import any.ui.common.richtext.RichTextStyle
 import any.ui.common.theme.imagePlaceholder
@@ -145,7 +145,7 @@ private fun TextGridPostItem(
         modifier = modifier
             .combinedClickable(
                 interactionSource = interactionSource,
-                indication = rememberScale(),
+                indication = rememberScaleIndication(),
                 onClick = { onClick?.invoke(post) },
                 onLongClick = {
                     hapticFeedback.performLongPress()
@@ -264,7 +264,7 @@ private fun CoverGridPostItem(
         modifier = modifier
             .combinedClickable(
                 interactionSource = interactionSource,
-                indication = rememberScale(),
+                indication = rememberScaleIndication(),
                 onClick = {
                     onClick?.invoke(post)
                 },
