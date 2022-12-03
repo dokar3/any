@@ -47,18 +47,14 @@ object Routes {
         const val LIBS = "libs"
     }
 
-    fun parameterizedRouteOf(route: String): Builder {
-        return Builder(route)
-    }
-
     class Builder(private var route: String) {
-        fun set(name: String, value: Any?): Builder {
+        fun arg(name: String, value: Any?): Builder {
             if (value != null) {
                 route = route.replace("{${name}}", value.toString())
             }
             return this
         }
 
-        fun get(): String = route
+        fun build(): String = route
     }
 }

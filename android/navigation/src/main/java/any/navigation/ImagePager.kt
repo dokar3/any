@@ -34,8 +34,8 @@ fun Routes.imagePager(title: String?, currPage: Int): String {
         .replace("%", "%25")
         .replace("+", "%2b")
     val encodedTitle = URLEncoder.encode(t, "utf-8")
-    return parameterizedRouteOf(Routes.IMAGE_PAGER)
-        .set("title", encodedTitle)
-        .set("currPage", currPage.toString())
-        .get()
+    return Routes.Builder(IMAGE_PAGER)
+        .arg("title", encodedTitle)
+        .arg("currPage", currPage.toString())
+        .build()
 }
