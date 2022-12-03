@@ -189,9 +189,7 @@ private fun CardPostItemImpl(
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
-            val info = remember(post) {
-                PostItemDefaults.buildPostInfo(post)
-            }
+            val info = remember(post) { PostItemDefaults.buildPostInfo(post) }
             val showInfo = info.isNotEmpty()
             if (showInfo) {
                 Text(
