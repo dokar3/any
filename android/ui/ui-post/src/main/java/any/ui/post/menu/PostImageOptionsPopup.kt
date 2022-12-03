@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.lifecycleScope
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.base.image.PostImageSaver
 import any.base.util.Intents
 import any.base.util.PackageUtil

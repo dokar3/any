@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester

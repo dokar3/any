@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.domain.post.ContentSection
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.EmojiEmptyContent

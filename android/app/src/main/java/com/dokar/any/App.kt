@@ -5,10 +5,10 @@ import android.os.Build
 import android.os.StrictMode
 import any.base.image.ImageFetcher
 import any.base.image.ImageLoader
+import any.base.image.SubsamplingImageCache
 import any.base.log.Logger
 import any.base.log.NoOpLogger
 import any.base.util.CrashHandler
-import any.data.cache.SubsamplingImageCache
 import any.download.PostImageDownloader
 
 class App : Application() {

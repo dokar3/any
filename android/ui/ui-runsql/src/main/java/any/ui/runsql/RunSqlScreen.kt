@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.util.ClipboardUtil
 import any.base.util.compose.performLongPress
 import any.data.db.AppDatabase

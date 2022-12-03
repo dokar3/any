@@ -1,6 +1,6 @@
 package any.data.source.post
 
-import any.base.cache.MemoryCache
+import any.base.MemoryCache
 import any.data.entity.Post
 import any.data.entity.ServiceManifest
 

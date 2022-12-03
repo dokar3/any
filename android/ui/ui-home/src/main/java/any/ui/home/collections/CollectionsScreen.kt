@@ -72,10 +72,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import any.base.StableHolder
+import any.base.compose.StableHolder
+import any.base.compose.rememberProvider
 import any.base.prefs.FolderViewType
 import any.base.prefs.PostSorting
-import any.base.rememberProvider
 import any.base.util.Intents
 import any.base.util.urlDecode
 import any.base.util.urlEncode

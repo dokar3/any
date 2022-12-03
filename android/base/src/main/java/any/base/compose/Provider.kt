@@ -1,4 +1,4 @@
-package any.base
+package any.base.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

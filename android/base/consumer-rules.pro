@@ -1,0 +1,3 @@
+-keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache { *; }
+-keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache$Editor { *; }
+-keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache$Entry { *; }

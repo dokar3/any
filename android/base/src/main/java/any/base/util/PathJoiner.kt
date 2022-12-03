@@ -5,16 +5,16 @@ fun List<String>.joinToPath(): String {
 }
 
 class PathJoiner {
-    val segments = mutableListOf<String>()
+    private val segments: MutableList<String>
 
-    var separator: String = "/"
+    private var separator: String = "/"
 
     constructor(vararg segments: String) {
-        this.segments.addAll(segments)
+        this.segments = segments.toMutableList()
     }
 
     constructor(segments: List<String>) {
-        this.segments.addAll(segments)
+        this.segments = segments.toMutableList()
     }
 
     fun add(segment: String): PathJoiner {

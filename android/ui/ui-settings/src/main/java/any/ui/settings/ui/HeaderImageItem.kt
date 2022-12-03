@@ -46,7 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
 import any.base.image.ImageState

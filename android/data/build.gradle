@@ -70,7 +70,6 @@ dependencies {
     ksp libs.moshi.kotlin.codegen
     implementation libs.fresco
     implementation libs.jsoup
-    implementation libs.disklrucache
     implementation libs.crc
     implementation libs.duktape
     implementation libs.bolts.tasks

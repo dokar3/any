@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 
 object NetworkUtil {
-
     @Suppress("deprecation")
     fun isNetworkConnected(context: Context): Boolean {
         val cm: ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)

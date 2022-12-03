@@ -37,7 +37,7 @@ internal fun JsLogsScreen(
                 iconRes = CommonUiR.drawable.ic_baseline_layers_24,
                 onClick = {
                     val activity = context as Activity
-                    if (Permissions.checkOrRequestFloatingPermission(activity)) {
+                    if (Permissions.checkOrRequestOverlayPermission(activity)) {
                         FloatingLoggerService.show(context)
                     }
                 },

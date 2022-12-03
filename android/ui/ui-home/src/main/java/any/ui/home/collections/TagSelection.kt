@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.ui.common.modifier.fadingEdge
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.SimpleDialog

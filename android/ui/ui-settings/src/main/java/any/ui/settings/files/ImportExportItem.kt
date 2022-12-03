@@ -38,7 +38,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.base.util.Dirs
 import any.base.util.FileUtil
 import any.ui.common.theme.pass

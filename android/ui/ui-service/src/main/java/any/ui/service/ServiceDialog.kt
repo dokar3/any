@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
 import any.base.image.ImageState

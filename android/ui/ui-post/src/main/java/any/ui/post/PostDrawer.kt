@@ -34,7 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.data.entity.Bookmark
 import any.domain.post.ContentSection
 import any.ui.common.widget.BottomSheetTitle

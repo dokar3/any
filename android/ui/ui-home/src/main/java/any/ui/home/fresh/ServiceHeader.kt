@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.image.ImageRequest
 import any.ui.common.image.AsyncImage
 import any.ui.common.theme.sizes

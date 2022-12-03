@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastSumBy
-import any.base.rememberProvider
+import any.base.compose.rememberProvider
 import any.ui.common.lazy.LazyGridScrollableState
 import any.ui.common.lazy.LazyListScrollableState
 import any.ui.common.lazy.LazyScrollableState

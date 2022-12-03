@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.data.entity.ServiceManifest
 import any.domain.entity.UiServiceManifest
 import any.ui.common.modifier.verticalScrollBar

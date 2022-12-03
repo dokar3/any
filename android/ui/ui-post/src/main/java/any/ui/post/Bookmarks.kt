@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.data.entity.Bookmark
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.EmojiEmptyContent
