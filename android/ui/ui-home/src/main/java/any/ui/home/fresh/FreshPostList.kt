@@ -35,8 +35,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.ImmutableHolder
 import any.base.R
+import any.base.compose.ImmutableHolder
 import any.base.util.Intents
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost

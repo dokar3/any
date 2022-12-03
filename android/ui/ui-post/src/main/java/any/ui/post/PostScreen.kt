@@ -74,8 +74,8 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.ImmutableHolder
-import any.base.StableHolder
+import any.base.compose.ImmutableHolder
+import any.base.compose.StableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
 import any.base.prefs.postFontScale
@@ -493,7 +493,7 @@ private fun PostScreenContent(
                                     elementScrollOffset = scrollOffset,
                                 )
                                 val activity = context as Activity
-                                if (Permissions.checkOrRequestFloatingPermission(activity)) {
+                                if (Permissions.checkOrRequestOverlayPermission(activity)) {
                                     ReadingBubbleService.addPost(context, readingPost)
                                     onNavigate(NavEvent.Back)
                                 }

@@ -1,5 +1,5 @@
 package any.ui.post.item
 
-import any.base.cache.MemoryCache
+import any.base.MemoryCache
 
 internal object VideoAspectRatioCache : MemoryCache<String, Float>()

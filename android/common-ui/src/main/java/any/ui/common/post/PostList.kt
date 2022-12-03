@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.ui.common.modifier.gridItemPadding

@@ -61,7 +61,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.image.ImageRequest
 import any.domain.entity.UiUser
 import any.richtext.RichContent

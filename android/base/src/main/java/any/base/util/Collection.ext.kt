@@ -2,7 +2,7 @@ package any.base.util
 
 
 inline fun <C> C?.ifNullOrEmpty(defaultValue: () -> C?): C? where C : Collection<*> =
-    if (this == null || isEmpty()) defaultValue() else this
+    if (isNullOrEmpty()) defaultValue() else this
 
 inline fun <E> MutableList<E>.updateIf(
     predicate: (E) -> Boolean,

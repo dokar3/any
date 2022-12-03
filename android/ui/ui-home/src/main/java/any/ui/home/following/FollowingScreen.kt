@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.domain.entity.UiUser
 import any.navigation.NavEvent
 import any.navigation.Routes

@@ -52,7 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.util.compose.performLongPress
 import any.data.entity.ServiceResource
 import any.domain.entity.UiServiceManifest

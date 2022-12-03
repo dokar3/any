@@ -44,7 +44,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import any.base.R
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.base.prefs.FolderViewType
 import any.base.util.joinToPath
 import any.data.entity.Folder

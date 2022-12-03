@@ -74,8 +74,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.StableHolder
 import any.base.UiMessage
+import any.base.compose.StableHolder
 import any.base.util.Dirs
 import any.base.util.FileUtil
 import any.base.util.compose.performLongPress

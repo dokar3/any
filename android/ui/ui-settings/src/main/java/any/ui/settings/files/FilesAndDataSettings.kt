@@ -13,7 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.ui.settings.files.viewmodel.FilesAndDataViewModel
 import any.ui.settings.viewmodel.SettingsViewModel
 

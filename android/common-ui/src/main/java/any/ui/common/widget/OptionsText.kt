@@ -58,7 +58,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.base.util.compose.performLongPress
 import any.base.util.compose.performTextHandleMove
 import kotlinx.coroutines.flow.filter

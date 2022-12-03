@@ -7,7 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.ui.home.HomeScreenDefaults
 import any.ui.home.SelectionChip
 import any.ui.home.downloads.viewmodel.DownloadType

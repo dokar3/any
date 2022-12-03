@@ -31,8 +31,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.ImmutableHolder
 import any.base.R
+import any.base.compose.ImmutableHolder
 import any.base.util.Intents
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost

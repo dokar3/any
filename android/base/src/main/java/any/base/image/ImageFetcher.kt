@@ -3,7 +3,6 @@ package any.base.image
 import com.facebook.imagepipeline.request.ImageRequest as FrescoRequest
 import android.graphics.Bitmap
 import android.util.Size
-import any.base.cache.TwoTypesCache
 import com.facebook.imagepipeline.common.ResizeOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -13,12 +12,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import java.io.File
-import java.io.InputStream
 
 class ImageFetcher(
     private val downloadedFetcher: DownloadedImageFetcher,
-    private val subsamplingImageCache: TwoTypesCache<String, InputStream, File>?,
+    private val subsamplingImageCache: SubsamplingImageCache?,
 ) {
     fun fetchBitmap(
         request: ImageRequest,

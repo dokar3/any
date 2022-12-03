@@ -25,4 +25,4 @@ inline fun CharSequence.indexOfFirst(start: Int = 0, predicate: (Char) -> Boolea
 }
 
 inline fun <C, R> C.ifNullOrEmpty(defaultValue: () -> R): R where C : R, R : CharSequence? =
-    if (this == null || isEmpty()) defaultValue() else this
+    if (isNullOrEmpty()) defaultValue() else this

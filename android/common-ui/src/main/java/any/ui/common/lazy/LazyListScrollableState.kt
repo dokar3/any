@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.IntSize
-import any.base.Provider
-import any.base.rememberSaveableProvider
+import any.base.compose.Provider
+import any.base.compose.rememberSaveableProvider
 import any.ui.common.quickScrollToTop
 
 @Composable

@@ -42,6 +42,8 @@ dependencies {
     implementation libs.androidx.browser
     implementation libs.androidx.documentfile
 
+    implementation libs.disklrucache
+
     implementation libs.fresco
     implementation libs.fresco.animated.base
     implementation libs.fresco.gif

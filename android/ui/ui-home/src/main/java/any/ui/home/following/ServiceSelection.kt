@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.ui.common.theme.themeColorOrPrimary
 import any.ui.common.widget.Avatar
 import any.ui.home.HomeScreenDefaults

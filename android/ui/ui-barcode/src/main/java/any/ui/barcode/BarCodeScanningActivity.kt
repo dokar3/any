@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.ui.barcode.camera.CameraK
 import any.ui.barcode.camera.event.CameraEvent
 import any.ui.barcode.camera.target.MLKitBarCodeScanning

@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.base.image.ImageRequest
 import any.data.ThumbAspectRatio
 import any.data.entity.Folder

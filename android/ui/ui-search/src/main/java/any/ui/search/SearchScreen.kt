@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.util.Intents
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost

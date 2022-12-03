@@ -41,6 +41,7 @@ import any.base.image.ImageLoader
 import any.base.image.ImageRequest
 import any.base.image.ImageResult
 import any.base.image.PostImageSaver
+import any.base.image.SubsamplingImageCache
 import any.base.image.toFrescoRequestBuilder
 import any.base.util.ClipboardUtil
 import any.base.util.Intents
@@ -48,7 +49,6 @@ import any.base.util.PackageUtil
 import any.base.util.getActivity
 import any.base.util.hideBars
 import any.base.util.showBars
-import any.data.cache.SubsamplingImageCache
 import any.download.PostImageDownloader
 import any.ui.common.image.rememberImageColorFilter
 import any.ui.imagepager.databinding.FragmentImagePagerBinding

@@ -96,7 +96,7 @@ fun PreferencesStore.darkModeFlow(): Flow<DarkMode> {
 /**
  * Used to update latest dark mode enabled state in flows are created by [darkModeEnabledFlow]
  */
-object DarkModeEnabledFlowUpdater {
+internal object DarkModeEnabledFlowUpdater {
     private val tick = AtomicInteger(0)
 
     internal val flow by lazy { MutableStateFlow(tick.get()) }

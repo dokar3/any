@@ -43,7 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.util.compose.performLongPress
 import any.data.ThumbAspectRatio
 import any.data.entity.Post

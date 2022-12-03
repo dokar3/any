@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.image.ImageRequest
 import any.base.prefs.headerImage
 import any.base.prefs.overrideServiceHeaderImage
@@ -340,7 +340,7 @@ internal fun FreshScreen(
 
                 if (text == "jslogs") {
                     val activity = context as Activity
-                    if (Permissions.checkOrRequestFloatingPermission(activity)) {
+                    if (Permissions.checkOrRequestOverlayPermission(activity)) {
                         FloatingLoggerService.show(context)
                     }
                     showCommandDialog = false

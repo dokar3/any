@@ -31,7 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import any.base.StableHolder
+import any.base.compose.StableHolder
 import any.data.entity.SpaceInfo
 import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.RoundedProgressBar

@@ -54,8 +54,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.ImmutableHolder
-import any.base.StableHolder
+import any.base.compose.ImmutableHolder
+import any.base.compose.StableHolder
 import any.base.image.ImageRequest
 import any.data.ThumbAspectRatio
 import any.data.entity.Post

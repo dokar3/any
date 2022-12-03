@@ -1,16 +1,13 @@
-package any.data.cache
+package any.base.image
 
 import android.content.Context
-import any.base.cache.TwoTypesCache
 import any.base.util.Dirs
 import com.jakewharton.disklrucache.DiskLruCache
 import java.io.File
 import java.io.InputStream
 import java.lang.reflect.Method
 
-class SubsamplingImageCache(
-    private val cacheDir: File
-) : TwoTypesCache<String, InputStream, File> {
+class SubsamplingImageCache(private val cacheDir: File) {
     private val lruEntriesField by lazy {
         DiskLruCache::class.java.getDeclaredField("lruEntries").also {
             it.isAccessible = true
@@ -38,7 +35,7 @@ class SubsamplingImageCache(
         )
     }
 
-    override fun get(key: String): File? {
+    fun get(key: String): File? {
         val entry = lruEntries()[lruKey(key)]
         return if (entry != null) {
             getCleanFileFromLruEntry(entry)
@@ -47,7 +44,7 @@ class SubsamplingImageCache(
         }
     }
 
-    override fun put(key: String, value: InputStream): File {
+    fun put(key: String, value: InputStream): File {
         return cache.edit(lruKey(key)).let {
             it.newOutputStream(0).use { outputStream ->
                 value.copyTo(outputStream)
@@ -59,15 +56,15 @@ class SubsamplingImageCache(
         }
     }
 
-    override fun remove(key: String) {
+    fun remove(key: String) {
         cache.remove(lruKey(key))
     }
 
-    override fun contains(key: String): Boolean {
+    fun contains(key: String): Boolean {
         return cache.get(lruKey(key)) != null
     }
 
-    override fun clear() {
+    fun clear() {
         cache.directory.deleteRecursively()
         lruEntries().clear()
     }

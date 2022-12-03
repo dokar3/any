@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.ImmutableHolder
+import any.base.compose.ImmutableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
 import any.ui.common.image.rememberImageColorFilter

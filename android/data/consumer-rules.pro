@@ -5,7 +5,7 @@
 -keepclassmembernames class any.data.entity.Bookmark { *; }
 -keepclassmembernames class any.data.entity.ServiceManifest { *; }
 -keepclassmembernames class any.data.entity.ServiceConfig { *; }
--keepclassmembernames class any.data.entity.ServiceViewType { *; }
+-keepclassmembernames class any.data.entity.ServicePostsViewType { *; }
 -keepclassmembernames class any.data.entity.ServiceConfigOption { *; }
 -keepclassmembernames class any.data.entity.ServiceConfigType { *; }
 -keepclasseswithmembers class any.data.js.plugin.HttpPlugin { *; }
@@ -16,7 +16,3 @@
 -keepclasseswithmembers class any.data.js.plugin.ProgressPlugin { *; }
 -keepclasseswithmembers class any.data.js.plugin.ServiceConfigsUpdater { *; }
 -keepclasseswithmembers class any.data.js.plugin.ServiceManifestUpdater { *; }
-
--keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache { *; }
--keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache$Editor { *; }
--keepclasseswithmembers class com.jakewharton.disklrucache.DiskLruCache$Entry { *; }
