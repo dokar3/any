@@ -40,10 +40,10 @@ fun Routes.post(
     initialElementScrollOffset: Int = 0,
 ): String {
     val postUrlEnc = URLEncoder.encode(url, "utf-8")
-    return parameterizedRouteOf(POST)
-        .set("postUrl", postUrlEnc)
-        .set("serviceId", serviceId)
-        .set("initialElementIndex", initialElementIndex)
-        .set("initialElementScrollOffset", initialElementScrollOffset)
-        .get()
+    return Routes.Builder(POST)
+        .arg("postUrl", postUrlEnc)
+        .arg("serviceId", serviceId)
+        .arg("initialElementIndex", initialElementIndex)
+        .arg("initialElementScrollOffset", initialElementScrollOffset)
+        .build()
 }

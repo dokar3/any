@@ -34,8 +34,8 @@ val NavBackStackEntry.subSettings: String?
 fun Routes.settings(
     @SettingsRoute subSettings: String? = null,
 ): String {
-    return parameterizedRouteOf(SETTINGS)
-        .set("subSettings", subSettings)
-        .get()
+    return Routes.Builder(SETTINGS)
+        .arg("subSettings", subSettings)
+        .build()
 }
 

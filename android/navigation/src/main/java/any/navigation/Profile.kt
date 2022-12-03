@@ -32,14 +32,14 @@ val NavBackStackEntry.userId: String?
     }
 
 fun Routes.userProfile(serviceId: String, userId: String): String {
-    return parameterizedRouteOf(PROFILE)
-        .set("serviceId", serviceId)
-        .set("userId", userId)
-        .get()
+    return Routes.Builder(PROFILE)
+        .arg("serviceId", serviceId)
+        .arg("userId", userId)
+        .build()
 }
 
 fun Routes.userProfile(userUrl: String): String {
-    return parameterizedRouteOf(PROFILE)
-        .set("userUrl", userUrl)
-        .get()
+    return Routes.Builder(PROFILE)
+        .arg("userUrl", userUrl)
+        .build()
 }

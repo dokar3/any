@@ -27,8 +27,8 @@ val NavBackStackEntry.query: String?
     }
 
 fun Routes.search(serviceId: String?, query: String? = null): String {
-    return parameterizedRouteOf(SEARCH)
-        .set("serviceId", serviceId)
-        .set("query", URLEncoder.encode(query ?: "", "utf-8"))
-        .get()
+    return Routes.Builder(SEARCH)
+        .arg("serviceId", serviceId)
+        .arg("query", URLEncoder.encode(query ?: "", "utf-8"))
+        .build()
 }
