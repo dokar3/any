@@ -5,7 +5,7 @@
 -keepclassmembernames class any.data.entity.Bookmark { *; }
 -keepclassmembernames class any.data.entity.ServiceManifest { *; }
 -keepclassmembernames class any.data.entity.ServiceConfig { *; }
--keepclassmembernames class any.data.entity.ServicePostsViewType { *; }
+-keepclassmembernames class any.data.entity.PostsViewType { *; }
 -keepclassmembernames class any.data.entity.ServiceConfigOption { *; }
 -keepclassmembernames class any.data.entity.ServiceConfigType { *; }
 -keepclasseswithmembers class any.data.js.plugin.HttpPlugin { *; }
