@@ -53,7 +53,7 @@ function parsePosts(data: any): PagedResult<Post[]> {
       url: item.url,
       summary: item.description,
       author: item.creator?.username ?? item.postSection.name,
-      authorId: item.creator?.userId,
+      authorId: null, // item.creator?.userId
       avatar: item.creator?.avatarUrl,
       commentCount: item.commentsCount,
       commentsKey: item.id,
