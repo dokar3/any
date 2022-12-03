@@ -1,7 +1,5 @@
 package any.ui.common.post
 
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.unit.em
 import any.domain.entity.UiPost
 
@@ -12,11 +10,11 @@ internal object PostItemDefaults {
 
     const val IconButtonsOpacity = 0.7f
 
-    fun buildPostInfo(post: UiPost): AnnotatedString {
-        return buildAnnotatedString {
+    fun buildPostInfo(post: UiPost): String {
+        return buildString {
             val category = post.category
             if (!category.isNullOrEmpty()) {
-                if (length != 0) {
+                if (isNotEmpty()) {
                     append(" | ")
                 }
                 append(category)
@@ -24,7 +22,7 @@ internal object PostItemDefaults {
 
             val date = post.date
             if (!date.isNullOrEmpty()) {
-                if (length != 0) {
+                if (isNotEmpty()) {
                     append(" | ")
                 }
                 append(date)
