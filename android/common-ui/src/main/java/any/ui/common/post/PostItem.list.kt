@@ -1,7 +1,6 @@
 package any.ui.common.post
 
 import any.base.R as BaseR
-import android.content.res.Resources
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -45,7 +43,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -95,10 +92,65 @@ fun ListPostItem(
     padding: PaddingValues = PaddingValues(horizontal = 16.dp),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
+    val displayPost: UiPost
+    val repostedBy: RepostUser?
+    val reference = post.reference
+    if (reference != null && reference.type == Post.Reference.Type.Repost) {
+        displayPost = reference.post
+        repostedBy = RepostUser(
+            id = post.authorId,
+            name = post.author,
+        )
+    } else {
+        displayPost = post
+        repostedBy = null
+    }
+    ListPostItemImpl(
+        onCommentsClick = onCommentsClick,
+        onCollectClick = onCollectClick,
+        onMoreClick = onMoreClick,
+        onUserClick = onUserClick,
+        onLinkClick = onLinkClick,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        post = displayPost,
+        repostedBy = repostedBy,
+        defThumbAspectRatio = defThumbAspectRatio,
+        modifier = modifier,
+        showCollectButton = showCollectButton,
+        showMoreButton = showMoreButton,
+        showDivider = showDivider,
+        titleTextColor = titleTextColor,
+        avatarSize = avatarSize,
+        padding = padding,
+        interactionSource = interactionSource,
+    )
+}
+
+@Composable
+private fun ListPostItemImpl(
+    onCommentsClick: ((UiPost) -> Unit)?,
+    onCollectClick: ((UiPost) -> Unit)?,
+    onMoreClick: ((UiPost) -> Unit)?,
+    onUserClick: ((userId: String) -> Unit)?,
+    onLinkClick: ((String) -> Unit)?,
+    onClick: ((UiPost) -> Unit)?,
+    onLongClick: ((UiPost) -> Unit)?,
+    post: UiPost,
+    repostedBy: RepostUser?,
+    defThumbAspectRatio: Float?,
+    modifier: Modifier = Modifier,
+    showCollectButton: Boolean = true,
+    showMoreButton: Boolean = true,
+    showDivider: Boolean = true,
+    titleTextColor: Color = MaterialTheme.colors.onBackground,
+    avatarSize: Dp = 32.dp,
+    padding: PaddingValues = PaddingValues(horizontal = 16.dp),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+) {
     val thumbnail = post.media?.firstOrNull()
     if (thumbnail == null) {
         TextListPostItem(
-            post = post,
             modifier = modifier,
             onCommentsClick = onCommentsClick,
             onCollectClick = onCollectClick,
@@ -107,6 +159,8 @@ fun ListPostItem(
             onLinkClick = onLinkClick,
             onClick = onClick,
             onLongClick = onLongClick,
+            post = post,
+            repostedBy = repostedBy,
             defThumbAspectRatio = defThumbAspectRatio,
             titleTextColor = titleTextColor,
             avatarSize = avatarSize,
@@ -118,8 +172,6 @@ fun ListPostItem(
         )
     } else {
         CoverListPostItem(
-            post = post,
-            thumbnail = thumbnail,
             defThumbAspectRatio = defThumbAspectRatio,
             modifier = modifier,
             onCommentsClick = onCommentsClick,
@@ -129,6 +181,9 @@ fun ListPostItem(
             onLinkClick = onLinkClick,
             onClick = onClick,
             onLongClick = onLongClick,
+            post = post,
+            repostedBy = repostedBy,
+            thumbnail = thumbnail,
             titleTextColor = titleTextColor,
             avatarSize = avatarSize,
             showCollectButton = showCollectButton,
@@ -151,6 +206,7 @@ private fun TextListPostItem(
     onClick: ((UiPost) -> Unit)?,
     onLongClick: ((UiPost) -> Unit)?,
     post: UiPost,
+    repostedBy: RepostUser?,
     defThumbAspectRatio: Float?,
     modifier: Modifier = Modifier,
     titleTextColor: Color,
@@ -184,6 +240,18 @@ private fun TextListPostItem(
                 }
             },
     ) {
+        if (repostedBy != null) {
+            RepostHeader(
+                onUserClick = {
+                    if (onUserClick != null && repostedBy.id != null) {
+                        onUserClick(repostedBy.id)
+                    }
+                },
+                username = repostedBy.name ?: "",
+                contentPadding = PaddingValues(bottom = 8.dp),
+            )
+        }
+
         if (post.title.isNotEmpty()) {
             Text(
                 text = post.title,
@@ -259,6 +327,7 @@ private fun CoverListPostItem(
     onClick: ((UiPost) -> Unit)?,
     onLongClick: ((UiPost) -> Unit)?,
     post: UiPost,
+    repostedBy: RepostUser?,
     thumbnail: UiPost.Media,
     defThumbAspectRatio: Float?,
     modifier: Modifier = Modifier,
@@ -293,6 +362,18 @@ private fun CoverListPostItem(
                 }
             },
     ) {
+        if (repostedBy != null) {
+            RepostHeader(
+                onUserClick = {
+                    if (onUserClick != null && repostedBy.id != null) {
+                        onUserClick(repostedBy.id)
+                    }
+                },
+                username = repostedBy.name ?: "",
+                contentPadding = PaddingValues(bottom = 16.dp),
+            )
+        }
+
         Row(modifier = Modifier.padding(bottom = 8.dp)) {
             MediaPreview(
                 media = ImmutableHolder(listOf(thumbnail)),
@@ -416,12 +497,10 @@ private fun PostInfo(
 
         val textColor = MaterialTheme.colors.onBackground
         var infoTextLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-        val context = LocalContext.current
         val info = remember(post, textColor) {
             buildPosInfo(
                 post = post,
                 secondaryTextColor = textColor.copy(alpha = 0.6f),
-                resources = context.resources,
             )
         }
         Text(
@@ -457,7 +536,6 @@ private fun PostInfo(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             onTextLayout = { infoTextLayoutResult = it },
-            inlineContent = PostItemDefaults.postInfoLineContent,
         )
 
         CompositionLocalProvider(
@@ -518,7 +596,6 @@ private fun Modifier.drawPostDivider(
 private fun buildPosInfo(
     post: UiPost,
     secondaryTextColor: Color,
-    resources: Resources,
 ): AnnotatedString = buildAnnotatedString {
     val separator = " | "
 
@@ -534,20 +611,6 @@ private fun buildPosInfo(
     }
 
     withStyle(style = SpanStyle(color = secondaryTextColor)) {
-        val ref = post.reference
-        if (ref != null) {
-            if (length != 0) {
-                append('\n')
-            }
-            appendInlineContent(ref.type.name)
-            val text = when (ref.type) {
-                Post.Reference.Type.Repost -> resources.getString(BaseR.string.repost)
-                Post.Reference.Type.Quote -> resources.getString(BaseR.string.quote)
-                Post.Reference.Type.Reply -> resources.getString(BaseR.string.reply)
-            }
-            append(text)
-        }
-
         if (post.category != null) {
             if (length != 0) {
                 append(separator)

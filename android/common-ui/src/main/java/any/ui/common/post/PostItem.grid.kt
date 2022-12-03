@@ -1,7 +1,6 @@
 package any.ui.common.post
 
 import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,7 +37,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,14 +54,12 @@ import any.ui.common.rememberScaleIndication
 import any.ui.common.richtext.RichText
 import any.ui.common.richtext.RichTextStyle
 import any.ui.common.theme.imagePlaceholder
-import any.ui.common.theme.secondaryText
 import any.ui.common.theme.sizes
 import any.ui.common.theme.thumb
 import any.ui.common.theme.thumbBorder
 import any.ui.common.widget.Avatar
 import any.ui.common.widget.CollectButton
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GridPostItem(
     onCollectClick: ((UiPost) -> Unit)?,
@@ -82,17 +78,71 @@ fun GridPostItem(
     textItemContentBackgroundColor: Color = MaterialTheme.colors.primary.copy(alpha = 0.06f),
     nonMediaContentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
+    val displayPost: UiPost
+    val repostedBy: RepostUser?
+    val reference = post.reference
+    if (reference != null && reference.type == Post.Reference.Type.Repost) {
+        displayPost = reference.post
+        repostedBy = RepostUser(
+            id = post.authorId,
+            name = post.author,
+        )
+    } else {
+        displayPost = post
+        repostedBy = null
+    }
+    GridPostItemImpl(
+        onCollectClick = onCollectClick,
+        onMoreClick = onMoreClick,
+        onUserClick = onUserClick,
+        onLinkClick = onLinkClick,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        post = displayPost,
+        repostedBy = repostedBy,
+        defThumbAspectRatio = defThumbAspectRatio,
+        modifier = modifier,
+        showCollectButton = showCollectButton,
+        showMoreButton = showMoreButton,
+        avatarSize = avatarSize,
+        titleTextColor = titleTextColor,
+        textItemContentBackgroundColor = textItemContentBackgroundColor,
+        nonMediaContentPadding = nonMediaContentPadding,
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun GridPostItemImpl(
+    onCollectClick: ((UiPost) -> Unit)?,
+    onMoreClick: ((UiPost) -> Unit)?,
+    onUserClick: ((userId: String) -> Unit)?,
+    onLinkClick: ((String) -> Unit)?,
+    onClick: ((UiPost) -> Unit)?,
+    onLongClick: ((UiPost) -> Unit)?,
+    post: UiPost,
+    repostedBy: RepostUser?,
+    defThumbAspectRatio: Float?,
+    modifier: Modifier = Modifier,
+    showCollectButton: Boolean = true,
+    showMoreButton: Boolean = true,
+    avatarSize: Dp = 32.dp,
+    titleTextColor: Color = MaterialTheme.colors.onBackground,
+    textItemContentBackgroundColor: Color = MaterialTheme.colors.primary.copy(alpha = 0.06f),
+    nonMediaContentPadding: PaddingValues = PaddingValues(0.dp),
+) {
     val thumbnail = post.media?.firstOrNull()
     if (thumbnail == null) {
         TextGridPostItem(
-            post = post,
-            defThumbAspectRatio = defThumbAspectRatio,
             onCollectClick = onCollectClick,
             onMoreClick = onMoreClick,
             onUserClick = onUserClick,
             onLinkClick = onLinkClick,
             onClick = onClick,
             onLongClick = onLongClick,
+            post = post,
+            repostedBy = repostedBy,
+            defThumbAspectRatio = defThumbAspectRatio,
             modifier = modifier,
             showCollectButton = showCollectButton,
             showMoreButton = showMoreButton,
@@ -102,15 +152,16 @@ fun GridPostItem(
         )
     } else {
         CoverGridPostItem(
-            post = post,
-            thumbnail = thumbnail,
-            defThumbAspectRatio = defThumbAspectRatio,
             onCollectClick = onCollectClick,
             onMoreClick = onMoreClick,
             onUserClick = onUserClick,
             onLinkClick = onLinkClick,
             onClick = onClick,
             onLongClick = onLongClick,
+            post = post,
+            repostedBy = repostedBy,
+            thumbnail = thumbnail,
+            defThumbAspectRatio = defThumbAspectRatio,
             modifier = modifier,
             titleTextColor = titleTextColor,
             showCollectButton = showCollectButton,
@@ -131,6 +182,7 @@ private fun TextGridPostItem(
     onClick: ((UiPost) -> Unit)?,
     onLongClick: ((UiPost) -> Unit)?,
     post: UiPost,
+    repostedBy: RepostUser?,
     defThumbAspectRatio: Float?,
     modifier: Modifier = Modifier,
     showCollectButton: Boolean,
@@ -153,6 +205,18 @@ private fun TextGridPostItem(
                 }
             ),
     ) {
+        if (repostedBy != null) {
+            RepostHeader(
+                onUserClick = {
+                    if (onUserClick != null && repostedBy.id != null) {
+                        onUserClick(repostedBy.id)
+                    }
+                },
+                username = repostedBy.name ?: "",
+                contentPadding = PaddingValues(vertical = 8.dp),
+            )
+        }
+
         Box(
             modifier = Modifier
                 .clip(MaterialTheme.shapes.thumb)
@@ -249,6 +313,7 @@ private fun CoverGridPostItem(
     onClick: ((UiPost) -> Unit)?,
     onLongClick: ((UiPost) -> Unit)?,
     post: UiPost,
+    repostedBy: RepostUser?,
     thumbnail: UiPost.Media,
     defThumbAspectRatio: Float?,
     titleTextColor: Color,
@@ -274,6 +339,18 @@ private fun CoverGridPostItem(
                 }
             ),
     ) {
+        if (repostedBy != null) {
+            RepostHeader(
+                onUserClick = {
+                    if (onUserClick != null && repostedBy.id != null) {
+                        onUserClick(repostedBy.id)
+                    }
+                },
+                username = repostedBy.name ?: "",
+                contentPadding = PaddingValues(vertical = 8.dp),
+            )
+        }
+
         val reference = post.reference
         if (reference != null) {
             GridPostItem(
@@ -371,7 +448,6 @@ private fun BottomBar(
     bottomBarPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -398,55 +474,14 @@ private fun BottomBar(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Column {
-                if (!post.author.isNullOrEmpty()) {
-                    Text(
-                        text = post.author!!,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-
-                val referenceType = post.reference?.type
-                if (referenceType != null) {
-                    val iconRes: Int
-                    val text: String
-                    when (referenceType) {
-                        Post.Reference.Type.Repost -> {
-                            iconRes = CommonUiR.drawable.ic_post_repost
-                            text = stringResource(BaseR.string.repost)
-                        }
-
-                        Post.Reference.Type.Quote -> {
-                            iconRes = CommonUiR.drawable.ic_post_quote
-                            text = stringResource(BaseR.string.quote)
-                        }
-
-                        Post.Reference.Type.Reply -> {
-                            iconRes = CommonUiR.drawable.ic_post_reply
-                            text = stringResource(BaseR.string.reply)
-                        }
-                    }
-                    Row {
-                        val tint = MaterialTheme.colors.secondaryText
-                        Icon(
-                            painter = painterResource(iconRes),
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                            tint = tint,
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = text,
-                            fontSize = 13.sp,
-                            color = tint,
-                        )
-                    }
-                }
+            if (!post.author.isNullOrEmpty()) {
+                Text(
+                    text = post.author!!,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
 
