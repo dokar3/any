@@ -32,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
+import any.data.entity.Post
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
@@ -51,8 +51,6 @@ import any.ui.common.widget.Avatar
 import any.ui.common.widget.CollectButton
 import any.ui.common.widget.CommentsButton
 
-// Inspired by https://blog.jetbrains.com/
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardPostItem(
     onCommentsClick: ((UiPost) -> Unit)?,
@@ -64,6 +62,67 @@ fun CardPostItem(
     onLinkClick: ((String) -> Unit)?,
     onLongClick: ((UiPost) -> Unit)?,
     post: UiPost,
+    defThumbAspectRatio: Float?,
+    modifier: Modifier = Modifier,
+    showCollectButton: Boolean = true,
+    showMoreButton: Boolean = true,
+    contentPadding: PaddingValues = PaddingValues(
+        start = 16.dp,
+        top = 16.dp,
+        end = 16.dp,
+    ),
+    borderColor: Color = MaterialTheme.colors.thumbBorder,
+    avatarSize: Dp = 36.dp,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+) {
+    val displayPost: UiPost
+    val repostedBy: RepostUser?
+    val reference = post.reference
+    if (reference != null && reference.type == Post.Reference.Type.Repost) {
+        displayPost = reference.post
+        repostedBy = RepostUser(
+            id = post.authorId,
+            name = post.author,
+        )
+    } else {
+        displayPost = post
+        repostedBy = null
+    }
+    CardPostItemImpl(
+        onCommentsClick = onCommentsClick,
+        onCollectClick = onCollectClick,
+        onMoreClick = onMoreClick,
+        onMediaClick = onMediaClick,
+        onUserClick = onUserClick,
+        onClick = onClick,
+        onLinkClick = onLinkClick,
+        onLongClick = onLongClick,
+        post = displayPost,
+        repostedBy = repostedBy,
+        defThumbAspectRatio = defThumbAspectRatio,
+        modifier = modifier,
+        showCollectButton = showCollectButton,
+        showMoreButton = showMoreButton,
+        contentPadding = contentPadding,
+        borderColor = borderColor,
+        avatarSize = avatarSize,
+        interactionSource = interactionSource,
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun CardPostItemImpl(
+    onCommentsClick: ((UiPost) -> Unit)?,
+    onCollectClick: ((UiPost) -> Unit)?,
+    onMoreClick: ((UiPost) -> Unit)?,
+    onMediaClick: ((post: UiPost, index: Int) -> Unit)?,
+    onUserClick: ((userId: String) -> Unit)?,
+    onClick: ((UiPost) -> Unit)?,
+    onLinkClick: ((String) -> Unit)?,
+    onLongClick: ((UiPost) -> Unit)?,
+    post: UiPost,
+    repostedBy: RepostUser?,
     defThumbAspectRatio: Float?,
     modifier: Modifier = Modifier,
     showCollectButton: Boolean = true,
@@ -98,6 +157,24 @@ fun CardPostItem(
             ),
     ) {
         val media = post.media
+
+        if (repostedBy != null) {
+            RepostHeader(
+                onUserClick = {
+                    if (onUserClick != null && repostedBy.id != null) {
+                        onUserClick(repostedBy.id)
+                    }
+                },
+                username = repostedBy.name ?: "",
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    top = 16.dp,
+                    end = 16.dp,
+                    bottom = if (media.isNullOrEmpty()) 0.dp else 16.dp,
+                ),
+            )
+        }
+
         if (!media.isNullOrEmpty()) {
             MediaPreview(
                 media = ImmutableHolder(media),
@@ -112,9 +189,8 @@ fun CardPostItem(
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
-            val context = LocalContext.current
             val info = remember(post) {
-                PostItemDefaults.buildPostInfo(post, context.resources)
+                PostItemDefaults.buildPostInfo(post)
             }
             val showInfo = info.isNotEmpty()
             if (showInfo) {
@@ -126,7 +202,6 @@ fun CardPostItem(
                     ),
                     maxLines = PostItemDefaults.TextMaxLines,
                     overflow = TextOverflow.Ellipsis,
-                    inlineContent = PostItemDefaults.postInfoLineContent,
                 )
             }
 

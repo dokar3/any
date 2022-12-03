@@ -279,9 +279,6 @@
     <string name="no_following_user">No following user</string>
     <string name="all">All</string>
     <string name="search_following_users">Search following users</string>
-    <string name="repost">Repost</string>
-    <string name="quote">Quote</string>
-    <string name="reply">Reply</string>
     <string name="update_builtin_services">Update built-in services</string>
     <string name="_builtin_services_update_info">%d built-in service(s) can be updated, do you want to update now?\nYou can also update them later in the service management.</string>
     <string name="update_builtin_services_alert">Your current services may change a lot or needed to re-configure</string>
@@ -324,4 +321,5 @@
     <string name="baseline_profile">Baseline profile</string>
     <string name="downloading">Downloading</string>
     <string name="_playback_error">Playback error, code: %s</string>
+    <string name="_username_reposted">%s reposted</string>
 </resources>

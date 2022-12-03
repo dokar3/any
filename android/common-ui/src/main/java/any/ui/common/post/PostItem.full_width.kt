@@ -29,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.ImmutableHolder
 import any.base.util.compose.performLongPress
+import any.data.entity.Post
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
@@ -48,8 +48,6 @@ import any.ui.common.widget.Avatar
 import any.ui.common.widget.CollectButton
 import any.ui.common.widget.CommentsButton
 
-// Inspired by Youtube
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FullWidthPostItem(
     onCommentsClick: ((UiPost) -> Unit)?,
@@ -61,6 +59,65 @@ fun FullWidthPostItem(
     onClick: ((post: UiPost) -> Unit)?,
     onLongClick: ((post: UiPost) -> Unit)?,
     post: UiPost,
+    defThumbAspectRatio: Float?,
+    showCollectButton: Boolean,
+    modifier: Modifier = Modifier,
+    showMoreButton: Boolean = true,
+    showDivider: Boolean = true,
+    showOptionBar: Boolean = true,
+    avatarSize: Dp = 36.dp,
+    mediaPadding: PaddingValues = PaddingValues(0.dp),
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+) {
+    val displayPost: UiPost
+    val repostedBy: RepostUser?
+    val reference = post.reference
+    if (reference != null && reference.type == Post.Reference.Type.Repost) {
+        displayPost = reference.post
+        repostedBy = RepostUser(
+            id = post.authorId,
+            name = post.author,
+        )
+    } else {
+        displayPost = post
+        repostedBy = null
+    }
+    FullWidthPostItemImpl(
+        onCommentsClick = onCommentsClick,
+        onCollectClick = onCollectClick,
+        onMoreClick = onMoreClick,
+        onMediaClick = onMediaClick,
+        onUserClick = onUserClick,
+        onLinkClick = onLinkClick,
+        onClick = onClick,
+        onLongClick = onLongClick,
+        post = displayPost,
+        repostedBy = repostedBy,
+        defThumbAspectRatio = defThumbAspectRatio,
+        showCollectButton = showCollectButton,
+        modifier = modifier,
+        showMoreButton = showMoreButton,
+        showDivider = showDivider,
+        showOptionBar = showOptionBar,
+        avatarSize = avatarSize,
+        mediaPadding = mediaPadding,
+        interactionSource = interactionSource,
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun FullWidthPostItemImpl(
+    onCommentsClick: ((UiPost) -> Unit)?,
+    onCollectClick: ((UiPost) -> Unit)?,
+    onMoreClick: ((UiPost) -> Unit)?,
+    onMediaClick: ((post: UiPost, index: Int) -> Unit)?,
+    onUserClick: ((userId: String) -> Unit)?,
+    onLinkClick: ((String) -> Unit)?,
+    onClick: ((post: UiPost) -> Unit)?,
+    onLongClick: ((post: UiPost) -> Unit)?,
+    post: UiPost,
+    repostedBy: RepostUser?,
     defThumbAspectRatio: Float?,
     showCollectButton: Boolean,
     modifier: Modifier = Modifier,
@@ -94,9 +151,23 @@ fun FullWidthPostItem(
 
         val author = post.author
 
-        val context = LocalContext.current
-        val info = remember(post) { PostItemDefaults.buildPostInfo(post, context.resources) }
+        if (repostedBy != null) {
+            RepostHeader(
+                onUserClick = {
+                    if (onUserClick != null && repostedBy.id != null) {
+                        onUserClick(repostedBy.id)
+                    }
+                },
+                username = repostedBy.name ?: "",
+                contentPadding = PaddingValues(
+                    start = spacing,
+                    top = spacing,
+                    end = spacing,
+                ),
+            )
+        }
 
+        val info = remember(post) { PostItemDefaults.buildPostInfo(post) }
         val showInfoBar = !avatar.isNullOrEmpty() || !author.isNullOrEmpty() || info.isNotEmpty()
         if (showInfoBar) {
             Row(
@@ -149,7 +220,6 @@ fun FullWidthPostItem(
                             ),
                             maxLines = PostItemDefaults.TextMaxLines,
                             overflow = TextOverflow.Ellipsis,
-                            inlineContent = PostItemDefaults.postInfoLineContent,
                         )
                     }
                 }
