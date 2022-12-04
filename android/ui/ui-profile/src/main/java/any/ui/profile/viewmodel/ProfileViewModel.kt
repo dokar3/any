@@ -14,8 +14,7 @@ import any.data.FetchState
 import any.data.entity.JsPageKey
 import any.data.entity.Post
 import any.data.entity.User
-import any.data.repository.FetchControl
-import any.data.repository.FetchSource
+import any.data.repository.FetchSources
 import any.data.repository.PostRepository
 import any.data.repository.ServiceRepository
 import any.data.repository.UserRepository
@@ -117,20 +116,20 @@ class ProfileViewModel(
                 }
                 return@launch
             }
-            val control = if (remoteOnly) {
-                FetchControl.ofOneShot(FetchSource.Remote)
+            val sources = if (remoteOnly) {
+                FetchSources.remote().toOneShot()
             } else {
-                FetchControl.ofOneShot(*FetchSource.values())
+                FetchSources.all().toOneShot()
             }
             val flow = userRepository.fetchUserByUrl(
                 service = service,
                 userUrl = userUrl,
-                control = control,
+                sources = sources,
             )
             fetchProfile(
                 service = service.toUiManifest(fileReader, htmlParser),
                 flow = flow,
-                postsFetchControl = control,
+                postsFetchSources = sources,
             )
         }
     }
@@ -152,20 +151,20 @@ class ProfileViewModel(
                 }
                 return@launch
             }
-            val control = if (remoteOnly) {
-                FetchControl.ofOneShot(FetchSource.Remote)
+            val sources = if (remoteOnly) {
+                FetchSources.remote().toOneShot()
             } else {
-                FetchControl.ofOneShot(*FetchSource.values())
+                FetchSources.all().toOneShot()
             }
             val flow = userRepository.fetchUserById(
                 service = service,
                 userId = userId,
-                control = control,
+                sources = sources,
             )
             fetchProfile(
                 service = service.toUiManifest(fileReader, htmlParser),
                 flow = flow,
-                postsFetchControl = control,
+                postsFetchSources = sources,
             )
         }
     }
@@ -173,7 +172,7 @@ class ProfileViewModel(
     private suspend fun fetchProfile(
         service: UiServiceManifest,
         flow: Flow<FetchState<User>>,
-        postsFetchControl: FetchControl,
+        postsFetchSources: FetchSources,
     ) {
         var postsFetchingStarted = false
         flow.onStart {
@@ -204,7 +203,7 @@ class ProfileViewModel(
                     }
                     if (!postsFetchingStarted) {
                         postsFetchingStarted = true
-                        fetchFirstPagePosts(control = postsFetchControl)
+                        fetchFirstPagePosts(sources = postsFetchSources)
                     }
                 }
 
@@ -213,7 +212,7 @@ class ProfileViewModel(
         }
     }
 
-    private fun fetchFirstPagePosts(control: FetchControl) {
+    private fun fetchFirstPagePosts(sources: FetchSources) {
         val service = uiState.value.service ?: return
         val user = uiState.value.user ?: return
         currPageKey = null
@@ -222,7 +221,7 @@ class ProfileViewModel(
             postRepository.fetchInitialUserPosts(
                 service = service.raw,
                 user = user.raw,
-                control = control,
+                sources = sources,
             ).onStart {
                 _uiState.update {
                     it.copy(
@@ -294,13 +293,12 @@ class ProfileViewModel(
     }
 
     fun retryPostsFetch() {
-        val control = FetchControl.of(*FetchSource.values())
         viewModelScope.launch {
             if (currPageKey != null) {
                 nextPageKey = currPageKey
                 fetchMorePosts()
             } else {
-                fetchFirstPagePosts(control)
+                fetchFirstPagePosts(FetchSources.all())
             }
         }
     }
