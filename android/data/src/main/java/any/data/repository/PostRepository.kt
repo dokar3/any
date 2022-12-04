@@ -47,22 +47,22 @@ class PostRepository(
     fun fetchInitialUserPosts(
         service: ServiceManifest,
         user: User,
-        control: FetchControl,
+        sources: FetchSources,
     ): Flow<PagedPostsFetchState> = channelFlow {
-        if (control.includesSource(FetchSource.Cache)) {
+        if (sources.contains(FetchSources.cache())) {
             val cachedUserPosts = localDataSource.fetchUserInProfilePosts(service.id, user.id).first()
             val result = PagedResult(
                 data = cachedUserPosts,
                 nextKey = user.pageKeyOfPage2,
             )
             send(FetchState.success(value = result, isRemote = false))
-            if (cachedUserPosts.isNotEmpty() && control.isOneShot()) {
+            if (cachedUserPosts.isNotEmpty() && sources.isOneShot()) {
                 channel.close()
                 return@channelFlow
             }
         }
 
-        if (!control.includesSource(FetchSource.Remote)) {
+        if (!sources.contains(FetchSources.remote())) {
             channel.close()
             return@channelFlow
         }

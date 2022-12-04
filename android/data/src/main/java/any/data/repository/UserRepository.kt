@@ -30,26 +30,26 @@ class UserRepository(
     fun fetchUserById(
         service: ServiceManifest,
         userId: String,
-        control: FetchControl,
+        sources: FetchSources,
     ): Flow<FetchState<User>> {
         return fetchUser(
             app = service,
             userId = userId,
             userUrl = null,
-            control = control,
+            sources = sources,
         )
     }
 
     fun fetchUserByUrl(
         service: ServiceManifest,
         userUrl: String,
-        control: FetchControl,
+        sources: FetchSources,
     ): Flow<FetchState<User>> {
         return fetchUser(
             app = service,
             userId = null,
             userUrl = userUrl,
-            control = control,
+            sources = sources,
         )
     }
 
@@ -57,24 +57,24 @@ class UserRepository(
         app: ServiceManifest,
         userId: String?,
         userUrl: String?,
-        control: FetchControl,
+        sources: FetchSources,
     ): Flow<FetchState<User>> = channelFlow {
         require(userId != null || userUrl != null)
 
-        if (userId != null && control.includesSource(FetchSource.Cache)) {
+        if (userId != null && sources.contains(FetchSources.cache())) {
             val user = userDao.get(serviceId = app.id, id = userId)
             if (user != null) {
                 send(FetchState.success(value = user, isRemote = false))
-                if (control.isOneShot()) {
+                if (sources.isOneShot()) {
                     channel.close()
                     return@channelFlow
                 }
             }
         }
 
-        if (!control.includesSource(FetchSource.Remote)) {
+        if (!sources.contains(FetchSources.remote())) {
             channel.close()
-            Log.d("UserRepo", "fetchUser: no remote source included, s: $control")
+            Log.d("UserRepo", "fetchUser: no remote source included, s: $sources")
             return@channelFlow
         }
 
