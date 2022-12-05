@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -18,6 +19,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import any.base.DarkModeAwareActivity
+import any.base.compose.LocalBenchmarkBuild
 import any.base.image.ImageLoader
 import any.base.log.Logger
 import any.base.prefs.darkModeEnabledFlow
@@ -47,11 +49,11 @@ class MainActivity : DarkModeAwareActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        handleIntent(intent)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         observeSecureScreen()
-
-        handleIntent(intent)
 
         setContent {
             val scope = rememberCoroutineScope()
@@ -72,11 +74,15 @@ class MainActivity : DarkModeAwareActivity() {
                 darkModePrimaryColor = darkModePrimaryColor,
             ) {
                 Surface(color = MaterialTheme.colors.background) {
-                    MainScreen(
-                        darkMode = darkMode,
-                        mainViewModel = mainViewModel,
-                        modifier = Modifier.semantics { contentDescription = "MainScreen" },
-                    )
+                    CompositionLocalProvider(
+                        LocalBenchmarkBuild provides BuildConfig.BENCHMARK,
+                    ) {
+                        MainScreen(
+                            darkMode = darkMode,
+                            mainViewModel = mainViewModel,
+                            modifier = Modifier.semantics { contentDescription = "MainScreen" },
+                        )
+                    }
                 }
             }
         }

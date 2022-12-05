@@ -12,7 +12,7 @@ enum class PostsViewType(val value: String) {
     List("list"),
 
     @Json(name = "full_width")
-    FullWidth("full-width"),
+    FullWidth("full_width"),
 
     @Json(name = "card")
     Card("card"),

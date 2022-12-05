@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.currentBackStackEntryAsState
+import any.base.compose.LocalBenchmarkBuild
 import any.base.util.applyLightStatusBar
 import any.base.util.clearLightStatusBar
 import any.navigation.NavEvent
@@ -150,7 +151,11 @@ fun HomeScreen(
             ?.route ?: ""
         BottomBar(
             currentRoute = currentRoute,
-            offsetProvider = { bottomBarOffset },
+            offsetProvider = if (LocalBenchmarkBuild.current) {
+                { 0 }
+            } else {
+                { bottomBarOffset }
+            },
             modifier = Modifier.align(Alignment.BottomCenter),
             height = bottomBarHeight,
             onItemClick = { navItem, _ ->

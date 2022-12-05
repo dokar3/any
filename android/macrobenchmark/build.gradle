@@ -56,10 +56,12 @@ android {
 }
 
 dependencies {
+    implementation projects.data
     implementation libs.androidx.test.junit
     implementation libs.androidx.test.espresso
     implementation libs.androidx.test.uiautomator
-    implementation libs.androidx.test.macrobenchmark
+    implementation libs.androidx.macrobenchmark
+    implementation libs.androidx.benchmark.common
 }
 
 androidComponents {

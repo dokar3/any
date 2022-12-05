@@ -41,6 +41,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
@@ -48,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.compose.ImmutableHolder
+import any.base.compose.LocalBenchmarkBuild
 import any.base.image.ImageRequest
 import any.base.prefs.headerImage
 import any.base.prefs.overrideServiceHeaderImage
@@ -176,6 +179,7 @@ internal fun FreshScreen(
     QuickReturnScreen(
         state = screenState,
         modifier = modifier,
+        fixedTopBar = LocalBenchmarkBuild.current,
         bottomBarHeight = listPadding.calculateBottomPadding(),
         topBar = {
             TitleBar(
@@ -215,6 +219,7 @@ internal fun FreshScreen(
                     fontSize = 16.sp,
                     dropdownAlignmentToAnchor = Alignment.TopCenter,
                     dropdownTransformOrigin = TransformOrigin(0.5f, 0f),
+                    modifier = Modifier.semantics { contentDescription = "ServiceSelector" },
                 )
             }
         },
@@ -522,7 +527,9 @@ private fun ServiceHeaderItem(
                 onLongClickCurrentService = onLongClickCurrentService,
                 services = services,
                 currentService = currentService,
-                modifier = Modifier.align(Alignment.Bottom),
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .semantics { contentDescription = "ServiceSelector" },
             )
         }
     }

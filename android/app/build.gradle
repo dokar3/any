@@ -45,6 +45,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.release
+            buildConfigField "boolean", "BENCHMARK", "false"
         }
         benchmark {
             signingConfig signingConfigs.release
@@ -53,12 +54,14 @@ android {
             debuggable false
             shrinkResources true
             proguardFiles "benchmark-rules.pro"
+            buildConfigField "boolean", "BENCHMARK", "true"
         }
         release {
             // Disable minify when running a compiler reports release build
             minifyEnabled project.findProperty("enableComposeCompilerReports") != "true"
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "BENCHMARK", "false"
         }
     }
 

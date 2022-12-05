@@ -53,7 +53,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun folderInfoDao(): FolderInfoDao
 
     companion object {
-        private const val DB_NAME = "any.db"
+        const val DB_NAME = "any.db"
 
         @Volatile
         private var instance: AppDatabase? = null
