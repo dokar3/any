@@ -72,9 +72,8 @@ object ImageLoader {
     }
 
     fun setup(app: Application, imageFetcher: ImageFetcher) {
-        if (Fresco.hasBeenInitialized()) {
-            throw IllegalStateException("ImageLoader is already set up")
-        }
+        if(isSetup()) return
+        this.imageFetcher = imageFetcher
         val diskCacheConfig = DiskCacheConfig.newBuilder(app)
             .setMaxCacheSize(MAX_DISK_CACHE_MB.toLong() * ByteConstants.MB)
             .build()
@@ -87,7 +86,10 @@ object ImageLoader {
             .setMemoryTrimmableRegistry(memoryTrimmableRegistry)
             .build()
         Fresco.initialize(app, pipelineConfig)
-        this.imageFetcher = imageFetcher
+    }
+
+    fun isSetup(): Boolean {
+        return imageFetcher != null
     }
 
     fun findRequestSize(request: ImageRequest): Size? {

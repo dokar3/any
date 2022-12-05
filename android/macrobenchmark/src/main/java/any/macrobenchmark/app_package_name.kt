@@ -1,3 +1,3 @@
 package any.macrobenchmark
 
-const  val APP_PACKAGE_NAME = "com.dokar.any"
+const  val TARGET_PACKAGE_NAME = "com.dokar.any"
