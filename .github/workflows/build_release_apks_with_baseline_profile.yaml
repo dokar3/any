@@ -8,7 +8,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       runner_os: macos-latest
-      check: true
+      check: false
       gen_baseline_profile: true
       build_release_apks: true
     secrets:
