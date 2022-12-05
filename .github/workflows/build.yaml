@@ -92,6 +92,11 @@ jobs:
 
       - name: Generate baseline profile
         if: ${{ inputs.gen_baseline_profile }}
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.keystore_key_password }}
+          TWITTER_CLIENT_ID: ${{ secrets.twitter_client_id }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.unsplash_access_key }}
         run: |
           ./gradlew macrobenchmark:pixel2Api31BenchmarkAndroidTest \
           -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator \
