@@ -103,10 +103,10 @@ jobs:
           target: default
           arch: x86_64
           profile: pixel
-          script: |
-            ./gradlew macrobenchmark:connectedBenchmarkAndroidTest \
-            -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator \
-            -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" \
+          script: >
+            ./gradlew macrobenchmark:connectedBenchmarkAndroidTest 
+            -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator 
+            -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" 
             -PdisableSplits
 
       - name: Copy baseline profile to app module
