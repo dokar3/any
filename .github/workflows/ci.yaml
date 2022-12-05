@@ -10,6 +10,7 @@ jobs:
   check:
     uses: ./.github/workflows/build.yaml
     with:
+      runner_os: ubuntu-latest
       check: true
       gen_baseline_profile: false
       build_release_apks: false
