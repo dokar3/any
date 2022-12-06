@@ -7,9 +7,6 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -22,17 +19,14 @@ class BaselineProfileGenerator {
     val baselineRule = BaselineProfileRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().context
-    private val sampleDataManager = AppSampleDataManager(
+    private val sampleDataManager = SampleDataManager(
         targetPackageName = TARGET_PACKAGE_NAME,
         context = context,
     )
 
     @Before
     fun setup() {
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
-            sampleDataManager.useSampleData()
-        }
+        sampleDataManager.useSampleData()
     }
 
     @After

@@ -12,11 +12,15 @@ import any.data.entity.Post
 import any.data.entity.PostsViewType
 import any.data.entity.ServiceManifest
 import any.data.entity.User
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
-class AppSampleDataManager(
+class SampleDataManager(
     private val targetPackageName: String,
     private val context: Context,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default),
 ) {
     private val targetDatabasesPath = context.getDatabasePath("whatever")
         .parentFile!!
@@ -29,14 +33,16 @@ class AppSampleDataManager(
     private val appDbPath = appDbFile.absolutePath
     private val sampleAppDb = Room.databaseBuilder(context, appDbClz, appDbPath).build()
 
-    suspend fun useSampleData() {
+    fun useSampleData() {
         if (!Shell.isSessionRooted()) {
             return
         }
-        killTargetApp()
-        generateSampleAppDb()
-        backupTargetDatabases()
-        overwriteTargetAppDatabase()
+        coroutineScope.launch {
+            killTargetApp()
+            generateSampleAppDb()
+            backupTargetDatabases()
+            overwriteTargetAppDatabase()
+        }
     }
 
     fun clearSampleData() {
