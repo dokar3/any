@@ -103,6 +103,7 @@ jobs:
           target: default
           arch: x86_64
           profile: pixel
+          avd-name: emulator
           script: >
             ./gradlew macrobenchmark:connectedBenchmarkAndroidTest 
             -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator 
@@ -113,8 +114,8 @@ jobs:
         if: ${{ inputs.gen_baseline_profile }}
         run: |
           profile_path="./android/macrobenchmark/build/outputs/
-          managed_device_android_test_additional_output/pixel2Api31/
-          BaselineProfileGenerator_startup-baseline-prof.txt"
+          connected_device_android_test_additional_output/emulator/
+          BaselineProfileGenerator_generate-baseline-prof.txt"
           output_path="./android/app/src/baseline-prof.txt"
           cp "$profile_path" "$output_path"
         shell: bash
