@@ -10,11 +10,17 @@ on:
         required: true
         type: boolean
       gen_baseline_profile:
-        required: true
+        required: false
         type: boolean
+        default: false
       build_release_apks:
-        required: true
+        required: false
         type: boolean
+        default: false
+      create_release_from_tag:
+        required: false
+        type: boolean
+        default: false
     secrets:
       keystore_base64:
         required: true
@@ -113,11 +119,10 @@ jobs:
       - name: Copy baseline profile to app module
         if: ${{ inputs.gen_baseline_profile }}
         run: |
-          ls -R ./android/macrobenchmark/build/outputs/
-          profile_path="./android/macrobenchmark/build/outputs/
-          connected_device_android_test_additional_output/emulator/
+          profile_path="./android/macrobenchmark/build/outputs/\
+          connected_android_test_additional_output/benchmark/connected/emulator(AVD) - 12/\
           BaselineProfileGenerator_generate-baseline-prof.txt"
-          output_path="./android/app/src/baseline-prof.txt"
+          output_path="./android/app/src/main/baseline-prof.txt"
           cp "$profile_path" "$output_path"
         shell: bash
 
@@ -139,7 +144,7 @@ jobs:
 
       - name: Create release from tag
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: ${{ (inputs.create_release_from_tag) && startsWith(github.ref, 'refs/tags/v') }}
         with:
           generate_release_notes: true
           files: |

@@ -4,6 +4,7 @@ import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.BySelector
 import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
@@ -41,43 +42,35 @@ class BaselineProfileGenerator {
         pressHome()
         startActivityAndWait()
 
-        val waitObjectTimeout = 5_000L
+        fun waitObject(selector: BySelector): UiObject2 {
+            return device.wait(Until.findObject(selector), 3_000)
+        }
 
-        device.findObject(By.text("Fresh")).click()
-        device.waitForIdle()
-
+        waitObject(By.text("Fresh")).click()
         sampleDataManager.sampleServices().forEach { service ->
             if (!device.hasObject(By.text(service.name))) {
-                device.findObject(By.res("serviceSelector")).click()
-                device.wait(Until.hasObject(By.text(service.name)), waitObjectTimeout)
+                waitObject(By.res("serviceSelector")).click()
                 // Select target service
-                device.findObject(By.text(service.name)).click()
+                waitObject(By.text(service.name)).click()
+                device.waitForIdle()
             }
-            device.wait(Until.hasObject(By.res("freshPostList")), waitObjectTimeout)
-            scrollList(device.findObject(By.res("freshPostList")))
-
+            scrollList(waitObject(By.res("freshPostList")))
             device.waitForIdle()
         }
 
-        device.findObject(By.text("Following")).click()
-        device.wait(Until.hasObject(By.res("followingList")), waitObjectTimeout)
-        scrollList(device.findObject(By.res("followingList")))
-
+        waitObject(By.text("Following")).click()
+        scrollList(waitObject(By.res("followingList")))
         device.waitForIdle()
 
-        device.findObject(By.text("Collections")).click()
-        device.wait(Until.hasObject(By.res("collectionList")), waitObjectTimeout)
-        scrollList(device.findObject(By.res("collectionList")))
-
+        waitObject(By.text("Collections")).click()
+        scrollList(waitObject(By.res("collectionList")))
         device.waitForIdle()
 
-        device.findObject(By.text("Downloads")).click()
-        device.wait(Until.hasObject(By.res("downloadList")), waitObjectTimeout)
-        scrollList(device.findObject(By.res("downloadList")))
+        waitObject(By.text("Downloads")).click()
+        scrollList(waitObject(By.res("downloadList")))
         device.waitForIdle()
 
         device.pressBack()
-        device.waitForIdle()
     }
 
     private fun scrollList(uiList: UiObject2) {

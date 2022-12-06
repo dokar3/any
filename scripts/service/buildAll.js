@@ -426,7 +426,7 @@ function buildAll() {
 
   console.log();
   console.log(
-    `Build services task completed in (${timeElapse}s), \
+    `Build services task completed in ${timeElapse}s, \
     ${projectCount} project(s), \
     ${allServiceManifests.length} manifest(s).`
   );
