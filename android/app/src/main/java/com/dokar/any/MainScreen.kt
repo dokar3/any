@@ -54,25 +54,24 @@ fun MainScreen(
 
     var showExitDuringDownloadingDialog by remember { mutableStateOf(false) }
 
-    val onNavigate: (NavEvent) -> Unit = remember(navController, imagePagerViewModel) {
-        {
-            when (it) {
-                NavEvent.Back -> {
-                    navController.popBackStack()
-                }
+    fun navigate(event: NavEvent) {
+        if (BuildConfig.BENCHMARK) return
+        when (event) {
+            NavEvent.Back -> {
+                navController.popBackStack()
+            }
 
-                is NavEvent.Push -> {
-                    navController.navigate(it.route)
-                }
+            is NavEvent.Push -> {
+                navController.navigate(event.route)
+            }
 
-                is NavEvent.ReplaceWith -> {
-                    navController.navigateAndReplace(it.route)
-                }
+            is NavEvent.ReplaceWith -> {
+                navController.navigateAndReplace(event.route)
+            }
 
-                is NavEvent.PushImagePager -> {
-                    imagePagerViewModel.images = it.images
-                    navController.navigate(it.route)
-                }
+            is NavEvent.PushImagePager -> {
+                imagePagerViewModel.images = event.images
+                navController.navigate(event.route)
             }
         }
     }
@@ -95,7 +94,7 @@ fun MainScreen(
         launch {
             mainViewModel.navEvent
                 .distinctUntilChanged()
-                .collect { onNavigate(it) }
+                .collect(::navigate)
         }
     }
 
@@ -110,7 +109,7 @@ fun MainScreen(
     }
 
     AnimatedAppNavGraph(
-        onNavigate = onNavigate,
+        onNavigate = ::navigate,
         onClearShortcutsDestination = { mainViewModel.setShortcutsDestination(null) },
         navController = navController,
         darkMode = darkMode,

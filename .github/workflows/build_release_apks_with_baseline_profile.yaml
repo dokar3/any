@@ -1,4 +1,4 @@
-name: Build release apks with baseline profile
+name: Build release apks
 
 on:
   workflow_dispatch:

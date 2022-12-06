@@ -12,8 +12,9 @@ jobs:
     with:
       runner_os: macos-latest
       check: true
-      gen_baseline_profile: false
+      gen_baseline_profile: true
       build_release_apks: true
+      create_release_from_tag: true
     secrets:
       keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}
       keystore_password: ${{ secrets.KEYSTORE_PASSWORD }}
