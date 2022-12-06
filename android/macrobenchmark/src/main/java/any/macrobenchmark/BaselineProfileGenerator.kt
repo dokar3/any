@@ -5,7 +5,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
-import androidx.test.uiautomator.StaleObjectException
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -24,7 +23,7 @@ class BaselineProfileGenerator {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
     private val sampleDataManager = AppSampleDataManager(
-        toPackageName = TARGET_PACKAGE_NAME,
+        targetPackageName = TARGET_PACKAGE_NAME,
         context = context,
     )
 
@@ -55,35 +54,32 @@ class BaselineProfileGenerator {
 
         sampleDataManager.sampleServices().forEach { service ->
             if (!device.hasObject(By.text(service.name))) {
-                val selector = device.findObject(By.desc("ServiceSelector"))
-                selector.click()
+                device.findObject(By.res("serviceSelector")).click()
                 device.wait(Until.hasObject(By.text(service.name)), waitObjectTimeout)
                 // Select target service
-                val serviceItem = device.findObject(By.text(service.name))
-                serviceItem.click()
-
+                device.findObject(By.text(service.name)).click()
             }
-            device.wait(Until.hasObject(By.desc("FreshPostList")), waitObjectTimeout)
-            scrollList(device.findObject(By.desc("FreshPostList")))
+            device.wait(Until.hasObject(By.res("freshPostList")), waitObjectTimeout)
+            scrollList(device.findObject(By.res("freshPostList")))
 
             device.waitForIdle()
         }
 
         device.findObject(By.text("Following")).click()
-        device.wait(Until.hasObject(By.desc("FollowingList")), waitObjectTimeout)
-        scrollList(device.findObject(By.desc("FollowingList")))
+        device.wait(Until.hasObject(By.res("followingList")), waitObjectTimeout)
+        scrollList(device.findObject(By.res("followingList")))
 
         device.waitForIdle()
 
         device.findObject(By.text("Collections")).click()
-        device.wait(Until.hasObject(By.desc("CollectionList")), waitObjectTimeout)
-        scrollList(device.findObject(By.desc("CollectionList")))
+        device.wait(Until.hasObject(By.res("collectionList")), waitObjectTimeout)
+        scrollList(device.findObject(By.res("collectionList")))
 
         device.waitForIdle()
 
         device.findObject(By.text("Downloads")).click()
-        device.wait(Until.hasObject(By.desc("DownloadList")), waitObjectTimeout)
-        scrollList(device.findObject(By.desc("DownloadList")))
+        device.wait(Until.hasObject(By.res("downloadList")), waitObjectTimeout)
+        scrollList(device.findObject(By.res("downloadList")))
         device.waitForIdle()
 
         device.pressBack()
@@ -92,19 +88,7 @@ class BaselineProfileGenerator {
 
     private fun scrollList(uiList: UiObject2) {
         uiList.setGestureMargin(uiList.visibleBounds.width() / 3)
-        repeat(3) {
-            try {
-                uiList.scroll(Direction.DOWN, 0.1f, 3000)
-            } catch (e: StaleObjectException) {
-                throw Exception("Failed to scroll (down) list $uiList: $e")
-            }
-        }
-        repeat(3) {
-            try {
-                uiList.scroll(Direction.UP, 0.2f, 3000)
-            } catch (e: StaleObjectException) {
-                throw Exception("Failed to scroll (up) list $uiList: $e")
-            }
-        }
+        uiList.fling(Direction.DOWN)
+        uiList.fling(Direction.UP)
     }
 }

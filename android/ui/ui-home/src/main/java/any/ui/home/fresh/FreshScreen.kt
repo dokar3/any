@@ -39,10 +39,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
@@ -219,7 +218,7 @@ internal fun FreshScreen(
                     fontSize = 16.sp,
                     dropdownAlignmentToAnchor = Alignment.TopCenter,
                     dropdownTransformOrigin = TransformOrigin(0.5f, 0f),
-                    modifier = Modifier.semantics { contentDescription = "ServiceSelector" },
+                    modifier = Modifier.testTag("serviceSelector"),
                 )
             }
         },
@@ -440,6 +439,7 @@ private fun FreshScreenContent(
             headerContent = headerContent,
             contentPadding = listPadding,
             pageKey = ImmutableHolder(uiState.pageKey),
+            modifier = Modifier.testTag("freshPostList"),
         )
 
         PullRefreshIndicator(
@@ -529,7 +529,7 @@ private fun ServiceHeaderItem(
                 currentService = currentService,
                 modifier = Modifier
                     .align(Alignment.Bottom)
-                    .semantics { contentDescription = "ServiceSelector" },
+                    .testTag("serviceSelector"),
             )
         }
     }
