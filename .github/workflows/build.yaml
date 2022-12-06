@@ -113,6 +113,7 @@ jobs:
       - name: Copy baseline profile to app module
         if: ${{ inputs.gen_baseline_profile }}
         run: |
+          ls -R ./android/macrobenchmark/build/outputs/
           profile_path="./android/macrobenchmark/build/outputs/
           connected_device_android_test_additional_output/emulator/
           BaselineProfileGenerator_generate-baseline-prof.txt"
