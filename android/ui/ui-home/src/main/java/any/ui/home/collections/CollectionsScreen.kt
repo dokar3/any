@@ -62,6 +62,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -451,7 +452,7 @@ internal fun CollectionsScreen(
                             selectedFolder = it
                         }
                     },
-                    modifier = Modifier,
+                    modifier = Modifier.testTag("collectionList"),
                 )
             }
         }

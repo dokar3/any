@@ -15,13 +15,13 @@ import any.data.entity.User
 import java.io.File
 
 class AppSampleDataManager(
-    private val toPackageName: String,
+    private val targetPackageName: String,
     private val context: Context,
 ) {
     private val targetDatabasesPath = context.getDatabasePath("whatever")
         .parentFile!!
         .absolutePath
-        .replace(context.packageName, toPackageName)
+        .replace(context.packageName, targetPackageName)
     private val targetBackupDatabasesPath =  "${targetDatabasesPath}_backup"
 
     private val appDbFile = File(context.cacheDir, SAMPLE_APP_DB_NAME)
@@ -33,6 +33,7 @@ class AppSampleDataManager(
         if (!Shell.isSessionRooted()) {
             return
         }
+        killTargetApp()
         generateSampleAppDb()
         backupTargetDatabases()
         overwriteTargetAppDatabase()
@@ -42,8 +43,13 @@ class AppSampleDataManager(
         if (!Shell.isSessionRooted()) {
             return
         }
+        killTargetApp()
         appDbFile.delete()
         restoreDatabasesDir()
+    }
+
+    private fun killTargetApp() {
+        Shell.executeScriptSilent("am force-stop $targetPackageName")
     }
 
     private fun backupTargetDatabases() {
@@ -56,7 +62,7 @@ class AppSampleDataManager(
         val cmd = "cp -Rp $targetDatabasesPath $targetBackupDatabasesPath"
         val ret = Shell.executeScriptCaptureStdoutStderr(cmd)
         if (ret.stderr.isNotEmpty()) {
-            throw Exception("Unable to backup databases dir for $toPackageName: ${ret.stderr}")
+            throw Exception("Unable to backup databases dir for $targetPackageName: ${ret.stderr}")
         }
     }
 
@@ -82,7 +88,7 @@ class AppSampleDataManager(
         """.trimIndent()
         val ret = Shell.executeScriptCaptureStdoutStderr(copyCmd)
         if (ret.stderr.isNotEmpty()) {
-            throw Exception("Cannot overwrite app db for $toPackageName: ${ret.stderr}")
+            throw Exception("Cannot overwrite app db for $targetPackageName: ${ret.stderr}")
         }
 
         val cleanDbFilesCmd = """
@@ -104,7 +110,7 @@ class AppSampleDataManager(
         val delCmd = "rm -r $targetDatabasesPath"
         val delRet = Shell.executeScriptCaptureStdoutStderr(delCmd)
         if (delRet.stderr.isNotEmpty()) {
-            throw Exception("Cannot delete databases dir for $toPackageName: ${delRet.stderr}")
+            throw Exception("Cannot delete databases dir for $targetPackageName: ${delRet.stderr}")
         }
 
         val checkCmd = "[ -d $targetBackupDatabasesPath ] && echo exists"
@@ -116,7 +122,7 @@ class AppSampleDataManager(
         val mvCmd = "mv $targetBackupDatabasesPath $targetDatabasesPath"
         val mvRet = Shell.executeScriptCaptureStdoutStderr(mvCmd)
         if (mvRet.stderr.isNotEmpty()) {
-            throw Exception("Cannot restore databases dir for $toPackageName: ${mvRet.stderr}")
+            throw Exception("Cannot restore databases dir for $targetPackageName: ${mvRet.stderr}")
         }
     }
 

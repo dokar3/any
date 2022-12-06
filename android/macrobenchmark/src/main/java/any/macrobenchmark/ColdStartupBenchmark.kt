@@ -39,6 +39,6 @@ class ColdStartupBenchmark {
         startActivityAndWait()
 
         // Waits for content to be visible, which represents time to fully drawn.
-        device.wait(Until.hasObject(By.desc("MainScreen")), 5_000)
+        device.wait(Until.hasObject(By.res("mainScreen")), 5_000)
     }
 }

@@ -11,10 +11,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -46,6 +48,7 @@ import kotlinx.coroutines.launch
 class MainActivity : DarkModeAwareActivity() {
     private val mainViewModel by viewModels<MainViewModel>()
 
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,14 +76,17 @@ class MainActivity : DarkModeAwareActivity() {
                 primaryColor = primaryColor,
                 darkModePrimaryColor = darkModePrimaryColor,
             ) {
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(
+                    color = MaterialTheme.colors.background,
+                    modifier = Modifier.semantics { testTagsAsResourceId = true },
+                ) {
                     CompositionLocalProvider(
                         LocalBenchmarkBuild provides BuildConfig.BENCHMARK,
                     ) {
                         MainScreen(
                             darkMode = darkMode,
                             mainViewModel = mainViewModel,
-                            modifier = Modifier.semantics { contentDescription = "MainScreen" },
+                            modifier = Modifier.testTag("mainScreen"),
                         )
                     }
                 }
