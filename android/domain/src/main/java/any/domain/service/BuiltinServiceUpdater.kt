@@ -2,6 +2,7 @@ package any.domain.service
 
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceManifest
+import any.data.entity.updateValuesFrom
 import any.data.repository.ServiceRepository
 import any.data.service.ServiceInstaller
 import any.data.source.service.BuiltinServiceDataSource
@@ -49,14 +50,11 @@ class BuiltinServiceUpdater(
         for (service in services) {
             val builtin = builtinMap[service.originalId]
             if (builtin != null) {
-                val serviceConfigMap = service.configs?.associateBy { it.key } ?: emptyMap()
                 val partialBuiltin = builtin.copy(
                     id = service.id,
                     name = service.name,
                     postsViewType = service.postsViewType,
-                    configs = builtin.configs?.map {
-                        it.copy(value = serviceConfigMap[it.key]?.value ?: it.value)
-                    },
+                    configs = builtin.configs?.updateValuesFrom(service.configs),
                     isEnabled = service.isEnabled,
                     pageKeyOfPage2 = service.pageKeyOfPage2,
                     localResources = service.localResources,
