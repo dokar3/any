@@ -416,7 +416,7 @@ function buildAll() {
   );
 
   if (allServiceManifests.length > 0) {
-    console.log("Write service manifests...");
+    console.log("Writing service manifests...");
     // Write manifests to services.json
     const json = JSON.stringify(allServiceManifests);
     fs.writeFileSync(serviceManifestsFile, json);
@@ -426,7 +426,7 @@ function buildAll() {
 
   console.log();
   console.log(
-    `Build task completed (${timeElapse}s), \
+    `Build services task completed in ${timeElapse}s, \
     ${projectCount} project(s), \
     ${allServiceManifests.length} manifest(s).`
   );

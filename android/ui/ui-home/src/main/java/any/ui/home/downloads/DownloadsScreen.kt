@@ -59,10 +59,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -241,7 +240,7 @@ internal fun DownloadsScreen(
                 downloads = ImmutableHolder(uiState.downloads),
                 selectedDownloads = ImmutableHolder(uiState.selectedDownloadUrls),
                 contentPadding = listPadding,
-                modifier = Modifier.semantics { contentDescription = "DownloadList" },
+                modifier = Modifier.testTag("downloadList"),
             )
 
             if (!uiState.isLoadingDownloads && uiState.downloads.isEmpty()) {

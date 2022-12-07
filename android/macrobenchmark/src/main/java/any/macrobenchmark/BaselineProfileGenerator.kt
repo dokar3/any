@@ -4,12 +4,10 @@ import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.BySelector
 import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -22,17 +20,14 @@ class BaselineProfileGenerator {
     val baselineRule = BaselineProfileRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().context
-    private val sampleDataManager = AppSampleDataManager(
-        toPackageName = TARGET_PACKAGE_NAME,
+    private val sampleDataManager = SampleDataManager(
+        targetPackageName = TARGET_PACKAGE_NAME,
         context = context,
     )
 
     @Before
     fun setup() {
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch {
-            sampleDataManager.useSampleData()
-        }
+        sampleDataManager.useSampleData()
     }
 
     @After
@@ -45,61 +40,43 @@ class BaselineProfileGenerator {
         packageName = TARGET_PACKAGE_NAME,
     ) {
         pressHome()
-        startActivityAndWait()
+        startActivityAndWait {
+            it.putExtra("extra.block_all_main_screen_nav", true)
+        }
 
-        val waitObjectTimeout = 2_000L
+        fun waitObject(selector: BySelector): UiObject2 {
+            return device.wait(Until.findObject(selector), 5_000)
+        }
 
-        val freshTab = device.findObject(By.text("Fresh"))
-        freshTab.click()
-        device.waitForIdle()
-
+        waitObject(By.text("Fresh")).click()
         sampleDataManager.sampleServices().forEach { service ->
             if (!device.hasObject(By.text(service.name))) {
-                val selector = device.findObject(By.desc("ServiceSelector"))
-                selector.click()
-                device.wait(Until.hasObject(By.text(service.name)), waitObjectTimeout)
+                waitObject(By.res("serviceSelector")).click()
                 // Select target service
-                val serviceItem = device.findObject(By.text(service.name))
-                serviceItem.click()
+                waitObject(By.text(service.name)).click()
+                device.waitForIdle()
             }
-            device.wait(Until.hasObject(By.desc("FreshPostList")), waitObjectTimeout)
-            val freshPostList = device.findObject(By.desc("FreshPostList"))
-            scrollList(freshPostList)
+            scrollList(waitObject(By.res("freshPostList")))
             device.waitForIdle()
         }
 
-        val followingTab = device.findObject(By.text("Following"))
-        followingTab.click()
-        device.wait(Until.hasObject(By.desc("FollowingList")), waitObjectTimeout)
-        val followingList = device.findObject(By.desc("FollowingList"))
-        scrollList(followingList)
+        waitObject(By.text("Following")).click()
+        scrollList(waitObject(By.res("followingList")))
         device.waitForIdle()
 
-        val collectionTab = device.findObject(By.text("Collections"))
-        collectionTab.click()
-        device.wait(Until.hasObject(By.desc("CollectionList")), waitObjectTimeout)
-        val collectionList = device.findObject(By.desc("CollectionList"))
-        scrollList(collectionList)
+        waitObject(By.text("Collections")).click()
+        scrollList(waitObject(By.res("collectionList")))
         device.waitForIdle()
 
-        val downloadTab = device.findObject(By.text("Downloads"))
-        downloadTab.click()
-        device.wait(Until.hasObject(By.desc("DownloadList")), waitObjectTimeout)
-        val downloadList = device.findObject(By.desc("DownloadList"))
-        scrollList(downloadList)
+        waitObject(By.text("Downloads")).click()
+        scrollList(waitObject(By.res("downloadList")))
         device.waitForIdle()
 
         device.pressBack()
-        device.waitForIdle()
     }
 
     private fun scrollList(uiList: UiObject2) {
-        uiList.setGestureMargin(uiList.visibleBounds.width() / 5)
-        repeat(3) {
-            uiList.scroll(Direction.DOWN, 0.1f, 3000)
-        }
-        repeat(3) {
-            uiList.scroll(Direction.UP, 0.2f, 3000)
-        }
+        uiList.setGestureMargin(uiList.visibleBounds.width() / 3)
+        uiList.fling(Direction.DOWN)
     }
 }

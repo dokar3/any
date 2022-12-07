@@ -12,8 +12,6 @@ jobs:
     with:
       runner_os: ubuntu-latest
       check: true
-      gen_baseline_profile: false
-      build_release_apks: false
     secrets:
       keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}
       keystore_password: ${{ secrets.KEYSTORE_PASSWORD }}

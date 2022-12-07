@@ -1,4 +1,4 @@
-name: Build release apks with baseline profile
+name: Build release apks
 
 on:
   workflow_dispatch:
@@ -8,8 +8,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       runner_os: macos-latest
-      check: true
-      gen_baseline_profile: true
+      check: false
       build_release_apks: true
     secrets:
       keystore_base64: ${{ secrets.KEYSTORE_BASE64 }}
