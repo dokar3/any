@@ -8,6 +8,7 @@ import any.base.result.ValidationResult
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceConfigValue
 import any.data.entity.ServiceManifest
+import any.data.entity.updateValuesFrom
 import any.data.js.ServiceRunner
 import any.data.js.validator.BasicServiceConfigsValidator
 import any.data.js.validator.JsServiceConfigsValidator
@@ -16,6 +17,7 @@ import any.domain.entity.UiServiceManifest
 import com.vdurmont.semver4j.Semver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,11 +27,14 @@ class ServiceViewModel(
     private val appRunner: ServiceRunner,
     private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
+    private var checkUpgradeJob: Job? = null
+
     private val _serviceUiState = MutableStateFlow(ServiceUiState())
     val serviceUiState = _serviceUiState
 
     fun checkUpgradeInfo(service: UiServiceManifest) {
-        viewModelScope.launch(workerDispatcher) {
+        checkUpgradeJob?.cancel()
+        checkUpgradeJob = viewModelScope.launch(workerDispatcher) {
             val local = serviceRepository.findDbService(service.id)
             if (local == null) {
                 _serviceUiState.update {
@@ -40,8 +45,7 @@ class ServiceViewModel(
             val isUpgrading = Semver(local.version) != Semver(service.version) ||
                     local.main != service.main ||
                     local.mainChecksums != service.mainChecksums ||
-                    local.configs != service.configs ||
-                    local.addedAt != service.addedAt ||
+                    local.configs != service.configs?.updateValuesFrom(local.configs) ||
                     local.source != service.source
             val upgradeInfo = if (isUpgrading) {
                 UpgradeInfo(
@@ -128,6 +132,8 @@ class ServiceViewModel(
 
         val toSave = if (areAllValidationsPassed) {
             updatedService.toStored()
+                .copy(updatedAt = System.currentTimeMillis())
+                .updateFromDb()
         } else {
             null
         }
@@ -166,6 +172,14 @@ class ServiceViewModel(
 
     fun resetUiState() {
         _serviceUiState.update { ServiceUiState() }
+    }
+
+    private suspend fun ServiceManifest.updateFromDb(): ServiceManifest {
+        val dbService = serviceRepository.findDbService(id) ?: return this
+        return copy(
+            isEnabled = dbService.isEnabled,
+            pageKeyOfPage2 = dbService.pageKeyOfPage2,
+        )
     }
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {

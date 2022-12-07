@@ -4,6 +4,14 @@ import androidx.compose.runtime.Immutable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+typealias ServiceConfigs = List<ServiceConfig>
+
+fun ServiceConfigs.updateValuesFrom(other: ServiceConfigs?): ServiceConfigs {
+    if (other.isNullOrEmpty()) return this
+    val localConfigValues = other.associate { it.key to it.value }
+    return map { it.copy(value = localConfigValues[it.key]) }
+}
+
 @Immutable
 @JsonClass(generateAdapter = true)
 data class ServiceConfig(
