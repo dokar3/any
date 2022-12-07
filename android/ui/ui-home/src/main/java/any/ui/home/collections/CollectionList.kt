@@ -42,10 +42,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import any.base.R
-import any.base.compose.StableHolder
+import any.base.compose.ImmutableHolder
 import any.base.prefs.FolderViewType
 import any.base.util.joinToPath
+import any.data.ThumbAspectRatio
 import any.data.entity.Folder
+import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.ui.common.modifier.drawCheckMark
 import any.ui.common.modifier.gridItemPadding
@@ -59,7 +61,7 @@ import any.ui.common.theme.sizes
 import any.ui.common.widget.EmojiEmptyContent
 import any.ui.home.HomeScreenDefaults
 import any.ui.home.Loading
-import any.ui.home.collections.item.FolderItem
+import any.ui.home.collections.viewmodel.FolderPost
 import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi
@@ -68,9 +70,9 @@ internal fun CollectionList(
     state: LazyGridState,
     folder: Folder,
     viewType: FolderViewType,
-    folders: StableHolder<List<Folder>>,
-    posts: StableHolder<List<UiPost>>,
-    selectedPosts: StableHolder<Set<UiPost>>,
+    folders: ImmutableHolder<List<Folder>>,
+    posts: ImmutableHolder<List<FolderPost>>,
+    selectedPosts: ImmutableHolder<Set<UiPost>>,
     isLoading: Boolean,
     onMediaClick: (post: UiPost, index: Int) -> Unit,
     onUserClick: (serviceId: String, userId: String) -> Unit,
@@ -90,6 +92,12 @@ internal fun CollectionList(
         cells = gridCells,
         spacing = gridCellSpacing,
     )
+    val postsViewType = when (viewType) {
+        FolderViewType.Grid -> PostsViewType.Grid
+        FolderViewType.List -> PostsViewType.List
+        FolderViewType.FullWidth -> PostsViewType.FullWidth
+        FolderViewType.Card -> PostsViewType.Card
+    }
 
     LazyVerticalGrid(
         columns = gridCells,
@@ -125,8 +133,6 @@ internal fun CollectionList(
             FolderItem(
                 folder = folder,
                 selectedPosts = selectedPosts,
-                onClick = { onFolderClick(folder) },
-                onLongClick = { onFolderLongClick(folder) },
                 modifier = Modifier
                     .gridItemPadding(
                         spacing = gridCellSpacing,
@@ -138,6 +144,9 @@ internal fun CollectionList(
                         columnCount = columnCount,
                         index = index,
                     ),
+                onClick = { onFolderClick(folder) },
+                onLongClick = { onFolderLongClick(folder) },
+                aspectRatio = ThumbAspectRatio.defaultAspectRatio(postsViewType),
             )
         }
 
@@ -145,16 +154,16 @@ internal fun CollectionList(
             FolderViewType.Grid -> {
                 itemsIndexed(
                     items = posts.value,
-                    key = { _, post -> "${post.serviceId}:${post.url}" },
+                    key = { _, post -> "${post.ui.serviceId}:${post.ui.url}" },
                     contentType = { _, _ -> "post" },
                 ) { index, post ->
-                    val isSelected = selectedPosts.value.contains(post)
+                    val isSelected = selectedPosts.value.contains(post.ui)
                     GridPostItem(
-                        post = post,
-                        defThumbAspectRatio = null,
+                        post = post.ui,
+                        defThumbAspectRatio = post.defaultThumbAspectRatio,
                         onCollectClick = null,
                         onMoreClick = onPostLongClick,
-                        onUserClick = { onUserClick(post.serviceId, it) },
+                        onUserClick = { onUserClick(post.ui.serviceId, it) },
                         onLinkClick = onLinkClick,
                         onClick = onPostClick,
                         onLongClick = onPostLongClick,
@@ -173,18 +182,18 @@ internal fun CollectionList(
             FolderViewType.List -> {
                 items(
                     items = posts.value,
-                    key = { post -> "${post.serviceId}:${post.url}" },
+                    key = { post -> "${post.ui.serviceId}:${post.ui.url}" },
                     span = { GridItemSpan(maxLineSpan) },
                     contentType = { "post" },
                 ) { post ->
-                    val isSelected = selectedPosts.value.contains(post)
+                    val isSelected = selectedPosts.value.contains(post.ui)
                     ListPostItem(
-                        post = post,
-                        defThumbAspectRatio = null,
+                        post = post.ui,
+                        defThumbAspectRatio = post.defaultThumbAspectRatio,
                         onCollectClick = null,
                         onCommentsClick = onCommentsClick,
                         onMoreClick = onPostLongClick,
-                        onUserClick = { onUserClick(post.serviceId, it) },
+                        onUserClick = { onUserClick(post.ui.serviceId, it) },
                         onLinkClick = onLinkClick,
                         onClick = onPostClick,
                         onLongClick = onPostLongClick,
@@ -197,20 +206,20 @@ internal fun CollectionList(
             FolderViewType.FullWidth -> {
                 items(
                     items = posts.value,
-                    key = { post -> "${post.serviceId}:${post.url}" },
+                    key = { post -> "${post.ui.serviceId}:${post.ui.url}" },
                     span = { GridItemSpan(maxLineSpan) },
                     contentType = { "post" },
                 ) { post ->
-                    val isSelected = selectedPosts.value.contains(post)
+                    val isSelected = selectedPosts.value.contains(post.ui)
                     FullWidthPostItem(
-                        post = post,
-                        defThumbAspectRatio = null,
+                        post = post.ui,
+                        defThumbAspectRatio = post.defaultThumbAspectRatio,
                         showCollectButton = false,
                         onCollectClick = null,
                         onCommentsClick = onCommentsClick,
                         onMoreClick = onPostLongClick,
                         onMediaClick = { p, media -> onMediaClick(p, media) },
-                        onUserClick = { onUserClick(post.serviceId, it) },
+                        onUserClick = { onUserClick(post.ui.serviceId, it) },
                         onLinkClick = onLinkClick,
                         onClick = onPostClick,
                         onLongClick = onPostLongClick,
@@ -222,19 +231,19 @@ internal fun CollectionList(
             FolderViewType.Card -> {
                 items(
                     items = posts.value,
-                    key = { post -> "${post.serviceId}:${post.url}" },
+                    key = { post -> "${post.ui.serviceId}:${post.ui.url}" },
                     span = { GridItemSpan(maxLineSpan) },
                     contentType = { "post" },
                 ) { post ->
-                    val isSelected = selectedPosts.value.contains(post)
+                    val isSelected = selectedPosts.value.contains(post.ui)
                     CardPostItem(
-                        post = post,
-                        defThumbAspectRatio = null,
+                        post = post.ui,
+                        defThumbAspectRatio = post.defaultThumbAspectRatio,
                         onCollectClick = null,
                         onCommentsClick = onCommentsClick,
                         onMoreClick = onPostLongClick,
                         onMediaClick = onMediaClick,
-                        onUserClick = { onUserClick(post.serviceId, it) },
+                        onUserClick = { onUserClick(post.ui.serviceId, it) },
                         onLinkClick = onLinkClick,
                         onClick = onPostClick,
                         onLongClick = onPostLongClick,

@@ -26,5 +26,5 @@ data class FolderUiState(
     val isLoading: Boolean = false,
     val tags: List<SelectableTag> = emptyList(),
     val folders: List<Folder> = emptyList(),
-    val posts: List<UiPost> = emptyList(),
+    val posts: List<FolderPost> = emptyList(),
 )
