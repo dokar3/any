@@ -104,7 +104,7 @@ data class ServiceManifest(
     }
 
     /**
-     * Convert the service [id] to a stored id: All variables in the id will be replaced with
+     * Convert the service [id] to a stored id: All dynamic fields in the id will be replaced with
      * actual values.
      */
     fun toStored(): ServiceManifest = copy(id = generatedStoredId())
@@ -114,7 +114,7 @@ data class ServiceManifest(
 
         this.configs?.forEach { list.add(it.key to it.value?.text) }
 
-        val maybeHaveHashFn = id.indexOf("hash(") != -1
+        val mayHaveHashFn = id.indexOf("hash(") != -1
 
         return list.fold(id) { currId, config ->
             val varName = "{${config.first}}"
@@ -122,7 +122,7 @@ data class ServiceManifest(
                 ?.lowercase()
                 ?.replace(' ', '_')
 
-            if (maybeHaveHashFn) {
+            if (mayHaveHashFn) {
                 val hashVarName = "{hash(${config.first})}"
                 val crc32 = CRC.calculateCRC(
                     CRC.Parameters.CRC32C,
