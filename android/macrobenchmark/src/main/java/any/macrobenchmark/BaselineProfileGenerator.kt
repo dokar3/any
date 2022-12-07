@@ -40,10 +40,12 @@ class BaselineProfileGenerator {
         packageName = TARGET_PACKAGE_NAME,
     ) {
         pressHome()
-        startActivityAndWait()
+        startActivityAndWait {
+            it.putExtra("extra.block_all_main_screen_nav", true)
+        }
 
         fun waitObject(selector: BySelector): UiObject2 {
-            return device.wait(Until.findObject(selector), 3_000)
+            return device.wait(Until.findObject(selector), 5_000)
         }
 
         waitObject(By.text("Fresh")).click()
@@ -76,6 +78,5 @@ class BaselineProfileGenerator {
     private fun scrollList(uiList: UiObject2) {
         uiList.setGestureMargin(uiList.visibleBounds.width() / 3)
         uiList.fling(Direction.DOWN)
-        uiList.fling(Direction.UP)
     }
 }

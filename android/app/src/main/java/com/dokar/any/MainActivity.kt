@@ -52,6 +52,8 @@ class MainActivity : DarkModeAwareActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        MainScreenNavBlocker.allowAll()
+
         handleIntent(intent)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -142,9 +144,23 @@ class MainActivity : DarkModeAwareActivity() {
 
     private fun handleIntent(intent: Intent?) {
         if (intent == null) return
+
+        intent.handleMainScreenNavBlockRules()
+
         if (intent.handleAppUrl()) return
         if (intent.handleShortcutsNavigation()) return
         if (intent.handleAddService()) return
+    }
+
+    private fun Intent.handleMainScreenNavBlockRules() {
+        if (!BuildConfig.BENCHMARK) return
+        if (getBooleanExtra(EXTRA_BLOCK_ALL_MAIN_SCREEN_NAVIGATION, false)) {
+            MainScreenNavBlocker.blockAll()
+        }
+        getStringArrayExtra(EXTRA_BLOCKED_MAIN_SCREEN_ROUTES)
+            ?.forEach(MainScreenNavBlocker::block)
+        getStringArrayExtra(EXTRA_ALLOWED_MAIN_SCREEN_ROUTES)
+            ?.forEach(MainScreenNavBlocker::allow)
     }
 
     private fun Intent.handleAppUrl(): Boolean {
@@ -210,8 +226,12 @@ class MainActivity : DarkModeAwareActivity() {
         private const val TAG = "MainActivity"
 
         const val ACTION_ADD_SERVICE = "any.action.add_service"
+
         const val EXTRA_SERVICE_MANIFEST_URL = "extra.service_manifest_url"
         const val EXTRA_TARGET_DEST = "extra.target_destination"
+        const val EXTRA_BLOCK_ALL_MAIN_SCREEN_NAVIGATION = "extra.block_all_main_screen_nav"
+        const val EXTRA_BLOCKED_MAIN_SCREEN_ROUTES = "extra.blocked_main_screen_routes"
+        const val EXTRA_ALLOWED_MAIN_SCREEN_ROUTES = "extra.allowed_main_screen_routes"
 
         // anyapp://app.actions
         private const val APP_URL_HOST_ACTIONS = "app.actions"

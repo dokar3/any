@@ -17,10 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavDestination
 import any.base.R
 import any.download.PostImageDownloader
 import any.navigation.NavEvent
+import any.navigation.NavigationBlocker
 import any.navigation.Routes
 import any.navigation.navigateAndReplace
 import any.navigation.post
@@ -33,6 +37,8 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+
+val MainScreenNavBlocker = NavigationBlocker()
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -54,22 +60,36 @@ fun MainScreen(
 
     var showExitDuringDownloadingDialog by remember { mutableStateOf(false) }
 
+    fun isRouteBlocked(route: String): Boolean {
+        if (MainScreenNavBlocker.isBlocked(route)) {
+            return true
+        }
+        val request = NavDeepLinkRequest.Builder
+            .fromUri(NavDestination.createRoute(route).toUri())
+            .build()
+        val rawRoute = navController.graph.matchDeepLink(request)
+            ?.destination?.route ?: route
+        return MainScreenNavBlocker.isBlocked(rawRoute)
+    }
+
     fun navigate(event: NavEvent) {
-        if (BuildConfig.BENCHMARK) return
         when (event) {
             NavEvent.Back -> {
                 navController.popBackStack()
             }
 
             is NavEvent.Push -> {
+                if (isRouteBlocked(event.route)) return
                 navController.navigate(event.route)
             }
 
             is NavEvent.ReplaceWith -> {
+                if (isRouteBlocked(event.route)) return
                 navController.navigateAndReplace(event.route)
             }
 
             is NavEvent.PushImagePager -> {
+                if (isRouteBlocked(event.route)) return
                 imagePagerViewModel.images = event.images
                 navController.navigate(event.route)
             }
