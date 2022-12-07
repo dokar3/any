@@ -73,6 +73,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import any.base.compose.ImmutableHolder
 import any.base.compose.StableHolder
 import any.base.compose.rememberProvider
 import any.base.prefs.FolderViewType
@@ -254,7 +255,7 @@ internal fun CollectionsScreen(
                 )
                 if (uiState.isMultiSelectionEnabled()) {
                     PostSelectionPanel(
-                        selectedPosts = StableHolder(uiState.selectedPosts),
+                        selectedPosts = ImmutableHolder(uiState.selectedPosts),
                         onFinishSelectionRequest = {
                             viewModel.finishMultiSelection()
                         },
@@ -405,9 +406,9 @@ internal fun CollectionsScreen(
                     state = gridState,
                     folder = folderUiState.folder,
                     viewType = folderUiState.viewType,
-                    folders = StableHolder(folderUiState.folders),
-                    posts = StableHolder(folderUiState.posts),
-                    selectedPosts = StableHolder(uiState.selectedPosts),
+                    folders = ImmutableHolder(folderUiState.folders),
+                    posts = ImmutableHolder(folderUiState.posts),
+                    selectedPosts = ImmutableHolder(uiState.selectedPosts),
                     isLoading = uiState.previousFolderUiState.isLoading ||
                             uiState.currentFolderUiState.isLoading,
                     contentPadding = listPadding,
@@ -708,7 +709,7 @@ private fun MoreMenuContent(
 
 @Composable
 private fun PostSelectionPanel(
-    selectedPosts: StableHolder<Set<UiPost>>,
+    selectedPosts: ImmutableHolder<Set<UiPost>>,
     onFinishSelectionRequest: () -> Unit,
     onRemoveSelected: () -> Unit,
     onAddSelectedToFolder: (Folder) -> Unit,

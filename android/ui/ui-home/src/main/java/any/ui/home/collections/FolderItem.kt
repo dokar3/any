@@ -1,4 +1,4 @@
-package any.ui.home.collections.item
+package any.ui.home.collections
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.compose.StableHolder
+import any.base.compose.ImmutableHolder
 import any.base.image.ImageRequest
 import any.data.ThumbAspectRatio
 import any.data.entity.Folder
@@ -49,10 +49,11 @@ import any.ui.common.theme.thumbBorder
 @Composable
 internal fun FolderItem(
     folder: Folder,
-    selectedPosts: StableHolder<Set<UiPost>>,
+    selectedPosts: ImmutableHolder<Set<UiPost>>,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
+    aspectRatio: Float = ThumbAspectRatio.defaultAspectRatio(PostsViewType.Grid),
 ) {
     val haptic = LocalHapticFeedback.current
 
@@ -70,13 +71,12 @@ internal fun FolderItem(
                 }
             ),
     ) {
-        val ratio = ThumbAspectRatio.defaultAspectRatio(PostsViewType.Grid)
         val cols = 2
         val rows = 2
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(ratio)
+                .aspectRatio(aspectRatio)
                 .clip(MaterialTheme.shapes.thumb)
                 .background(MaterialTheme.colors.placeholder)
                 .border(

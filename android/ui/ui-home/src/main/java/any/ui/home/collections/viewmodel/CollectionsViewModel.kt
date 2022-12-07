@@ -16,14 +16,16 @@ import any.base.prefs.preferencesStore
 import any.base.util.PathJoiner
 import any.base.util.joinToPath
 import any.data.Comparators
+import any.data.ThumbAspectRatio
 import any.data.entity.Folder
 import any.data.entity.FolderInfo
 import any.data.entity.Post
 import any.data.repository.FolderInfoRepository
 import any.data.repository.PostRepository
+import any.data.repository.ServiceRepository
 import any.domain.entity.UiPost
 import any.domain.post.containsRaw
-import any.domain.post.toUiPosts
+import any.domain.post.toUiPost
 import any.richtext.html.DefaultHtmlParser
 import any.richtext.html.HtmlParser
 import any.ui.common.viewmodel.BasePostViewModel
@@ -42,6 +44,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CollectionsViewModel(
+    private val serviceRepository: ServiceRepository,
     postRepository: PostRepository,
     private val folderInfoRepository: FolderInfoRepository,
     private val preferencesStore: PreferencesStore,
@@ -63,7 +66,7 @@ class CollectionsViewModel(
     private val _currFolders: List<Folder>
         get() = _collectionsUiState.value.currentFolderUiState.folders
 
-    private val _currPosts: List<UiPost>
+    private val _currPosts: List<FolderPost>
         get() = _collectionsUiState.value.currentFolderUiState.posts
 
     private val _currTags: List<SelectableTag>
@@ -170,7 +173,7 @@ class CollectionsViewModel(
                     viewType = viewType,
                     tags = tags,
                     folders = filteredFolders,
-                    posts = tagsFilteredPosts.toUiPosts(htmlParser),
+                    posts = tagsFilteredPosts.toFolderPosts(),
                 )
             }
             .first()
@@ -196,7 +199,7 @@ class CollectionsViewModel(
         _collectionsUiState.update {
             val folderUiState = it.currentFolderUiState.copy(
                 folders = groupingResult.folders,
-                posts = groupingResult.posts.toUiPosts(htmlParser),
+                posts = groupingResult.posts.toFolderPosts(),
                 tags = tags.toList(),
             )
             it.copy(currentFolderUiState = folderUiState)
@@ -351,7 +354,7 @@ class CollectionsViewModel(
         _collectionsUiState.update {
             val folderUiState = it.currentFolderUiState.copy(
                 folders = groupingResult.folders,
-                posts = groupingResult.posts.toUiPosts(htmlParser),
+                posts = groupingResult.posts.toFolderPosts(),
                 tags = tags,
             )
             it.copy(currentFolderUiState = folderUiState)
@@ -625,6 +628,17 @@ class CollectionsViewModel(
         }
     }
 
+    private suspend fun List<Post>.toFolderPosts(): List<FolderPost> {
+        val defThumbAspectRatioMap = serviceRepository.getDbServices()
+            .associate { it.id to ThumbAspectRatio.parseOrNull(it.mediaAspectRatio) }
+        return map {
+            FolderPost(
+                ui = it.toUiPost(htmlParser),
+                defaultThumbAspectRatio = defThumbAspectRatioMap[it.serviceId],
+            )
+        }
+    }
+
     private fun getSelectedPosts(): List<Post> {
         val selectedPosts = _collectionsUiState.value.selectedPosts
         return allCollectedPosts?.filter {
@@ -645,6 +659,7 @@ class CollectionsViewModel(
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return CollectionsViewModel(
+                serviceRepository = ServiceRepository.getDefault(context),
                 postRepository = PostRepository.getDefault(context),
                 folderInfoRepository = FolderInfoRepository.getDefault(context),
                 preferencesStore = context.preferencesStore(),
