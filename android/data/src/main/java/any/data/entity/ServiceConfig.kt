@@ -62,49 +62,32 @@ data class ServiceConfigOption(
     val value: String,
 )
 
-class ServiceConfigValue(value: Any?) {
-    val text: String? = value?.toString()
+sealed interface ServiceConfigValue {
+    val stringValue: kotlin.String
 
-    fun boolOrNull(): Boolean? {
-        return text?.toBooleanStrictOrNull()
+    @JvmInline
+    value class Boolean(val value: kotlin.Boolean) : ServiceConfigValue {
+        override val stringValue: kotlin.String get() = value.toString()
     }
 
-    fun boolOrDefault(defaultValue: Boolean): Boolean {
-        return text?.toBooleanStrictOrNull() ?: defaultValue
+    @JvmInline
+    value class Double(val value: kotlin.Double) : ServiceConfigValue {
+        override val stringValue: kotlin.String get() = value.toString()
     }
 
-    fun doubleOrNull(): Double? {
-        return text?.toDoubleOrNull()
-    }
-
-    fun doubleOrNull(defaultValue: Double): Double {
-        return text?.toDoubleOrNull() ?: defaultValue
-    }
-
-    override fun toString(): String {
-        return text.toString()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ServiceConfigValue
-
-        if (text != other.text) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return text?.hashCode() ?: 0
+    @JvmInline
+    value class String(val value: kotlin.String) : ServiceConfigValue {
+        override val stringValue: kotlin.String get() = value
     }
 
     @JsonClass(generateAdapter = true)
-    data class UaAndCookies(
-        val userAgent: String,
-        val cookies: String,
-    )
+    class CookiesAndUa(
+        val cookies: kotlin.String,
+        val userAgent: kotlin.String,
+    ) : ServiceConfigValue {
+        override val stringValue: kotlin.String
+            get() = any.data.json.Json.toJson(this, CookiesAndUa::class.java)
+    }
 }
 
 @JsonClass(generateAdapter = false)

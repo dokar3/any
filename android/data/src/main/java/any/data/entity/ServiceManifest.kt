@@ -112,7 +112,7 @@ data class ServiceManifest(
     private fun generatedStoredId(): String {
         val list = mutableListOf<Pair<String, String?>>("serviceName" to name)
 
-        this.configs?.forEach { list.add(it.key to it.value?.text) }
+        this.configs?.forEach { list.add(it.key to it.value?.stringValue) }
 
         val mayHaveHashFn = id.indexOf("hash(") != -1
 

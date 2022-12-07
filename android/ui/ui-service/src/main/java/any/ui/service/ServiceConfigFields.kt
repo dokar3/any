@@ -61,7 +61,7 @@ internal fun BoolFieldItem(
         )
 
         var checked by remember(field.value) {
-            mutableStateOf(field.value?.boolOrDefault(false) ?: false)
+            mutableStateOf(field.value?.stringValue?.toBooleanStrictOrNull() ?: false)
         }
         FlatSwitch(
             checked = checked,
@@ -94,14 +94,14 @@ internal fun OptionFieldItem(
     val options = field.options ?: emptyList()
 
     var value by remember(field.value) {
-        val defaultValue = field.value.let {
-            if (it?.text.isNullOrEmpty() && options.isNotEmpty()) {
+        val defaultValue = field.value?.let {
+            if (it.stringValue.isEmpty() && options.isNotEmpty()) {
                 val first = options.first()
                 onValueChange(first.value)
                 first.name
             } else {
                 options.firstOrNull { opt ->
-                    opt.value == field.value?.text
+                    opt.value == field.value?.stringValue
                 }?.name
             }
         }
@@ -187,7 +187,7 @@ internal fun TextFieldItem(
 
     val digitsOnly = field.type == ServiceConfigType.Number
 
-    var value by remember(field.value) { mutableStateOf(field.value?.text ?: "") }
+    var value by remember(field.value) { mutableStateOf(field.value?.stringValue ?: "") }
 
     OutlinedTextField(
         value = value,

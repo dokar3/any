@@ -5,7 +5,10 @@ import any.data.entity.JsPageKey
 import any.data.entity.JsType
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceConfigType
+import any.data.entity.ServiceConfigValue
 import any.data.entity.ServiceManifest
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 fun String.escape(): String {
     return replace("\\", "\\\\")
@@ -50,7 +53,7 @@ private fun Checksums.toJsObject(): String = buildString {
     appendStringField("md5", md5)
     appendStringField("sha1", sha1)
     appendStringField("sha256", sha256)
-    appendStringField("sha512", sha512)
+    appendStringField("sha512", sha512, appendComma = false)
     append('}')
 }
 
@@ -61,12 +64,20 @@ private fun StringBuilder.appendField(name: String, value: Any?) {
     append(",")
 }
 
-private fun StringBuilder.appendStringField(name: String, value: String?) {
+private fun StringBuilder.appendStringField(
+    name: String,
+    value: String?,
+    appendComma: Boolean = true,
+) {
     if (value != null) {
         append(name)
         append(":\"")
         append(value.escape())
-        append("\",")
+        if (appendComma) {
+            append("\",")
+        } else {
+            append('"')
+        }
     } else {
         append(name)
         append(":null,")
@@ -102,20 +113,26 @@ fun List<ServiceConfig>?.toJsObject(): String = buildString {
         if (value != null) {
             when (type) {
                 ServiceConfigType.Bool -> {
-                    append(value.boolOrNull())
+                    checkConfigValue<ServiceConfigValue.Boolean>(value, type)
+                    append(value.stringValue)
                 }
 
                 ServiceConfigType.Number -> {
-                    append(value.doubleOrNull())
+                    checkConfigValue<ServiceConfigValue.Double>(value, type)
+                    append(value.stringValue)
                 }
 
                 ServiceConfigType.CookiesAndUserAgent -> {
-                    append(value)
+                    checkConfigValue<ServiceConfigValue.CookiesAndUa>(value, type)
+                    append('{')
+                    appendStringField("cookies", value.cookies)
+                    appendStringField("userAgent", value.userAgent, appendComma = false)
+                    append('}')
                 }
 
                 else -> {
                     append('"')
-                    append(value.toString().escape())
+                    append(value.stringValue.escape())
                     append('"')
                 }
             }
@@ -125,6 +142,23 @@ fun List<ServiceConfig>?.toJsObject(): String = buildString {
         append(',')
     }
     append('}')
+}
+
+@OptIn(ExperimentalContracts::class)
+private inline fun <reified T : ServiceConfigValue> checkConfigValue(
+    value: ServiceConfigValue,
+    type: ServiceConfigType,
+) {
+    contract {
+        returns() implies (value is T)
+    }
+    if (value !is T) {
+        val required = ServiceConfigValue.CookiesAndUa::class.java
+        val found = value::class.java
+        val message = "The config value must match the type $type, " +
+                "required: $required, found: $found"
+        throw IllegalStateException(message)
+    }
 }
 
 fun JsPageKey?.toJsObject(): String {
