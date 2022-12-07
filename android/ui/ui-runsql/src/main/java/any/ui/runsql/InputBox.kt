@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 internal fun InputBox(
     text: String,
     onValueChange: (String) -> Unit,
-    canSend: Boolean,
+    sendEnabled: Boolean,
     modifier: Modifier = Modifier,
     onSubmit: (text: String) -> Unit
 ) {
@@ -72,7 +72,7 @@ internal fun InputBox(
                 contentDescription = null,
                 modifier = Modifier
                     .clickable(
-                        enabled = canSend,
+                        enabled = sendEnabled,
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(bounded = false),
                         onClick = { onSubmit(text) },
