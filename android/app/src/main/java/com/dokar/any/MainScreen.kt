@@ -1,6 +1,7 @@
 package com.dokar.any
 
 import any.base.R as BaseR
+import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -64,9 +65,11 @@ fun MainScreen(
         if (MainScreenNavBlocker.isBlocked(route)) {
             return true
         }
+        @SuppressLint("RestrictedApi")
         val request = NavDeepLinkRequest.Builder
             .fromUri(NavDestination.createRoute(route).toUri())
             .build()
+        @SuppressLint("RestrictedApi")
         val rawRoute = navController.graph.matchDeepLink(request)
             ?.destination?.route ?: route
         return MainScreenNavBlocker.isBlocked(rawRoute)
