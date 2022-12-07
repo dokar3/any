@@ -21,7 +21,7 @@ class App : Application() {
     }
 
     private fun setupLogger() {
-        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG && !BuildConfig.BENCHMARK) {
             Logger.logger = NoOpLogger
         }
     }

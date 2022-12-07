@@ -11,10 +11,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -46,8 +48,11 @@ import kotlinx.coroutines.launch
 class MainActivity : DarkModeAwareActivity() {
     private val mainViewModel by viewModels<MainViewModel>()
 
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MainScreenNavBlocker.allowAll()
 
         handleIntent(intent)
 
@@ -73,14 +78,17 @@ class MainActivity : DarkModeAwareActivity() {
                 primaryColor = primaryColor,
                 darkModePrimaryColor = darkModePrimaryColor,
             ) {
-                Surface(color = MaterialTheme.colors.background) {
+                Surface(
+                    color = MaterialTheme.colors.background,
+                    modifier = Modifier.semantics { testTagsAsResourceId = true },
+                ) {
                     CompositionLocalProvider(
                         LocalBenchmarkBuild provides BuildConfig.BENCHMARK,
                     ) {
                         MainScreen(
                             darkMode = darkMode,
                             mainViewModel = mainViewModel,
-                            modifier = Modifier.semantics { contentDescription = "MainScreen" },
+                            modifier = Modifier.testTag("mainScreen"),
                         )
                     }
                 }
@@ -136,9 +144,23 @@ class MainActivity : DarkModeAwareActivity() {
 
     private fun handleIntent(intent: Intent?) {
         if (intent == null) return
+
+        intent.handleMainScreenNavBlockRules()
+
         if (intent.handleAppUrl()) return
         if (intent.handleShortcutsNavigation()) return
         if (intent.handleAddService()) return
+    }
+
+    private fun Intent.handleMainScreenNavBlockRules() {
+        if (!BuildConfig.BENCHMARK) return
+        if (getBooleanExtra(EXTRA_BLOCK_ALL_MAIN_SCREEN_NAVIGATION, false)) {
+            MainScreenNavBlocker.blockAll()
+        }
+        getStringArrayExtra(EXTRA_BLOCKED_MAIN_SCREEN_ROUTES)
+            ?.forEach(MainScreenNavBlocker::block)
+        getStringArrayExtra(EXTRA_ALLOWED_MAIN_SCREEN_ROUTES)
+            ?.forEach(MainScreenNavBlocker::allow)
     }
 
     private fun Intent.handleAppUrl(): Boolean {
@@ -204,8 +226,12 @@ class MainActivity : DarkModeAwareActivity() {
         private const val TAG = "MainActivity"
 
         const val ACTION_ADD_SERVICE = "any.action.add_service"
+
         const val EXTRA_SERVICE_MANIFEST_URL = "extra.service_manifest_url"
         const val EXTRA_TARGET_DEST = "extra.target_destination"
+        const val EXTRA_BLOCK_ALL_MAIN_SCREEN_NAVIGATION = "extra.block_all_main_screen_nav"
+        const val EXTRA_BLOCKED_MAIN_SCREEN_ROUTES = "extra.blocked_main_screen_routes"
+        const val EXTRA_ALLOWED_MAIN_SCREEN_ROUTES = "extra.allowed_main_screen_routes"
 
         // anyapp://app.actions
         private const val APP_URL_HOST_ACTIONS = "app.actions"

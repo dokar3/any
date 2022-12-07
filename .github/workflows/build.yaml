@@ -9,12 +9,14 @@ on:
       check:
         required: true
         type: boolean
-      gen_baseline_profile:
-        required: true
-        type: boolean
       build_release_apks:
-        required: true
+        required: false
         type: boolean
+        default: false
+      create_release_from_tag:
+        required: false
+        type: boolean
+        default: false
     secrets:
       keystore_base64:
         required: true
@@ -80,7 +82,7 @@ jobs:
         run: ./gradlew check
 
       - name: Decode keystore
-        if: ${{ (inputs.build_release_apks) || (inputs.gen_baseline_profile) }}
+        if: ${{ inputs.build_release_apks }}
         env:
           ENCODED_KEYSTORE: ${{ secrets.keystore_base64 }}
         run: |
@@ -88,25 +90,35 @@ jobs:
             echo "secret 'keystore_base64' is not set"
             exit 1
           fi
-          node ./scripts/file_base64_converter.js str2f $ENCODED_KEYSTORE $KEYSTORE_PATH
+          node ./scripts/fileBase64Converter.js str2f $ENCODED_KEYSTORE $KEYSTORE_PATH
 
       - name: Generate baseline profile
-        if: ${{ inputs.gen_baseline_profile }}
-        run: |
-          ./gradlew macrobenchmark:pixel2Api31BenchmarkAndroidTest \
-          -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator \
-          -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" \
-          -PdisableSplits
+        if: ${{ inputs.build_release_apks }}
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.keystore_key_password }}
+          TWITTER_CLIENT_ID: ${{ secrets.twitter_client_id }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.unsplash_access_key }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: default
+          arch: x86_64
+          profile: pixel
+          avd-name: emulator
+          script: >
+            ./gradlew macrobenchmark:connectedBenchmarkAndroidTest 
+            -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator 
+            -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" 
+            -PdisableSplits
 
       - name: Copy baseline profile to app module
-        if: ${{ inputs.gen_baseline_profile }}
+        if: ${{ inputs.build_release_apks }}
         run: |
-          profile_path="./android/macrobenchmark/build/outputs/
-          managed_device_android_test_additional_output/pixel2Api31/
-          BaselineProfileGenerator_startup-baseline-prof.txt"
-          
-          output_path="./android/app/src/baseline-prof.txt"
-          
+          profile_path="./android/macrobenchmark/build/outputs/\
+          connected_android_test_additional_output/benchmark/connected/emulator(AVD) - 12/\
+          BaselineProfileGenerator_generate-baseline-prof.txt"
+          output_path="./android/app/src/main/baseline-prof.txt"
           cp "$profile_path" "$output_path"
         shell: bash
 
@@ -128,7 +140,7 @@ jobs:
 
       - name: Create release from tag
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: ${{ (inputs.create_release_from_tag) && startsWith(github.ref, 'refs/tags/v') }}
         with:
           generate_release_notes: true
           files: |
