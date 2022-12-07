@@ -10,6 +10,7 @@ import any.data.entity.Folder
 import any.data.testing.FakeData
 import any.data.testing.repository.createTestFolderInfoRepository
 import any.data.testing.repository.createTestPostRepository
+import any.data.testing.repository.createTestServiceRepository
 import any.data.testing.source.post.TestLocalPostDataSource
 import any.data.testing.source.post.TestServiceBridge
 import any.ui.home.collections.viewmodel.CollectionsViewModel
@@ -32,6 +33,7 @@ class CollectionsViewModelTest {
 
     private val testLocalPostSource = TestLocalPostDataSource()
     private val testServiceBridge = TestServiceBridge()
+    private val serviceRepository = createTestServiceRepository()
     private val postRepository = createTestPostRepository(
         ioDispatcher = testDispatcher,
         localSource = testLocalPostSource,
@@ -50,6 +52,7 @@ class CollectionsViewModelTest {
         Logger.logger = NoOpLogger
 
         viewModel = CollectionsViewModel(
+            serviceRepository = serviceRepository,
             postRepository = postRepository,
             folderInfoRepository = testFolderInfoRepository,
             preferencesStore = testPreferencesStore,
@@ -173,7 +176,7 @@ class CollectionsViewModelTest {
 
             assertEquals(
                 listOf("0", "1", "2", "3"),
-                listUiState.posts.map { it.title },
+                listUiState.posts.map { it.raw.title },
             )
 
             assertEquals(
@@ -191,7 +194,7 @@ class CollectionsViewModelTest {
 
             assertEquals(
                 listOf("3", "2", "1", "0"),
-                listUiState.posts.map { it.title },
+                listUiState.posts.map { it.raw.title },
             )
 
             assertEquals(
@@ -209,7 +212,7 @@ class CollectionsViewModelTest {
 
             assertEquals(
                 listOf("1", "2", "3", "0"),
-                listUiState.posts.map { it.title },
+                listUiState.posts.map { it.raw.title },
             )
 
             assertEquals(
@@ -256,7 +259,7 @@ class CollectionsViewModelTest {
 
             assertEquals(
                 listOf("Never"),
-                listUiState.posts.map { it.title },
+                listUiState.posts.map { it.raw.title },
             )
 
             assertEquals(
@@ -276,7 +279,7 @@ class CollectionsViewModelTest {
 
             assertEquals(
                 listOf("give you"),
-                listUiState.posts.map { it.title },
+                listUiState.posts.map { it.raw.title },
             )
 
             assertEquals(
@@ -350,7 +353,7 @@ class CollectionsViewModelTest {
         viewModel.collectionsUiState.test {
             assertEquals(
                 listOf("3", "2", "1", "0"),
-                awaitItem().currentFolderUiState.posts.map { it.title },
+                awaitItem().currentFolderUiState.posts.map { it.raw.title },
             )
         }
     }
