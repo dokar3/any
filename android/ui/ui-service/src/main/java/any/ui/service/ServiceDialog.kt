@@ -73,7 +73,6 @@ import any.data.entity.ServiceConfigValue
 import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
 import any.data.js.ServiceApiVersion
-import any.data.json.Json
 import any.domain.entity.UiServiceManifest
 import any.richtext.RichContent
 import any.ui.common.image.AsyncImage
@@ -513,7 +512,7 @@ private fun LazyListScope.fieldsItems(
             enabled = !isValidating,
             field = config,
             error = validations[config.key]?.failOrNull()?.reason,
-            onValueChange = { onConfigValueChange(config, ServiceConfigValue(it)) },
+            onValueChange = { onConfigValueChange(config, it) },
         )
 
         if (index != fields.size - 1) {
@@ -788,14 +787,16 @@ private fun FieldItem(
     enabled: Boolean,
     field: ServiceConfig,
     error: String?,
-    onValueChange: (String) -> Unit,
+    onValueChange: (ServiceConfigValue) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (field.type) {
         ServiceConfigType.Bool -> {
             BoolFieldItem(
                 field = field,
-                onValueChange = onValueChange,
+                onValueChange = {
+                    onValueChange(ServiceConfigValue.String(it))
+                },
                 enabled = enabled,
                 modifier = modifier,
             )
@@ -804,7 +805,9 @@ private fun FieldItem(
         ServiceConfigType.Option -> {
             OptionFieldItem(
                 field = field,
-                onValueChange = onValueChange,
+                onValueChange = {
+                    onValueChange(ServiceConfigValue.String(it))
+                },
                 enabled = enabled,
                 modifier = modifier,
             )
@@ -814,7 +817,7 @@ private fun FieldItem(
             CookiesFieldItem(
                 field = field,
                 onValueChange = { _, cookies ->
-                    onValueChange(cookies)
+                    onValueChange(ServiceConfigValue.String(cookies))
                 },
                 enabled = enabled,
                 error = error,
@@ -826,15 +829,11 @@ private fun FieldItem(
             CookiesFieldItem(
                 field = field,
                 onValueChange = { ua, cookies ->
-                    val uaAndCookies = ServiceConfigValue.UaAndCookies(
-                        userAgent = ua,
+                    val newValue = ServiceConfigValue.CookiesAndUa(
                         cookies = cookies,
+                        userAgent = ua,
                     )
-                    val jsonValue = Json.toJson(
-                        src = uaAndCookies,
-                        clz = ServiceConfigValue.UaAndCookies::class.java,
-                    )
-                    onValueChange(jsonValue)
+                    onValueChange(newValue)
                 },
                 enabled = enabled,
                 error = error,
@@ -845,7 +844,9 @@ private fun FieldItem(
         else -> {
             TextFieldItem(
                 field = field,
-                onValueChange = onValueChange,
+                onValueChange = {
+                    onValueChange(ServiceConfigValue.String(it))
+                },
                 enabled = enabled,
                 error = error,
                 modifier = modifier,
