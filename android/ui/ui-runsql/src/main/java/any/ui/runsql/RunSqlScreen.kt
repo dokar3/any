@@ -30,6 +30,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,23 +70,20 @@ import kotlinx.coroutines.withContext
 
 private suspend fun submitText(
     db: Db,
-    currentMessages: List<Message>,
+    messages: MutableList<Message>,
     text: String
-): List<Message> = withContext(Dispatchers.IO) {
+) = withContext(Dispatchers.IO) {
     if (text == "clear") {
-        return@withContext emptyList()
+        return@withContext
     }
 
-    val newMessages = currentMessages.toMutableList()
     // new input
-    newMessages.add(Message(text = AnnotatedString(text), isSelf = true))
+    messages.add(Message(text = AnnotatedString(text), isSelf = true))
 
     // run sql
     val sql = SimpleSQLiteQuery(text)
     val result = queryDb(db.create(), sql)
-    newMessages.add(Message(text = result, isSelf = false))
-
-    return@withContext newMessages
+    messages.add(Message(text = result, isSelf = false))
 }
 
 private fun queryDb(
@@ -138,6 +136,8 @@ private fun parseCursor(cursor: Cursor): AnnotatedString {
     }
 }
 
+private val Messages = mutableStateListOf<Message>()
+
 @Composable
 fun RunSqlScreen(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
@@ -159,11 +159,9 @@ fun RunSqlScreen(modifier: Modifier = Modifier) {
 
     var selectedDb: Db by remember { mutableStateOf(dbs.first()) }
 
-    var canSend by remember { mutableStateOf(true) }
+    var sendEnabled by remember { mutableStateOf(true) }
 
     var inputText by remember { mutableStateOf("") }
-
-    var messages: List<Message> by remember { mutableStateOf(emptyList()) }
 
     val listState = rememberLazyListState()
 
@@ -187,7 +185,7 @@ fun RunSqlScreen(modifier: Modifier = Modifier) {
 
             MessageList(
                 listState = listState,
-                messages = ImmutableHolder(messages),
+                messages = ImmutableHolder(Messages),
                 onCopyMessage = { ClipboardUtil.copyText(context, it.text.toString()) },
                 onEditMessage = { inputText = it.text.toString() },
                 modifier = Modifier.weight(weight = 1f, fill = true),
@@ -196,15 +194,19 @@ fun RunSqlScreen(modifier: Modifier = Modifier) {
             InputBox(
                 text = inputText,
                 onValueChange = { inputText = it },
-                canSend = canSend,
+                sendEnabled = sendEnabled,
                 modifier = Modifier.height(82.dp),
                 onSubmit = { text ->
+                    inputText = ""
+                    if (text == "clear") {
+                        Messages.clear()
+                        return@InputBox
+                    }
                     scope.launch {
-                        canSend = false
-                        messages = submitText(selectedDb, messages, text)
-                        canSend = true
-                        listState.animateScrollToItem(messages.size - 1)
-                        inputText = ""
+                        sendEnabled = false
+                        submitText(selectedDb, Messages, text)
+                        sendEnabled = true
+                        listState.animateScrollToItem(Messages.size - 1)
                     }
                 }
             )
