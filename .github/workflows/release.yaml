@@ -12,7 +12,6 @@ jobs:
     with:
       runner_os: macos-latest
       check: true
-      gen_baseline_profile: true
       build_release_apks: true
       create_release_from_tag: true
     secrets:

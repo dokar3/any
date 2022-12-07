@@ -9,10 +9,6 @@ on:
       check:
         required: true
         type: boolean
-      gen_baseline_profile:
-        required: false
-        type: boolean
-        default: false
       build_release_apks:
         required: false
         type: boolean
@@ -86,7 +82,7 @@ jobs:
         run: ./gradlew check
 
       - name: Decode keystore
-        if: ${{ (inputs.build_release_apks) || (inputs.gen_baseline_profile) }}
+        if: ${{ inputs.build_release_apks }}
         env:
           ENCODED_KEYSTORE: ${{ secrets.keystore_base64 }}
         run: |
@@ -97,7 +93,7 @@ jobs:
           node ./scripts/fileBase64Converter.js str2f $ENCODED_KEYSTORE $KEYSTORE_PATH
 
       - name: Generate baseline profile
-        if: ${{ inputs.gen_baseline_profile }}
+        if: ${{ inputs.build_release_apks }}
         env:
           KEYSTORE_PASSWORD: ${{ secrets.keystore_password }}
           KEYSTORE_KEY_PASSWORD: ${{ secrets.keystore_key_password }}
@@ -117,7 +113,7 @@ jobs:
             -PdisableSplits
 
       - name: Copy baseline profile to app module
-        if: ${{ inputs.gen_baseline_profile }}
+        if: ${{ inputs.build_release_apks }}
         run: |
           profile_path="./android/macrobenchmark/build/outputs/\
           connected_android_test_additional_output/benchmark/connected/emulator(AVD) - 12/\
