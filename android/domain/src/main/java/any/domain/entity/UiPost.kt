@@ -95,10 +95,6 @@ data class UiPost(
 
     fun isCollected() = raw.isCollected()
 
-    fun firstThumbnailUrl(): String? {
-        return media?.firstOrNull()?.thumbnail
-    }
-
     @Immutable
     data class Media(
         val type: Post.Media.Type,

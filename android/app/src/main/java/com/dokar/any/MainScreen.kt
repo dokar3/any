@@ -1,6 +1,5 @@
 package com.dokar.any
 
-import any.base.R as BaseR
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.activity.compose.BackHandler
@@ -13,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,12 +23,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDestination
 import any.base.R
+import any.base.compose.ImmutableHolder
+import any.domain.entity.UpdatableService
 import any.download.PostImageDownloader
 import any.navigation.NavEvent
 import any.navigation.NavigationBlocker
 import any.navigation.Routes
 import any.navigation.navigateAndReplace
 import any.navigation.post
+import any.ui.common.dialog.UpdateBuiltinServicesDialog
 import any.ui.common.widget.SimpleDialog
 import any.ui.imagepager.ImagePagerViewModel
 import any.ui.service.ServiceDialog
@@ -69,6 +72,7 @@ fun MainScreen(
         val request = NavDeepLinkRequest.Builder
             .fromUri(NavDestination.createRoute(route).toUri())
             .build()
+
         @SuppressLint("RestrictedApi")
         val rawRoute = navController.graph.matchDeepLink(request)
             ?.destination?.route ?: route
@@ -169,11 +173,10 @@ fun MainScreen(
     )
 
     HandleBuiltinServiceUpdates(
-        onIgnore = { serviceMgtViewModel.ignoreBuiltinServicesUpdates() },
-        onUpdate = { serviceMgtViewModel.updateBuiltinServices() },
-        onResetUpdatableServiceCount = {
-            serviceMgtViewModel.resetUpdatableBuiltinServiceCount()
-        },
+        onLoad = serviceMgtViewModel::loadUpdatableBuiltinServices,
+        onIgnore = serviceMgtViewModel::ignoreBuiltinServicesUpdates,
+        onUpdate = serviceMgtViewModel::updateBuiltinServices,
+        onClearUpdatableServices = serviceMgtViewModel::resetBuiltinServicesUpdateState,
         servicesUiState = servicesUiState,
     )
 
@@ -231,54 +234,25 @@ private fun HandleAddingNewService(
 
 @Composable
 private fun HandleBuiltinServiceUpdates(
+    onLoad: () -> Unit,
     onIgnore: () -> Unit,
-    onUpdate: () -> Unit,
-    onResetUpdatableServiceCount: () -> Unit,
+    onUpdate: (List<UpdatableService>) -> Unit,
+    onClearUpdatableServices: () -> Unit,
     servicesUiState: ServicesUiState,
 ) {
-    val updatableCount = servicesUiState.updatableBuiltinServiceCount
-    val updatedCount = servicesUiState.updatedBuiltinServiceCount
-
-    var showUpdatesAvailableDialog by remember { mutableStateOf(false) }
-    var showUpdatedDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(updatableCount) {
-        if (updatableCount > 0) {
-            showUpdatesAvailableDialog = true
-        }
+    rememberSaveable(inputs = emptyArray()) {
+        onLoad()
+        0
     }
 
-    LaunchedEffect(updatedCount) {
-        if (updatedCount >= 0) {
-            showUpdatedDialog = true
-        }
-    }
-
-    if (showUpdatesAvailableDialog) {
-        SimpleDialog(
-            onDismissRequest = {
-                showUpdatesAvailableDialog = false
-                onResetUpdatableServiceCount()
-            },
-            title = { Text(stringResource(BaseR.string.update_builtin_services)) },
-            neutralText = { Text(stringResource(BaseR.string.ignore)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
-            confirmText = { Text(stringResource(BaseR.string.update)) },
-            onNeutralClick = onIgnore,
-            onConfirmClick = onUpdate,
+    val updatableServices = servicesUiState.updatableBuiltinServices
+    if (!updatableServices.isNullOrEmpty()) {
+        UpdateBuiltinServicesDialog(
+            onDismissRequest = onClearUpdatableServices,
+            onUpdateClick = onUpdate,
+            onIgnoreClick = onIgnore,
+            updatableServices = ImmutableHolder(updatableServices),
             dismissOnClickOutside = false,
-        ) {
-            Text(stringResource(BaseR.string._builtin_services_update_info, updatableCount))
-        }
-    }
-
-    if (showUpdatedDialog) {
-        SimpleDialog(
-            onDismissRequest = { showUpdatedDialog = false },
-            title = { Text(stringResource(BaseR.string.update_builtin_services)) },
-            confirmText = { Text(stringResource(android.R.string.ok)) },
-        ) {
-            Text(stringResource(BaseR.string._services_have_been_updated, updatedCount))
-        }
+        )
     }
 }

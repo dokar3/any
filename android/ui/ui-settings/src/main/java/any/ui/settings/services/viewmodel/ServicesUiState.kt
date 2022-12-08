@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import any.base.UiMessage
 import any.data.entity.ServiceManifest
 import any.domain.entity.UiServiceManifest
+import any.domain.entity.UpdatableService
 
 @Stable
 data class ServicesUiState(
@@ -12,9 +13,7 @@ data class ServicesUiState(
     val selectedServices: Set<UiServiceManifest> = emptySet(),
     val servicesToConfigure: List<AppendableService> = emptyList(),
     val isLoadingServiceToConfig: Boolean = false,
-    val isUpdatingBuiltinServices: Boolean = false,
-    val updatableBuiltinServiceCount: Int = 0,
-    val updatedBuiltinServiceCount: Int = -1,
+    val updatableBuiltinServices: List<UpdatableService>? = null,
     val message: UiMessage? = null,
 ) {
     val selectedServiceCount = selectedServices.size

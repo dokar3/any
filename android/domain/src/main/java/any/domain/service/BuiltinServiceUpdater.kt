@@ -6,6 +6,8 @@ import any.data.entity.updateValuesFrom
 import any.data.repository.ServiceRepository
 import any.data.service.ServiceInstaller
 import any.data.source.service.BuiltinServiceDataSource
+import any.domain.entity.ServiceUpdateInfo
+import any.domain.entity.UpdatableService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,19 +19,19 @@ class BuiltinServiceUpdater(
     private val serviceInstaller: ServiceInstaller,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    suspend fun updateBuiltinServices(): List<ServiceManifest> = withContext(dispatcher) {
-        val services = serviceRepository.getDbServices()
+    suspend fun updateBuiltinServices(
+        services: List<ServiceManifest>,
+    ): Unit = withContext(dispatcher) {
         val builtinServices = builtinServiceDataSource.getAll()
         val updatableServices = getUpdatableBuiltinServices(services, builtinServices)
         if (updatableServices.isEmpty()) {
-            return@withContext emptyList()
+            return@withContext
         }
         val builtinMap = builtinServices.associateBy { it.id }
         val updatedServices = updatableServices.map {
-            updateServiceFromBuiltin(it, builtinMap[it.originalId]!!)
+            updateServiceFromBuiltin(it.value, builtinMap[it.value.originalId]!!)
         }
         serviceRepository.updateDbService(updatedServices)
-        updatedServices
     }
 
     suspend fun getUpdatableBuiltinServices() = withContext(dispatcher) {
@@ -41,12 +43,12 @@ class BuiltinServiceUpdater(
     private fun getUpdatableBuiltinServices(
         services: List<ServiceManifest>,
         builtinServices: List<ServiceManifest>,
-    ): List<ServiceManifest> {
+    ): List<UpdatableService> {
         if (services.isEmpty() || builtinServices.isEmpty()) {
             return emptyList()
         }
         val builtinMap = builtinServices.associateBy { it.id }
-        val updatableDbServices = mutableListOf<ServiceManifest>()
+        val updatableServices = mutableListOf<UpdatableService>()
         for (service in services) {
             val builtin = builtinMap[service.originalId]
             if (builtin != null) {
@@ -63,11 +65,20 @@ class BuiltinServiceUpdater(
                     buildTime = service.buildTime, // Is this a good idea to ignore this field?
                 )
                 if (service != partialBuiltin) {
-                    updatableDbServices.add(service)
+                    val upgradeInfo = ServiceUpdateInfo(
+                        fromVersion = service.version,
+                        toVersion = builtin.version,
+                    )
+                    updatableServices.add(
+                        UpdatableService(
+                            value = service,
+                            upgradeInfo = upgradeInfo,
+                        )
+                    )
                 }
             }
         }
-        return updatableDbServices
+        return updatableServices.sortedByDescending { it.value.buildTime }
     }
 
     private fun updateServiceFromBuiltin(
