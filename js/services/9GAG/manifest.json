@@ -21,7 +21,7 @@
       "type": "option",
       "value": "home",
       "required": true,
-      "extras": [
+      "options": [
         {
           "name": "Home",
           "value": "home"

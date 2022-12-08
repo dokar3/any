@@ -22,41 +22,16 @@ data class ServiceConfig(
     val required: Boolean = false,
     val visibleToUser: Boolean = true,
     val value: ServiceConfigValue? = null,
-    val extras: Any? = null,
-) {
-    @Json(ignore = true)
-    val options: List<ServiceConfigOption>? = optionsFromExtras()
+    val options: List<ServiceConfigOption>? = null,
+    @Json(name = "requestUrl")
+    val cookiesRequestUrl: String? = null,
+    @Json(name = "targetUrl")
+    val cookiesTargetUrl: String? = null,
+    @Json(name = "userAgent")
+    val cookiesUserAgent: String? = null,
+)
 
-    @Json(ignore = true)
-    val cookiesRequestUrl: String? = fieldFromMapExtras("requestUrl")
-
-    @Json(ignore = true)
-    val cookiesTargetUrl: String? = fieldFromMapExtras("targetUrl")
-
-    @Json(ignore = true)
-    val cookiesUserAgent: String? = fieldFromMapExtras("userAgent")
-
-    @Suppress("unchecked_cast")
-    private fun optionsFromExtras(): List<ServiceConfigOption>? {
-        if (extras == null) return null
-        val extraList = extras as? List<Map<String, String>> ?: return null
-        return extraList.mapNotNull {
-            val name = it["name"]
-            val value = it["value"]
-            if (name != null && value != null) {
-                ServiceConfigOption(name, value)
-            } else {
-                null
-            }
-        }
-    }
-
-    @Suppress("unchecked_cast")
-    private fun fieldFromMapExtras(name: String): String? {
-        return (extras as? Map<String, String>)?.get(name)
-    }
-}
-
+@JsonClass(generateAdapter = true)
 data class ServiceConfigOption(
     val name: String,
     val value: String,
