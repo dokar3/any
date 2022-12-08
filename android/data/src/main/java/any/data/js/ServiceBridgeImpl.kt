@@ -22,18 +22,16 @@ import any.data.js.plugin.ProgressPlugin
 import any.data.json.Json
 import any.data.repository.PostContentRepository
 import any.data.repository.ServiceRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.Language
-
-typealias PagedPostsFetchState = FetchState<PagedResult<JsPageKey, List<Post>>>
-
-typealias PagedCommentsFetchState = FetchState<PagedResult<JsPageKey, List<Comment>>>
 
 class ServiceBridgeImpl(
     private val serviceRunner: ServiceRunner,
@@ -46,7 +44,7 @@ class ServiceBridgeImpl(
         service: ServiceManifest,
         id: String,
     ): Flow<FetchState<User>> = channelFlow {
-        runFunc(service) {
+        callFetchFunc(service) {
             @Language("JS")
             val code = """
                 const params = {
@@ -60,7 +58,7 @@ class ServiceBridgeImpl(
             val ret = evaluate(code, String::class.java)
             if (ret == null) {
                 send(FetchState.failure(Exception("Failed to fetch user, id: $id")))
-                return@runFunc
+                return@callFetchFunc
             }
 
             send(convertJsFetchUserResult(service, ret))
@@ -73,7 +71,7 @@ class ServiceBridgeImpl(
         service: ServiceManifest,
         url: String,
     ): Flow<FetchState<User>> = channelFlow {
-        runFunc(service) {
+        callFetchFunc(service) {
             @Language("JS")
             val code = """
                 const params = {
@@ -87,7 +85,7 @@ class ServiceBridgeImpl(
             val ret = evaluate(code, String::class.java)
             if (ret == null) {
                 send(FetchState.failure(Exception("Failed to fetch user, url: $url")))
-                return@runFunc
+                return@callFetchFunc
             }
 
             send(convertJsFetchUserResult(service, ret))
@@ -101,7 +99,7 @@ class ServiceBridgeImpl(
         userId: String,
         pageKey: JsPageKey?
     ): Flow<PagedPostsFetchState> = channelFlow {
-        runFunc(service) {
+        callFetchFunc(service) {
             @Language("JS")
             val code = """
                 const params = {
@@ -117,7 +115,7 @@ class ServiceBridgeImpl(
             val result = evaluate(code, String::class.java)
             if (result == null) {
                 channel.send(FetchState.failure(Exception("Failed to fetch user posts")))
-                return@runFunc
+                return@callFetchFunc
             }
 
             send(convertJsPostPagedResult(service, result))
@@ -130,7 +128,7 @@ class ServiceBridgeImpl(
         service: ServiceManifest,
         pageKey: JsPageKey?
     ): Flow<PagedPostsFetchState> = channelFlow {
-        runFunc(service) {
+        callFetchFunc(service) {
             @Language("JS")
             val code = """
                 const params = {
@@ -145,7 +143,7 @@ class ServiceBridgeImpl(
             val result = evaluate(code, String::class.java)
             if (result == null) {
                 channel.send(FetchState.failure(Exception("Failed to fetch latest posts")))
-                return@runFunc
+                return@callFetchFunc
             }
 
             send(convertJsPostPagedResult(service, result))
@@ -158,7 +156,7 @@ class ServiceBridgeImpl(
         service: ServiceManifest,
         postUrl: String
     ): Flow<FetchState<Post?>> = channelFlow {
-        runFunc(service) {
+        callFetchFunc(service) {
             @Language("JS")
             val code = """
                 const params = {
@@ -173,7 +171,7 @@ class ServiceBridgeImpl(
             val text = evaluate(code, String::class.java)
             if (text == null) {
                 send(FetchState.failure(Exception("Failed to load post")))
-                return@runFunc
+                return@callFetchFunc
             }
 
             // Parse json result
@@ -210,7 +208,7 @@ class ServiceBridgeImpl(
         query: String,
         pageKey: JsPageKey?
     ): Flow<PagedPostsFetchState> = channelFlow {
-        runFunc(service) {
+        callFetchFunc(service) {
             @Language("JS")
             val code = """
                 const params = {
@@ -226,7 +224,7 @@ class ServiceBridgeImpl(
             val result = evaluate(code, String::class.java)
             if (result == null) {
                 send(FetchState.failure(Exception("Failed to load posts")))
-                return@runFunc
+                return@callFetchFunc
             }
 
             send(convertJsPostPagedResult(service, result))
@@ -241,7 +239,7 @@ class ServiceBridgeImpl(
         commentsKey: String,
         pageKey: JsPageKey?,
     ): Flow<PagedCommentsFetchState> = channelFlow {
-        runFunc(service) {
+        callFetchFunc(service) {
             @Language("JS")
             val code = """
                 const params = {
@@ -257,7 +255,7 @@ class ServiceBridgeImpl(
             val text = evaluate(code, String::class.java)
             if (text == null) {
                 send(FetchState.failure(Exception("Failed to load comments")))
-                return@runFunc
+                return@callFetchFunc
             }
 
             val jsPagedResult = try {
@@ -297,7 +295,7 @@ class ServiceBridgeImpl(
     override fun isSearchable(
         service: ServiceManifest
     ): Flow<Boolean> = flow {
-        val isSearchable = serviceRunner.run(
+        val isSearchable = serviceRunner.runSafely(
             service = service,
             manifestUpdater = MemoryServiceManifestUpdater(
                 latest = { service },
@@ -316,7 +314,7 @@ class ServiceBridgeImpl(
             """.trimIndent()
             evaluate(testCode, Boolean::class.java) == true
         }
-        emit(isSearchable)
+        emit(isSearchable.getOrDefault(false))
     }
 
     private fun convertJsFetchUserResult(
@@ -391,7 +389,7 @@ class ServiceBridgeImpl(
         }
     }
 
-    private suspend fun <T> ProducerScope<FetchState<T>>.runFunc(
+    private suspend fun <T> ProducerScope<FetchState<T>>.callFetchFunc(
         service: ServiceManifest,
         block: suspend JsEngine.() -> Unit,
     ) {
@@ -412,13 +410,26 @@ class ServiceBridgeImpl(
             serviceRepository = serviceRepository,
             coroutineScope = coroutineScope,
         )
-        serviceRunner.run(
+        val result = serviceRunner.runSafely(
             service = service,
             manifestUpdater = manifestUpdater,
             configsUpdater = configsUpdater,
         ) {
             set("__ANY_PROGRESS_PLUGIN__", ProgressPlugin::class.java, progressPlugin)
             block()
+        }
+        if (result.isSuccess) {
+            return
+        }
+        val error = result.exceptionOrNull()
+            ?: Exception("Unknown error occurred when executing js code")
+        if (error is CancellationException) {
+            throw error
+        }
+        @OptIn(ExperimentalCoroutinesApi::class)
+        if (!isClosedForSend) {
+            send(FetchState.failure(error))
+            channel.close()
         }
     }
 

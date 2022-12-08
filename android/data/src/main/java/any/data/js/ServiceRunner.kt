@@ -15,7 +15,6 @@ import any.data.js.plugin.LogPlugin
 import any.data.js.plugin.ServiceConfigsUpdater
 import any.data.js.plugin.ServiceManifestUpdater
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import org.intellij.lang.annotations.Language
 import java.util.Locale
@@ -27,6 +26,22 @@ class ServiceRunner(
     private val logPlugin: LogPlugin,
     private val jsEngineFactory: JsEngine.Factory,
 ) {
+    suspend fun <R> runSafely(
+        service: ServiceManifest,
+        manifestUpdater: ServiceManifestUpdater,
+        configsUpdater: ServiceConfigsUpdater,
+        globalServiceName: String = "service",
+        block: suspend JsEngine.() -> R
+    ): Result<R> = runCatching {
+        run(
+            service,
+            manifestUpdater,
+            configsUpdater,
+            globalServiceName,
+            block,
+        )
+    }
+
     suspend fun <R> run(
         service: ServiceManifest,
         manifestUpdater: ServiceManifestUpdater,
@@ -35,7 +50,7 @@ class ServiceRunner(
         block: suspend JsEngine.() -> R
     ): R = withContext(Dispatchers.Default) {
         val jsEngine = jsEngineFactory.create()
-        val deferred = async {
+        try {
             jsEngine.set("__ANY_HTTP_PLUGIN__", HttpPlugin::class.java, httpPlugin)
             jsEngine.set("__ANY_DOM_PLUGIN__", DomPlugin::class.java, domPlugin)
             jsEngine.set("__ANY_LOG_PLUGIN__", LogPlugin::class.java, logPlugin)
@@ -71,7 +86,7 @@ class ServiceRunner(
 
             val manifest = service.toJsManifestObject()
             val configs = service.configs.toJsObject()
-            // Create global service object
+            // Create the global service object
             jsEngine.evaluate("const $globalServiceName = createService(${manifest},${configs});")
 
             try {
@@ -80,14 +95,10 @@ class ServiceRunner(
                 logPlugin.error(e.message ?: "Unknown error occurred while executing js")
                 throw e
             }
-        }
-
-        deferred.invokeOnCompletion {
+        } finally {
             domPlugin.clear()
             jsEngine.close()
         }
-
-        deferred.await()
     }
 
     companion object {

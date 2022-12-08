@@ -124,7 +124,7 @@ class SearchViewModel(
         }
     }
 
-    fun updatePosts() {
+    fun refreshPostsFromCache() {
         val currService = _searchUiState.value.currentService ?: return
         val currPosts = _searchUiState.value.posts
         if (currPosts.isEmpty()) return

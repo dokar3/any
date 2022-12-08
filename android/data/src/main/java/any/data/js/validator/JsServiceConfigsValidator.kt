@@ -28,7 +28,7 @@ class JsServiceConfigsValidator(
         for (config in configs) {
             updatedConfigs[config.key] = config
         }
-        return serviceRunner.run(
+        val result = serviceRunner.runSafely(
             service = service.copy(configs = updatedConfigs.values.toList()),
             manifestUpdater = MemoryServiceManifestUpdater(
                 latest = { latest },
@@ -47,7 +47,7 @@ class JsServiceConfigsValidator(
             val hasValidator = evaluate(checkCode, Boolean::class.java) == true
 
             if (!hasValidator) {
-                return@run configs.map { ValidationResult.Pass }
+                return@runSafely configs.map { ValidationResult.Pass }
             }
 
             @Language("JS")
@@ -68,7 +68,7 @@ class JsServiceConfigsValidator(
             val failures = try {
                 val ret = evaluate(validateCode, String::class.java)
                 if (ret.isNullOrEmpty()) {
-                    return@run List(configs.size) { ValidationResult.Pass }
+                    return@runSafely List(configs.size) { ValidationResult.Pass }
                 }
                 json.fromJson<List<ValidationFailure>>(
                     json = ret,
@@ -77,11 +77,11 @@ class JsServiceConfigsValidator(
             } catch (e: Exception) {
                 e.printStackTrace()
                 val err = "Validation error: ${e.message}"
-                return@run List(configs.size) { ValidationResult.Fail(err) }
+                return@runSafely List(configs.size) { ValidationResult.Fail(err) }
             }
 
             if (failures.isNullOrEmpty()) {
-                return@run List(configs.size) { ValidationResult.Pass }
+                return@runSafely List(configs.size) { ValidationResult.Pass }
             }
 
             val failureMap = failures.associateBy { it.key }
@@ -94,6 +94,13 @@ class JsServiceConfigsValidator(
                     ValidationResult.Pass
                 }
             }
+        }
+        return if (result.isFailure) {
+            val errorMessage = result.exceptionOrNull()?.message
+                ?: "Error occurred when executing the js code"
+            List(configs.size) { ValidationResult.Fail(errorMessage) }
+        } else {
+            result.getOrThrow()
         }
     }
 
