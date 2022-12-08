@@ -113,7 +113,7 @@ fun SearchScreen(
     }
 
     LaunchedEffect(viewModel) {
-        viewModel.updatePosts()
+        viewModel.refreshPostsFromCache()
     }
 
     val isImeVisible = rememberUpdatedState(WindowInsets.isImeVisible)

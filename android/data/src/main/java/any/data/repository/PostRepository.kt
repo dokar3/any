@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Mutex
@@ -251,11 +250,7 @@ class PostRepository(
     }
 
     suspend fun isServiceSearchable(service: ServiceManifest): Boolean {
-        return try {
-            serviceBridge.isSearchable(service).last()
-        } catch (e: Exception) {
-            false
-        }
+        return serviceBridge.isSearchable(service).first()
     }
 
     fun searchRemotePosts(
