@@ -151,9 +151,9 @@
     <string name="development">Development</string>
     <string name="credits">Credits</string>
     <string name="services">Services</string>
-    <string name="_service_added">Service added: %s</string>
-    <string name="_service_updated">Service updated: %s</string>
-    <string name="_search_services">Search %d services</string>
+    <string name="_service_added_with_name">Service added: %s</string>
+    <string name="_service_updated_with_name">Service updated: %s</string>
+    <string name="_search_services_with_count">Search %d services</string>
     <string name="loading_services">Loading services</string>
     <string name="cannot_be_empty">Cannot be empty</string>
     <string name="not_a_http_url">Not a http URL</string>
@@ -280,11 +280,8 @@
     <string name="all">All</string>
     <string name="search_following_users">Search following users</string>
     <string name="update_builtin_services">Update built-in services</string>
-    <string name="_builtin_services_update_info">%d built-in service(s) can be updated, do you want to update now?\nYou can also update them later in the service management.</string>
-    <string name="update_builtin_services_alert">Your current services may change a lot or needed to re-configure</string>
-    <string name="updating">Updating</string>
-    <string name="no_service_updated">No service updated</string>
-    <string name="_services_have_been_updated">%d service(s) have been updated</string>
+    <string name="_builtin_services_update_alert">%d built-in service(s) can be updated</string>
+    <string name="_services_have_been_updated_with_count">%d service(s) have been updated</string>
     <string name="bookmark_uncollected_post_alert">This post has not been added to collections and may get cleared after refreshing the post list. Add it to collections when adding a bookmark.</string>
     <string name="about">About</string>
     <string name="libraries">Libraries</string>
@@ -322,4 +319,9 @@
     <string name="downloading">Downloading</string>
     <string name="_playback_error">Playback error, code: %s</string>
     <string name="_username_reposted">%s reposted</string>
+    <string name="detail_list">Detail list</string>
+    <string name="no_updates">No updates</string>
+    <string name="services_updated">Services updated</string>
+    <string name="all_builtin_services_are_up_to_date">All built-in services are up-to-date</string>
+    <string name="update_all">Update all</string>
 </resources>

@@ -75,12 +75,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.UiMessage
+import any.base.compose.ImmutableHolder
 import any.base.compose.StableHolder
 import any.base.util.Dirs
 import any.base.util.FileUtil
 import any.base.util.compose.performLongPress
 import any.base.util.isHttpUrl
 import any.domain.entity.UiServiceManifest
+import any.ui.common.dialog.UpdateBuiltinServicesDialog
 import any.ui.common.modifier.fabOffset
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.AnimatedPopup
@@ -136,8 +138,6 @@ internal fun ServiceManagement(
     var showRemoveAllSelectedServicesDialog by remember { mutableStateOf(false) }
 
     var showMoreMenu by remember { mutableStateOf(false) }
-
-    var showUpdateBuiltinServicesDialog by remember { mutableStateOf(false) }
 
     val res = LocalContext.current.resources
 
@@ -400,7 +400,7 @@ internal fun ServiceManagement(
                     AnimatedPopupItem(
                         index = 0,
                         onClick = {
-                            showUpdateBuiltinServicesDialog = true
+                            viewModel.loadUpdatableBuiltinServices(force = true)
                             dismissRequester.dismiss()
                         },
                         icon = {
@@ -506,42 +506,13 @@ internal fun ServiceManagement(
         )
     }
 
-    if (showUpdateBuiltinServicesDialog) {
-        val updatedCount = uiState.updatedBuiltinServiceCount
-        val isUpdated = updatedCount >= 0
-        BasicDialog(
-            onDismissRequest = {
-                showUpdateBuiltinServicesDialog = false
-                viewModel.resetBuiltinServicesUpdateState()
-            },
-            title = { Text(stringResource(BaseR.string.update_builtin_services)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
-            confirmText = {
-                if (isUpdated) {
-                    Text(stringResource(android.R.string.ok))
-                } else {
-                    Text(stringResource(BaseR.string.update))
-                }
-            },
-            onConfirmClick = {
-                if (!isUpdated) {
-                    viewModel.updateBuiltinServices()
-                }
-            },
-            dismissOnConfirm = isUpdated,
-            cancelEnabled = !uiState.isUpdatingBuiltinServices,
-            confirmEnabled = !uiState.isUpdatingBuiltinServices,
-        ) {
-            if (uiState.isUpdatingBuiltinServices) {
-                Text(stringResource(BaseR.string.updating))
-            } else if (updatedCount == 0) {
-                Text(stringResource(BaseR.string.no_service_updated))
-            } else if (updatedCount > 0) {
-                Text(stringResource(BaseR.string._services_have_been_updated, updatedCount))
-            } else {
-                Text(stringResource(BaseR.string.update_builtin_services_alert))
-            }
-        }
+    val updatableBuiltinServices = uiState.updatableBuiltinServices
+    if (updatableBuiltinServices != null) {
+        UpdateBuiltinServicesDialog(
+            onDismissRequest = viewModel::resetBuiltinServicesUpdateState,
+            onUpdateClick = viewModel::updateBuiltinServices,
+            updatableServices = ImmutableHolder(updatableBuiltinServices),
+        )
     }
 
     UiMessagePopup(

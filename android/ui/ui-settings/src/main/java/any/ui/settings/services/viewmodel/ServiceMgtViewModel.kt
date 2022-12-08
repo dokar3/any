@@ -22,6 +22,7 @@ import any.data.repository.ServiceRepository
 import any.data.service.ServiceInstaller
 import any.data.source.service.AssetsServiceDataSource
 import any.domain.entity.UiServiceManifest
+import any.domain.entity.UpdatableService
 import any.domain.service.BuiltinServiceUpdater
 import any.domain.service.toUiManifest
 import any.richtext.html.DefaultHtmlParser
@@ -63,15 +64,6 @@ class ServiceMgtViewModel(
                 loadDbServices()
                 loadAppendableServices()
             }
-        }
-        viewModelScope.launch {
-            val currVersionCode = appVersionProvider.versionCode
-            val ignoredVersionCode = preferencesStore.versionCodeIgnoresBuiltinServiceUpdates.value
-            if (currVersionCode == ignoredVersionCode) {
-                return@launch
-            }
-            val services = builtinServiceUpdater.getUpdatableBuiltinServices()
-            _servicesUiState.update { it.copy(updatableBuiltinServiceCount = services.size) }
         }
     }
 
@@ -131,8 +123,22 @@ class ServiceMgtViewModel(
         }
     }
 
+    fun loadUpdatableBuiltinServices(force: Boolean = false) {
+        viewModelScope.launch(workerDispatcher) {
+            val currVersionCode = appVersionProvider.versionCode
+            val ignoredVersionCode = preferencesStore
+                .versionCodeIgnoresBuiltinServiceUpdates
+                .value
+            if (!force && currVersionCode == ignoredVersionCode) {
+                return@launch
+            }
+            val services = builtinServiceUpdater.getUpdatableBuiltinServices()
+            _servicesUiState.update { it.copy(updatableBuiltinServices = services) }
+        }
+    }
+
     fun loadServiceToConfigById(serviceId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(workerDispatcher) {
             val service = serviceRepository.findDbService(serviceId)
             if (service != null) {
                 val configuringService = AppendableService(
@@ -340,10 +346,7 @@ class ServiceMgtViewModel(
 
     fun resetBuiltinServicesUpdateState() {
         _servicesUiState.update {
-            it.copy(
-                isUpdatingBuiltinServices = false,
-                updatedBuiltinServiceCount = -1,
-            )
+            it.copy(updatableBuiltinServices = null)
         }
     }
 
@@ -354,26 +357,38 @@ class ServiceMgtViewModel(
         }
     }
 
-    fun updateBuiltinServices() {
-        _servicesUiState.update {
-            it.copy(
-                isUpdatingBuiltinServices = true,
-                updatedBuiltinServiceCount = -1,
-            )
-        }
+    fun updateBuiltinServices(services: List<UpdatableService>) {
         viewModelScope.launch(workerDispatcher) {
-            val updatedDbServices = builtinServiceUpdater.updateBuiltinServices()
-            _servicesUiState.update {
-                it.copy(
-                    isUpdatingBuiltinServices = false,
-                    updatedBuiltinServiceCount = updatedDbServices.size,
-                )
+            val toUpdate = services.filter { !it.isUpdated && !it.isUpdating }
+
+            updateUpdatableBuiltinServices(toUpdate) {
+                it.copy(isUpdating = true, isUpdated = false)
+            }
+
+            builtinServiceUpdater.updateBuiltinServices(toUpdate.map { it.value })
+
+            updateUpdatableBuiltinServices(toUpdate) {
+                it.copy(isUpdating = false, isUpdated = true)
             }
         }
     }
 
-    fun resetUpdatableBuiltinServiceCount() {
-        _servicesUiState.update { it.copy(updatableBuiltinServiceCount = 0) }
+    private fun updateUpdatableBuiltinServices(
+        toUpdate: List<UpdatableService>,
+        update: (UpdatableService) -> UpdatableService,
+    ) {
+        val updatableList = _servicesUiState.value.updatableBuiltinServices ?: return
+        val toUpdateIds = toUpdate.map { it.value.id }.toSet()
+        val newUpdatableList = updatableList.map {
+            if (toUpdateIds.contains(it.value.id)) {
+                update(it)
+            } else {
+                it
+            }
+        }
+        _servicesUiState.update {
+            it.copy(updatableBuiltinServices = newUpdatableList)
+        }
     }
 
     private suspend fun installZipService(

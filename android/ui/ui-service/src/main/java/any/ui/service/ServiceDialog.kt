@@ -6,7 +6,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -47,10 +46,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,9 +74,9 @@ import any.ui.common.image.AsyncImage
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.richtext.Html
 import any.ui.common.richtext.RichText
-import any.ui.common.theme.divider
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.BasicDialog
+import any.ui.common.widget.DoubleEndDashedDivider
 import any.ui.common.widget.FlatSwitch
 import any.ui.common.widget.ProgressBar
 import any.ui.common.widget.WarningMessage
@@ -165,7 +160,7 @@ fun ServiceDialog(
         onDismissRequest = onDismissRequest,
         modifier = modifier.heightIn(max = 600.dp),
         title = {
-            val upgradeInfo = uiState.upgradeInfo
+            val upgradeInfo = uiState.updateInfo
             if (upgradeInfo != null) {
                 Column {
                     Text(stringResource(BaseR.string.upgrade_service))
@@ -199,7 +194,7 @@ fun ServiceDialog(
         confirmText = {
             Text(
                 text =
-                if (uiState.upgradeInfo != null) {
+                if (uiState.updateInfo != null) {
                     stringResource(BaseR.string.upgrade)
                 } else if (isAdded) {
                     stringResource(BaseR.string.update)
@@ -224,7 +219,7 @@ fun ServiceDialog(
         ServiceFieldList(
             service = service,
             isAdded = isAdded,
-            isUpgrade = uiState.upgradeInfo != null,
+            isUpgrade = uiState.updateInfo != null,
             serviceName = serviceName,
             serviceNameError = serviceNameError,
             onServiceNameChange = { serviceName = it },
@@ -331,7 +326,7 @@ private fun ServiceFieldList(
             }
 
             item {
-                Header(text = stringResource(BaseR.string.information))
+                Header(name = stringResource(BaseR.string.information))
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -344,7 +339,7 @@ private fun ServiceFieldList(
             }
 
             item {
-                Header(text = stringResource(BaseR.string.configurations))
+                Header(name = stringResource(BaseR.string.configurations))
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -425,58 +420,15 @@ private fun ServiceFieldList(
 }
 
 @Composable
-private fun Header(
-    text: String,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        DashedDivider(
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .weight(weight = 1f, fill = false)
-        )
+private fun Header(name: String) {
+    DoubleEndDashedDivider {
         Text(
-            text = text,
+            text = name,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.primary,
         )
-        DashedDivider(
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .weight(weight = 1f, fill = false)
-        )
     }
-}
-
-@Composable
-private fun DashedDivider(
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.divider,
-) {
-    Spacer(
-        modifier = modifier
-            .fillMaxWidth()
-            .drawWithCache {
-                val strokeWidth = 2.dp.toPx()
-                val dashPathEffect = PathEffect.dashPathEffect(
-                    intervals = floatArrayOf(strokeWidth, strokeWidth),
-                )
-                onDrawBehind {
-                    drawLine(
-                        color = color,
-                        start = Offset(0f, size.height / 2 - strokeWidth / 2),
-                        end = Offset(size.width, size.height / 2 - strokeWidth / 2),
-                        strokeWidth = strokeWidth,
-                        pathEffect = dashPathEffect,
-                    )
-                }
-            }
-    )
 }
 
 private fun LazyListScope.fieldsItems(

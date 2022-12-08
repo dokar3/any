@@ -13,6 +13,7 @@ import any.data.js.ServiceRunner
 import any.data.js.validator.BasicServiceConfigsValidator
 import any.data.js.validator.JsServiceConfigsValidator
 import any.data.repository.ServiceRepository
+import any.domain.entity.ServiceUpdateInfo
 import any.domain.entity.UiServiceManifest
 import com.vdurmont.semver4j.Semver
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,7 +39,7 @@ class ServiceViewModel(
             val local = serviceRepository.findDbService(service.id)
             if (local == null) {
                 _serviceUiState.update {
-                    it.copy(upgradeInfo = null)
+                    it.copy(updateInfo = null)
                 }
                 return@launch
             }
@@ -47,8 +48,8 @@ class ServiceViewModel(
                     local.mainChecksums != service.mainChecksums ||
                     local.configs != service.configs?.updateValuesFrom(local.configs) ||
                     local.source != service.source
-            val upgradeInfo = if (isUpgrading) {
-                UpgradeInfo(
+            val updateInfo = if (isUpgrading) {
+                ServiceUpdateInfo(
                     fromVersion = local.version,
                     toVersion = service.version,
                 )
@@ -56,7 +57,7 @@ class ServiceViewModel(
                 null
             }
             _serviceUiState.update {
-                it.copy(upgradeInfo = upgradeInfo)
+                it.copy(updateInfo = updateInfo)
             }
         }
     }

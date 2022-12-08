@@ -69,14 +69,14 @@ internal fun AddServices(
     val res = LocalContext.current.resources
     AddServicesContent(
         onServiceAdded = {
-            message = res.getString(BaseR.string._service_added, it.name)
+            message = res.getString(BaseR.string._service_added_with_name, it.name)
             scope.launch {
                 delay(MSG_POPUP_DURATION)
                 showMessage = false
             }
         },
         onServiceUpdated = {
-            message = res.getString(BaseR.string._service_updated, it.name)
+            message = res.getString(BaseR.string._service_updated_with_name, it.name)
             scope.launch {
                 delay(MSG_POPUP_DURATION)
                 showMessage = false
@@ -114,7 +114,7 @@ private fun AddServicesContent(
             placeholder = {
                 Text(
                     text = stringResource(
-                        BaseR.string._search_services,
+                        BaseR.string._search_services_with_count,
                         uiState.appendableServices.size
                     ),
                     maxLines = 1,
