@@ -15,7 +15,7 @@
     <string name="fresh">Fresh</string>
     <string name="collections">Collections</string>
     <string name="_is_the_launch_screen_now">%s is the launch screen now</string>
-    <string name="search_in_your_collections">Search in your collections</string>
+    <string name="search_collections">Search collections</string>
     <string name="rename_folder">Rename folder</string>
     <string name="_unfold">Unfold %s</string>
     <string name="unfold_folder_alert">Are you sure to unfold this folder? All posts in this folder will be moved to the current folder.</string>
@@ -38,7 +38,7 @@
     <string name="lets_go">Let\'s go</string>
     <string name="enter_an_url_or_command">Enter an URL or command</string>
     <string name="_remove_tag">Remove tag %s</string>
-    <string name="remove_tag_alert">Are you sure to remove this tag from current posts?</string>
+    <string name="remove_tag_alert">Are you sure to remove this tag from all posts in the current folder?</string>
     <string name="more">More</string>
     <string name="unselect_all">Unselect all</string>
     <string name="select_all">Select all</string>
