@@ -10,7 +10,9 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -201,6 +203,8 @@ fun DefaultServiceHeader(
 
     val blockColorAnim = remember { Animatable(blockColor) }
     val onBlockColorAnim = remember { Animatable(onBlockColor) }
+
+    val topInset = WindowInsets.statusBars.getTop(LocalDensity.current)
 
     suspend fun animateBlocksScale(
         blocks: List<Block>,
@@ -425,10 +429,12 @@ fun DefaultServiceHeader(
                     ),
                 )
 
+                // Shadow
+                val maskStop2 = topInset.toFloat() / size.height + 0.2f
                 val maskBrush = Brush.verticalGradient(
                     colorStops = arrayOf(
                         0.0f to Color.Black.copy(alpha = 0.85f),
-                        0.3f to Color.Black.copy(alpha = 0.2f),
+                        maskStop2 to Color.Black.copy(alpha = 0.2f),
                         1.0f to Color.Transparent,
                     )
                 )
