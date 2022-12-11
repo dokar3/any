@@ -224,7 +224,7 @@ internal fun CollectionsScreen(
                         placeholder = {
                             Text(
                                 text = stringResource(
-                                    BaseR.string.search_in_your_collections
+                                    BaseR.string.search_collections
                                 ),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
