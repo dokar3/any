@@ -1,7 +1,5 @@
 import { Feature, HttpResponse } from "any-service-api";
 
-const REDIRECT_URI = "https://dokar3.github.io/twitter_oauth_redirect";
-
 export class CommonFeature extends Feature {
   checkLogin(): boolean {
     const cookiesAuthCode = this.getCookiesAuthCode();
@@ -65,7 +63,7 @@ export class CommonFeature extends Feature {
         code: authCode,
         grant_type: "authorization_code",
         client_id: this.service.configs.clientId,
-        redirect_uri: REDIRECT_URI,
+        redirect_uri: this.service.configs.redirectUri,
         code_verifier: "challenge",
       },
     });
