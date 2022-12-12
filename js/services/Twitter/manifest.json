@@ -26,13 +26,20 @@
       "visibleToUser": false
     },
     {
+      "name": "Redirect uri",
+      "key": "redirectUri",
+      "type": "url",
+      "value": "https://dokar3.github.io/twitter-oauth",
+      "visibleToUser": false
+    },
+    {
       "name": "Login to twitter",
       "key": "authCookies",
       "type": "cookies",
       "required": true,
       "description": "Login your twitter account to fetch tweets",
-      "requestUrl": "https://twitter.com/i/oauth2/authorize?response_type=code&client_id={{TWITTER_CLIENT_ID}}&redirect_uri=https://dokar3.github.io/twitter_oauth_redirect&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain",
-      "targetUrl": "https://dokar3.github.io/twitter_oauth_redirect"
+      "requestUrl": "https://twitter.com/i/oauth2/authorize?response_type=code&client_id={{TWITTER_CLIENT_ID}}&redirect_uri=https://dokar3.github.io/twitter-oauth&scope=tweet.read%20users.read%20follows.read%20offline.access&state=state&code_challenge=challenge&code_challenge_method=plain",
+      "targetUrl": "https://dokar3.github.io/twitter-oauth"
     },
     {
       "name": "Auth code",
