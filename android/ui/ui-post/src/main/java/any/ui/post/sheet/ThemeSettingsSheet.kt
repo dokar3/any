@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.base.prefs.DarkMode
+import any.base.model.DarkMode
 import any.base.prefs.darkMode
 import any.base.prefs.darkModeEnabledFlow
 import any.base.prefs.darkenedImages

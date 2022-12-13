@@ -2,7 +2,7 @@ package any.ui.home.following.viewmodel
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.input.TextFieldValue
-import any.base.UiMessage
+import any.base.model.UiMessage
 import any.domain.entity.UiUser
 
 @Immutable

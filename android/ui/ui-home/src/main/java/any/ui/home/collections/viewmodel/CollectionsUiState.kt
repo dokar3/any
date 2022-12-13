@@ -2,8 +2,8 @@ package any.ui.home.collections.viewmodel
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
-import any.base.prefs.FolderViewType
-import any.base.prefs.PostSorting
+import any.base.model.FolderViewType
+import any.base.model.PostSorting
 import any.data.entity.Folder
 import any.domain.entity.UiPost
 

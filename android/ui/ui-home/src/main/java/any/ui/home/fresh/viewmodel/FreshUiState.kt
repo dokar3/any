@@ -1,8 +1,8 @@
 package any.ui.home.fresh.viewmodel
 
 import androidx.compose.runtime.Immutable
-import any.base.UiMessage
 import any.base.image.ImageRequest
+import any.base.model.UiMessage
 import any.data.entity.JsPageKey
 import any.domain.entity.UiPost
 import any.domain.entity.UiServiceManifest

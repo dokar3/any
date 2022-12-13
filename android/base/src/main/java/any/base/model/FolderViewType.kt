@@ -1,4 +1,4 @@
-package any.base.prefs
+package any.base.model
 
 enum class FolderViewType {
     Grid,

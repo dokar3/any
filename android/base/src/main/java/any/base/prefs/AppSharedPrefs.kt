@@ -4,6 +4,10 @@ package any.base.prefs
 
 import android.content.Context
 import android.preference.PreferenceManager
+import any.base.model.DarkMode
+import any.base.model.FolderViewType
+import any.base.model.PostSorting
+import any.base.model.toEnabledState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

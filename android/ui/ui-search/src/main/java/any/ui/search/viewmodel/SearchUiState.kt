@@ -2,7 +2,7 @@ package any.ui.search.viewmodel
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
-import any.base.UiMessage
+import any.base.model.UiMessage
 import any.data.entity.JsPageKey
 import any.domain.entity.UiPost
 import any.domain.entity.UiServiceManifest

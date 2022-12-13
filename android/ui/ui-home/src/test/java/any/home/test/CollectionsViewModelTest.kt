@@ -3,7 +3,7 @@ package any.home.test
 import androidx.compose.ui.text.input.TextFieldValue
 import any.base.log.Logger
 import any.base.log.NoOpLogger
-import any.base.prefs.PostSorting
+import any.base.model.PostSorting
 import any.base.prefs.postSorting
 import any.base.testing.preference.TestPreferencesStore
 import any.data.entity.Folder

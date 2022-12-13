@@ -1,4 +1,4 @@
-package any.base.prefs
+package any.base.model
 
 import android.content.Context
 import android.content.res.Configuration

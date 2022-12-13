@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import any.base.UiMessage
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
 import any.base.log.Logger
+import any.base.model.UiMessage
 import any.data.FetchState
 import any.data.entity.Comment
 import any.data.entity.JsPageKey

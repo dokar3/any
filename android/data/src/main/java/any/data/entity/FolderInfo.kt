@@ -3,7 +3,7 @@ package any.data.entity
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import any.base.prefs.FolderViewType
+import any.base.model.FolderViewType
 
 @Immutable
 @Entity
