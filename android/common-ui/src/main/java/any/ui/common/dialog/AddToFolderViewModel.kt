@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 class AddToFolderViewModel(
     private val localPostDataSource: LocalPostDataSource,
@@ -29,7 +30,7 @@ class AddToFolderViewModel(
     private val _addToFolderUiState = MutableStateFlow(AddToFolderUiState())
     val addToFolderUiState: StateFlow<AddToFolderUiState> = _addToFolderUiState
 
-    private val newFolders = mutableListOf<String>()
+    private val newFolders = mutableListOf<NewFolder>()
 
     private val allFolders = mutableListOf<HierarchicalFolder>()
 
@@ -53,17 +54,23 @@ class AddToFolderViewModel(
         val expandedPaths = findFolders(allFolders) { it.expanded }
             .map { it.path }
             .toHashSet()
+        val folderMap = newFolders.associate { it.path to it.createdAt }
+            .toMutableMap()
         val rawFolders = localPostDataSource.fetchCollectedPosts()
             .first()
-            .fold(newFolders.toMutableSet()) { acc, post ->
+            .fold(folderMap) { acc, post ->
                 val folder = post.folder
                 if (!folder.isNullOrEmpty()) {
-                    acc.add(folder)
+                    acc[folder] = max(acc[folder] ?: 0L, post.collectedAt)
                 }
                 acc
             }
-            .map {
-                HierarchicalFolder(path = it, expanded = expandedPaths.contains(it))
+            .map { (path, updatedAt) ->
+                HierarchicalFolder(
+                    path = path,
+                    expanded = expandedPaths.contains(path),
+                    updatedAt = updatedAt,
+                )
             }
 
         val folders = mutableListOf<HierarchicalFolder>()
@@ -94,7 +101,7 @@ class AddToFolderViewModel(
         for (folder in rawFolders) {
             getOrPutFolder(folder.path)
             if (folder.pathSegments.size == 1) {
-                // Keep expanded state
+                // Keep the expanded state
                 folders.updateIf(
                     predicate = { it.path == folder.path },
                     update = { it.copy(expanded = folder.expanded) },
@@ -103,7 +110,6 @@ class AddToFolderViewModel(
         }
 
         folders.add(0, HierarchicalFolder.ROOT)
-        folders.sortWith(Comparators.hierarchicalFolderNameComparator)
 
         allFolders.clear()
         allFolders.addAll(folders)
@@ -114,7 +120,16 @@ class AddToFolderViewModel(
         folders: List<HierarchicalFolder>,
         depth: Int = 0,
     ) {
-        for (folder in folders) {
+        val sortedFolders = when (_addToFolderUiState.value.folderSorting) {
+            AddToFolderSorting.ByTitle -> {
+                folders.sortedWith(Comparators.hierarchicalFolderNameComparator)
+            }
+
+            AddToFolderSorting.ByLastUpdatedTime -> {
+                folders.sortedByDescending { it.updatedAt }
+            }
+        }
+        for (folder in sortedFolders) {
             dest.add(folder.copy(depth = depth))
             if (folder.expanded && folder.subFolders.isNotEmpty()) {
                 flatFolders(dest = dest, folders = folder.subFolders, depth = depth + 1)
@@ -125,14 +140,19 @@ class AddToFolderViewModel(
     fun newFolder(path: String) {
         viewModelScope.launch(Dispatchers.Default) {
             val trimmedPath = path.trim('/')
-            if (newFolders.find { it == trimmedPath } != null ||
+            if (newFolders.find { it.path == trimmedPath } != null ||
                 allFolders.find { it.path == trimmedPath } != null ||
                 trimmedPath == Folder.ROOT.path
             ) {
                 return@launch
             }
 
-            newFolders.add(trimmedPath)
+            newFolders.add(
+                NewFolder(
+                    path = trimmedPath,
+                    createdAt = System.currentTimeMillis(),
+                )
+            )
 
             folderInfoRepository.add(FolderInfo(path = trimmedPath))
 
@@ -300,11 +320,27 @@ class AddToFolderViewModel(
         return null
     }
 
+    fun setFolderSorting(sorting: AddToFolderSorting) {
+        _addToFolderUiState.update {
+            it.copy(folderSorting = sorting)
+        }
+        val flattedFolders = mutableListOf<HierarchicalFolder>()
+        flatFolders(dest = flattedFolders, folders = allFolders)
+        _addToFolderUiState.update {
+            it.copy(flattedFolders = flattedFolders)
+        }
+    }
+
     fun reset() {
         newFolders.clear()
         allFolders.clear()
         _addToFolderUiState.update { AddToFolderUiState() }
     }
+
+    private data class NewFolder(
+        val path: String,
+        val createdAt: Long,
+    )
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
