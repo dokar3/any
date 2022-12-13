@@ -48,7 +48,7 @@ import any.navigation.navigateToUser
 import any.navigation.settings
 import any.ui.comments.CommentsSheet
 import any.ui.common.dialog.AddToCollectionsDialog
-import any.ui.common.dialog.AddToFolderDialog
+import any.ui.common.dialog.PostFolderSelectionDialog
 import any.ui.common.lazy.LazyGridScrollableState
 import any.ui.common.menu.PostOptionMenu
 import any.ui.common.modifier.verticalScrollBar
@@ -321,10 +321,10 @@ internal fun FreshPostList(
 
     if (postToAddToFolder != null) {
         val post = postToAddToFolder!!
-        AddToFolderDialog(
-            post = post,
+        PostFolderSelectionDialog(
             onDismissRequest = { postToAddToFolder = null },
-            onFolderConfirm = { onAddPostToFolder(post, it.path) },
+            onFolderSelected = { onAddPostToFolder(post, it.path) },
+            initiallySelectedFolder = post.folder,
         )
     }
 

@@ -49,23 +49,22 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.data.entity.Folder
 import any.data.entity.HierarchicalFolder
-import any.domain.entity.UiPost
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.BasicDialog
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun AddToFolderDialog(
+fun PostFolderSelectionDialog(
     onDismissRequest: () -> Unit,
-    onFolderConfirm: (Folder) -> Unit,
-    post: UiPost?,
+    onFolderSelected: (Folder) -> Unit,
+    initiallySelectedFolder: String?,
     modifier: Modifier = Modifier,
-    viewModel: AddToFolderViewModel = viewModel(
-        factory = AddToFolderViewModel.Factory(LocalContext.current)
+    viewModel: PostFolderSelectionViewModel = viewModel(
+        factory = PostFolderSelectionViewModel.Factory(LocalContext.current)
     ),
 ) {
-    val uiState by viewModel.addToFolderUiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     var showNewFolder by remember { mutableStateOf(false) }
 
@@ -73,9 +72,9 @@ fun AddToFolderDialog(
         viewModel.loadAllFolder()
     }
 
-    LaunchedEffect(post) {
-        if (post != null) {
-            viewModel.selectFolderByPath(post.folder)
+    LaunchedEffect(initiallySelectedFolder) {
+        if (initiallySelectedFolder != null) {
+            viewModel.selectFolderByPath(initiallySelectedFolder)
         }
     }
 
@@ -96,16 +95,16 @@ fun AddToFolderDialog(
                     modifier = Modifier.weight(1f),
                 )
 
-                val nextSorting: AddToFolderSorting
+                val nextSorting: PostFolderSelectionSorting
                 val iconRes: Int
                 when (uiState.folderSorting) {
-                    AddToFolderSorting.ByTitle -> {
-                        nextSorting = AddToFolderSorting.ByLastUpdatedTime
+                    PostFolderSelectionSorting.ByTitle -> {
+                        nextSorting = PostFolderSelectionSorting.ByLastUpdatedTime
                         iconRes = CommonUiR.drawable.ic_baseline_sort_by_alpha_24
                     }
 
-                    AddToFolderSorting.ByLastUpdatedTime -> {
-                        nextSorting = AddToFolderSorting.ByTitle
+                    PostFolderSelectionSorting.ByLastUpdatedTime -> {
+                        nextSorting = PostFolderSelectionSorting.ByTitle
                         iconRes = CommonUiR.drawable.ic_baseline_update_24
                     }
                 }
@@ -169,7 +168,7 @@ fun AddToFolderDialog(
         confirmText = { Text(stringResource(android.R.string.ok)) },
         cancelText = { Text(stringResource(android.R.string.cancel)) },
         onNeutralClick = { showNewFolder = true },
-        onConfirmClick = { onFolderConfirm(uiState.selectedFolder.toFolder()) },
+        onConfirmClick = { onFolderSelected(uiState.selectedFolder.toFolder()) },
         dismissOnNeutral = false,
     )
 }
