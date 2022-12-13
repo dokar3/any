@@ -1,7 +1,7 @@
 package any.ui.comments.viewmodel
 
 import androidx.compose.runtime.Stable
-import any.base.UiMessage
+import any.base.model.UiMessage
 import any.data.entity.JsPageKey
 
 @Stable

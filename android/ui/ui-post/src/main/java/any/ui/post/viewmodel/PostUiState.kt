@@ -1,7 +1,7 @@
 package any.ui.post.viewmodel
 
 import androidx.compose.runtime.Stable
-import any.base.UiMessage
+import any.base.model.UiMessage
 import any.data.entity.Bookmark
 import any.domain.entity.UiContentElement
 import any.domain.entity.UiPost

@@ -10,9 +10,9 @@ import any.base.AndroidStrings
 import any.base.AppVersionProvider
 import any.base.DefaultAppVersionProvider
 import any.base.Strings
-import any.base.UiMessage
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
+import any.base.model.UiMessage
 import any.base.prefs.PreferencesStore
 import any.base.prefs.preferencesStore
 import any.base.prefs.versionCodeIgnoresBuiltinServiceUpdates

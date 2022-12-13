@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import any.base.AndroidStrings
 import any.base.Strings
-import any.base.UiMessage
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
 import any.base.image.ImageRequest
+import any.base.model.UiMessage
 import any.base.prefs.PreferencesStore
 import any.base.prefs.currentService
 import any.base.prefs.preferencesStore

@@ -2,7 +2,7 @@ package any.ui.settings.services.viewmodel
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.input.TextFieldValue
-import any.base.UiMessage
+import any.base.model.UiMessage
 import any.data.entity.ServiceManifest
 import any.domain.entity.UiServiceManifest
 import any.domain.entity.UpdatableService

@@ -5,8 +5,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import any.base.prefs.FolderViewType
-import any.base.prefs.PostSorting
+import any.base.model.FolderViewType
+import any.base.model.PostSorting
 import any.base.prefs.PreferencesStore
 import any.base.prefs.defaultFolderViewType
 import any.base.prefs.forcedFolderViewType

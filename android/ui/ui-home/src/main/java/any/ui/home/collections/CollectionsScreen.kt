@@ -76,8 +76,8 @@ import androidx.navigation.navArgument
 import any.base.compose.ImmutableHolder
 import any.base.compose.StableHolder
 import any.base.compose.rememberProvider
-import any.base.prefs.FolderViewType
-import any.base.prefs.PostSorting
+import any.base.model.FolderViewType
+import any.base.model.PostSorting
 import any.base.util.Intents
 import any.base.util.urlDecode
 import any.base.util.urlEncode

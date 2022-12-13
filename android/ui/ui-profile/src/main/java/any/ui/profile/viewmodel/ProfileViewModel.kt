@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import any.base.AndroidStrings
 import any.base.Strings
-import any.base.UiMessage
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
+import any.base.model.UiMessage
 import any.base.util.messageForUser
 import any.data.FetchState
 import any.data.entity.JsPageKey

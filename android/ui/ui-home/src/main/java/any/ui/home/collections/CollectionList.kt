@@ -43,7 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import any.base.R
 import any.base.compose.ImmutableHolder
-import any.base.prefs.FolderViewType
+import any.base.model.FolderViewType
 import any.base.util.joinToPath
 import any.data.ThumbAspectRatio
 import any.data.entity.Folder

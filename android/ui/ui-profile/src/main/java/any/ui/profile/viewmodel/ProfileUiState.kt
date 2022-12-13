@@ -1,7 +1,7 @@
 package any.ui.profile.viewmodel
 
 import androidx.compose.runtime.Immutable
-import any.base.UiMessage
+import any.base.model.UiMessage
 import any.domain.entity.UiPost
 import any.domain.entity.UiServiceManifest
 import any.domain.entity.UiUser

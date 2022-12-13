@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import any.base.prefs.PostSorting
+import any.base.model.PostSorting
 
 @Composable
 internal fun CollectionsSorting(

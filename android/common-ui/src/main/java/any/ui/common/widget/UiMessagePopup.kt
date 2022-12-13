@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.R
-import any.base.UiMessage
+import any.base.model.UiMessage
 import any.base.util.Intents
 import any.ui.common.richtext.Html
 import any.ui.common.richtext.RichTextStyle
