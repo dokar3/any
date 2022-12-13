@@ -191,9 +191,8 @@
     <string name="video_cache_clean_alert">All cached videos will be cleared</string>
     <string name="no_new_posts">No new posts</string>
     <string name="_loaded_new_posts">Loaded %d new posts</string>
-    <string name="_network_error">Network error: %s</string>
+    <string name="network_error">Network error</string>
     <string name="_unknown_error">Unknown error: %s</string>
-    <string name="unknown_error">Unknown error</string>
     <string name="privacy">Privacy</string>
     <string name="saving">Saving</string>
     <string name="share_image">Share image</string>
@@ -324,4 +323,5 @@
     <string name="services_updated">Services updated</string>
     <string name="all_builtin_services_are_up_to_date">All built-in services are up-to-date</string>
     <string name="update_all">Update all</string>
+    <string name="_incompatible_service_required_api_versions">"Incompatible service, required api version: %s, current: %s "</string>
 </resources>

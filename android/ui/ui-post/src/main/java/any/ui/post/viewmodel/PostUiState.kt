@@ -1,6 +1,7 @@
 package any.ui.post.viewmodel
 
 import androidx.compose.runtime.Stable
+import any.base.UiMessage
 import any.data.entity.Bookmark
 import any.domain.entity.UiContentElement
 import any.domain.entity.UiPost
@@ -14,7 +15,7 @@ data class PostUiState(
     val loadingProgress: LoadingProgress? = null,
     val reversedPages: Boolean = false,
     val post: UiPost? = null,
-    val error: Throwable? = null,
+    val error: UiMessage.Error? = null,
     val isCollected: Boolean = false,
     val contentElements: List<UiContentElement> = emptyList(),
     val images: List<String> = emptyList(),

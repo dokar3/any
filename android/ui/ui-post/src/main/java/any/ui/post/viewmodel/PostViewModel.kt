@@ -4,9 +4,13 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import any.base.AndroidStrings
+import any.base.Strings
+import any.base.UiMessage
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
 import any.base.log.Logger
+import any.base.util.messageForUser
 import any.data.FetchState
 import any.data.entity.Post
 import any.data.entity.ServiceManifest
@@ -41,6 +45,7 @@ class PostViewModel(
     private val postRepository: PostRepository,
     private val postContentRepository: PostContentRepository,
     private val fileReader: FileReader,
+    private val strings: Strings,
     private val htmlParser: HtmlParser = DefaultHtmlParser(),
     private val postContentParser: PostContentParser = PostContentParser(htmlParser = htmlParser),
     private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
@@ -96,10 +101,13 @@ class PostViewModel(
                     } else {
                         ">= ${service.minApiVersion}"
                     }
-                    val errorMessage = "Incompatible service, required api version: " +
-                            "$requiredApiVersion, current: ${ServiceApiVersion.get()}"
+                    val errorMessage = strings(
+                        any.base.R.string._incompatible_service_required_api_versions,
+                        requiredApiVersion,
+                        ServiceApiVersion.get(),
+                    )
                     _postUiState.update {
-                        it.copy(error = Exception(errorMessage))
+                        it.copy(error = UiMessage.Error(errorMessage))
                     }
                 } else {
                     fetchPost(
@@ -189,12 +197,12 @@ class PostViewModel(
         }
     }
 
-    private fun onFetchPostError(error: Throwable?) {
-        error?.printStackTrace()
+    private fun onFetchPostError(error: Throwable) {
+        error.printStackTrace()
         Logger.e(TAG, "loadFreshPost() failed: $error")
         _postUiState.update {
             it.copy(
-                error = error,
+                error = UiMessage.Error(error.messageForUser(strings)),
                 isLoading = false,
             )
         }
@@ -277,6 +285,7 @@ class PostViewModel(
                 postRepository = PostRepository.getDefault(context),
                 postContentRepository = postContentStore,
                 fileReader = AndroidFileReader(context),
+                strings = AndroidStrings(context),
             ) as T
         }
     }

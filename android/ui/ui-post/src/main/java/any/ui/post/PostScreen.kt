@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -34,7 +33,6 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -63,9 +61,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
@@ -102,8 +98,6 @@ import any.ui.common.itemRange
 import any.ui.common.lazy.LazyListScrollableState
 import any.ui.common.lazy.rememberLazyListScrollableState
 import any.ui.common.modifier.verticalScrollBar
-import any.ui.common.richtext.Html
-import any.ui.common.richtext.RichTextStyle
 import any.ui.common.theme.compositedNavigationBarColor
 import any.ui.common.theme.compositedStatusBarColor
 import any.ui.common.toDpOffset
@@ -117,6 +111,7 @@ import any.ui.common.widget.EmojiEmptyContent
 import any.ui.common.widget.MessagePopup
 import any.ui.common.widget.ProgressPullRefreshIndicator
 import any.ui.common.widget.QuickReturnScreen
+import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
 import any.ui.common.widget.rememberBarsColorController
 import any.ui.common.widget.rememberPullRefreshIndicatorOffset
@@ -915,7 +910,7 @@ private fun PostContent(
 
     MessagePopup(
         visible = isPreparingToShare,
-        offset = DpOffset(0.dp, -bottomBarHeight),
+        offset = DpOffset(0.dp, -bottomBarHeight - 16.dp),
         onDismissed = {},
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -954,61 +949,19 @@ private fun PostContent(
         }
     }
 
-    var error by remember { mutableStateOf(Throwable()) }
-    var showError by remember { mutableStateOf(false) }
-
-    LaunchedEffect(uiState.error) {
-        if (uiState.error != null) {
-            error = uiState.error
-            showError = true
-        } else {
-            showError = false
-        }
-    }
-
-    MessagePopup(
-        visible = showError,
+    UiMessagePopup(
+        message = uiState.error,
+        applyWindowInsetsToOffset = false,
         offset = DpOffset(0.dp, -bottomBarHeight),
-        backgroundColor = MaterialTheme.colors.error,
-        swipeable = true,
-        onDismissed = { viewModel.clearError() },
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Html(
-                html = stringResource(
-                    BaseR.string._failed_to_load_with_message,
-                    error.message ?: "Unknown error: $error"
-                ),
-                onLinkClick = { Intents.openInBrowser(context, it) },
-                modifier = Modifier.weight(1f),
-                style = RichTextStyle.Default.copy(linkColor = MaterialTheme.colors.secondary),
-                color = MaterialTheme.colors.onError,
-                fontSize = 14.sp,
-                maxBlocks = 2,
-                blockMaxLines = 3,
-                blockTextOverflow = TextOverflow.Ellipsis,
+        onClearMessage = viewModel::clearError,
+        onRetry = {
+            viewModel.fetchPost(
+                serviceId = serviceId,
+                postUrl = postUrl,
+                networkPostOnly = true
             )
-
-            TextButton(
-                onClick = {
-                    viewModel.fetchPost(
-                        serviceId = serviceId,
-                        postUrl = postUrl,
-                        networkPostOnly = true
-                    )
-                },
-            ) {
-                Text(
-                    text = stringResource(BaseR.string.reload),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.onError,
-                )
-            }
-        }
-    }
+        },
+    )
 }
 
 private fun LazyListScope.postHeader(
