@@ -10,6 +10,7 @@ import any.base.Strings
 import any.base.UiMessage
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
+import any.base.util.messageForUser
 import any.data.FetchState
 import any.data.entity.JsPageKey
 import any.data.entity.Post
@@ -339,24 +340,22 @@ class ProfileViewModel(
     }
 
     private fun onFetchUserError(error: Throwable) {
-        val message = error.message ?: strings(BaseR.string.unknown_error)
         _uiState.update {
             it.copy(
                 isLoadingUser = false,
-                message = UiMessage.Error(message),
+                message = UiMessage.Error(error.messageForUser(strings)),
             )
         }
     }
 
     private fun onFetchPostsError(error: Throwable) {
         error.printStackTrace()
-        val message = error.message ?: strings(BaseR.string.unknown_error)
         _uiState.update {
             it.copy(
                 isLoadingPosts = false,
                 isLoadingMorePosts = false,
                 isFailedToFetchPosts = true,
-                message = UiMessage.Error(message),
+                message = UiMessage.Error(error.messageForUser(strings)),
             )
         }
     }

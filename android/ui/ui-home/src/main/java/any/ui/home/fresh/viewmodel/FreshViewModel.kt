@@ -14,6 +14,7 @@ import any.base.image.ImageRequest
 import any.base.prefs.PreferencesStore
 import any.base.prefs.currentService
 import any.base.prefs.preferencesStore
+import any.base.util.messageForUser
 import any.base.util.updateWith
 import any.data.Comparators
 import any.data.FetchState
@@ -43,8 +44,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.net.UnknownHostException
-import javax.net.ssl.SSLException
 
 class FreshViewModel(
     private val serviceRepository: ServiceRepository,
@@ -322,17 +321,7 @@ class FreshViewModel(
 
     private fun onError(e: Throwable) {
         e.printStackTrace()
-        val errorMessage = when (e) {
-            is UnknownHostException,
-            is SSLException -> {
-                strings(BaseR.string._network_error, e.message ?: "")
-            }
-
-            else -> {
-                e.message ?: strings(BaseR.string.unknown_error)
-            }
-        }
-        val message = UiMessage.Error(errorMessage)
+        val message = UiMessage.Error(e.messageForUser(strings))
         _freshUiState.update {
             it.copy(
                 message = message,

@@ -5,9 +5,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import any.base.AndroidStrings
+import any.base.Strings
 import any.base.UiMessage
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
+import any.base.util.messageForUser
 import any.base.util.updateWith
 import any.data.FetchState
 import any.data.entity.JsPageKey
@@ -36,6 +39,7 @@ class SearchViewModel(
     private val serviceRepository: ServiceRepository,
     postRepository: PostRepository,
     private val fileReader: FileReader,
+    private val strings: Strings,
     htmlParser: HtmlParser = DefaultHtmlParser(),
     workerDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BasePostViewModel(
@@ -199,7 +203,7 @@ class SearchViewModel(
                 )
                 .catch {
                     if (currentCoroutineContext().isActive) {
-                        onSearchFailed(it)
+                        onSearchError(it)
                     }
                 }
                 .collect { state ->
@@ -223,7 +227,7 @@ class SearchViewModel(
                         }
 
                         is FetchState.Failure -> {
-                            onSearchFailed(state.error)
+                            onSearchError(state.error)
                         }
 
                         is FetchState.Loading -> {}
@@ -262,10 +266,10 @@ class SearchViewModel(
         }
     }
 
-    private fun onSearchFailed(e: Throwable) {
+    private fun onSearchError(e: Throwable) {
         _searchUiState.update {
             it.copy(
-                message = UiMessage.Error(e.message ?: "Unknown error"),
+                message = UiMessage.Error(e.messageForUser(strings)),
                 isLoading = false,
                 isLoadingMore = false,
                 isSuccess = false,
@@ -297,6 +301,7 @@ class SearchViewModel(
                 serviceRepository = ServiceRepository.getDefault(context),
                 postRepository = PostRepository.getDefault(context),
                 fileReader = AndroidFileReader(context),
+                strings = AndroidStrings(context),
             ) as T
         }
     }
