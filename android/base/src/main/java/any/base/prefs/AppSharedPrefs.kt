@@ -6,6 +6,7 @@ import android.content.Context
 import android.preference.PreferenceManager
 import any.base.model.DarkMode
 import any.base.model.FolderViewType
+import any.base.model.PostFolderSelectionSorting
 import any.base.model.PostSorting
 import any.base.model.toEnabledState
 import kotlinx.coroutines.CoroutineScope
@@ -193,6 +194,26 @@ fun PreferencesStore.postSortingFlow(): Flow<PostSorting> {
         .asFlow()
         .map { postSorting }
 }
+
+private val PreferencesStore.postFolderSelectionSortingPrefValue
+    get() = prefValueOf("post_folder_selection_sorting") { key ->
+        stringValue(this, key, defaultValue = PostFolderSelectionSorting.ByTitle.name)
+    }
+
+var PreferencesStore.postFolderSelectionSorting: PostFolderSelectionSorting
+    get() {
+        return try {
+            PostFolderSelectionSorting.valueOf(
+                postFolderSelectionSortingPrefValue.value
+            )
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+            PostFolderSelectionSorting.ByTitle
+        }
+    }
+    set(value) {
+        postFolderSelectionSortingPrefValue.value = value.name
+    }
 
 private val PreferencesStore.defaultFolderViewTypePrefValue
     get() = prefValueOf("default_folder_view_type") { key ->

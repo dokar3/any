@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import any.base.model.PostFolderSelectionSorting
+import any.base.prefs.PreferencesStore
+import any.base.prefs.postFolderSelectionSorting
+import any.base.prefs.preferencesStore
 import any.base.util.PathJoiner
 import any.base.util.findOrAdd
 import any.base.util.updateIf
@@ -26,6 +30,7 @@ import kotlin.math.max
 class PostFolderSelectionViewModel(
     private val localPostDataSource: LocalPostDataSource,
     private val folderInfoRepository: FolderInfoRepository,
+    private val preferencesStore: PreferencesStore,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PostFolderSelectionUiState())
     val uiState: StateFlow<PostFolderSelectionUiState> = _uiState
@@ -35,6 +40,12 @@ class PostFolderSelectionViewModel(
     private val allFolders = mutableListOf<HierarchicalFolder>()
 
     private var loadAllFolderJob: Job? = null
+
+    init {
+        _uiState.update {
+            it.copy(folderSorting = preferencesStore.postFolderSelectionSorting)
+        }
+    }
 
     fun loadAllFolder() {
         loadAllFolderJob?.cancel()
@@ -125,7 +136,7 @@ class PostFolderSelectionViewModel(
                 folders.sortedWith(Comparators.hierarchicalFolderNameComparator)
             }
 
-            PostFolderSelectionSorting.ByLastUpdatedTime -> {
+            PostFolderSelectionSorting.ByLastUpdated -> {
                 folders.sortedByDescending { it.updatedAt }
             }
         }
@@ -329,12 +340,18 @@ class PostFolderSelectionViewModel(
         _uiState.update {
             it.copy(flattedFolders = flattedFolders)
         }
+        preferencesStore.postFolderSelectionSorting = sorting
     }
 
     fun reset() {
         newFolders.clear()
         allFolders.clear()
-        _uiState.update { PostFolderSelectionUiState() }
+        _uiState.update {
+            it.copy(
+                flattedFolders = emptyList(),
+                selectedFolder = HierarchicalFolder.ROOT,
+            )
+        }
     }
 
     private data class NewFolder(
@@ -348,6 +365,7 @@ class PostFolderSelectionViewModel(
             return PostFolderSelectionViewModel(
                 localPostDataSource = LocalPostDataSourceImpl.getDefault(context),
                 folderInfoRepository = FolderInfoRepository.getDefault(context),
+                preferencesStore = context.preferencesStore(),
             ) as T
         }
     }

@@ -47,6 +47,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import any.base.model.PostFolderSelectionSorting
 import any.data.entity.Folder
 import any.data.entity.HierarchicalFolder
 import any.ui.common.modifier.verticalScrollBar
@@ -99,11 +100,11 @@ fun PostFolderSelectionDialog(
                 val iconRes: Int
                 when (uiState.folderSorting) {
                     PostFolderSelectionSorting.ByTitle -> {
-                        nextSorting = PostFolderSelectionSorting.ByLastUpdatedTime
+                        nextSorting = PostFolderSelectionSorting.ByLastUpdated
                         iconRes = CommonUiR.drawable.ic_baseline_sort_by_alpha_24
                     }
 
-                    PostFolderSelectionSorting.ByLastUpdatedTime -> {
+                    PostFolderSelectionSorting.ByLastUpdated -> {
                         nextSorting = PostFolderSelectionSorting.ByTitle
                         iconRes = CommonUiR.drawable.ic_baseline_update_24
                     }
