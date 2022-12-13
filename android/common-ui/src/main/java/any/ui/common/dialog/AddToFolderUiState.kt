@@ -7,4 +7,10 @@ import any.data.entity.HierarchicalFolder
 data class AddToFolderUiState(
     val flattedFolders: List<HierarchicalFolder> = emptyList(),
     val selectedFolder: HierarchicalFolder = HierarchicalFolder.ROOT,
+    val folderSorting: AddToFolderSorting = AddToFolderSorting.ByTitle,
 )
+
+enum class AddToFolderSorting {
+    ByTitle,
+    ByLastUpdatedTime,
+}

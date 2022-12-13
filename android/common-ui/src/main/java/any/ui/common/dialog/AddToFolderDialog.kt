@@ -95,6 +95,29 @@ fun AddToFolderDialog(
                     text = stringResource(BaseR.string.add_to_folder),
                     modifier = Modifier.weight(1f),
                 )
+
+                val nextSorting: AddToFolderSorting
+                val iconRes: Int
+                when (uiState.folderSorting) {
+                    AddToFolderSorting.ByTitle -> {
+                        nextSorting = AddToFolderSorting.ByLastUpdatedTime
+                        iconRes = CommonUiR.drawable.ic_baseline_sort_by_alpha_24
+                    }
+
+                    AddToFolderSorting.ByLastUpdatedTime -> {
+                        nextSorting = AddToFolderSorting.ByTitle
+                        iconRes = CommonUiR.drawable.ic_baseline_update_24
+                    }
+                }
+                Icon(
+                    painter = painterResource(iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(bounded = false),
+                        onClick = { viewModel.setFolderSorting(nextSorting) },
+                    ),
+                )
             }
         },
         content = {

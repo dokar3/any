@@ -9,6 +9,7 @@ data class HierarchicalFolder(
     val subFolders: MutableList<HierarchicalFolder> = mutableListOf(),
     val expanded: Boolean = false,
     val depth: Int = 0,
+    val updatedAt: Long = 0,
 ) {
     val name: String by lazy { pathSegments.last() }
 
