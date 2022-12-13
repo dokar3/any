@@ -23,12 +23,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
-class AddToFolderViewModel(
+class PostFolderSelectionViewModel(
     private val localPostDataSource: LocalPostDataSource,
     private val folderInfoRepository: FolderInfoRepository,
 ) : ViewModel() {
-    private val _addToFolderUiState = MutableStateFlow(AddToFolderUiState())
-    val addToFolderUiState: StateFlow<AddToFolderUiState> = _addToFolderUiState
+    private val _uiState = MutableStateFlow(PostFolderSelectionUiState())
+    val uiState: StateFlow<PostFolderSelectionUiState> = _uiState
 
     private val newFolders = mutableListOf<NewFolder>()
 
@@ -44,7 +44,7 @@ class AddToFolderViewModel(
             val flattedFolders = mutableListOf<HierarchicalFolder>()
             flatFolders(dest = flattedFolders, folders = allFolders)
 
-            _addToFolderUiState.update {
+            _uiState.update {
                 it.copy(flattedFolders = flattedFolders)
             }
         }
@@ -120,12 +120,12 @@ class AddToFolderViewModel(
         folders: List<HierarchicalFolder>,
         depth: Int = 0,
     ) {
-        val sortedFolders = when (_addToFolderUiState.value.folderSorting) {
-            AddToFolderSorting.ByTitle -> {
+        val sortedFolders = when (_uiState.value.folderSorting) {
+            PostFolderSelectionSorting.ByTitle -> {
                 folders.sortedWith(Comparators.hierarchicalFolderNameComparator)
             }
 
-            AddToFolderSorting.ByLastUpdatedTime -> {
+            PostFolderSelectionSorting.ByLastUpdatedTime -> {
                 folders.sortedByDescending { it.updatedAt }
             }
         }
@@ -162,7 +162,7 @@ class AddToFolderViewModel(
     }
 
     fun selectFolder(folder: HierarchicalFolder) {
-        _addToFolderUiState.update {
+        _uiState.update {
             it.copy(selectedFolder = folder)
         }
     }
@@ -198,7 +198,7 @@ class AddToFolderViewModel(
             } else {
                 HierarchicalFolder.ROOT
             }
-            _addToFolderUiState.update {
+            _uiState.update {
                 it.copy(selectedFolder = selectedFolder)
             }
             return
@@ -232,14 +232,14 @@ class AddToFolderViewModel(
                 val flattedFolders = mutableListOf<HierarchicalFolder>()
                 flatFolders(dest = flattedFolders, folders = allFolders)
 
-                _addToFolderUiState.update {
+                _uiState.update {
                     it.copy(
                         flattedFolders = flattedFolders,
                         selectedFolder = target,
                     )
                 }
             } else {
-                _addToFolderUiState.update {
+                _uiState.update {
                     it.copy(selectedFolder = HierarchicalFolder.ROOT)
                 }
             }
@@ -256,7 +256,7 @@ class AddToFolderViewModel(
         if (updatedFolder != null) {
             val flattedFolders = mutableListOf<HierarchicalFolder>()
             flatFolders(dest = flattedFolders, folders = folders)
-            _addToFolderUiState.update {
+            _uiState.update {
                 it.copy(flattedFolders = flattedFolders, selectedFolder = updatedFolder)
             }
         }
@@ -320,13 +320,13 @@ class AddToFolderViewModel(
         return null
     }
 
-    fun setFolderSorting(sorting: AddToFolderSorting) {
-        _addToFolderUiState.update {
+    fun setFolderSorting(sorting: PostFolderSelectionSorting) {
+        _uiState.update {
             it.copy(folderSorting = sorting)
         }
         val flattedFolders = mutableListOf<HierarchicalFolder>()
         flatFolders(dest = flattedFolders, folders = allFolders)
-        _addToFolderUiState.update {
+        _uiState.update {
             it.copy(flattedFolders = flattedFolders)
         }
     }
@@ -334,7 +334,7 @@ class AddToFolderViewModel(
     fun reset() {
         newFolders.clear()
         allFolders.clear()
-        _addToFolderUiState.update { AddToFolderUiState() }
+        _uiState.update { PostFolderSelectionUiState() }
     }
 
     private data class NewFolder(
@@ -345,7 +345,7 @@ class AddToFolderViewModel(
     class Factory(private val context: Context) : ViewModelProvider.Factory {
         @Suppress("unchecked_cast")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AddToFolderViewModel(
+            return PostFolderSelectionViewModel(
                 localPostDataSource = LocalPostDataSourceImpl.getDefault(context),
                 folderInfoRepository = FolderInfoRepository.getDefault(context),
             ) as T

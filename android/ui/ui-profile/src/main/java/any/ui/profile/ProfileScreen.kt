@@ -42,7 +42,7 @@ import any.navigation.navigateToPost
 import any.navigation.navigateToUser
 import any.ui.comments.CommentsSheet
 import any.ui.common.dialog.AddToCollectionsDialog
-import any.ui.common.dialog.AddToFolderDialog
+import any.ui.common.dialog.PostFolderSelectionDialog
 import any.ui.common.lazy.ScrollToTopFab
 import any.ui.common.lazy.rememberLazyGridScrollableState
 import any.ui.common.menu.PostOptionMenu
@@ -351,10 +351,10 @@ private fun ProfileScreenContent(
 
     if (postToAddToFolder != null) {
         val post = postToAddToFolder!!
-        AddToFolderDialog(
+        PostFolderSelectionDialog(
             onDismissRequest = { postToAddToFolder = null },
-            onFolderConfirm = { onAddPostToFolder(post, it.path) },
-            post = post,
+            onFolderSelected = { onAddPostToFolder(post, it.path) },
+            initiallySelectedFolder = post.folder,
         )
     }
 

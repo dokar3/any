@@ -110,10 +110,10 @@ fun AddToCollectionsDialog(
     )
 
     if (showAddToFolderDialog) {
-        AddToFolderDialog(
+        PostFolderSelectionDialog(
             onDismissRequest = { showAddToFolderDialog = false },
-            onFolderConfirm = { folderPath = it.path },
-            post = post,
+            onFolderSelected = { folderPath = it.path },
+            initiallySelectedFolder = post.folder,
         )
     }
 }

@@ -47,7 +47,7 @@ import any.navigation.navigateToUser
 import any.navigation.settings
 import any.ui.comments.CommentsSheet
 import any.ui.common.dialog.AddToCollectionsDialog
-import any.ui.common.dialog.AddToFolderDialog
+import any.ui.common.dialog.PostFolderSelectionDialog
 import any.ui.common.lazy.ScrollToTopFab
 import any.ui.common.lazy.rememberLazyGridScrollableState
 import any.ui.common.menu.PostOptionMenu
@@ -291,10 +291,10 @@ fun SearchScreen(
 
     if (postToAddToFolder != null) {
         val post = postToAddToFolder!!
-        AddToFolderDialog(
+        PostFolderSelectionDialog(
             onDismissRequest = { postToAddToFolder = null },
-            onFolderConfirm = { viewModel.addToFolder(post, it.path) },
-            post = post,
+            onFolderSelected = { viewModel.addToFolder(post, it.path) },
+            initiallySelectedFolder = post.folder,
         )
     }
 

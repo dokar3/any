@@ -4,13 +4,13 @@ import androidx.compose.runtime.Stable
 import any.data.entity.HierarchicalFolder
 
 @Stable
-data class AddToFolderUiState(
+data class PostFolderSelectionUiState(
     val flattedFolders: List<HierarchicalFolder> = emptyList(),
     val selectedFolder: HierarchicalFolder = HierarchicalFolder.ROOT,
-    val folderSorting: AddToFolderSorting = AddToFolderSorting.ByTitle,
+    val folderSorting: PostFolderSelectionSorting = PostFolderSelectionSorting.ByTitle,
 )
 
-enum class AddToFolderSorting {
+enum class PostFolderSelectionSorting {
     ByTitle,
     ByLastUpdatedTime,
 }
