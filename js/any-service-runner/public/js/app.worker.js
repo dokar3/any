@@ -5,18 +5,19 @@ import * as Comlink from "comlink";
 import * as EventType from "./call_event.js";
 
 /**
- * Call app functions
+ * Call service functions
  *
  * @param {CallEvent} event The call event.
  */
-function call(appConfigs, type, params) {
-  const app = createApp(appConfigs);
+function call(serviceConfigs, type, params) {
+  const manifest = {};
+  const service = createService(manifest, serviceConfigs);
   if (type === EventType.TYPE_FETCH_LATEST_POSTS) {
-    return app.fetchLatestPosts(params);
+    return service.getFeature(AnyPostFeature).fetchFreshList(params);
   } else if (type === EventType.TYPE_FETCH_POST_CONTENT) {
-    return app.fetchPostContent(params);
+    return service.getFeature(AnyPostFeature).fetch(params);
   } else if (type == EventType.TYPE_SEARCH_POSTS) {
-    return app.searchPosts(params);
+    return service.getFeature(AnyPostFeature).search(params);
   } else {
     throw new Error("Unknown call event: " + type);
   }
