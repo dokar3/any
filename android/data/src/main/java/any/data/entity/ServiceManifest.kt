@@ -110,13 +110,13 @@ data class ServiceManifest(
     fun toStored(): ServiceManifest = copy(id = generatedStoredId())
 
     private fun generatedStoredId(): String {
-        val list = mutableListOf<Pair<String, String?>>("serviceName" to name)
+        val keyToValueList = mutableListOf<Pair<String, String?>>("serviceName" to name)
 
-        this.configs?.forEach { list.add(it.key to it.value?.stringValue) }
+        this.configs?.forEach { keyToValueList.add(it.key to it.value?.stringValue) }
 
         val mayHaveHashFn = id.indexOf("hash(") != -1
 
-        return list.fold(id) { currId, config ->
+        return keyToValueList.fold(id) { currId, config ->
             val varName = "{${config.first}}"
             val varValue = config.second
                 ?.lowercase()

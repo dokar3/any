@@ -42,12 +42,14 @@ sealed interface ServiceConfigValue {
 
     @JvmInline
     value class Boolean(val value: kotlin.Boolean) : ServiceConfigValue {
-        override val stringValue: kotlin.String get() = value.toString()
+        override val stringValue: kotlin.String
+            get() = value.toString()
     }
 
     @JvmInline
     value class Double(val value: kotlin.Double) : ServiceConfigValue {
-        override val stringValue: kotlin.String get() = value.toString()
+        override val stringValue: kotlin.String
+            get() = value.toString()
     }
 
     @JvmInline
@@ -61,7 +63,7 @@ sealed interface ServiceConfigValue {
         val userAgent: kotlin.String,
     ) : ServiceConfigValue {
         override val stringValue: kotlin.String
-            get() = any.data.json.Json.toJson(this, CookiesAndUa::class.java)
+            get() = cookies + userAgent
     }
 }
 
