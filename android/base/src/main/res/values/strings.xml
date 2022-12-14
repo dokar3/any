@@ -192,6 +192,7 @@
     <string name="no_new_posts">No new posts</string>
     <string name="_loaded_new_posts">Loaded %d new posts</string>
     <string name="network_error">Network error</string>
+    <string name="network_error_timeout">Network error: Timeout</string>
     <string name="_unknown_error">Unknown error: %s</string>
     <string name="privacy">Privacy</string>
     <string name="saving">Saving</string>
