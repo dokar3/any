@@ -114,12 +114,12 @@ fun List<ServiceConfig>?.toJsObject(): String = buildString {
             when (type) {
                 ServiceConfigType.Bool -> {
                     checkConfigValue<ServiceConfigValue.Boolean>(value, type)
-                    append(value.stringValue)
+                    append(value.value)
                 }
 
                 ServiceConfigType.Number -> {
                     checkConfigValue<ServiceConfigValue.Double>(value, type)
-                    append(value.stringValue)
+                    append(value.value)
                 }
 
                 ServiceConfigType.CookiesAndUserAgent -> {
@@ -153,7 +153,7 @@ private inline fun <reified T : ServiceConfigValue> checkConfigValue(
         returns() implies (value is T)
     }
     if (value !is T) {
-        val required = ServiceConfigValue.CookiesAndUa::class.java
+        val required = T::class.java
         val found = value::class.java
         val message = "The config value must match the type $type, " +
                 "required: $required, found: $found"
