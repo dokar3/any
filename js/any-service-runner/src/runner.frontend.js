@@ -68,7 +68,7 @@ function startFrontendRunnerServer(port, backendServerPort) {
         {
           test: /\.(js|ts|tsx)$/,
           include: [
-            path.join(currentDir, "node_modules/any-api"),
+            path.join(__dirname, "../../any-service-api/dist"),
             path.join(currentDir, "src"),
           ],
           use: [

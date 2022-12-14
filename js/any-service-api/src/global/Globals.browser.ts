@@ -7,7 +7,7 @@ import { Env } from "./Env";
 import { Http, HttpResponse } from "./Http";
 
 const env = new Env({
-  LANGUAGE: window.navigator.language,
+  LANGUAGE: typeof window !== "undefined" ? window.navigator.language : "en",
 });
 
 const http = new Http({

@@ -7,7 +7,7 @@ import express from "express";
 import cors from "cors";
 import axios from "axios";
 import bodyParser from "body-parser";
-import { buildService } from "any-compile";
+import { buildService } from "any-service-compile";
 
 const cwd = process.cwd(0);
 const buildDir = path.join(cwd, "dist/");
@@ -180,12 +180,15 @@ function compileService(req, res) {
   if (address != null) {
     const platform = "android";
 
-    const networkPath = `http://${address}:${PORT}${COMPILED_SERVICE_PATH}/uncompressed`;
+    const networkPath = `http://${address}:${PORT}${COMPILED_SERVICE_PATH}/`;
 
     buildService(buildDir, platform, false, [manifestName])
-      .then(() => {
-        const dir = path.join(buildDir, "uncompressed");
-        const networkManifests = findAndUpdateManifests(dir, networkPath);
+      .then((buildOutputs) => {
+        const manifestPaths = buildOutputs.map((output) => output.manifest);
+        const networkManifests = updateCompiledManifests(
+          manifestPaths,
+          networkPath
+        );
         const result = {
           isSuccess: true,
           message: "Service compiled",
@@ -216,35 +219,38 @@ function compileService(req, res) {
 /**
  * Replace local paths with network paths in manifest files.
  *
- * @param dir Manifest directory.
- * @param networkPath Network path.
- * @returns {string[]} Network manifest paths.
+ * @param {string[]} manifests Manifest paths.
+ * @param {string} networkPath Network path.
+ * @returns {string[]} Manifest urls.
  */
-function findAndUpdateManifests(dir, networkPath) {
-  return fs
-    .readdirSync(dir)
-    .filter((filename) => {
-      return (
-        filename.startsWith("manifest") &&
-        filename.endsWith(".json") &&
-        fs.lstatSync(path.join(dir, filename)).isFile()
-      );
-    })
-    .map((filename) => {
-      const filepath = path.join(dir, filename);
-      const manifestText = fs.readFileSync(filepath, "utf-8");
-      const manifest = JSON.parse(manifestText);
+function updateCompiledManifests(manifests, networkPath) {
+  return manifests.map((filepath) => {
+    const manifestText = fs.readFileSync(filepath, "utf-8");
+    const manifest = JSON.parse(manifestText);
+    const filename = path.basename(filepath);
+    const resDir = path.relative(buildDir, path.dirname(filepath));
+    manifest.main = `${networkPath}${resDir}/${path.basename(manifest.main)}`;
 
-      manifest.main = `${networkPath}/${path.basename(manifest.main)}`;
+    if (manifest.icon != null) {
+      manifest.icon = `${networkPath}${resDir}/${path.basename(manifest.icon)}`;
+    }
 
-      if (manifest.icon) {
-        manifest.icon = `${networkPath}/${path.basename(manifest.icon)}`;
-      }
+    if (manifest.headerImage != null) {
+      manifest.headerImage = `${networkPath}${resDir}/${path.basename(
+        manifest.headerImage
+      )}`;
+    }
 
-      fs.writeFileSync(filepath, JSON.stringify(manifest));
+    if (manifest.changelog != null) {
+      manifest.changelog = `${networkPath}${resDir}/${path.basename(
+        manifest.changelog
+      )}`;
+    }
 
-      return `${networkPath}/${filename}`;
-    });
+    fs.writeFileSync(filepath, JSON.stringify(manifest));
+
+    return `${networkPath}${resDir}/${filename}`;
+  });
 }
 
 // Copied from https://stackoverflow.com/a/8440736

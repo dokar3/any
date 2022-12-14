@@ -110,6 +110,7 @@ function updateCompiledServices(manifestUrls) {
     })
     .catch((error) => {
       updateError(`Cannot fetch manifest: ${error}`);
+      hideCompiling();
     });
 }
 
