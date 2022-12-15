@@ -197,6 +197,7 @@ class VideoPlaybackState internal constructor(
     }
 
     fun play() {
+        val shouldRetry = error != null
         error = null
         isPlayed = true
         PlaybackStateManager.onPlay(this)
@@ -206,8 +207,10 @@ class VideoPlaybackState internal constructor(
                     .createMediaSource(MediaItem.fromUri(uri))
                 setMediaSource(mediaSource)
                 repeatMode = Player.REPEAT_MODE_ONE
-                prepare()
                 playWhenReady = true
+                prepare()
+            } else if (shouldRetry) {
+                prepare()
             }
             setMuted(globalIsMuted)
             play()
