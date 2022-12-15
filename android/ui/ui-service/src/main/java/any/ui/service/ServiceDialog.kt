@@ -4,6 +4,9 @@ import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -44,8 +47,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -114,6 +119,8 @@ fun ServiceDialog(
         val force = service.forceConfigsValidation ?: false
         mutableStateOf(force && !isAdded)
     }
+
+    var serviceChanged by remember { mutableStateOf(false) }
 
     val requiredFields = remember(service.configs) {
         service.configs?.filter { it.visibleToUser && it.required }
@@ -193,14 +200,16 @@ fun ServiceDialog(
         cancelText = { Text(stringResource(android.R.string.cancel)) },
         confirmText = {
             Text(
-                text =
-                if (uiState.updateInfo != null) {
+                text = if (uiState.updateInfo != null) {
                     stringResource(BaseR.string.upgrade)
                 } else if (isAdded) {
                     stringResource(BaseR.string.update)
                 } else {
                     stringResource(BaseR.string.add)
-                }
+                },
+                modifier = Modifier.hintToSaveAnimation(
+                    enabled = isAdded && serviceChanged
+                ),
             )
         },
         onConfirmClick = {
@@ -222,12 +231,19 @@ fun ServiceDialog(
             isUpgrade = uiState.updateInfo != null,
             serviceName = serviceName,
             serviceNameError = serviceNameError,
-            onServiceNameChange = { serviceName = it },
+            onServiceNameChange = {
+                serviceChanged = true
+                serviceName = it
+            },
             viewType = viewType,
-            onServiceViewTypeChange = { viewType = it },
+            onServiceViewTypeChange = {
+                serviceChanged = true
+                viewType = it
+            },
             requiredFields = StableHolder(requiredFields),
             optionalFields = StableHolder(optionalFields),
             onConfigValueChange = { config, value ->
+                serviceChanged = true
                 values[config.key] = value
                 viewModel.clearValidationResult(config)
             },
@@ -240,6 +256,64 @@ fun ServiceDialog(
     }
 
     ServiceDetailsSheet(state = serviceDetailsSheet, service = service)
+}
+
+private fun Modifier.hintToSaveAnimation(enabled: Boolean): Modifier = composed {
+    val rotation = remember { Animatable(initialValue = 0f) }
+    val scale = remember { Animatable(initialValue = 1f) }
+
+    suspend fun startRotationAnimation() {
+        rotation.snapTo(0f)
+        rotation.animateTo(
+            targetValue = 0f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 2500
+                    10f at 100
+                    0f at 150
+                    -15f at 250
+                    0f at 300
+                    15f at 400
+                    0f at 450
+                    -15f at 550
+                    0f at 600
+                    10f at 700
+                    0f at 750
+                    -5f at 850
+                    0f at 1000
+                },
+            ),
+        )
+    }
+
+    suspend fun startScaleAnimation() {
+        scale.snapTo(1f)
+        scale.animateTo(
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = 2500
+                    1.05f at 325
+                    1.05f at 650
+                    1f at 1000
+                },
+            ),
+        )
+    }
+
+    LaunchedEffect(enabled) {
+        rotation.snapTo(0f)
+        scale.snapTo(1f)
+        if (!enabled) return@LaunchedEffect
+        launch { startRotationAnimation() }
+        launch { startScaleAnimation() }
+    }
+
+    graphicsLayer {
+        scaleX = scale.value
+        scaleY = scale.value
+        rotationZ = rotation.value
+    }
 }
 
 @Composable
