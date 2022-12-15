@@ -119,8 +119,7 @@ class FreshViewModel(
         cancelLoadingsAndClearInvalidCache()
         nextPageKey = null
         preferencesStore.currentService.value = service.id
-        _freshUiState.update { it.copy(pageKey = null) }
-        _freshUiState.update { it.copy(currService = service) }
+        _freshUiState.update { it.copy(currService = service, pageKey = null) }
     }
 
     /**

@@ -129,7 +129,12 @@ internal fun FreshPostList(
         }
     }
 
-    LaunchedEffect(posts) {
+    LaunchedEffect(service?.id) {
+        currPosts = ImmutableHolder(emptyList())
+        itemsAnimState = ItemsAnimState.Preparing
+    }
+
+    LaunchedEffect(currPosts, posts) {
         if (currPosts == posts) {
             return@LaunchedEffect
         }
@@ -140,10 +145,10 @@ internal fun FreshPostList(
         }
         if (currPosts.value.isEmpty()) {
             // Posts loaded, run intro animations
-            itemsAnimState = ItemsAnimState.Started
+            stopItemAnimations()
             initialItemAnimValue = 0f
             targetItemAnimValue = 1f
-            stopItemAnimations()
+            itemsAnimState = ItemsAnimState.Started
         }
         currPosts = posts
     }
