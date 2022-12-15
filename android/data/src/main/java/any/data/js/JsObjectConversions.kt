@@ -114,12 +114,12 @@ fun List<ServiceConfig>?.toJsObject(): String = buildString {
             when (type) {
                 ServiceConfigType.Bool -> {
                     checkConfigValue<ServiceConfigValue.Boolean>(value, type)
-                    append(value.value)
+                    append(value.inner)
                 }
 
                 ServiceConfigType.Number -> {
                     checkConfigValue<ServiceConfigValue.Double>(value, type)
-                    append(value.value)
+                    append(value.inner)
                 }
 
                 ServiceConfigType.CookiesAndUserAgent -> {
@@ -130,9 +130,13 @@ fun List<ServiceConfig>?.toJsObject(): String = buildString {
                     append('}')
                 }
 
-                else -> {
+                ServiceConfigType.Text,
+                ServiceConfigType.Url,
+                ServiceConfigType.Option,
+                ServiceConfigType.Cookies -> {
+                    checkConfigValue<ServiceConfigValue.String>(value, type)
                     append('"')
-                    append(value.stringValue.escape())
+                    append(value.inner.escape())
                     append('"')
                 }
             }

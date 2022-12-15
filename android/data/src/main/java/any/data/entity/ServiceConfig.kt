@@ -38,23 +38,21 @@ data class ServiceConfigOption(
 )
 
 sealed interface ServiceConfigValue {
-    val stringValue: kotlin.String
+    fun isEmpty(): kotlin.Boolean
 
     @JvmInline
-    value class Boolean(val value: kotlin.Boolean) : ServiceConfigValue {
-        override val stringValue: kotlin.String
-            get() = value.toString()
+    value class Boolean(val inner: kotlin.Boolean) : ServiceConfigValue {
+        override fun isEmpty(): kotlin.Boolean = false
     }
 
     @JvmInline
-    value class Double(val value: kotlin.Double) : ServiceConfigValue {
-        override val stringValue: kotlin.String
-            get() = value.toString()
+    value class Double(val inner: kotlin.Double) : ServiceConfigValue {
+        override fun isEmpty(): kotlin.Boolean = false
     }
 
     @JvmInline
-    value class String(val value: kotlin.String) : ServiceConfigValue {
-        override val stringValue: kotlin.String get() = value
+    value class String(val inner: kotlin.String) : ServiceConfigValue {
+        override fun isEmpty(): kotlin.Boolean = inner.isEmpty()
     }
 
     @JsonClass(generateAdapter = true)
@@ -62,9 +60,12 @@ sealed interface ServiceConfigValue {
         val cookies: kotlin.String,
         val userAgent: kotlin.String,
     ) : ServiceConfigValue {
-        override val stringValue: kotlin.String
-            get() = cookies + userAgent
+        override fun isEmpty(): kotlin.Boolean = cookies.isEmpty() && userAgent.isEmpty()
     }
+}
+
+fun ServiceConfigValue?.isNullOrEmpty(): Boolean {
+    return this == null || isEmpty()
 }
 
 @JsonClass(generateAdapter = false)

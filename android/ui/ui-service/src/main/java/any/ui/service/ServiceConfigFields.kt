@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceConfigType
+import any.data.entity.ServiceConfigValue
 import any.ui.browser.Browser
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.FlatSwitch
@@ -61,7 +62,13 @@ internal fun BoolFieldItem(
         )
 
         var checked by remember(field.value) {
-            mutableStateOf(field.value?.stringValue?.toBooleanStrictOrNull() ?: false)
+            val value = field.value
+            val boolValue = if (value is ServiceConfigValue.Boolean) {
+                value.inner
+            } else {
+                false
+            }
+            mutableStateOf(boolValue)
         }
         FlatSwitch(
             checked = checked,
@@ -95,14 +102,19 @@ internal fun OptionFieldItem(
 
     var value by remember(field.value) {
         val defaultValue = field.value?.let {
-            if (it.stringValue.isEmpty() && options.isNotEmpty()) {
+            if (it.isEmpty() && options.isNotEmpty()) {
                 val first = options.first()
                 onValueChange(first.value)
                 first.name
             } else {
-                options.firstOrNull { opt ->
-                    opt.value == field.value?.stringValue
-                }?.name
+                val value = field.value
+                if (value is ServiceConfigValue.String) {
+                    options.firstOrNull { opt ->
+                        opt.value == value.inner
+                    }?.name
+                } else {
+                    options.firstOrNull()?.name
+                }
             }
         }
         mutableStateOf(defaultValue ?: "")
@@ -187,7 +199,14 @@ internal fun TextFieldItem(
 
     val digitsOnly = field.type == ServiceConfigType.Number
 
-    var value by remember(field.value) { mutableStateOf(field.value?.stringValue ?: "") }
+    var value by remember(field.value) {
+        val text = when (val value = field.value) {
+            is ServiceConfigValue.Double -> value.inner.toString()
+            is ServiceConfigValue.String -> value.inner
+            else -> ""
+        }
+        mutableStateOf(text)
+    }
 
     OutlinedTextField(
         value = value,
