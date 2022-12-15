@@ -9,9 +9,9 @@ class ServiceConfigValueAdapter {
     @ToJson
     fun toJson(value: ServiceConfigValue): String {
         return when (value) {
-            is ServiceConfigValue.Boolean -> Json.toJson(value.value, Boolean::class.java)
-            is ServiceConfigValue.Double -> Json.toJson(value.value, Double::class.java)
-            is ServiceConfigValue.String -> Json.toJson(value.value, String::class.java)
+            is ServiceConfigValue.Boolean -> Json.toJson(value.inner, Boolean::class.java)
+            is ServiceConfigValue.Double -> Json.toJson(value.inner, Double::class.java)
+            is ServiceConfigValue.String -> Json.toJson(value.inner, String::class.java)
 
             is ServiceConfigValue.CookiesAndUa -> Json.toJson(
                 value, ServiceConfigValue.CookiesAndUa::class.java
@@ -27,6 +27,10 @@ class ServiceConfigValueAdapter {
             is Double -> ServiceConfigValue.Double(value)
 
             is String -> {
+                if (value.isEmpty()) {
+                    return ServiceConfigValue.String("")
+                }
+
                 if (value.length >= 2) {
                     val stringValue = try {
                         Json.fromJson(value, String::class.java)
@@ -48,12 +52,14 @@ class ServiceConfigValueAdapter {
                     return ServiceConfigValue.Double(doubleVal)
                 }
 
-                try {
-                    return Json.fromJson(value, ServiceConfigValue.CookiesAndUa::class.java)!!
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    ServiceConfigValue.String(value)
+                if (value.first() == '{' && value.last() == '}') {
+                    try {
+                        return Json.fromJson(value, ServiceConfigValue.CookiesAndUa::class.java)!!
+                    } catch (_: Exception) {
+                    }
                 }
+
+                ServiceConfigValue.String(value)
             }
 
             else -> {
