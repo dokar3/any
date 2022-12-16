@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.app.DialogFragment
 import android.app.ProgressDialog
 import android.graphics.ColorFilter
+import android.graphics.PointF
 import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Bundle
@@ -594,6 +595,7 @@ class ImagePagerFragment : DialogFragment() {
                     preview.visibility = View.GONE
                     preview.recycle()
                 }
+                updateScaleAndAlignment(photoView)
             }
 
             override fun onImageLoaded() {}
@@ -836,6 +838,32 @@ class ImagePagerFragment : DialogFragment() {
             it.alpha = alpha
             it.translationY = -it.height * progress
         }
+    }
+
+    private fun updateScaleAndAlignment(photoView: MultiOnTouchPhotoView) {
+        val viewWidth = photoView.measuredWidth
+        val viewHeight = photoView.measuredHeight
+        if (viewWidth == 0 || viewHeight == 0) {
+            return
+        }
+        val viewAspectRatio = viewWidth.toFloat() / viewHeight
+        val sourceWidth = photoView.sWidth
+        val sourceHeight = photoView.sHeight
+        if (sourceWidth == 0 || sourceHeight == 0) {
+            return
+        }
+        val sourceAspectRatio = sourceWidth.toFloat() / sourceHeight
+        // Make the image fill-width
+        val scale = viewWidth.toFloat() / sourceWidth
+        // Calculate the center point of the source image
+        val center = if (sourceAspectRatio < viewAspectRatio) {
+            // For long images, align to the top edge
+            PointF(sourceWidth / 2f, 0f)
+        } else {
+            // Otherwise, align to the center
+            PointF(sourceWidth / 2f, sourceHeight / 2f)
+        }
+        photoView.setScaleAndCenter(scale, center)
     }
 
     companion object {
