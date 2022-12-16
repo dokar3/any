@@ -1,5 +1,6 @@
 package any.ui.common.image
 
+import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
@@ -25,7 +26,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.core.graphics.drawable.toDrawable
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
@@ -35,6 +38,8 @@ import any.download.PostImageDownloader
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.controller.ControllerListener
+import com.facebook.drawee.drawable.ScalingUtils
+import com.facebook.drawee.drawable.ScalingUtils.AbstractScaleType
 import com.facebook.drawee.generic.GenericDraweeHierarchyInflater
 import com.facebook.drawee.view.DraweeHolder
 import com.facebook.imagepipeline.common.ResizeOptions
@@ -280,6 +285,12 @@ private fun FrescoAsyncImageImpl(
         holder
     }
 
+    val frescoScaleType = rememberFrescoScaleType(alignment, contentScale)
+
+    LaunchedEffect(holder, frescoScaleType) {
+        holder.hierarchy.actualImageScaleType = frescoScaleType
+    }
+
     LaunchedEffect(progressColor, secondaryProgressColor, layoutDirection) {
         progressDrawable?.let {
             it.progressColor = progressColor.toArgb()
@@ -312,12 +323,65 @@ private fun FrescoAsyncImageImpl(
     }
 
     Image(
-        modifier = modifier,
         painter = rememberDrawablePainter(drawable),
         contentDescription = contentDescription,
+        modifier = modifier,
+        alpha = alpha,
+        colorFilter = colorFilter,
         alignment = alignment,
         contentScale = contentScale,
-        alpha = alpha,
-        colorFilter = colorFilter
     )
+}
+
+@Composable
+private fun rememberFrescoScaleType(
+    alignment: Alignment,
+    contentScale: ContentScale,
+): ScalingUtils.ScaleType {
+    val layoutDirection = LocalLayoutDirection.current
+    return remember(alignment, contentScale, layoutDirection) {
+        createFrescoScaleType(alignment, contentScale, layoutDirection)
+    }
+}
+
+private fun createFrescoScaleType(
+    alignment: Alignment,
+    contentScale: ContentScale,
+    layoutDirection: LayoutDirection,
+): ScalingUtils.ScaleType {
+    return object : AbstractScaleType() {
+        override fun getTransformImpl(
+            outTransform: Matrix,
+            parentRect: Rect,
+            childWidth: Int,
+            childHeight: Int,
+            focusX: Float,
+            focusY: Float,
+            scaleX: Float,
+            scaleY: Float
+        ) {
+            val parentSize = IntSize(parentRect.width(), parentRect.height())
+            if (parentSize.width <= 0 || parentSize.height <= 0) {
+                return
+            }
+
+            val childSize = IntSize(childWidth, childHeight)
+            val scaleFactor = contentScale.computeScaleFactor(
+                srcSize = childSize.toSize(),
+                dstSize = parentSize.toSize(),
+            )
+            outTransform.setScale(scaleFactor.scaleX, scaleFactor.scaleY)
+
+            val scaledChildSize = IntSize(
+                width = (childWidth * scaleFactor.scaleX).toInt(),
+                height = (childHeight * scaleFactor.scaleY).toInt()
+            )
+            val offset = alignment.align(
+                size = scaledChildSize,
+                space = parentSize,
+                layoutDirection = layoutDirection
+            )
+            outTransform.postTranslate(offset.x.toFloat(), offset.y.toFloat())
+        }
+    }
 }
