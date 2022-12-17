@@ -35,5 +35,9 @@ internal fun UiSettings(
         item {
             HeaderImageItem()
         }
+
+        item {
+            ScrollBehaviorsItem()
+        }
     }
 }

@@ -54,6 +54,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.compose.ImmutableHolder
+import any.base.prefs.fixedBottomBar
+import any.base.prefs.fixedTopBar
+import any.base.prefs.preferencesStore
 import any.domain.entity.UiUser
 import any.navigation.NavEvent
 import any.navigation.Routes
@@ -152,6 +155,8 @@ private fun FollowingScreenContent(
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
+    val preferencesStore = LocalContext.current.preferencesStore()
+
     val listPadding = PaddingValues(
         top = titleBarHeight + serviceSelectionHeight + WindowInsets.statusBars
             .asPaddingValues()
@@ -181,7 +186,8 @@ private fun FollowingScreenContent(
 
     QuickReturnScreen(
         state = screenState,
-        fixedTopBar = uiState.isSelectionEnabled,
+        fixedTopBar = preferencesStore.fixedTopBar.value || uiState.isSelectionEnabled,
+        fixedBottomBar = preferencesStore.fixedBottomBar.value,
         bottomBarHeight = listPadding.calculateBottomPadding(),
         topBar = {
             FollowingAppBar(

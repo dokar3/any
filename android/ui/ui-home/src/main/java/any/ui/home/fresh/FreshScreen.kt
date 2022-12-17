@@ -51,6 +51,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.compose.ImmutableHolder
 import any.base.compose.LocalBenchmarkBuild
 import any.base.image.ImageRequest
+import any.base.prefs.fixedBottomBar
+import any.base.prefs.fixedTopBar
 import any.base.prefs.headerImage
 import any.base.prefs.overrideServiceHeaderImage
 import any.base.prefs.preferencesStore
@@ -107,6 +109,8 @@ internal fun FreshScreen(
     val scope = rememberCoroutineScope()
 
     val context = LocalContext.current
+
+    val preferencesStore = context.preferencesStore()
 
     val uiState by viewModel.freshUiState.collectAsState()
     val services = uiState.services
@@ -176,7 +180,8 @@ internal fun FreshScreen(
     QuickReturnScreen(
         state = screenState,
         modifier = modifier,
-        fixedTopBar = LocalBenchmarkBuild.current,
+        fixedTopBar = preferencesStore.fixedTopBar.value || LocalBenchmarkBuild.current,
+        fixedBottomBar = preferencesStore.fixedBottomBar.value,
         bottomBarHeight = listPadding.calculateBottomPadding(),
         topBar = {
             TitleBar(

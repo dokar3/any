@@ -274,6 +274,15 @@ val PreferencesStore.versionCodeIgnoresBuiltinServiceUpdates
         longValue(this, key, defaultValue = 0L)
     }
 
+val PreferencesStore.fixedTopBar
+    get() = prefValueOf("fixed_top_bar") { key ->
+        boolValue(this, key, defaultValue = false)
+    }
+
+val PreferencesStore.fixedBottomBar
+    get() = prefValueOf("fixed_bottom_bar") { key ->
+        boolValue(this, key, defaultValue = false)
+    }
 
 @Suppress("unchecked_cast")
 private fun <T> PreferencesStore.prefValueOf(

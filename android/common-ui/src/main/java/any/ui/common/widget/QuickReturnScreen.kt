@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import any.ui.common.lazy.LazyScrollableState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -116,9 +118,59 @@ class QuickReturnScreenState(
 }
 
 @Composable
+fun rememberQuickReturnNestedScrollConnection(
+    state: QuickReturnScreenState,
+): QuickReturnNestedScrollConnection {
+    val scope = rememberCoroutineScope()
+    return remember(scope, state) {
+        QuickReturnNestedScrollConnection(scope, state)
+    }
+}
+
+class QuickReturnNestedScrollConnection(
+    private val scope: CoroutineScope,
+    private val state: QuickReturnScreenState,
+) : NestedScrollConnection {
+    internal var fixedTopBar: Boolean = false
+    internal var fixedBottomBar: Boolean = false
+
+    override fun onPostScroll(
+        consumed: Offset,
+        available: Offset,
+        source: NestedScrollSource
+    ): Offset {
+        updateOffset(consumed)
+        return Offset.Zero
+    }
+
+    private fun updateOffset(offset: Offset) {
+        if (!fixedTopBar) {
+            val newOffset = (state.topBarOffsetYAnim.value + offset.y)
+                .coerceIn(-state.topBarHeight.toFloat(), 0f)
+            scope.launch {
+                state.updateTopBarOffset(newOffset)
+            }
+        }
+
+        if (!fixedBottomBar) {
+            val newOffset = (state.btmBarOffsetYAnim.value - offset.y)
+                .coerceIn(0f, state.btmBarHeight.toFloat())
+            scope.launch {
+                state.updateBottomBarOffset(
+                    bottomBarHeight = state.btmBarHeight,
+                    newOffset = newOffset,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun QuickReturnScreen(
     modifier: Modifier = Modifier,
     state: QuickReturnScreenState = rememberQuickReturnScreenState(),
+    nestedScrollConnection: QuickReturnNestedScrollConnection =
+        rememberQuickReturnNestedScrollConnection(state = state),
     fixedTopBar: Boolean = false,
     fixedBottomBar: Boolean = false,
     topBarHeight: Dp = 0.dp,
@@ -127,9 +179,12 @@ fun QuickReturnScreen(
     bottomBar: @Composable ColumnScope.(offsetY: Int) -> Unit,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-
     val density = LocalDensity.current
+
+    SideEffect {
+        nestedScrollConnection.fixedTopBar = fixedTopBar
+        nestedScrollConnection.fixedBottomBar = fixedBottomBar
+    }
 
     LaunchedEffect(topBarHeight) {
         if (topBarHeight > 0.dp) {
@@ -140,40 +195,6 @@ fun QuickReturnScreen(
     LaunchedEffect(bottomBarHeight) {
         if (bottomBarHeight > 0.dp) {
             state.btmBarHeight = with(density) { bottomBarHeight.roundToPx() }
-        }
-    }
-
-    val nestedScrollConnection = remember(fixedTopBar, fixedBottomBar) {
-        object : NestedScrollConnection {
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource
-            ): Offset {
-                updateOffset(consumed)
-                return Offset.Zero
-            }
-
-            private fun updateOffset(offset: Offset) {
-                if (!fixedTopBar) {
-                    val newOffset = (state.topBarOffsetYAnim.value + offset.y)
-                        .coerceIn(-state.topBarHeight.toFloat(), 0f)
-                    scope.launch {
-                        state.updateTopBarOffset(newOffset)
-                    }
-                }
-
-                if (!fixedBottomBar) {
-                    val newOffset = (state.btmBarOffsetYAnim.value - offset.y)
-                        .coerceIn(0f, state.btmBarHeight.toFloat())
-                    scope.launch {
-                        state.updateBottomBarOffset(
-                            bottomBarHeight = state.btmBarHeight,
-                            newOffset = newOffset,
-                        )
-                    }
-                }
-            }
         }
     }
 

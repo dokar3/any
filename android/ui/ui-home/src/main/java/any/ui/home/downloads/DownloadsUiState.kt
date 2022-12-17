@@ -10,7 +10,7 @@ data class DownloadsUiState(
     val downloadTypes: List<DownloadType> = emptyList(),
     val selectedDownloadType: DownloadType = DownloadType.All(0),
 ) {
-    fun isInSelection(): Boolean = selectedDownloadUrls.isNotEmpty()
+    fun isSelectionEnabled(): Boolean = selectedDownloadUrls.isNotEmpty()
 }
 
 @Immutable
