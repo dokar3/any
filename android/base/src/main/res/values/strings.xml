@@ -325,4 +325,7 @@
     <string name="all_builtin_services_are_up_to_date">All built-in services are up-to-date</string>
     <string name="update_all">Update all</string>
     <string name="_incompatible_service_required_api_versions">"Incompatible service, required api version: %s, current: %s "</string>
+    <string name="fixed_top_bar">Fixed top bar</string>
+    <string name="fixed_bottom_bar">Fixed bottom bar</string>
+    <string name="scroll_behaviors">Scroll behaviors</string>
 </resources>

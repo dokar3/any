@@ -78,6 +78,9 @@ import any.base.compose.StableHolder
 import any.base.compose.rememberProvider
 import any.base.model.FolderViewType
 import any.base.model.PostSorting
+import any.base.prefs.fixedBottomBar
+import any.base.prefs.fixedTopBar
+import any.base.prefs.preferencesStore
 import any.base.util.Intents
 import any.base.util.urlDecode
 import any.base.util.urlEncode
@@ -134,13 +137,14 @@ internal fun CollectionsScreen(
     ),
     tagSelectionHeight: Dp = 48.dp,
 ) {
+    val preferencesStore = LocalContext.current.preferencesStore()
+
     val topInset = WindowInsets.statusBars
         .asPaddingValues()
         .calculateTopPadding()
     val bottomInset = WindowInsets.navigationBars
         .asPaddingValues()
         .calculateBottomPadding()
-
 
     val listPadding = PaddingValues(
         top = topInset + titleBarHeight + tagSelectionHeight,
@@ -159,14 +163,14 @@ internal fun CollectionsScreen(
 
     val screenState = rememberQuickReturnScreenState(scrollableState)
 
-    val isSelectionEnabled = uiState.isMultiSelectionEnabled()
+    val isSelectionEnabled = uiState.isSelectionEnabled()
 
     val currentFolder = uiState.currentFolderUiState.folder
-    val handleBack = !currentFolder.isRoot() || uiState.isMultiSelectionEnabled()
+    val handleBack = !currentFolder.isRoot() || isSelectionEnabled
     BackHandler(enabled = handleBack) {
         if (!currentFolder.isRoot()) {
             viewModel.gotoParentFolder()
-        } else if (uiState.isMultiSelectionEnabled()) {
+        } else if (isSelectionEnabled) {
             viewModel.finishMultiSelection()
         }
     }
@@ -175,8 +179,8 @@ internal fun CollectionsScreen(
         viewModel.loadCollectedPosts()
     }
 
-    LaunchedEffect(uiState.isMultiSelectionEnabled()) {
-        if (uiState.isMultiSelectionEnabled()) {
+    LaunchedEffect(isSelectionEnabled) {
+        if (isSelectionEnabled) {
             screenState.resetBars()
         }
     }
@@ -196,6 +200,8 @@ internal fun CollectionsScreen(
 
     QuickReturnScreen(
         state = screenState,
+        fixedTopBar = preferencesStore.fixedTopBar.value || isSelectionEnabled,
+        fixedBottomBar = preferencesStore.fixedBottomBar.value,
         bottomBarHeight = listPadding.calculateBottomPadding(),
         topBar = {
             TitleBar(
@@ -251,7 +257,7 @@ internal fun CollectionsScreen(
                         .background(MaterialTheme.colors.topBarBackground)
                         .alpha(if (isSelectionEnabled) 0f else 1f),
                 )
-                if (uiState.isMultiSelectionEnabled()) {
+                if (isSelectionEnabled) {
                     PostSelectionPanel(
                         selectedPosts = ImmutableHolder(uiState.selectedPosts),
                         onFinishSelectionRequest = {
@@ -275,7 +281,6 @@ internal fun CollectionsScreen(
             }
         },
         bottomBar = { onBottomBarOffsetUpdate(it) },
-        fixedTopBar = isSelectionEnabled,
         modifier = modifier,
     ) {
         var selectedPost: UiPost? by remember { mutableStateOf(null) }
@@ -423,7 +428,7 @@ internal fun CollectionsScreen(
                     onLinkClick = { Intents.openInBrowser(context, it) },
                     onPostClick = {
                         val isSelected = uiState.selectedPosts.contains(it)
-                        if (uiState.isMultiSelectionEnabled()) {
+                        if (isSelectionEnabled) {
                             if (isSelected) {
                                 viewModel.removeFromSelection(it)
                             } else {
@@ -435,7 +440,7 @@ internal fun CollectionsScreen(
                     },
                     onPostLongClick = {
                         val isSelected = uiState.selectedPosts.contains(it)
-                        if (uiState.isMultiSelectionEnabled()) {
+                        if (isSelectionEnabled) {
                             if (isSelected) {
                                 viewModel.removeFromSelection(it)
                             } else {
@@ -447,7 +452,7 @@ internal fun CollectionsScreen(
                     },
                     onFolderClick = { viewModel.loadPostsForNextFolder(it) },
                     onFolderLongClick = {
-                        if (!uiState.isMultiSelectionEnabled()) {
+                        if (!isSelectionEnabled) {
                             selectedFolder = it
                         }
                     },

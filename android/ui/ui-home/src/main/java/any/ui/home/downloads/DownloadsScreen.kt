@@ -70,6 +70,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import any.base.compose.ImmutableHolder
 import any.base.image.ImageRequest
+import any.base.prefs.fixedBottomBar
+import any.base.prefs.fixedTopBar
+import any.base.prefs.preferencesStore
 import any.base.util.compose.performLongPress
 import any.navigation.NavEvent
 import any.navigation.Routes
@@ -117,6 +120,8 @@ internal fun DownloadsScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    val preferencesStore = LocalContext.current.preferencesStore()
+
     val scrollableState = rememberLazyListScrollableState()
     val screenState = rememberQuickReturnScreenState(lazyScrollableState = scrollableState)
 
@@ -129,7 +134,7 @@ internal fun DownloadsScreen(
 
     val uiState by viewModel.downloadsUiState.collectAsState()
 
-    val isInSelection = uiState.isInSelection()
+    val isSelectionEnabled = uiState.isSelectionEnabled()
 
     var bottomBarOffset by remember { mutableStateOf(0) }
 
@@ -139,8 +144,8 @@ internal fun DownloadsScreen(
         viewModel.loadAllDownloads()
     }
 
-    LaunchedEffect(screenState, isInSelection) {
-        if (isInSelection) {
+    LaunchedEffect(screenState, isSelectionEnabled) {
+        if (isSelectionEnabled) {
             screenState.resetTopBar()
         }
     }
@@ -157,19 +162,20 @@ internal fun DownloadsScreen(
         }
     }
 
-    BackHandler(enabled = isInSelection) {
+    BackHandler(enabled = isSelectionEnabled) {
         viewModel.unselectAll()
     }
 
     QuickReturnScreen(
         state = screenState,
-        fixedTopBar = isInSelection,
+        fixedTopBar = preferencesStore.fixedTopBar.value || isSelectionEnabled,
+        fixedBottomBar = preferencesStore.fixedBottomBar.value,
         bottomBarHeight = listPadding.calculateBottomPadding(),
         topBar = {
             TitleBar(
                 height = titleBarHeight,
                 startActionButton = {
-                    if (isInSelection) {
+                    if (isSelectionEnabled) {
                         TitleActionButton(
                             label = stringResource(BaseR.string.unselect_all),
                             onClick = { viewModel.unselectAll() },
@@ -187,7 +193,7 @@ internal fun DownloadsScreen(
                     }
                 },
                 endActionButton = {
-                    if (isInSelection) {
+                    if (isSelectionEnabled) {
                         TitleActionButton(
                             label = stringResource(BaseR.string.select_all),
                             onClick = { viewModel.selectAll() },
@@ -202,7 +208,7 @@ internal fun DownloadsScreen(
                     }
                 },
             ) {
-                if (isInSelection) {
+                if (isSelectionEnabled) {
                     val selectedCount = uiState.selectedDownloadUrls.size
                     Text(stringResource(BaseR.string._selected, selectedCount))
                 } else {
@@ -234,7 +240,7 @@ internal fun DownloadsScreen(
                 onSelect = viewModel::select,
                 onUnselect = viewModel::unselect,
                 state = scrollableState.listState,
-                isInSelection = uiState.isInSelection(),
+                isInSelection = uiState.isSelectionEnabled(),
                 downloads = ImmutableHolder(uiState.downloads),
                 selectedDownloads = ImmutableHolder(uiState.selectedDownloadUrls),
                 contentPadding = listPadding,
@@ -257,7 +263,7 @@ internal fun DownloadsScreen(
                 }
             }
 
-            if (isInSelection) {
+            if (isSelectionEnabled) {
                 val navBarHeightPx = WindowInsets.navigationBars
                     .getBottom(LocalDensity.current)
                 FloatingActionButton(

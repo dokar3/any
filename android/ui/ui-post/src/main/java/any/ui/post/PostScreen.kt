@@ -74,6 +74,8 @@ import any.base.compose.ImmutableHolder
 import any.base.compose.StableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
+import any.base.prefs.fixedBottomBar
+import any.base.prefs.fixedTopBar
 import any.base.prefs.postFontScale
 import any.base.prefs.postLineSpacingMultiplier
 import any.base.prefs.preferencesStore
@@ -245,6 +247,8 @@ private fun PostScreenContent(
 
     val scope = rememberCoroutineScope()
 
+    val preferencesStore = context.preferencesStore()
+
     var jumpToPageDialogVisible by remember { mutableStateOf(false) }
 
     val density = LocalDensity.current
@@ -268,6 +272,8 @@ private fun PostScreenContent(
 
     QuickReturnScreen(
         state = quickReturnScreenState,
+        fixedTopBar = preferencesStore.fixedTopBar.value,
+        fixedBottomBar = preferencesStore.fixedBottomBar.value,
         topBar = {
             var showDebugMenu by remember { mutableStateOf(false) }
 

@@ -16,7 +16,7 @@ data class CollectionsUiState(
     val currentFolderUiState: FolderUiState = FolderUiState(),
     val previousFolderUiState: FolderUiState = FolderUiState(),
 ) {
-    fun isMultiSelectionEnabled() = selectedPosts.isNotEmpty()
+    fun isSelectionEnabled() = selectedPosts.isNotEmpty()
 }
 
 @Stable
