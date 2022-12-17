@@ -14,8 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import any.base.compose.StableHolder
-import any.ui.settings.files.viewmodel.FilesAndDataViewModel
-import any.ui.settings.viewmodel.SettingsViewModel
+import any.ui.settings.SettingsViewModel
 
 private const val ROUTE_FILES_SETTINGS = "settings/files_and_data/main"
 

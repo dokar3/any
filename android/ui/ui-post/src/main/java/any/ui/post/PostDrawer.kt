@@ -38,7 +38,6 @@ import any.base.compose.ImmutableHolder
 import any.data.entity.Bookmark
 import any.domain.post.ContentSection
 import any.ui.common.widget.BottomSheetTitle
-import any.ui.post.viewmodel.BookmarkUiState
 import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.BottomSheetDefaults
 import com.dokar.sheets.BottomSheetState

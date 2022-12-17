@@ -27,7 +27,6 @@ import any.ui.common.theme.sizes
 import any.ui.common.widget.SearchBar
 import any.ui.common.widget.SearchBarState
 import any.ui.common.widget.ServiceDropdownButton
-import any.ui.search.viewmodel.SearchUiState
 
 @Composable
 internal fun TitleBar(

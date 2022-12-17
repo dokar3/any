@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import any.base.util.CrashHandler
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.BottomSheetTitle
-import any.ui.settings.viewmodel.SettingsViewModel
+import any.ui.settings.SettingsViewModel
 import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.PeekHeight
 import com.dokar.sheets.rememberBottomSheetState

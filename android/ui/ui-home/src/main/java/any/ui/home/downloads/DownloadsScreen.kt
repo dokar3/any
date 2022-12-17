@@ -100,8 +100,6 @@ import any.ui.home.HomeScrollToTopManager
 import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
-import any.ui.home.downloads.viewmodel.DownloadsViewModel
-import any.ui.home.downloads.viewmodel.PostDownload
 import kotlinx.coroutines.launch
 
 @Composable

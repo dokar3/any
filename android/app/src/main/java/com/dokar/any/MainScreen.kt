@@ -35,8 +35,8 @@ import any.ui.common.dialog.UpdateBuiltinServicesDialog
 import any.ui.common.widget.SimpleDialog
 import any.ui.imagepager.ImagePagerViewModel
 import any.ui.service.ServiceDialog
-import any.ui.settings.services.viewmodel.ServiceMgtViewModel
-import any.ui.settings.services.viewmodel.ServicesUiState
+import any.ui.settings.services.ServiceMgtViewModel
+import any.ui.settings.services.ServicesUiState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull

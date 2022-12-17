@@ -60,8 +60,6 @@ import any.ui.common.widget.ProgressPullRefreshIndicator
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberBarsColorController
 import any.ui.common.widget.rememberPullRefreshIndicatorOffset
-import any.ui.profile.viewmodel.ProfileUiState
-import any.ui.profile.viewmodel.ProfileViewModel
 import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch

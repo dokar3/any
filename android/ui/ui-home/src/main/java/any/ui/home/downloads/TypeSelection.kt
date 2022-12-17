@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import any.base.compose.ImmutableHolder
 import any.ui.home.HomeScreenDefaults
 import any.ui.home.SelectionChip
-import any.ui.home.downloads.viewmodel.DownloadType
 
 @Composable
 internal fun TypeSelection(

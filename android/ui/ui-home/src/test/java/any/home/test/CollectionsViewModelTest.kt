@@ -13,7 +13,7 @@ import any.data.testing.repository.createTestPostRepository
 import any.data.testing.repository.createTestServiceRepository
 import any.data.testing.source.post.TestLocalPostDataSource
 import any.data.testing.source.post.TestServiceBridge
-import any.ui.home.collections.viewmodel.CollectionsViewModel
+import any.ui.home.collections.CollectionsViewModel
 import app.cash.turbine.test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

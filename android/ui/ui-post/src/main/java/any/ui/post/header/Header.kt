@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import any.data.entity.Post
 import any.domain.entity.UiPost
 import any.domain.entity.UiServiceManifest
-import any.ui.post.viewmodel.PostUiState
+import any.ui.post.PostUiState
 
 @Composable
 internal fun Header(

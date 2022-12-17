@@ -33,7 +33,6 @@ import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.SimpleDialog
 import any.ui.home.HomeScreenDefaults
 import any.ui.home.SelectionChip
-import any.ui.home.collections.viewmodel.SelectableTag
 
 @Composable
 internal fun TagSelection(

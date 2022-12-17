@@ -46,7 +46,6 @@ import any.ui.settings.menu.ActionMenuController
 import any.ui.settings.privacy.PrivacySettings
 import any.ui.settings.services.ServiceManagement
 import any.ui.settings.ui.UiSettings
-import any.ui.settings.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

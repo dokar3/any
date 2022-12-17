@@ -15,7 +15,7 @@ import any.navigation.NavEvent
 import any.navigation.Routes
 import any.navigation.navPushEvent
 import any.ui.settings.SettingsItem
-import any.ui.settings.viewmodel.SettingsViewModel
+import any.ui.settings.SettingsViewModel
 
 private object Links {
     const val Github = "https://github.com/dokar3/any"

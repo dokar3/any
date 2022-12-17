@@ -20,8 +20,8 @@ import any.navigation.Routes
 import any.navigation.navPushEvent
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
+import any.ui.settings.SettingsViewModel
 import any.ui.settings.menu.ActionMenuController
-import any.ui.settings.viewmodel.SettingsViewModel
 
 internal const val ROUTE_DEV_MAIN = "dev_main"
 

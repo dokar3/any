@@ -59,8 +59,8 @@ import any.ui.common.theme.thumbBorder
 import any.ui.common.widget.Avatar
 import any.ui.common.widget.OptionsText
 import any.ui.common.widget.TextOption
+import any.ui.post.PostUiState
 import any.ui.post.item.ItemsDefaults
-import any.ui.post.viewmodel.PostUiState
 
 @Composable
 internal fun ComicHeader(
