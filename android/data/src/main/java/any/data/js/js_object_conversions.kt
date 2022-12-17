@@ -1,6 +1,5 @@
 package any.data.js
 
-import any.data.entity.Checksums
 import any.data.entity.JsPageKey
 import any.data.entity.JsType
 import any.data.entity.ServiceConfig
@@ -10,142 +9,72 @@ import any.data.entity.ServiceManifest
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-fun String.escape(): String {
-    return replace("\\", "\\\\")
-        .replace("\t", "\\t")
-        .replace("\b", "\\b")
-        .replace("\n", "\\n")
-        .replace("\r", "\\r")
-        .replace("\'", "\\'")
-        .replace("\"", "\\\"")
-}
-
-fun ServiceManifest.toJsManifestObject(): String = buildString {
-    append('{')
-
-    appendStringField("id", id)
-    appendStringField("name", name)
-    appendStringField("description", description)
-    appendStringField("developer", developer)
-    appendStringField("developerUrl", developerUrl)
-    appendStringField("developerAvatar", developerAvatar)
-    appendStringField("homepage", homepage)
-    appendStringField("version", version)
-    appendStringField("minApiVersion", minApiVersion)
-    appendStringField("maxApiVersion", maxApiVersion)
-    appendField("mainChecksums", mainChecksums.toJsObject())
-    appendField("isPageable", isPageable)
-    appendStringField("postsViewType", postsViewType?.value)
-    appendStringField("mediaAspectRatio", mediaAspectRatio)
-    appendStringField("icon", icon)
-    appendStringField("headerImage", headerImage)
-    appendStringField("themeColor", themeColor)
-    appendStringField("darkThemeColor", darkThemeColor)
-    appendStringArray("supportedPostUrls", supportedPostUrls)
-    appendStringArray("supportedUserUrls", supportedUserUrls)
-    appendField("forceConfigsValidation", forceConfigsValidation)
-
-    append('}')
-}
-
-private fun Checksums.toJsObject(): String = buildString {
-    append('{')
-    appendStringField("md5", md5)
-    appendStringField("sha1", sha1)
-    appendStringField("sha256", sha256)
-    appendStringField("sha512", sha512, appendComma = false)
-    append('}')
-}
-
-private fun StringBuilder.appendField(name: String, value: Any?) {
-    append(name)
-    append(':')
-    append(value)
-    append(",")
-}
-
-private fun StringBuilder.appendStringField(
-    name: String,
-    value: String?,
-    appendComma: Boolean = true,
-) {
-    if (value != null) {
-        append(name)
-        append(":\"")
-        append(value.escape())
-        if (appendComma) {
-            append("\",")
-        } else {
-            append('"')
-        }
-    } else {
-        append(name)
-        append(":null,")
+fun ServiceManifest.toJsObject(): JsObject = buildJsObject {
+    "name" eq name
+    "description" eq description
+    "developer" eq developer
+    "developerUrl" eq developerUrl
+    "developerAvatar" eq developerAvatar
+    "homepage" eq homepage
+    "version" eq version
+    "minApiVersion" eq minApiVersion
+    "maxApiVersion" eq maxApiVersion
+    "mainChecksums" eq buildJsObject {
+        "md5" eq mainChecksums.md5
+        "sha1" eq mainChecksums.sha1
+        "sha256" eq mainChecksums.sha256
+        "sha512" eq mainChecksums.sha512
     }
+    "isPageable" eq isPageable
+    "postsViewType" eq postsViewType?.value
+    "mediaAspectRatio" eq mediaAspectRatio
+    "icon" eq icon
+    "headerImage" eq headerImage
+    "themeColor" eq themeColor
+    "darkThemeColor" eq darkThemeColor
+    "supportedPostUrls" eq supportedPostUrls
+    "supportedUserUrls" eq supportedUserUrls
+    "forceConfigsValidation" eq forceConfigsValidation
 }
 
-private fun StringBuilder.appendStringArray(name: String, values: List<String>?) {
-    if (values != null) {
-        append(name)
-        append(':')
-        append('[')
-        for (value in values) {
-            append('"')
-            append(value.escape())
-            append('"')
-            append(',')
-        }
-        append("],")
-    } else {
-        append(name)
-        append(":null,")
-    }
-}
-
-fun List<ServiceConfig>?.toJsObject(): String = buildString {
-    append('{')
+fun List<ServiceConfig>?.toJsObject(): JsObject = buildJsObject {
     val fields = this@toJsObject ?: emptyList()
     for (field in fields) {
-        append(field.key)
-        append(":")
         val type = field.type
         val value = field.value
-        if (value != null) {
-            when (type) {
-                ServiceConfigType.Bool -> {
-                    checkConfigValue<ServiceConfigValue.Boolean>(value, type)
-                    append(value.inner)
-                }
+        if (value == null) {
+            field.key eq JsObject.Null
+            continue
+        }
+        when (type) {
+            ServiceConfigType.Bool -> {
+                checkConfigValue<ServiceConfigValue.Boolean>(value, type)
+                field.key eq value.inner
+            }
 
-                ServiceConfigType.Number -> {
-                    checkConfigValue<ServiceConfigValue.Double>(value, type)
-                    append(value.inner)
-                }
+            ServiceConfigType.Number -> {
+                checkConfigValue<ServiceConfigValue.Double>(value, type)
+                field.key eq value.inner
+            }
 
-                ServiceConfigType.CookiesAndUserAgent -> {
-                    checkConfigValue<ServiceConfigValue.CookiesAndUa>(value, type)
-                    append('{')
-                    appendStringField("cookies", value.cookies)
-                    appendStringField("userAgent", value.userAgent, appendComma = false)
-                    append('}')
-                }
-
-                ServiceConfigType.Text,
-                ServiceConfigType.Url,
-                ServiceConfigType.Option,
-                ServiceConfigType.Cookies -> {
-                    checkConfigValue<ServiceConfigValue.String>(value, type)
-                    append('"')
-                    append(value.inner.escape())
-                    append('"')
+            ServiceConfigType.CookiesAndUserAgent -> {
+                checkConfigValue<ServiceConfigValue.CookiesAndUa>(value, type)
+                field.key eq buildJsObject {
+                    "cookies" eq value.cookies
+                    "userAgent" eq value.userAgent
                 }
             }
-        } else {
-            append("null")
+
+            ServiceConfigType.Text,
+            ServiceConfigType.Url,
+            ServiceConfigType.Option,
+            ServiceConfigType.Cookies -> {
+                checkConfigValue<ServiceConfigValue.String>(value, type)
+                field.key eq value.inner
+            }
         }
-        append(',')
+
     }
-    append('}')
 }
 
 @OptIn(ExperimentalContracts::class)
@@ -165,7 +94,7 @@ private inline fun <reified T : ServiceConfigValue> checkConfigValue(
     }
 }
 
-fun JsPageKey?.toJsObject(): String {
+fun JsPageKey?.toJsValue(): String {
     return when (this?.type) {
         JsType.String -> "\"${value.toString().escape()}\""
         JsType.Number -> value.toString()

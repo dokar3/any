@@ -104,7 +104,7 @@ class ServiceBridgeImpl(
             val code = """
                 const params = {
                     userId: "${userId.escape()}",
-                    pageKey: ${pageKey.toJsObject()},
+                    pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.getFeature(AnyUserFeature);
                 const pagedResult = feature.fetchPosts(params);
@@ -132,7 +132,7 @@ class ServiceBridgeImpl(
             @Language("JS")
             val code = """
                 const params = {
-                    pageKey: ${pageKey.toJsObject()},
+                    pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.getFeature(AnyPostFeature);
                 const pagedResult = feature.fetchFreshList(params);
@@ -213,7 +213,7 @@ class ServiceBridgeImpl(
             val code = """
                 const params = {
                     query: "$query",
-                    pageKey: ${pageKey.toJsObject()},
+                    pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.getFeature(AnyPostFeature);
                 const pagedResult = feature.search(params);
@@ -245,7 +245,7 @@ class ServiceBridgeImpl(
                 const params = {
                     postUrl: "$postUrl",
                     loadKey: "$commentsKey",
-                    pageKey: ${pageKey.toJsObject()},
+                    pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.getFeature(AnyPostFeature);
                 const comments = feature.fetchComments(params);
