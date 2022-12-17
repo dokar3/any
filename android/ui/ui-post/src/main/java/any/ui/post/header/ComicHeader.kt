@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.image.ImageRequest
 import any.base.image.ImageState
+import any.data.ThumbAspectRatio
+import any.data.entity.Post
 import any.domain.entity.UiPost
 import any.domain.entity.UiServiceManifest
 import any.ui.common.LocalFontScale
@@ -68,6 +71,7 @@ internal fun ComicHeader(
     onSearchTextRequest: (String) -> Unit,
     onUserClick: () -> Unit,
     modifier: Modifier = Modifier,
+    defThumbAspectRatio: Float = 4f / 5,
 ) {
     Column(
         modifier = modifier
@@ -104,14 +108,26 @@ internal fun ComicHeader(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row {
-            val thumbnail = post.media?.firstOrNull()?.url ?: ""
+            val thumbnail: String
+            val thumbAspectRatio: Float
+            val thumbMedia = post.media?.firstOrNull()
+            if (thumbMedia != null && thumbMedia.type != Post.Media.Type.Video) {
+                thumbnail = thumbMedia.thumbnail ?: thumbMedia.url
+                val r = thumbMedia.aspectRatio
+                    ?: service?.mediaAspectRatio
+                    ?: defThumbAspectRatio
+                thumbAspectRatio = r.coerceAtLeast(ThumbAspectRatio.MIN_THUMB_ASPECT_RATIO)
+            } else {
+                thumbnail = ""
+                thumbAspectRatio = defThumbAspectRatio
+            }
             var previousThumb: String? by remember { mutableStateOf(null) }
             AsyncImage(
                 request = ImageRequest.Url(thumbnail),
                 contentDescription = null,
                 modifier = Modifier
                     .width(180.dp)
-                    .height(225.dp)
+                    .aspectRatio(thumbAspectRatio)
                     .shadow(MaterialTheme.sizes.thumbElevation)
                     .clip(MaterialTheme.shapes.thumb)
                     .background(MaterialTheme.colors.imagePlaceholder)
