@@ -61,6 +61,11 @@ private val Libs = listOf(
         link = "https://github.com/cashapp/zipline",
     ),
     Lib(
+        name = "ExoPlayer",
+        author = "Google",
+        link = "https://github.com/google/ExoPlayer",
+    ),
+    Lib(
         name = "flick",
         author = "Saket Narayan",
         link = "https://github.com/saket/flick",
