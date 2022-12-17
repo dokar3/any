@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import any.ui.settings.viewmodel.SettingsViewModel
+import any.ui.settings.SettingsViewModel
 
 @Composable
 fun PrivacySettings(

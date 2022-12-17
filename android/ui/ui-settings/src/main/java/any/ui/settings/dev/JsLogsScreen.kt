@@ -11,9 +11,9 @@ import androidx.compose.ui.platform.LocalContext
 import any.base.util.Permissions
 import any.ui.jslogger.FloatingLoggerService
 import any.ui.jslogger.LoggerScreen
+import any.ui.settings.SettingsViewModel
 import any.ui.settings.menu.ActionMenuController
 import any.ui.settings.menu.ActionMenuItem
-import any.ui.settings.viewmodel.SettingsViewModel
 
 @Composable
 internal fun JsLogsScreen(

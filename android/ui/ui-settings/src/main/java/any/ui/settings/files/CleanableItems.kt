@@ -37,7 +37,6 @@ import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.RoundedProgressBar
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
-import any.ui.settings.files.viewmodel.CleanableItem
 
 @Composable
 internal fun CleanableItems(

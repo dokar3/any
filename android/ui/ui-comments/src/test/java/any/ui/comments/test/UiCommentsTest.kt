@@ -1,10 +1,10 @@
 package any.ui.comments.test
 
 import any.data.entity.Comment
-import any.ui.comments.viewmodel.UiComment
-import any.ui.comments.viewmodel.collapseReplies
-import any.ui.comments.viewmodel.getReplies
-import any.ui.comments.viewmodel.toUiComments
+import any.ui.comments.UiComment
+import any.ui.comments.collapseReplies
+import any.ui.comments.getReplies
+import any.ui.comments.toUiComments
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.UUID

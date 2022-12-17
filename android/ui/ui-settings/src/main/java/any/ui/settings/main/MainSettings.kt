@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import any.base.prefs.preferencesStore
 import any.base.prefs.showDevOptions
 import any.navigation.NavEvent
-import any.ui.settings.viewmodel.SettingsViewModel
+import any.ui.settings.SettingsViewModel
 
 @Composable
 internal fun MainSettings(

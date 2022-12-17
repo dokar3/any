@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import any.ui.floatingbubble.FloatingView
 import any.ui.floatingbubble.FloatingViewManager
 import any.ui.readingbubble.entity.ReadingPost
-import any.ui.readingbubble.viewmodel.ReadingBubbleViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

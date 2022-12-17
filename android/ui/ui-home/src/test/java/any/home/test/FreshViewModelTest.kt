@@ -17,8 +17,8 @@ import any.data.testing.source.post.TestLocalPostDataSource
 import any.data.testing.source.post.TestServiceBridge
 import any.domain.entity.UiServiceManifest
 import any.domain.service.toUiManifest
-import any.ui.home.fresh.viewmodel.FreshUiState
-import any.ui.home.fresh.viewmodel.FreshViewModel
+import any.ui.home.fresh.FreshUiState
+import any.ui.home.fresh.FreshViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

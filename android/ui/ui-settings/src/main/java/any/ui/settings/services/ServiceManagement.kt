@@ -95,11 +95,9 @@ import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
 import any.ui.service.ServiceDialog
+import any.ui.settings.SettingsViewModel
 import any.ui.settings.menu.ActionMenuController
 import any.ui.settings.menu.ActionMenuItem
-import any.ui.settings.services.viewmodel.AppendableService
-import any.ui.settings.services.viewmodel.ServiceMgtViewModel
-import any.ui.settings.viewmodel.SettingsViewModel
 import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.PeekHeight
 import com.dokar.sheets.rememberBottomSheetState

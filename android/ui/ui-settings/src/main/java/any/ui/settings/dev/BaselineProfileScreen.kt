@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.profileinstaller.ProfileVerifier
 import androidx.profileinstaller.ProfileVerifier.CompilationStatus
 import any.ui.common.theme.pass
-import any.ui.settings.viewmodel.SettingsViewModel
+import any.ui.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors

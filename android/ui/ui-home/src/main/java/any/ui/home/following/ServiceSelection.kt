@@ -33,7 +33,6 @@ import any.base.compose.ImmutableHolder
 import any.ui.common.theme.themeColorOrPrimary
 import any.ui.common.widget.Avatar
 import any.ui.home.HomeScreenDefaults
-import any.ui.home.following.viewmodel.ServiceOfFollowingUsers
 
 @Composable
 internal fun ServiceSelection(

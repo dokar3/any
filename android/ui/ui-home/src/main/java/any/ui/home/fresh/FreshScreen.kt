@@ -80,8 +80,6 @@ import any.ui.home.IconTintTheme
 import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
-import any.ui.home.fresh.viewmodel.FreshUiState
-import any.ui.home.fresh.viewmodel.FreshViewModel
 import any.ui.jslogger.FloatingLoggerService
 import any.ui.service.ServiceDialog
 import kotlinx.coroutines.flow.distinctUntilChanged

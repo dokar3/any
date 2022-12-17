@@ -48,7 +48,6 @@ import any.ui.common.theme.thumb
 import any.ui.common.theme.thumbBorder
 import any.ui.common.widget.EmojiEmptyContent
 import any.ui.readingbubble.entity.ReadingPost
-import any.ui.readingbubble.viewmodel.ReadingBubbleUiState
 
 @Composable
 internal fun ReadingBubbleContent(

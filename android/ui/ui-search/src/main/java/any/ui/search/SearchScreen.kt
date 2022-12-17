@@ -62,7 +62,6 @@ import any.ui.common.widget.ProgressBar
 import any.ui.common.widget.StatusBarSpacer
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberSearchBarState
-import any.ui.search.viewmodel.SearchViewModel
 import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

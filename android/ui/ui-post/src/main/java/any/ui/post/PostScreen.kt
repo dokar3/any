@@ -135,9 +135,6 @@ import any.ui.post.menu.ThemeItem
 import any.ui.post.sheet.AddBookmarkDialog
 import any.ui.post.sheet.TextStyleSheet
 import any.ui.post.sheet.ThemeSettingsSheet
-import any.ui.post.viewmodel.BookmarkViewModel
-import any.ui.post.viewmodel.PostUiState
-import any.ui.post.viewmodel.PostViewModel
 import any.ui.readingbubble.ReadingBubbleService
 import any.ui.readingbubble.entity.ReadingPost
 import com.dokar.sheets.detectPointerPositionChanges

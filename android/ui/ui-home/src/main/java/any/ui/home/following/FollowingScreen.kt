@@ -73,9 +73,6 @@ import any.ui.home.HomeScrollToTopManager
 import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
-import any.ui.home.following.viewmodel.FollowingUiState
-import any.ui.home.following.viewmodel.FollowingViewModel
-import any.ui.home.following.viewmodel.ServiceOfFollowingUsers
 import kotlinx.coroutines.launch
 
 @Composable

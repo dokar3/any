@@ -64,8 +64,6 @@ import any.domain.entity.UiServiceManifest
 import any.navigation.NavEvent
 import any.navigation.Routes
 import any.navigation.imagePager
-import any.ui.comments.viewmodel.CommentsViewModel
-import any.ui.comments.viewmodel.UiComment
 import any.ui.common.image.AsyncImage
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.placeholder

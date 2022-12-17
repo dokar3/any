@@ -61,7 +61,6 @@ import any.ui.common.theme.sizes
 import any.ui.common.widget.EmojiEmptyContent
 import any.ui.home.HomeScreenDefaults
 import any.ui.home.Loading
-import any.ui.home.collections.viewmodel.FolderPost
 import kotlinx.coroutines.delay
 
 @ExperimentalFoundationApi

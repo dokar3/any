@@ -20,7 +20,7 @@ import any.base.R
 import any.base.util.Intents
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.secondaryText
-import any.ui.settings.viewmodel.SettingsViewModel
+import any.ui.settings.SettingsViewModel
 
 @Immutable
 private data class Lib(
