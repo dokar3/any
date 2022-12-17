@@ -215,6 +215,9 @@ fun VideoView(
                 indication = null,
                 onClick = {
                     onClick?.invoke()
+                    if (state.error != null) {
+                        return@clickable
+                    }
                     if (state.isPlaying) {
                         state.pause()
                     } else if (state.isPlayed) {
