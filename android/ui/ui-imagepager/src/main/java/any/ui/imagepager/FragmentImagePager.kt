@@ -401,6 +401,7 @@ class ImagePagerFragment : DialogFragment() {
     }
 
     private fun showUiBars() {
+        if (dialog == null) return
         dialog.window?.decorView?.showBars(dialog.window!!)
         _binding?.titleBar?.let {
             it.visibility = View.VISIBLE
@@ -415,6 +416,7 @@ class ImagePagerFragment : DialogFragment() {
     }
 
     private fun hideUiBars() {
+        if (dialog == null) return
         dialog.window?.decorView?.hideBars(dialog.window!!)
         _binding?.titleBar?.let {
             it.animate().cancel()
@@ -769,7 +771,7 @@ class ImagePagerFragment : DialogFragment() {
             setDoubleTapZoomDuration(doubleTapDuration)
             setDoubleTapZoomScale(3f)
 
-            val toggleBarRunnable = Runnable {
+            val toggleBarsRunnable = Runnable {
                 if (isTitleBarVisible) {
                     hideUiBars()
                 } else {
@@ -779,8 +781,8 @@ class ImagePagerFragment : DialogFragment() {
 
             val onGestureListener = object : GestureDetector.SimpleOnGestureListener() {
                 override fun onDoubleTap(e: MotionEvent): Boolean {
-                    removeCallbacks(toggleBarRunnable)
-                    postDelayed(toggleBarRunnable, doubleTapDuration.toLong())
+                    removeCallbacks(toggleBarsRunnable)
+                    postDelayed(toggleBarsRunnable, doubleTapDuration.toLong())
                     return false
                 }
             }
