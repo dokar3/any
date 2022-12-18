@@ -35,7 +35,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -388,7 +387,7 @@ private fun CoverGridPostItem(
                     color = MaterialTheme.colors.thumbBorder,
                     shape = MaterialTheme.shapes.thumb,
                 ),
-            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center,
             tagMargin = 12.dp,
         )
 

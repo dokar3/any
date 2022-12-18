@@ -389,6 +389,7 @@ private fun CoverListPostItem(
                         color = MaterialTheme.colors.thumbBorder,
                         shape = MaterialTheme.shapes.thumb,
                     ),
+                alignment = Alignment.Center,
                 tagMargin = 6.dp,
                 tagFontSize = 13.sp,
             )
