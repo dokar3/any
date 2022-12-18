@@ -65,24 +65,36 @@ val Colors.secondaryText: Color
 
 val Colors.thumbBorder: Color
     @Composable
-    get() = if (isLight) Color(0xffbebebe) else Color(0xff333333)
+    get() = if (isLight) Color(0xffbebebe) else Color(0xff555555)
 
 val Colors.placeholder: Color
     @Composable
-    get() = remember(onBackground, background) {
-        onBackground.copy(alpha = 0.06f).compositeOver(background)
+    get() = remember(onBackground, background, isLight) {
+        if (isLight) {
+            onBackground.copy(alpha = 0.06f).compositeOver(background)
+        } else {
+            onBackground.copy(alpha = 0.24f).compositeOver(background)
+        }
     }
 
 val Colors.imagePlaceholder: Color
     @Composable
-    get() = remember(onBackground, background) {
-        onBackground.copy(alpha = 0.08f).compositeOver(background)
+    get() = remember(onBackground, background, isLight) {
+        if (isLight) {
+            onBackground.copy(alpha = 0.08f).compositeOver(background)
+        } else {
+            onBackground.copy(alpha = 0.32f).compositeOver(background)
+        }
     }
 
 val Colors.darkerImagePlaceholder: Color
     @Composable
-    get() = remember(onBackground, background) {
-        onBackground.copy(alpha = 0.12f).compositeOver(background)
+    get() = remember(onBackground, background, isLight) {
+        if (isLight) {
+            onBackground.copy(alpha = 0.12f).compositeOver(background)
+        } else {
+            onBackground.copy(alpha = 0.48f).compositeOver(background)
+        }
     }
 
 val Colors.primaryColors: List<Color>
