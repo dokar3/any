@@ -10,6 +10,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 fun ServiceManifest.toJsObject(): JsObject = buildJsObject {
+    "id" eq id
     "name" eq name
     "description" eq description
     "developer" eq developer
