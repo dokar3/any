@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import any.base.compose.ImmutableHolder
 import any.base.compose.StableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
@@ -65,7 +66,6 @@ import any.base.util.Intents
 import any.data.entity.CookiesUaValue
 import any.data.entity.PostsViewType
 import any.data.entity.ServiceConfig
-import any.data.entity.ServiceConfigType
 import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
 import any.data.entity.value
@@ -756,28 +756,25 @@ private fun FieldItem(
     onValueChange: (Any?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    when (field.type) {
-        ServiceConfigType.Bool -> {
+    when (field) {
+        is ServiceConfig.Bool -> {
             BoolFieldItem(
-                field = field,
+                name = field.name,
+                description = field.description,
+                value = field.value ?: false,
                 onValueChange = { onValueChange(it) },
                 enabled = enabled,
                 modifier = modifier,
             )
         }
 
-        ServiceConfigType.Option -> {
-            OptionFieldItem(
-                field = field,
-                onValueChange = { onValueChange(it) },
-                enabled = enabled,
-                modifier = modifier,
-            )
-        }
-
-        ServiceConfigType.Cookies -> {
+        is ServiceConfig.Cookies -> {
             CookiesFieldItem(
-                field = field,
+                name = field.name,
+                description = field.description,
+                requestUrl = field.requestUrl,
+                targetUrl = field.targetUrl,
+                userAgent = field.userAgent,
                 onValueChange = { _, cookies -> onValueChange(cookies) },
                 enabled = enabled,
                 error = error,
@@ -785,9 +782,13 @@ private fun FieldItem(
             )
         }
 
-        ServiceConfigType.CookiesUa -> {
+        is ServiceConfig.CookiesUa -> {
             CookiesFieldItem(
-                field = field,
+                name = field.name,
+                description = field.description,
+                requestUrl = field.requestUrl,
+                targetUrl = field.targetUrl,
+                userAgent = field.userAgent,
                 onValueChange = { ua, cookies ->
                     val newValue = CookiesUaValue(
                         cookies = cookies,
@@ -801,9 +802,50 @@ private fun FieldItem(
             )
         }
 
-        else -> {
+        is ServiceConfig.Number -> {
             TextFieldItem(
-                field = field,
+                name = field.name,
+                description = field.description,
+                value = field.value?.toString(),
+                digitsOnly = true,
+                onValueChange = { onValueChange(it) },
+                enabled = enabled,
+                error = error,
+                modifier = modifier,
+            )
+        }
+
+        is ServiceConfig.Option -> {
+            OptionFieldItem(
+                name = field.name,
+                description = field.description,
+                options = ImmutableHolder(field.options),
+                value = field.value,
+                onValueChange = { onValueChange(it) },
+                enabled = enabled,
+                modifier = modifier,
+            )
+        }
+
+        is ServiceConfig.Text -> {
+            TextFieldItem(
+                name = field.name,
+                description = field.description,
+                value = field.value,
+                digitsOnly = false,
+                onValueChange = { onValueChange(it) },
+                enabled = enabled,
+                error = error,
+                modifier = modifier,
+            )
+        }
+
+        is ServiceConfig.Url -> {
+            TextFieldItem(
+                name = field.name,
+                description = field.description,
+                value = field.value,
+                digitsOnly = false,
                 onValueChange = { onValueChange(it) },
                 enabled = enabled,
                 error = error,
