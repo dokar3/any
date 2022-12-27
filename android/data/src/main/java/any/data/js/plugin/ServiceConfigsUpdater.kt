@@ -1,7 +1,6 @@
 package any.data.js.plugin
 
 import any.data.entity.ServiceConfig
-import any.data.entity.ServiceConfigValue
 import any.data.json.Json
 
 interface ServiceConfigsUpdater {
@@ -14,7 +13,7 @@ interface ServiceConfigsUpdater {
          * @throws IllegalArgumentException If configs json is invalid
          */
         fun updateConfigsFromJson(
-            parser: Json,
+            json: Json,
             current: List<ServiceConfig>?,
             updated: String,
         ): List<ServiceConfig> {
@@ -26,9 +25,9 @@ interface ServiceConfigsUpdater {
 
             val currConfigMap = current.associateBy { it.key }.toMutableMap()
 
-            val newConfigMap = parser.fromJson<Map<String, ServiceConfigValue?>>(
+            val newConfigMap = json.fromJson<Map<String, Any?>>(
                 json = updated,
-                type = Json.parameterizedType<Map<String, ServiceConfigValue?>>()
+                type = Json.parameterizedType<Map<String, Any?>>()
             )
             if (newConfigMap.isNullOrEmpty()) {
                 throw IllegalArgumentException(

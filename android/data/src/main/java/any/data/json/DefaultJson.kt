@@ -10,8 +10,7 @@ import java.lang.reflect.Type
 
 internal object DefaultJson : Json {
     private val moshi = Moshi.Builder()
-        .add(ServiceConfigValueAdapter())
-        .add(ServiceConfigTypeFallbackAdapter())
+        .add(ServiceConfigAdapter())
         .build()
 
     override fun <T> fromJson(json: String, type: Type): T? {

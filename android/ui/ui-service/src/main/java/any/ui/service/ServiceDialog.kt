@@ -62,12 +62,13 @@ import any.base.image.ImageRequest
 import any.base.image.ImageState
 import any.base.result.ValidationResult
 import any.base.util.Intents
+import any.data.entity.CookiesUaValue
 import any.data.entity.PostsViewType
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceConfigType
-import any.data.entity.ServiceConfigValue
 import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
+import any.data.entity.value
 import any.data.js.ServiceApiVersion
 import any.domain.entity.UiServiceManifest
 import any.richtext.RichContent
@@ -267,7 +268,7 @@ private fun ServiceFieldList(
     onServiceViewTypeChange: (PostsViewType) -> Unit,
     requiredFields: StableHolder<List<ServiceConfig>?>,
     optionalFields: StableHolder<List<ServiceConfig>?>,
-    onConfigValueChange: (ServiceConfig, ServiceConfigValue) -> Unit,
+    onConfigValueChange: (ServiceConfig, Any?) -> Unit,
     onShowServiceDetailsClick: () -> Unit,
     runValidator: Boolean,
     onRunValidatorChange: (Boolean) -> Unit,
@@ -447,7 +448,7 @@ private fun Header(name: String) {
 private fun LazyListScope.fieldsItems(
     title: String,
     fields: List<ServiceConfig>,
-    onConfigValueChange: (ServiceConfig, ServiceConfigValue) -> Unit,
+    onConfigValueChange: (ServiceConfig, Any?) -> Unit,
     isValidating: Boolean,
     validations: Map<String, ValidationResult>,
 ) {
@@ -752,16 +753,14 @@ private fun FieldItem(
     enabled: Boolean,
     field: ServiceConfig,
     error: String?,
-    onValueChange: (ServiceConfigValue) -> Unit,
+    onValueChange: (Any?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (field.type) {
         ServiceConfigType.Bool -> {
             BoolFieldItem(
                 field = field,
-                onValueChange = {
-                    onValueChange(ServiceConfigValue.String(it))
-                },
+                onValueChange = { onValueChange(it) },
                 enabled = enabled,
                 modifier = modifier,
             )
@@ -770,9 +769,7 @@ private fun FieldItem(
         ServiceConfigType.Option -> {
             OptionFieldItem(
                 field = field,
-                onValueChange = {
-                    onValueChange(ServiceConfigValue.String(it))
-                },
+                onValueChange = { onValueChange(it) },
                 enabled = enabled,
                 modifier = modifier,
             )
@@ -781,20 +778,18 @@ private fun FieldItem(
         ServiceConfigType.Cookies -> {
             CookiesFieldItem(
                 field = field,
-                onValueChange = { _, cookies ->
-                    onValueChange(ServiceConfigValue.String(cookies))
-                },
+                onValueChange = { _, cookies -> onValueChange(cookies) },
                 enabled = enabled,
                 error = error,
                 modifier = modifier,
             )
         }
 
-        ServiceConfigType.CookiesAndUserAgent -> {
+        ServiceConfigType.CookiesUa -> {
             CookiesFieldItem(
                 field = field,
                 onValueChange = { ua, cookies ->
-                    val newValue = ServiceConfigValue.CookiesAndUa(
+                    val newValue = CookiesUaValue(
                         cookies = cookies,
                         userAgent = ua,
                     )
@@ -809,9 +804,7 @@ private fun FieldItem(
         else -> {
             TextFieldItem(
                 field = field,
-                onValueChange = {
-                    onValueChange(ServiceConfigValue.String(it))
-                },
+                onValueChange = { onValueChange(it) },
                 enabled = enabled,
                 error = error,
                 modifier = modifier,

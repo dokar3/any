@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceConfigType
-import any.data.entity.ServiceConfigValue
+import any.data.entity.value
 import any.ui.browser.Browser
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.FlatSwitch
@@ -63,8 +63,8 @@ internal fun BoolFieldItem(
 
         var checked by remember(field.value) {
             val value = field.value
-            val boolValue = if (value is ServiceConfigValue.Boolean) {
-                value.inner
+            val boolValue = if (value is Boolean) {
+                value
             } else {
                 false
             }
@@ -96,9 +96,13 @@ internal fun OptionFieldItem(
     enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    require(field is ServiceConfig.Option) {
+        "Unsupported config type: ${field::class.java}"
+    }
+
     FieldName(name = field.name)
 
-    val options = field.options ?: emptyList()
+    val options = field.options
 
     var value by remember(field.value) {
         val defaultValue = field.value?.let {
@@ -108,10 +112,8 @@ internal fun OptionFieldItem(
                 first.name
             } else {
                 val value = field.value
-                if (value is ServiceConfigValue.String) {
-                    options.firstOrNull { opt ->
-                        opt.value == value.inner
-                    }?.name
+                if (value is String) {
+                    options.firstOrNull { opt -> opt.value == value }?.name
                 } else {
                     options.firstOrNull()?.name
                 }
@@ -201,8 +203,7 @@ internal fun TextFieldItem(
 
     var value by remember(field.value) {
         val text = when (val value = field.value) {
-            is ServiceConfigValue.Double -> value.inner.toString()
-            is ServiceConfigValue.String -> value.inner
+            is String -> value
             else -> ""
         }
         mutableStateOf(text)
@@ -251,10 +252,31 @@ internal fun CookiesFieldItem(
 
     var showBrowser by remember { mutableStateOf(false) }
 
+    val requestUrl: String
+    val targetUrl: String
+    val userAgent: String?
+    when (field) {
+        is ServiceConfig.Cookies -> {
+            requestUrl = field.requestUrl
+            targetUrl = field.targetUrl
+            userAgent = field.userAgent
+        }
+
+        is ServiceConfig.CookiesUa -> {
+            requestUrl = field.requestUrl
+            targetUrl = field.targetUrl
+            userAgent = field.userAgent
+        }
+
+        else -> {
+            throw IllegalArgumentException("Unsupported config type: ${field::class.java}")
+        }
+    }
+
     Column(modifier = modifier.fillMaxWidth()) {
         Button(
             onClick = { showBrowser = true },
-            enabled = enabled && field.cookiesRequestUrl != null,
+            enabled = enabled && requestUrl.isNotEmpty(),
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(field.name)
@@ -278,17 +300,16 @@ internal fun CookiesFieldItem(
         }
     }
 
-    if (showBrowser && field.cookiesRequestUrl != null) {
+    if (showBrowser && requestUrl.isNotEmpty()) {
         Browser(
-            url = field.cookiesRequestUrl!!,
+            url = requestUrl,
             title = field.name,
-            userAgent = field.cookiesUserAgent,
-            cookiesTargetUrl = field.cookiesTargetUrl,
+            userAgent = userAgent,
+            cookiesTargetUrl = targetUrl,
             onGetCookies = {
                 showBrowser = false
                 if (it != null) {
-                    val ua = field.cookiesUserAgent
-                        ?: WebSettings.getDefaultUserAgent(context)
+                    val ua = userAgent ?: WebSettings.getDefaultUserAgent(context)
                     onValueChange(ua, it)
                 }
             },

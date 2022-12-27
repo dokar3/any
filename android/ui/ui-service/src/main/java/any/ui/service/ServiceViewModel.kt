@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import any.base.result.ValidationResult
 import any.data.entity.ServiceConfig
-import any.data.entity.ServiceConfigValue
 import any.data.entity.ServiceManifest
 import any.data.entity.updateValuesFrom
+import any.data.entity.value
 import any.data.js.ServiceRunner
 import any.data.js.validator.BasicServiceConfigsValidator
 import any.data.js.validator.JsServiceConfigsValidator
@@ -64,7 +64,7 @@ class ServiceViewModel(
 
     fun tryValidateConfigsAndSave(
         service: UiServiceManifest,
-        values: Map<String, ServiceConfigValue?>,
+        values: Map<String, Any?>,
         runJsValidator: Boolean,
     ) = viewModelScope.launch(workerDispatcher) {
         val serviceConfigs = service.configs

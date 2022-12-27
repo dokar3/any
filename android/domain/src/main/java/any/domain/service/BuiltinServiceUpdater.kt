@@ -1,6 +1,5 @@
 package any.domain.service
 
-import any.data.entity.ServiceConfig
 import any.data.entity.ServiceManifest
 import any.data.entity.updateValuesFrom
 import any.data.repository.ServiceRepository
@@ -108,7 +107,7 @@ class BuiltinServiceUpdater(
             main = builtin.main,
             mainChecksums = builtin.mainChecksums,
             languages = builtin.languages,
-            configs = updateServiceConfigs(old = service.configs, new = builtin.configs),
+            configs = builtin.configs?.updateValuesFrom(service.configs),
             supportedPostUrls = builtin.supportedPostUrls,
             supportedUserUrls = builtin.supportedUserUrls,
             forceConfigsValidation = builtin.forceConfigsValidation,
@@ -117,16 +116,5 @@ class BuiltinServiceUpdater(
             localResources = localResources,
         )
         return updated.toStored()
-    }
-
-    private fun updateServiceConfigs(
-        old: List<ServiceConfig>?,
-        new: List<ServiceConfig>?,
-    ): List<ServiceConfig>? {
-        if (old.isNullOrEmpty() || new.isNullOrEmpty()) {
-            return new
-        }
-        val oldConfigMap = old.associateBy { it.key }
-        return new.map { it.copy(value = oldConfigMap[it.key]?.value ?: it.value) }
     }
 }
