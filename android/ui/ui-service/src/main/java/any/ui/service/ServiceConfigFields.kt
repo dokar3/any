@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
@@ -36,152 +38,142 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import any.data.entity.ServiceConfig
-import any.data.entity.ServiceConfigType
-import any.data.entity.value
+import any.base.compose.ImmutableHolder
+import any.data.entity.ServiceConfigOption
 import any.ui.browser.Browser
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.FlatSwitch
 
 @Composable
 internal fun BoolFieldItem(
-    field: ServiceConfig,
-    onValueChange: (String) -> Unit,
+    name: String,
+    description: String?,
+    value: Boolean,
+    onValueChange: (Boolean) -> Unit,
     enabled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val description = field.description
+    Column {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            FieldName(
+                name = name,
+                modifier = Modifier.weight(1f)
+            )
 
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        FieldName(
-            name = field.name,
-            modifier = Modifier.weight(1f)
-        )
+            var checked by remember(value) { mutableStateOf(value) }
 
-        var checked by remember(field.value) {
-            val value = field.value
-            val boolValue = if (value is Boolean) {
-                value
-            } else {
-                false
-            }
-            mutableStateOf(boolValue)
+            FlatSwitch(
+                checked = checked,
+                onCheckedChange = {
+                    checked = it
+                    onValueChange(it)
+                },
+                enabled = enabled,
+            )
         }
-        FlatSwitch(
-            checked = checked,
-            onCheckedChange = {
-                checked = it
-                onValueChange(it.toString())
-            },
-            enabled = enabled,
-        )
-    }
 
-    if (!description.isNullOrEmpty()) {
-        Text(
-            text = description,
-            color = MaterialTheme.colors.secondaryText,
-            fontSize = 14.sp,
-        )
+        if (!description.isNullOrEmpty()) {
+            FieldDescription(description = description)
+        }
     }
 }
 
 @Composable
 internal fun OptionFieldItem(
-    field: ServiceConfig,
+    name: String,
+    description: String?,
+    options: ImmutableHolder<List<ServiceConfigOption>>,
+    value: String?,
     onValueChange: (String) -> Unit,
     enabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    require(field is ServiceConfig.Option) {
-        "Unsupported config type: ${field::class.java}"
-    }
+    Column {
+        FieldName(name = name)
 
-    FieldName(name = field.name)
+        if (!description.isNullOrEmpty()) {
+            FieldDescription(description = description)
 
-    val options = field.options
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
-    var value by remember(field.value) {
-        val defaultValue = field.value?.let {
-            if (it.isEmpty() && options.isNotEmpty()) {
-                val first = options.first()
-                onValueChange(first.value)
-                first.name
-            } else {
-                val value = field.value
-                if (value is String) {
-                    options.firstOrNull { opt -> opt.value == value }?.name
+        var selectedOption by remember(value) {
+            val defaultValue = value?.let {
+                if (it.isEmpty() && options.value.isNotEmpty()) {
+                    val first = options.value.first()
+                    onValueChange(first.value)
+                    first.name
                 } else {
-                    options.firstOrNull()?.name
+                    options.value.firstOrNull { opt -> opt.value == value }?.name
                 }
             }
-        }
-        mutableStateOf(defaultValue ?: "")
-    }
-
-    var showOptionsPopup by remember { mutableStateOf(false) }
-
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val interactionSource = remember { MutableInteractionSource() }
-        val indicatorColor by TextFieldDefaults.outlinedTextFieldColors()
-            .indicatorColor(
-                enabled = true,
-                isError = false,
-                interactionSource = interactionSource
-            )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(if (enabled) 1f else ContentAlpha.disabled)
-                .clip(TextFieldDefaults.OutlinedTextFieldShape)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = rememberRipple(),
-                    onClick = {
-                        showOptionsPopup = true
-                    },
-                    enabled = enabled,
-                )
-                .border(
-                    shape = TextFieldDefaults.OutlinedTextFieldShape,
-                    color = indicatorColor,
-                    width = 1.dp,
-                )
-                .padding(
-                    start = 16.dp,
-                    top = 12.dp,
-                    end = 8.dp,
-                    bottom = 12.dp,
-                ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Text(value)
-
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = null,
-            )
+            mutableStateOf(defaultValue ?: "")
         }
 
-        if (showOptionsPopup && options.isNotEmpty()) {
-            DropdownMenu(
-                expanded = true,
-                modifier = Modifier.width(maxWidth),
-                onDismissRequest = { showOptionsPopup = false },
-            ) {
-                for (option in options) {
-                    DropdownMenuItem(
+        var showOptionsPopup by remember { mutableStateOf(false) }
+
+        BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+            val interactionSource = remember { MutableInteractionSource() }
+            val indicatorColor by TextFieldDefaults.outlinedTextFieldColors()
+                .indicatorColor(
+                    enabled = true,
+                    isError = false,
+                    interactionSource = interactionSource
+                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(if (enabled) 1f else ContentAlpha.disabled)
+                    .clip(TextFieldDefaults.OutlinedTextFieldShape)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = rememberRipple(),
                         onClick = {
-                            value = option.name
-                            onValueChange(option.value)
-                            showOptionsPopup = false
+                            showOptionsPopup = true
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(option.name)
+                        enabled = enabled,
+                    )
+                    .border(
+                        shape = TextFieldDefaults.OutlinedTextFieldShape,
+                        color = indicatorColor,
+                        width = 1.dp,
+                    )
+                    .padding(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 8.dp,
+                        bottom = 12.dp,
+                    ),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(selectedOption)
+
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                )
+            }
+
+            if (showOptionsPopup && options.value.isNotEmpty()) {
+                DropdownMenu(
+                    expanded = true,
+                    modifier = Modifier.width(maxWidth),
+                    onDismissRequest = { showOptionsPopup = false },
+                ) {
+                    for (option in options.value) {
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedOption = option.name
+                                onValueChange(option.value)
+                                showOptionsPopup = false
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(option.name)
+                        }
                     }
                 }
             }
@@ -191,104 +183,79 @@ internal fun OptionFieldItem(
 
 @Composable
 internal fun TextFieldItem(
-    field: ServiceConfig,
+    name: String,
+    description: String?,
+    value: String?,
+    digitsOnly: Boolean,
     onValueChange: (String) -> Unit,
     enabled: Boolean,
     error: String?,
     modifier: Modifier = Modifier,
 ) {
-    FieldName(name = field.name)
+    Column {
+        FieldName(name = name)
 
-    val digitsOnly = field.type == ServiceConfigType.Number
+        var currValue by remember(value) { mutableStateOf(value ?: "") }
 
-    var value by remember(field.value) {
-        val text = when (val value = field.value) {
-            is String -> value
-            else -> ""
-        }
-        mutableStateOf(text)
-    }
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = { text ->
-            val filtered = if (digitsOnly) {
-                text.filter { it.isDigit() || it == '.' || it == '-' }
+        OutlinedTextField(
+            value = currValue,
+            onValueChange = { text ->
+                val filtered = if (digitsOnly) {
+                    text.filter { it.isDigit() || it == '.' || it == '-' }
+                } else {
+                    text
+                }
+                currValue = filtered
+                onValueChange(filtered)
+            },
+            modifier = modifier.fillMaxWidth(),
+            enabled = enabled,
+            label = if (!error.isNullOrEmpty()) {
+                { Text(error) }
             } else {
-                text
-            }
-            value = filtered
-            onValueChange(filtered)
-        },
-        modifier = modifier.fillMaxWidth(),
-        enabled = enabled,
-        label = if (!error.isNullOrEmpty()) {
-            { Text(error) }
-        } else {
-            null
-        },
-        placeholder = if (!field.description.isNullOrEmpty()) {
-            {
-                Text(field.description!!)
-            }
-        } else {
-            null
-        },
-        isError = error != null,
-        singleLine = true,
-        maxLines = 1,
-    )
+                null
+            },
+            placeholder = if (!description.isNullOrEmpty()) {
+                {
+                    Text(description)
+                }
+            } else {
+                null
+            },
+            isError = error != null,
+            singleLine = true,
+            maxLines = 1,
+        )
+    }
 }
 
 @Composable
 internal fun CookiesFieldItem(
-    field: ServiceConfig,
+    name: String,
+    description: String?,
+    requestUrl: String,
+    targetUrl: String,
+    userAgent: String?,
     onValueChange: (ua: String, cookies: String) -> Unit,
     enabled: Boolean,
     error: String?,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-
-    var showBrowser by remember { mutableStateOf(false) }
-
-    val requestUrl: String
-    val targetUrl: String
-    val userAgent: String?
-    when (field) {
-        is ServiceConfig.Cookies -> {
-            requestUrl = field.requestUrl
-            targetUrl = field.targetUrl
-            userAgent = field.userAgent
-        }
-
-        is ServiceConfig.CookiesUa -> {
-            requestUrl = field.requestUrl
-            targetUrl = field.targetUrl
-            userAgent = field.userAgent
-        }
-
-        else -> {
-            throw IllegalArgumentException("Unsupported config type: ${field::class.java}")
-        }
-    }
-
     Column(modifier = modifier.fillMaxWidth()) {
+        val context = LocalContext.current
+
+        var showBrowser by remember { mutableStateOf(false) }
+
         Button(
             onClick = { showBrowser = true },
             enabled = enabled && requestUrl.isNotEmpty(),
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(field.name)
+            Text(name)
         }
 
-        val description = field.description
         if (!description.isNullOrEmpty()) {
-            Text(
-                text = description,
-                fontSize = 14.sp,
-                color = MaterialTheme.colors.secondaryText,
-            )
+            FieldDescription(description = description)
         }
 
         if (error != null) {
@@ -298,27 +265,27 @@ internal fun CookiesFieldItem(
                 color = MaterialTheme.colors.error,
             )
         }
-    }
 
-    if (showBrowser && requestUrl.isNotEmpty()) {
-        Browser(
-            url = requestUrl,
-            title = field.name,
-            userAgent = userAgent,
-            cookiesTargetUrl = targetUrl,
-            onGetCookies = {
-                showBrowser = false
-                if (it != null) {
-                    val ua = userAgent ?: WebSettings.getDefaultUserAgent(context)
-                    onValueChange(ua, it)
-                }
-            },
-        )
+        if (showBrowser && requestUrl.isNotEmpty()) {
+            Browser(
+                url = requestUrl,
+                title = name,
+                userAgent = userAgent,
+                cookiesTargetUrl = targetUrl,
+                onGetCookies = {
+                    showBrowser = false
+                    if (it != null) {
+                        val ua = userAgent ?: WebSettings.getDefaultUserAgent(context)
+                        onValueChange(ua, it)
+                    }
+                },
+            )
+        }
     }
 }
 
 @Composable
-internal fun FieldName(
+private fun FieldName(
     name: String,
     modifier: Modifier = Modifier,
 ) {
@@ -327,5 +294,18 @@ internal fun FieldName(
         modifier = modifier.padding(vertical = 4.dp),
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
+    )
+}
+
+@Composable
+private fun FieldDescription(
+    description: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = description,
+        modifier = modifier,
+        color = MaterialTheme.colors.secondaryText,
+        fontSize = 14.sp,
     )
 }
