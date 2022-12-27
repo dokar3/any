@@ -328,4 +328,7 @@
     <string name="fixed_top_bar">Fixed top bar</string>
     <string name="fixed_bottom_bar">Fixed bottom bar</string>
     <string name="scroll_behaviors">Scroll behaviors</string>
+    <string name="this_value_is_not_allowed">This value is not allowed</string>
+    <string name="not_a_valid_http_url">Not a valid http URL</string>
+    <string name="no_cookies_obtained">No cookies obtained</string>
 </resources>

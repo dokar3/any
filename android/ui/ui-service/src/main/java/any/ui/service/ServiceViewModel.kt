@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import any.base.AndroidStrings
+import any.base.Strings
 import any.base.result.ValidationResult
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceManifest
@@ -26,12 +28,17 @@ import kotlinx.coroutines.launch
 class ServiceViewModel(
     private val serviceRepository: ServiceRepository,
     private val appRunner: ServiceRunner,
+    private val strings: Strings,
     private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
     private var checkUpgradeJob: Job? = null
 
     private val _serviceUiState = MutableStateFlow(ServiceUiState())
     val serviceUiState = _serviceUiState
+
+    private val basicConfigsValidator by lazy {
+        BasicServiceConfigsValidator(strings = strings)
+    }
 
     fun checkUpgradeInfo(service: UiServiceManifest) {
         checkUpgradeJob?.cancel()
@@ -84,7 +91,7 @@ class ServiceViewModel(
         val configs = serviceConfigs.map { it.copy(value = values[it.key] ?: it.value) }
 
         // Basic validations
-        val basicResults = BasicServiceConfigsValidator.validate(configs)
+        val basicResults = basicConfigsValidator.validate(configs)
 
         val jsValidator =
             JsServiceConfigsValidator(serviceRunner = appRunner, service = service.raw)
@@ -189,6 +196,7 @@ class ServiceViewModel(
             return ServiceViewModel(
                 serviceRepository = ServiceRepository.getDefault(context),
                 appRunner = ServiceRunner.getDefault(context),
+                strings = AndroidStrings(context),
             ) as T
         }
     }
