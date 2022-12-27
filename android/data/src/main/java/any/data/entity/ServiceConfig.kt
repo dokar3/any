@@ -8,28 +8,238 @@ typealias ServiceConfigs = List<ServiceConfig>
 
 fun ServiceConfigs.updateValuesFrom(other: ServiceConfigs?): ServiceConfigs {
     if (other.isNullOrEmpty()) return this
-    val localConfigValues = other.associate { it.key to it.value }
-    return map { it.copy(value = localConfigValues[it.key]) }
+    val values = other.associate { it.key to it.value }
+    return map { it.copy(value = values[it.key]) }
 }
 
 @Immutable
+sealed class ServiceConfig(
+    open val name: String,
+    open val key: String,
+    open val type: ServiceConfigType,
+    open val description: String? = null,
+    open val required: Boolean = false,
+    open val visibleToUser: Boolean = true,
+) {
+    abstract fun copy(value: Any?): ServiceConfig
+
+    @JsonClass(generateAdapter = true)
+    @Immutable
+    data class Bool(
+        override val name: String,
+        override val key: String,
+        override val type: ServiceConfigType,
+        override val description: String?,
+        override val required: Boolean = false,
+        override val visibleToUser: Boolean = true,
+        val value: Boolean?,
+    ) : ServiceConfig(
+        name = name,
+        key = key,
+        type = type,
+        description = description,
+        required = required,
+        visibleToUser = visibleToUser,
+    ) {
+        override fun copy(value: Any?): Bool {
+            require(value is Boolean?) {
+                val type = value?.let { it::class.java.simpleName }
+                "copy() requires a Boolean value, but a(n) $type is found"
+            }
+            return copy(value = value)
+        }
+    }
+
+    @JsonClass(generateAdapter = true)
+    @Immutable
+    data class Number(
+        override val name: String,
+        override val key: String,
+        override val type: ServiceConfigType,
+        override val description: String?,
+        override val required: Boolean = false,
+        override val visibleToUser: Boolean = true,
+        val value: Double?,
+    ) : ServiceConfig(
+        name = name,
+        key = key,
+        type = type,
+        description = description,
+        required = required,
+        visibleToUser = visibleToUser,
+    ) {
+        override fun copy(value: Any?): Number {
+            require(value is Double?) {
+                val type = value?.let { it::class.java.simpleName }
+                "copy() requires a Double value, but a(n) $type is found"
+            }
+            return copy(value = value)
+        }
+    }
+
+    @JsonClass(generateAdapter = true)
+    @Immutable
+    data class Text(
+        override val name: String,
+        override val key: String,
+        override val type: ServiceConfigType,
+        override val description: String?,
+        override val required: Boolean = false,
+        override val visibleToUser: Boolean = true,
+        val value: String?,
+    ) : ServiceConfig(
+        name = name,
+        key = key,
+        type = type,
+        description = description,
+        required = required,
+        visibleToUser = visibleToUser,
+    ) {
+        override fun copy(value: Any?): Text {
+            require(value is String?) {
+                val type = value?.let { it::class.java.simpleName }
+                "copy() requires a String value, but a(n) $type is found"
+            }
+            return copy(value = value)
+        }
+    }
+
+    @JsonClass(generateAdapter = true)
+    @Immutable
+    data class Url(
+        override val name: String,
+        override val key: String,
+        override val type: ServiceConfigType,
+        override val description: String?,
+        override val required: Boolean = false,
+        override val visibleToUser: Boolean = true,
+        val value: String?,
+    ) : ServiceConfig(
+        name = name,
+        key = key,
+        type = type,
+        description = description,
+        required = required,
+        visibleToUser = visibleToUser,
+    ) {
+        override fun copy(value: Any?): Url {
+            require(value is String?) {
+                val type = value?.let { it::class.java.simpleName }
+                "copy() requires a String value, but a(n) $type is found"
+            }
+            return copy(value = value)
+        }
+    }
+
+    @JsonClass(generateAdapter = true)
+    @Immutable
+    data class Option(
+        override val name: String,
+        override val key: String,
+        override val type: ServiceConfigType,
+        override val description: String?,
+        override val required: Boolean = false,
+        override val visibleToUser: Boolean = true,
+        val value: String?,
+        val options: List<ServiceConfigOption>,
+    ) : ServiceConfig(
+        name = name,
+        key = key,
+        type = type,
+        description = description,
+        required = required,
+        visibleToUser = visibleToUser,
+    ) {
+        override fun copy(value: Any?): Option {
+            require(value is String?) {
+                val type = value?.let { it::class.java.simpleName }
+                "copy() requires a String value, but a(n) $type is found"
+            }
+            return copy(value = value)
+        }
+    }
+
+    @JsonClass(generateAdapter = true)
+    @Immutable
+    data class Cookies(
+        override val name: String,
+        override val key: String,
+        override val type: ServiceConfigType,
+        override val description: String?,
+        override val required: Boolean = false,
+        override val visibleToUser: Boolean = true,
+        val value: String?,
+        val requestUrl: String,
+        val targetUrl: String,
+        val userAgent: String?,
+    ) : ServiceConfig(
+        name = name,
+        key = key,
+        type = type,
+        description = description,
+        required = required,
+        visibleToUser = visibleToUser,
+    ) {
+        override fun copy(value: Any?): Cookies {
+            require(value is String?) {
+                val type = value?.let { it::class.java.simpleName }
+                "copy() requires a String value, but a(n) $type is found"
+            }
+            return copy(value = value)
+        }
+    }
+
+    @JsonClass(generateAdapter = true)
+    @Immutable
+    data class CookiesUa(
+        override val name: String,
+        override val key: String,
+        override val type: ServiceConfigType,
+        override val description: String?,
+        override val required: Boolean = false,
+        override val visibleToUser: Boolean = true,
+        val value: CookiesUaValue?,
+        val requestUrl: String,
+        val targetUrl: String,
+        val userAgent: String?,
+    ) : ServiceConfig(
+        name = name,
+        key = key,
+        type = type,
+        description = description,
+        required = required,
+        visibleToUser = visibleToUser,
+    ) {
+        override fun copy(value: Any?): CookiesUa {
+            require(value is CookiesUaValue?) {
+                val type = value?.let { it::class.java.simpleName }
+                "copy() requires a CookiesUaValue value, but a(n) $type is found"
+            }
+            return copy(value = value)
+        }
+    }
+}
+
+val ServiceConfig.value: Any?
+    get() = when (this) {
+        is ServiceConfig.Bool -> value
+        is ServiceConfig.Cookies -> value
+        is ServiceConfig.CookiesUa -> value
+        is ServiceConfig.Number -> value
+        is ServiceConfig.Option -> value
+        is ServiceConfig.Text -> value
+        is ServiceConfig.Url -> value
+    }
+
 @JsonClass(generateAdapter = true)
-data class ServiceConfig(
-    val name: String,
-    val key: String,
-    val type: ServiceConfigType,
-    val description: String? = null,
-    val required: Boolean = false,
-    val visibleToUser: Boolean = true,
-    val value: ServiceConfigValue? = null,
-    val options: List<ServiceConfigOption>? = null,
-    @Json(name = "requestUrl")
-    val cookiesRequestUrl: String? = null,
-    @Json(name = "targetUrl")
-    val cookiesTargetUrl: String? = null,
-    @Json(name = "userAgent")
-    val cookiesUserAgent: String? = null,
-)
+data class CookiesUaValue(
+    val cookies: String,
+    val userAgent: String,
+) {
+    override fun toString(): String {
+        return """{"cookies:"$cookies",userAgent:"$userAgent"}"""
+    }
+}
 
 @JsonClass(generateAdapter = true)
 data class ServiceConfigOption(
@@ -37,57 +247,32 @@ data class ServiceConfigOption(
     val value: String,
 )
 
-sealed interface ServiceConfigValue {
-    fun isEmpty(): kotlin.Boolean
-
-    @JvmInline
-    value class Boolean(val inner: kotlin.Boolean) : ServiceConfigValue {
-        override fun isEmpty(): kotlin.Boolean = false
-    }
-
-    @JvmInline
-    value class Double(val inner: kotlin.Double) : ServiceConfigValue {
-        override fun isEmpty(): kotlin.Boolean = false
-    }
-
-    @JvmInline
-    value class String(val inner: kotlin.String) : ServiceConfigValue {
-        override fun isEmpty(): kotlin.Boolean = inner.isEmpty()
-    }
-
-    @JsonClass(generateAdapter = true)
-    class CookiesAndUa(
-        val cookies: kotlin.String,
-        val userAgent: kotlin.String,
-    ) : ServiceConfigValue {
-        override fun isEmpty(): kotlin.Boolean = cookies.isEmpty() && userAgent.isEmpty()
-    }
-}
-
-fun ServiceConfigValue?.isNullOrEmpty(): Boolean {
-    return this == null || isEmpty()
-}
-
 @JsonClass(generateAdapter = false)
-enum class ServiceConfigType {
+enum class ServiceConfigType(val value: String) {
     @Json(name = "boolean")
-    Bool,
+    Bool("boolean"),
 
     @Json(name = "number")
-    Number,
+    Number("number"),
 
     @Json(name = "text")
-    Text,
+    Text("text"),
 
     @Json(name = "url")
-    Url,
+    Url("url"),
 
     @Json(name = "option")
-    Option,
+    Option("option"),
 
     @Json(name = "cookies")
-    Cookies,
+    Cookies("cookies"),
 
     @Json(name = "cookies_ua")
-    CookiesAndUserAgent,
+    CookiesUa("cookies_ua");
+
+    companion object {
+        fun fromValueOrNull(value: String): ServiceConfigType? {
+            return values().firstOrNull { it.value == value }
+        }
+    }
 }

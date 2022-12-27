@@ -1,13 +1,11 @@
 package any.data.js
 
+import any.data.entity.CookiesUaValue
 import any.data.entity.JsPageKey
 import any.data.entity.JsType
 import any.data.entity.ServiceConfig
-import any.data.entity.ServiceConfigType
-import any.data.entity.ServiceConfigValue
 import any.data.entity.ServiceManifest
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
+import any.data.entity.value
 
 fun ServiceManifest.toJsObject(): JsObject = buildJsObject {
     "id" eq id
@@ -41,57 +39,36 @@ fun ServiceManifest.toJsObject(): JsObject = buildJsObject {
 fun List<ServiceConfig>?.toJsObject(): JsObject = buildJsObject {
     val fields = this@toJsObject ?: emptyList()
     for (field in fields) {
-        val type = field.type
+        val key = field.key
         val value = field.value
         if (value == null) {
-            field.key eq JsObject.Null
+            key eq JsObject.Null
             continue
         }
-        when (type) {
-            ServiceConfigType.Bool -> {
-                checkConfigValue<ServiceConfigValue.Boolean>(value, type)
-                field.key eq value.inner
+        when (value) {
+            is Boolean -> {
+                key eq value
             }
 
-            ServiceConfigType.Number -> {
-                checkConfigValue<ServiceConfigValue.Double>(value, type)
-                field.key eq value.inner
+            is Double -> {
+                key eq value
             }
 
-            ServiceConfigType.CookiesAndUserAgent -> {
-                checkConfigValue<ServiceConfigValue.CookiesAndUa>(value, type)
-                field.key eq buildJsObject {
+            is String -> {
+                key eq value
+            }
+
+            is CookiesUaValue -> {
+                key eq buildJsObject {
                     "cookies" eq value.cookies
                     "userAgent" eq value.userAgent
                 }
             }
 
-            ServiceConfigType.Text,
-            ServiceConfigType.Url,
-            ServiceConfigType.Option,
-            ServiceConfigType.Cookies -> {
-                checkConfigValue<ServiceConfigValue.String>(value, type)
-                field.key eq value.inner
-            }
+            else -> throw IllegalArgumentException(
+                "Unsupported value type: ${value::class.java}"
+            )
         }
-
-    }
-}
-
-@OptIn(ExperimentalContracts::class)
-private inline fun <reified T : ServiceConfigValue> checkConfigValue(
-    value: ServiceConfigValue,
-    type: ServiceConfigType,
-) {
-    contract {
-        returns() implies (value is T)
-    }
-    if (value !is T) {
-        val required = T::class.java
-        val found = value::class.java
-        val message = "The config value must match the type $type, " +
-                "required: $required, found: $found"
-        throw IllegalStateException(message)
     }
 }
 

@@ -11,7 +11,7 @@ class MemoryServiceConfigsUpdater(
     override fun update(configsJson: String) {
         try {
             val updatedConfigs = ServiceConfigsUpdater.updateConfigsFromJson(
-                parser = json,
+                json = json,
                 current = latest().configs,
                 updated = configsJson,
             )

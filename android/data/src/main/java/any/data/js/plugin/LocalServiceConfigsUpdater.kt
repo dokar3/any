@@ -19,7 +19,7 @@ class LocalServiceConfigsUpdater(
             serviceRepository.updateWithLock(serviceId) {
                 try {
                     val updatedConfigs = ServiceConfigsUpdater.updateConfigsFromJson(
-                        parser = json,
+                        json = json,
                         current = it.configs,
                         updated = configsJson,
                     )
