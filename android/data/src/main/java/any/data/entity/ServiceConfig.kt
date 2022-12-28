@@ -1,7 +1,6 @@
 package any.data.entity
 
 import androidx.compose.runtime.Immutable
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 typealias ServiceConfigs = List<ServiceConfig>
@@ -16,7 +15,7 @@ fun ServiceConfigs.updateValuesFrom(other: ServiceConfigs?): ServiceConfigs {
 sealed class ServiceConfig(
     open val name: String,
     open val key: String,
-    open val type: ServiceConfigType,
+    open val type: String,
     open val description: String? = null,
     open val required: Boolean = false,
     open val visibleToUser: Boolean = true,
@@ -28,7 +27,7 @@ sealed class ServiceConfig(
     data class Bool(
         override val name: String,
         override val key: String,
-        override val type: ServiceConfigType,
+        override val type: String,
         override val description: String?,
         override val required: Boolean = false,
         override val visibleToUser: Boolean = true,
@@ -55,7 +54,7 @@ sealed class ServiceConfig(
     data class Number(
         override val name: String,
         override val key: String,
-        override val type: ServiceConfigType,
+        override val type: String,
         override val description: String?,
         override val required: Boolean = false,
         override val visibleToUser: Boolean = true,
@@ -82,7 +81,7 @@ sealed class ServiceConfig(
     data class Text(
         override val name: String,
         override val key: String,
-        override val type: ServiceConfigType,
+        override val type: String,
         override val description: String?,
         override val required: Boolean = false,
         override val visibleToUser: Boolean = true,
@@ -109,7 +108,7 @@ sealed class ServiceConfig(
     data class Url(
         override val name: String,
         override val key: String,
-        override val type: ServiceConfigType,
+        override val type: String,
         override val description: String?,
         override val required: Boolean = false,
         override val visibleToUser: Boolean = true,
@@ -136,7 +135,7 @@ sealed class ServiceConfig(
     data class Option(
         override val name: String,
         override val key: String,
-        override val type: ServiceConfigType,
+        override val type: String,
         override val description: String?,
         override val required: Boolean = false,
         override val visibleToUser: Boolean = true,
@@ -164,7 +163,7 @@ sealed class ServiceConfig(
     data class Cookies(
         override val name: String,
         override val key: String,
-        override val type: ServiceConfigType,
+        override val type: String,
         override val description: String?,
         override val required: Boolean = false,
         override val visibleToUser: Boolean = true,
@@ -194,7 +193,7 @@ sealed class ServiceConfig(
     data class CookiesUa(
         override val name: String,
         override val key: String,
-        override val type: ServiceConfigType,
+        override val type: String,
         override val description: String?,
         override val required: Boolean = false,
         override val visibleToUser: Boolean = true,
@@ -246,33 +245,3 @@ data class ServiceConfigOption(
     val name: String,
     val value: String,
 )
-
-@JsonClass(generateAdapter = false)
-enum class ServiceConfigType(val value: String) {
-    @Json(name = "boolean")
-    Bool("boolean"),
-
-    @Json(name = "number")
-    Number("number"),
-
-    @Json(name = "text")
-    Text("text"),
-
-    @Json(name = "url")
-    Url("url"),
-
-    @Json(name = "option")
-    Option("option"),
-
-    @Json(name = "cookies")
-    Cookies("cookies"),
-
-    @Json(name = "cookies_ua")
-    CookiesUa("cookies_ua");
-
-    companion object {
-        fun fromValueOrNull(value: String): ServiceConfigType? {
-            return values().firstOrNull { it.value == value }
-        }
-    }
-}
