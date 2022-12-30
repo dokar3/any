@@ -10,8 +10,8 @@ import any.base.Strings
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
 import any.base.model.UiMessage
-import any.base.util.messageForUser
 import any.base.util.updateWith
+import any.base.util.userFriendlyMessage
 import any.data.FetchState
 import any.data.entity.JsPageKey
 import any.data.entity.Post
@@ -269,7 +269,7 @@ class SearchViewModel(
     private fun onSearchError(e: Throwable) {
         _searchUiState.update {
             it.copy(
-                message = UiMessage.Error(e.messageForUser(strings)),
+                message = UiMessage.Error(e.userFriendlyMessage(strings)),
                 isLoading = false,
                 isLoadingMore = false,
                 isSuccess = false,

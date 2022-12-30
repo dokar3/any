@@ -8,7 +8,7 @@ import java.net.SocketException
 import java.net.UnknownHostException
 import javax.net.ssl.SSLException
 
-fun Throwable.messageForUser(strings: Strings): String {
+fun Throwable.userFriendlyMessage(strings: Strings): String {
     when (this) {
         is ConnectException,
         is UnknownHostException,
@@ -21,5 +21,5 @@ fun Throwable.messageForUser(strings: Strings): String {
             }
         }
     }
-    return strings(R.string._unknown_error, message ?: "")
+    return message ?: ""
 }

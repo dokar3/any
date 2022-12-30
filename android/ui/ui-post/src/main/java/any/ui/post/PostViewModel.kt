@@ -10,7 +10,7 @@ import any.base.file.AndroidFileReader
 import any.base.file.FileReader
 import any.base.log.Logger
 import any.base.model.UiMessage
-import any.base.util.messageForUser
+import any.base.util.userFriendlyMessage
 import any.data.FetchState
 import any.data.entity.Post
 import any.data.entity.ServiceManifest
@@ -202,7 +202,7 @@ class PostViewModel(
         Logger.e(TAG, "loadFreshPost() failed: $error")
         _postUiState.update {
             it.copy(
-                error = UiMessage.Error(error.messageForUser(strings)),
+                error = UiMessage.Error(error.userFriendlyMessage(strings)),
                 isLoading = false,
             )
         }
