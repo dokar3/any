@@ -165,7 +165,9 @@ class PostFolderSelectionViewModel(
                 )
             )
 
-            folderInfoRepository.add(FolderInfo(path = trimmedPath))
+            if (folderInfoRepository.get(trimmedPath) == null) {
+                folderInfoRepository.add(FolderInfo(path = trimmedPath))
+            }
 
             loadAllFolderSync()
             selectFolderByPath(path)
