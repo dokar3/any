@@ -10,7 +10,7 @@ import any.base.Strings
 import any.base.file.AndroidFileReader
 import any.base.file.FileReader
 import any.base.model.UiMessage
-import any.base.util.messageForUser
+import any.base.util.userFriendlyMessage
 import any.data.FetchState
 import any.data.entity.JsPageKey
 import any.data.entity.Post
@@ -343,7 +343,7 @@ class ProfileViewModel(
         _uiState.update {
             it.copy(
                 isLoadingUser = false,
-                message = UiMessage.Error(error.messageForUser(strings)),
+                message = UiMessage.Error(error.userFriendlyMessage(strings)),
             )
         }
     }
@@ -355,7 +355,7 @@ class ProfileViewModel(
                 isLoadingPosts = false,
                 isLoadingMorePosts = false,
                 isFailedToFetchPosts = true,
-                message = UiMessage.Error(error.messageForUser(strings)),
+                message = UiMessage.Error(error.userFriendlyMessage(strings)),
             )
         }
     }

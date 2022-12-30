@@ -14,8 +14,8 @@ import any.base.model.UiMessage
 import any.base.prefs.PreferencesStore
 import any.base.prefs.currentService
 import any.base.prefs.preferencesStore
-import any.base.util.messageForUser
 import any.base.util.updateWith
+import any.base.util.userFriendlyMessage
 import any.data.Comparators
 import any.data.FetchState
 import any.data.entity.JsPageKey
@@ -320,7 +320,7 @@ class FreshViewModel(
 
     private fun onError(e: Throwable) {
         e.printStackTrace()
-        val message = UiMessage.Error(e.messageForUser(strings))
+        val message = UiMessage.Error(e.userFriendlyMessage(strings))
         _freshUiState.update {
             it.copy(
                 message = message,
