@@ -876,7 +876,7 @@ private fun PostContent(
     if (postToCollect != null) {
         val p = postToCollect!!
         AddToCollectionsDialog(
-            onCollect = { viewModel.collectPost(p) },
+            onCollect = viewModel::collectPost,
             onDismissRequest = { postToCollect = null },
             post = p,
         )
