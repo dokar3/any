@@ -79,11 +79,13 @@ import any.ui.common.richtext.RichText
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.DoubleEndDashedDivider
+import any.ui.common.widget.ErrorMessage
 import any.ui.common.widget.FlatSwitch
 import any.ui.common.widget.ProgressBar
 import any.ui.common.widget.WarningMessage
 import com.dokar.sheets.rememberBottomSheetState
 import com.google.accompanist.flowlayout.FlowRow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -124,6 +126,10 @@ fun ServiceDialog(
 
     val optionalFields = remember(service.configs) {
         service.configs?.filter { it.visibleToUser && !it.required }
+    }
+
+    val invisibleFields = remember(service.configs) {
+        service.configs?.filterNot { it.visibleToUser }
     }
 
     val values = remember(service.configs) {
@@ -240,6 +246,7 @@ fun ServiceDialog(
             },
             requiredFields = StableHolder(requiredFields),
             optionalFields = StableHolder(optionalFields),
+            invisibleFields = StableHolder(invisibleFields),
             onConfigValueChange = { config, value ->
                 serviceChanged = true
                 values[config.key] = value
@@ -268,6 +275,7 @@ private fun ServiceFieldList(
     onServiceViewTypeChange: (PostsViewType) -> Unit,
     requiredFields: StableHolder<List<ServiceConfig>?>,
     optionalFields: StableHolder<List<ServiceConfig>?>,
+    invisibleFields: StableHolder<List<ServiceConfig>?>,
     onConfigValueChange: (ServiceConfig, Any?) -> Unit,
     onShowServiceDetailsClick: () -> Unit,
     runValidator: Boolean,
@@ -357,6 +365,15 @@ private fun ServiceFieldList(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                if (!invisibleFields.value.isNullOrEmpty()) {
+                    FieldsErrors(
+                        fields = StableHolder(invisibleFields.value!!),
+                        validations = validations,
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -442,6 +459,34 @@ private fun Header(name: String) {
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.primary,
         )
+    }
+}
+
+@Composable
+private fun FieldsErrors(
+    fields: StableHolder<List<ServiceConfig>>,
+    validations: StableHolder<Map<String, ValidationResult>>,
+    modifier: Modifier = Modifier,
+) {
+    var errorMessages by remember { mutableStateOf("") }
+
+    LaunchedEffect(fields, validations) {
+        launch(Dispatchers.Default) {
+            errorMessages = fields.value
+                .mapNotNull {
+                    val failReason = validations.value[it.key]
+                        ?.failOrNull()
+                        ?.reason ?: return@mapNotNull null
+                    "${it.name}: $failReason"
+                }
+                .joinToString(separator = "\n")
+        }
+    }
+
+    if (errorMessages.isNotEmpty()) {
+        ErrorMessage(modifier = modifier) {
+            Text(text = errorMessages)
+        }
     }
 }
 
