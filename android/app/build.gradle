@@ -101,17 +101,17 @@ dependencies {
     implementation projects.download
     implementation projects.navigation
     implementation projects.commonUi
-    implementation projects.uiHome
-    implementation projects.uiSearch
-    implementation projects.uiService
-    implementation projects.uiPost
-    implementation projects.uiProfile
-    implementation projects.uiImagepager
-    implementation projects.uiSettings
-    implementation projects.uiPassword
-    implementation projects.uiRunsql
-    implementation projects.uiJslogger
-    implementation projects.uiReadingbubble
+    implementation projects.ui.home
+    implementation projects.ui.search
+    implementation projects.ui.service
+    implementation projects.ui.post
+    implementation projects.ui.profile
+    implementation projects.ui.imagepager
+    implementation projects.ui.settings
+    implementation projects.ui.password
+    implementation projects.ui.runsql
+    implementation projects.ui.jslogger
+    implementation projects.ui.readingbubble
 
     implementation libs.sheets
 
