@@ -22,13 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import any.ui.common.theme.placeholder
+import any.ui.common.theme.darkerImagePlaceholder
 
 @Composable
 internal fun ListViewPlaceholder(
     modifier: Modifier = Modifier,
     itemCount: Int = 3,
-    color: Color = MaterialTheme.colors.placeholder,
+    color: Color = MaterialTheme.colors.darkerImagePlaceholder,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -63,7 +63,7 @@ internal fun ListViewPlaceholder(
 @Composable
 internal fun GridViewPlaceholder(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.placeholder,
+    color: Color = MaterialTheme.colors.darkerImagePlaceholder,
     rows: Int = 2,
     columns: Int = 2,
 ) {
@@ -95,7 +95,7 @@ internal fun GridViewPlaceholder(
 internal fun FullWidthViewPlaceholder(
     modifier: Modifier = Modifier,
     itemCount: Int = 1,
-    color: Color = MaterialTheme.colors.placeholder,
+    color: Color = MaterialTheme.colors.darkerImagePlaceholder,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         repeat(itemCount) {
@@ -138,7 +138,7 @@ internal fun FullWidthViewPlaceholder(
 internal fun CardViewPlaceholder(
     modifier: Modifier = Modifier,
     itemCount: Int = 1,
-    color: Color = MaterialTheme.colors.placeholder,
+    color: Color = MaterialTheme.colors.darkerImagePlaceholder,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         repeat(itemCount) {
