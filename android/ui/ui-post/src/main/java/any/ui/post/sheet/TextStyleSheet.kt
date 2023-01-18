@@ -52,7 +52,7 @@ internal fun TextStyleSheet(
     BottomSheet(
         state = state,
         modifier = modifier,
-        skipPeek = true,
+        skipPeeked = true,
     ) {
         TextStylePanel()
     }

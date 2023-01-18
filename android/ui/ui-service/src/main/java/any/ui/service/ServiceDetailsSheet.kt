@@ -63,7 +63,7 @@ fun ServiceDetailsSheet(
         Intents.openInBrowser(context, url)
     }
 
-    BottomSheet(state = state, modifier = modifier, skipPeek = true) {
+    BottomSheet(state = state, modifier = modifier, skipPeeked = true) {
         Column(modifier = Modifier.fillMaxWidth()) {
             var changelogToShow by remember { mutableStateOf<String?>(null) }
 

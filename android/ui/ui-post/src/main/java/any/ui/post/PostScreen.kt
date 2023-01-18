@@ -5,6 +5,8 @@ import any.ui.common.R as CommonUiR
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,6 +56,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -139,7 +144,6 @@ import any.ui.post.sheet.TextStyleSheet
 import any.ui.post.sheet.ThemeSettingsSheet
 import any.ui.readingbubble.ReadingBubbleService
 import any.ui.readingbubble.entity.ReadingPost
-import com.dokar.sheets.detectPointerPositionChanges
 import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -782,12 +786,21 @@ private fun PostContent(
                         bottom = bottomBarHeight,
                     ),
                 )
-                .detectPointerPositionChanges(
-                    key = postUrl,
-                    onPositionChanged = { longClickOffset = it },
-                    onDown = null,
-                    onGestureEnd = null,
-                ),
+                .pointerInput(postUrl) {
+                    forEachGesture {
+                        awaitPointerEventScope {
+                            val down = awaitFirstDown(requireUnconsumed = false)
+                            longClickOffset = down.position
+                            while (true) {
+                                val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                                longClickOffset = event.changes.first().position
+                                if (event.changes.all { it.changedToUp() }) {
+                                    break
+                                }
+                            }
+                        }
+                    }
+                },
             contentPadding = PaddingValues(top = titleBarHeight, bottom = bottomBarHeight),
         ) {
             postHeader(
