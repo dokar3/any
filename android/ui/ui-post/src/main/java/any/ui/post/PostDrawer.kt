@@ -124,7 +124,7 @@ internal fun PostDrawer(
     BottomSheet(
         state = state.sheetState,
         modifier = modifier.heightIn(max = 600.dp),
-        skipPeek = true,
+        skipPeeked = true,
         behaviors = BottomSheetDefaults.dialogSheetBehaviors(
             extendsIntoNavigationBar = true,
         ),

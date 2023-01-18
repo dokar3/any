@@ -68,7 +68,7 @@ fun PostOptionMenu(
     BottomSheet(
         state = state,
         modifier = modifier,
-        skipPeek = true,
+        skipPeeked = true,
     ) {
         val res = LocalContext.current.resources
         val normalColor = MaterialTheme.colors.onSurface

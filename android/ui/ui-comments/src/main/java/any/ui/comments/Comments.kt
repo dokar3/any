@@ -114,7 +114,7 @@ fun CommentsSheet(
                 .distinctUntilChanged()
                 .filter {
                     comments.isEmpty() &&
-                            (state.value == BottomSheetValue.Peek ||
+                            (state.value == BottomSheetValue.Peeked ||
                                     state.value == BottomSheetValue.Expanded)
                 }
                 .collect {
