@@ -18,8 +18,8 @@ rootProject.name = "Any"
 file("android").eachDir { dir ->
     if (dir.name == "ui") {
         file("android/${dir.name}").eachDir { subDir ->
-            include subDir.name
-            project(":${subDir.name}").projectDir = subDir
+            include ":ui:${subDir.name}"
+            project(":ui:${subDir.name}").projectDir = subDir
         }
         return
     }
