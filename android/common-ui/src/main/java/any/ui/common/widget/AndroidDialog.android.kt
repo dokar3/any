@@ -303,6 +303,7 @@ private class DialogWrapper(
         return
     }
 
+    @Deprecated("")
     override fun onBackPressed() {
         if (properties.dismissOnBackPress) {
             onDismissRequest()
