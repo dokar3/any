@@ -3,7 +3,7 @@
 App for collecting news, articles, feeds and web pages. Currently, it's still in alpha, which means it's not stable and could change a lot in upcoming versions.
 
 <a href="./images/screenshot_fresh_dribbble.png"><img src="./images/screenshot_fresh_dribbble.png" width="32%"/></a>
-<a href="./images/screenshot_fresh_twitter.png"><img src="./images/screenshot_fresh_twitter.png" width="32%"/></a>
+<a href="./images/screenshot_fresh_filmgrab.png"><img src="./images/screenshot_fresh_filmgrab.png" width="32%"/></a>
 <a href="./images/screenshot_post.png"><img src="./images/screenshot_post.png" width="32%"/></a>
 
 # Features
