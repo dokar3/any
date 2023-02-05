@@ -1,12 +1,12 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace 'com.dokar.any'
     compileSdk libs.versions.compileSdk.get().toInteger()
-    buildToolsVersion "30.0.3"
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         applicationId "com.dokar.any"
