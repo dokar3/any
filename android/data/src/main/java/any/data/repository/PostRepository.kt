@@ -316,7 +316,7 @@ class PostRepository(
         val cached = loadCachedPost(serviceId = post.serviceId, url = post.url)
         val orderInFresh = cached?.orderInFresh ?: post.orderInFresh
         val orderInProfile = cached?.orderInProfile ?: post.orderInProfile
-        val updated = post.collect().copy(
+        val updated = post.asCollected().copy(
             orderInFresh = orderInFresh,
             orderInProfile = orderInProfile,
         )
@@ -328,7 +328,7 @@ class PostRepository(
         val cached = loadCachedPost(serviceId = post.serviceId, url = post.url)
         val orderInFresh = cached?.orderInFresh ?: post.orderInFresh
         val orderInProfile = cached?.orderInProfile ?: post.orderInProfile
-        val updated = post.discard().copy(
+        val updated = post.asUnCollected().copy(
             orderInFresh = orderInFresh,
             orderInProfile = orderInProfile,
         )

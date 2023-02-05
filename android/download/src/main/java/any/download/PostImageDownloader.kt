@@ -110,9 +110,9 @@ class PostImageDownloader private constructor(
         downloadScope.launch(Dispatchers.IO) {
             val dbPost = localPostDataSource.fetchPost(post.serviceId, post.url).first()
             if (dbPost == null) {
-                localPostDataSource.insert(post.markInDownload())
-            } else if (!dbPost.isInDownload()) {
-                localPostDataSource.update(post.markInDownload())
+                localPostDataSource.insert(post.asInDownloading())
+            } else if (!dbPost.isInDownloading()) {
+                localPostDataSource.update(post.asInDownloading())
             }
         }
     }

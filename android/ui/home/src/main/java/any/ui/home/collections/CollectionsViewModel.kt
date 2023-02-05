@@ -606,7 +606,7 @@ class CollectionsViewModel(
     fun removeSelectedFromCollections() {
         viewModelScope.launch(workerDispatcher) {
             val updatedPosts = getSelectedPosts().map {
-                it.discard()
+                it.asUnCollected()
             }
             postRepository.updatePosts(updatedPosts)
             loadCollectedPosts()

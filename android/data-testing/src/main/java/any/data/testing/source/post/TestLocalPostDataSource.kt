@@ -43,7 +43,7 @@ class TestLocalPostDataSource : LocalPostDataSource {
     }
 
     override fun fetchInDownloadPosts(): Flow<List<Post>> = flow {
-        emit(allPosts.filter { it.isInDownload() })
+        emit(allPosts.filter { it.isInDownloading() })
     }
 
     override suspend fun loadAll(): List<Post> {

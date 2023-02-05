@@ -65,7 +65,7 @@ class FilesAndDataViewModel(
                 if (!services.contains(it.serviceId)) {
                     // Remove: The target service does not exist anymore and it's not collected
                     // or in-download
-                    return@filter !(it.isCollected() || it.isInDownload())
+                    return@filter !(it.isCollected() || it.isInDownloading())
                 }
                 // Do NOT remove: First page, collected, in-download
                 if (it.isInUsing()) return@filter false
