@@ -20,6 +20,12 @@ App for collecting news, articles, feeds and web pages. Currently, it's still in
 - Dark mode
 - Image filters
 
+# Downloads
+
+<a href="https://github.com/dokar3/any/releases">
+<img src="https://img.shields.io/static/v1?label=&message=GitHub%20Releases&color=000&labelColor=785fd5&style=for-the-badge&logo=github"/>
+</a>
+
 # Build requirements
 
 - Android Studio
