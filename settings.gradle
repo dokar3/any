@@ -1,5 +1,10 @@
-enableFeaturePreview("VERSION_CATALOGS")
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -9,20 +14,22 @@ dependencyResolutionManagement {
         mavenCentral()
         maven {url 'https://oss.sonatype.org/content/repositories/snapshots/'}
         maven { url "https://www.jitpack.io" }
-        maven { url 'https://androidx.dev/snapshots/builds/8593961/artifacts/repository' }
     }
 }
+
+enableFeaturePreview("VERSION_CATALOGS")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Any"
 
 file("android").eachDir { dir ->
     if (dir.name == "ui") {
-        file("android/${dir.name}").eachDir { subDir ->
+        dir.eachDir { subDir ->
             include ":ui:${subDir.name}"
             project(":ui:${subDir.name}").projectDir = subDir
         }
-        return
+    } else {
+        include dir.name
+        project(":${dir.name}").projectDir = dir
     }
-    include dir.name
-    project(":${dir.name}").projectDir = dir
 }
