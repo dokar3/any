@@ -1,5 +1,6 @@
 package any.data.entity
 
+import androidx.annotation.CheckResult
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import any.data.entity.Post.Media.Type
@@ -36,23 +37,27 @@ data class Post(
     val openInBrowser: Boolean = false,
     val reference: Reference? = null,
 ) {
-    fun collect(): Post {
-        return copy(collectedAt = System.currentTimeMillis())
+    @CheckResult
+    fun asCollected(collectedAt: Long = System.currentTimeMillis()): Post {
+        return copy(collectedAt = collectedAt)
     }
 
-    fun discard(): Post {
+    @CheckResult
+    fun asUnCollected(): Post {
         return copy(collectedAt = -1L)
     }
 
-    fun markInDownload(): Post {
-        return if (isInDownload()) this else copy(downloadAt = System.currentTimeMillis())
+    @CheckResult
+    fun asInDownloading(downloadAt: Long = System.currentTimeMillis()): Post {
+        return if (isInDownloading()) this else copy(downloadAt = downloadAt)
     }
 
-    fun markUnDownload(): Post {
+    @CheckResult
+    fun asUnDownloaded(): Post {
         return copy(downloadAt = -1L)
     }
 
-    fun isInUsing() = isInFresh() || isInProfile() || isCollected() || isInDownload()
+    fun isInUsing() = isInFresh() || isInProfile() || isCollected() || isInDownloading()
 
     fun isCollected() = collectedAt > 0L
 
@@ -60,7 +65,7 @@ data class Post(
 
     fun isInProfile() = orderInProfile >= 0
 
-    fun isInDownload() = downloadAt > 0L
+    fun isInDownloading() = downloadAt > 0L
 
     @JsonClass(generateAdapter = false)
     enum class Type {

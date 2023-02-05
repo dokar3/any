@@ -226,7 +226,7 @@ class DownloadsViewModel(
         for (download in selected) {
             val dbPost = localPostDataSource.fetchPost(download.serviceId, download.url)
                 .first() ?: continue
-            localPostDataSource.update(dbPost.markUnDownload())
+            localPostDataSource.update(dbPost.asUnDownloaded())
             if (deleteFiles) {
                 downloader.delete(dbPost)
             }
