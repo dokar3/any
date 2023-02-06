@@ -33,7 +33,6 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [libraries]
-
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 compose-runtime = { module = "androidx.compose.runtime:runtime" }
 compose-animation = { module = "androidx.compose.animation:animation" }
@@ -63,18 +62,14 @@ androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4"
 
 androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.4" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version = "3.5.0" }
-androidx-test-runner = { module = "androidx.test.runner:runner", version = "1.4.0" }
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version = "2.3.0-alpha01" }
 
 junit = { module = "junit:junit", version = "4.13.2" }
-
-desugar-jdk = { module = "com.android.tools:desugar_jdk_libs", version = "1.1.5" }
 
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
