@@ -99,7 +99,7 @@ exoplayer-core = { module = "com.google.android.exoplayer:exoplayer-core", versi
 exoplayer-database = { module = "com.google.android.exoplayer:exoplayer-database", version.ref = "exoplayer" }
 exoplayer-datasource = { module = "com.google.android.exoplayer:exoplayer-datasource", version.ref = "exoplayer" }
 
-guava = { module = "com.google.guava:guava", version = "31.1-android" }
+guava = { module = "com.google.guava:guava", version = "31.1-jre" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
