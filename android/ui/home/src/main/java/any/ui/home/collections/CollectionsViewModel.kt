@@ -15,7 +15,6 @@ import any.base.prefs.postSortingFlow
 import any.base.prefs.preferencesStore
 import any.base.util.PathJoiner
 import any.base.util.joinToPath
-import any.data.Comparators
 import any.data.ThumbAspectRatio
 import any.data.entity.Folder
 import any.data.entity.FolderInfo
@@ -42,6 +41,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.Collator
 
 class CollectionsViewModel(
     private val serviceRepository: ServiceRepository,
@@ -279,29 +279,30 @@ class CollectionsViewModel(
         tags: List<SelectableTag>?,
         posts: List<Post>,
     ): List<SelectableTag> {
-        // <name, count> map
-        val collectedTags = HashMap<String, Int>()
-        // add all tags
+        // A <name, count> map
+        val newTags = mutableMapOf<String, Int>()
+        // Add all tags
         posts.forEach { post ->
             post.tags?.forEach { tag ->
-                if (collectedTags.containsKey(tag)) {
-                    collectedTags[tag] = collectedTags[tag]!! + 1
+                if (newTags.containsKey(tag)) {
+                    newTags[tag] = newTags[tag]!! + 1
                 } else {
-                    collectedTags[tag] = 1
+                    newTags[tag] = 1
                 }
             }
         }
-
         val currTags = tags ?: emptyList()
         val currTagsMap = currTags.associateBy { it.name }
-        val tagAll = tags?.find { it.isAll } ?: SelectableTag(name = "All", isAll = true)
-        var hasSelectedTags = false
+        val all = tags?.find { it.isAll }?.copy(count = posts.size)
+            ?: SelectableTag(name = "All", isAll = true, count = posts.size)
+        var hasSelectedTag = false
         // Sort
-        return collectedTags.toList()
-            .sortedBy { pair -> pair.first }
+        val collator = Collator.getInstance()
+        return newTags.toList()
+            .sortedWith { o1, o2 -> collator.compare(o1.first, o2.first) }
             .map { pair ->
                 val selected = currTagsMap[pair.first]?.isSelected == true
-                hasSelectedTags = hasSelectedTags or selected
+                hasSelectedTag = hasSelectedTag or selected
                 SelectableTag(
                     name = pair.first,
                     count = pair.second,
@@ -309,14 +310,7 @@ class CollectionsViewModel(
                 )
             }
             .let {
-                it.toMutableList().apply {
-                    val all = if (!hasSelectedTags) {
-                        tagAll.copy(count = posts.size, isSelected = true)
-                    } else {
-                        tagAll.copy(count = posts.size)
-                    }
-                    add(0, all)
-                }
+                listOf(all.copy(isSelected = !hasSelectedTag)) + it
             }
     }
 
@@ -465,13 +459,17 @@ class CollectionsViewModel(
             }
 
             PostSorting.ByTitle -> {
+                val collator = Collator.getInstance()
+                val postTitleComparator = Comparator<Post> { o1, o2 ->
+                    collator.compare(o1.title, o2.title)
+                }
                 for (i in folders.indices) {
                     folders[i] = folders[i].copy(
-                        posts = folders[i].posts?.sortedWith(Comparators.postTitleComparator),
+                        posts = folders[i].posts?.sortedWith(postTitleComparator),
                     )
                 }
-                currFolderPosts.sortWith(Comparators.postTitleComparator)
-                folders.sortWith(Comparators.folderNameComparator)
+                currFolderPosts.sortWith(postTitleComparator)
+                folders.sortWith { o1, o2 -> collator.compare(o1.name, o2.name) }
             }
         }
 
