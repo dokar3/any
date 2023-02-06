@@ -57,8 +57,8 @@ androidx-interpolator = { module = "androidx.interpolator:interpolator", version
 androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version = "1.0.0" }
 
 androidx-benchmark-junit4 = { module = "androidx.benchmark:benchmark-junit4", version = "1.1.1" }
-androidx-benchmark-common = { module = "androidx.benchmark:benchmark-common", version = "1.2.0-alpha07" }
-androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4", version = "1.2.0-alpha07" }
+androidx-benchmark-common = { module = "androidx.benchmark:benchmark-common", version = "1.2.0-alpha09" }
+androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4", version = "1.2.0-alpha09" }
 
 androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.4" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version = "3.5.0" }
