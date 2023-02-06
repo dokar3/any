@@ -15,7 +15,6 @@ import any.base.prefs.postSortingFlow
 import any.base.prefs.preferencesStore
 import any.base.util.PathJoiner
 import any.base.util.joinToPath
-import any.data.Comparators
 import any.data.ThumbAspectRatio
 import any.data.entity.Folder
 import any.data.entity.FolderInfo
@@ -460,13 +459,17 @@ class CollectionsViewModel(
             }
 
             PostSorting.ByTitle -> {
+                val collator = Collator.getInstance()
+                val postTitleComparator = Comparator<Post> { o1, o2 ->
+                    collator.compare(o1.title, o2.title)
+                }
                 for (i in folders.indices) {
                     folders[i] = folders[i].copy(
-                        posts = folders[i].posts?.sortedWith(Comparators.postTitleComparator),
+                        posts = folders[i].posts?.sortedWith(postTitleComparator),
                     )
                 }
-                currFolderPosts.sortWith(Comparators.postTitleComparator)
-                folders.sortWith(Comparators.folderNameComparator)
+                currFolderPosts.sortWith(postTitleComparator)
+                folders.sortWith { o1, o2 -> collator.compare(o1.name, o2.name) }
             }
         }
 
