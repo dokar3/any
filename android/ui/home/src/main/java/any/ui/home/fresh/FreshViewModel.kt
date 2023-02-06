@@ -16,7 +16,6 @@ import any.base.prefs.currentService
 import any.base.prefs.preferencesStore
 import any.base.util.updateWith
 import any.base.util.userFriendlyMessage
-import any.data.Comparators
 import any.data.FetchState
 import any.data.entity.JsPageKey
 import any.data.entity.Post
@@ -44,6 +43,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.text.Collator
 
 class FreshViewModel(
     private val serviceRepository: ServiceRepository,
@@ -87,9 +87,10 @@ class FreshViewModel(
 
     fun loadServices() {
         viewModelScope.launch(workerDispatcher) {
+            val collator = Collator.getInstance()
             val services = serviceRepository.getDbServices()
                 .filter { it.isEnabled && it.areApiVersionsCompatible }
-                .sortedWith(Comparators.serviceManifestNameComparator)
+                .sortedWith { o1, o2 -> collator.compare(o1.name, o2.name) }
                 .map { it.toUiManifest(fileReader, htmlParser) }
             val currServiceId = preferencesStore.currentService.value
             val currService = services.find { it.id == currServiceId } ?: services.firstOrNull()
