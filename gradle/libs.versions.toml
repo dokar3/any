@@ -60,7 +60,7 @@ androidx-benchmark-junit4 = { module = "androidx.benchmark:benchmark-junit4", ve
 androidx-benchmark-common = { module = "androidx.benchmark:benchmark-common", version = "1.2.0-alpha09" }
 androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4", version = "1.2.0-alpha09" }
 
-androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.4" }
+androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version = "2.3.0-alpha02" }
 
