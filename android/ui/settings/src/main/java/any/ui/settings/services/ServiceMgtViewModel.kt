@@ -16,7 +16,6 @@ import any.base.model.UiMessage
 import any.base.prefs.PreferencesStore
 import any.base.prefs.preferencesStore
 import any.base.prefs.versionCodeIgnoresBuiltinServiceUpdates
-import any.data.Comparators
 import any.data.entity.ServiceManifest
 import any.data.repository.ServiceRepository
 import any.data.service.ServiceInstaller
@@ -36,6 +35,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.Collator
 
 class ServiceMgtViewModel(
     private val serviceRepository: ServiceRepository,
@@ -69,12 +69,13 @@ class ServiceMgtViewModel(
 
     fun loadDbServices() {
         viewModelScope.launch(workerDispatcher) {
+            val collator = Collator.getInstance()
             val services = serviceRepository.getDbServices()
                 // Sorted by enabled state and name
                 .sortedWith { o1, o2 ->
-                    val t1 = (if (o1.isEnabled) 0 else 1).toString() + o1.name
-                    val t2 = (if (o2.isEnabled) 0 else 1).toString() + o2.name
-                    Comparators.stringComparator.compare(t1, t2)
+                    val s1 = (if (o1.isEnabled) 0 else 1).toString() + o1.name
+                    val s2 = (if (o2.isEnabled) 0 else 1).toString() + o2.name
+                    collator.compare(s1, s2)
                 }
                 .map { it.toUiManifest(fileReader, htmlParser) }
             _servicesUiState.update {
@@ -295,8 +296,9 @@ class ServiceMgtViewModel(
                 .map { it.id }
                 .toHashSet()
             // Load builtin services
+            val collator = Collator.getInstance()
             val builtinServices = serviceRepository.getBuiltinServices()
-                .sortedWith(Comparators.serviceManifestNameComparator)
+                .sortedWith { o1, o2 -> collator.compare(o1.name, o2.name) }
                 .map {
                     AppendableService(
                         service = it.toUiManifest(fileReader, htmlParser),

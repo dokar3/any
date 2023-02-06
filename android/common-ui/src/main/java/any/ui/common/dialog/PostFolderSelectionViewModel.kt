@@ -11,7 +11,6 @@ import any.base.prefs.preferencesStore
 import any.base.util.PathJoiner
 import any.base.util.findOrAdd
 import any.base.util.updateIf
-import any.data.Comparators
 import any.data.entity.Folder
 import any.data.entity.FolderInfo
 import any.data.entity.HierarchicalFolder
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.Collator
 import kotlin.math.max
 
 class PostFolderSelectionViewModel(
@@ -133,7 +133,8 @@ class PostFolderSelectionViewModel(
     ) {
         val sortedFolders = when (_uiState.value.folderSorting) {
             PostFolderSelectionSorting.ByTitle -> {
-                folders.sortedWith(Comparators.hierarchicalFolderNameComparator)
+                val collator = Collator.getInstance()
+                folders.sortedWith { o1, o2 -> collator.compare(o1.name, o2.name) }
             }
 
             PostFolderSelectionSorting.ByLastUpdated -> {
