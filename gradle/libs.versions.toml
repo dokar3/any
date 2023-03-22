@@ -22,7 +22,7 @@ chiptextfield = "0.4.4"
 expandabletext = "0.2.9"
 flick = "1.7.0"
 fresco = "2.6.0"
-exoplayer = "2.18.4"
+exoplayer = "2.18.5"
 ksp = "1.8.10-1.0.9"
 
 [plugins]
