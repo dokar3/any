@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -61,6 +62,9 @@ class SearchBarState(
     }
 
     fun hideKeyboard() {
+        if (!enabled) {
+            return
+        }
         inputFocusRequester.freeFocus()
         keyboardController?.hide()
     }
@@ -81,6 +85,12 @@ fun SearchBar(
 
     SideEffect {
         state.enabled = enabled
+    }
+
+    DisposableEffect(state) {
+        onDispose {
+            state.enabled = false
+        }
     }
 
     Row(
