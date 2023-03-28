@@ -4,8 +4,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -119,18 +119,16 @@ private inline fun Modifier.onLongClick(
     crossinline onLongClick: () -> Unit
 ): Modifier {
     return pointerInput(Unit) {
-        forEachGesture {
-            awaitPointerEventScope {
-                val down = awaitFirstDown(requireUnconsumed = false)
-                down.consume()
-                try {
-                    withTimeout(viewConfiguration.longPressTimeoutMillis) {
-                        waitForUpOrCancellation()
-                    }
-                } catch (_: PointerEventTimeoutCancellationException) {
-                    onLongClick()
-                    consumeUntilUp()
+        awaitEachGesture {
+            val down = awaitFirstDown(requireUnconsumed = false)
+            down.consume()
+            try {
+                withTimeout(viewConfiguration.longPressTimeoutMillis) {
+                    waitForUpOrCancellation()
                 }
+            } catch (_: PointerEventTimeoutCancellationException) {
+                onLongClick()
+                consumeUntilUp()
             }
         }
     }

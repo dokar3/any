@@ -126,12 +126,14 @@ fun MainScreen(
     }
 
     BackHandler {
-        if (navController.backQueue.size > 2) {
+        if (navController.previousBackStackEntry != null) {
             navController.popBackStack()
-        } else if (PostImageDownloader.get(context).hasDownloadingTasks()) {
-            showExitDuringDownloadingDialog = true
         } else {
-            (context as Activity).finish()
+            if (PostImageDownloader.get(context).hasDownloadingTasks()) {
+                showExitDuringDownloadingDialog = true
+            } else {
+                (context as Activity).finish()
+            }
         }
     }
 

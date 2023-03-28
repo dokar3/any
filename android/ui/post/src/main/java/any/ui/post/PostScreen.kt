@@ -5,8 +5,8 @@ import any.ui.common.R as CommonUiR
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -787,16 +787,14 @@ private fun PostContent(
                     ),
                 )
                 .pointerInput(postUrl) {
-                    forEachGesture {
-                        awaitPointerEventScope {
-                            val down = awaitFirstDown(requireUnconsumed = false)
-                            longClickOffset = down.position
-                            while (true) {
-                                val event = awaitPointerEvent(pass = PointerEventPass.Initial)
-                                longClickOffset = event.changes.first().position
-                                if (event.changes.all { it.changedToUp() }) {
-                                    break
-                                }
+                    awaitEachGesture {
+                        val down = awaitFirstDown(requireUnconsumed = false)
+                        longClickOffset = down.position
+                        while (true) {
+                            val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                            longClickOffset = event.changes.first().position
+                            if (event.changes.all { it.changedToUp() }) {
+                                break
                             }
                         }
                     }

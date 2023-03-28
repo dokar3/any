@@ -6,8 +6,8 @@ import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -381,13 +381,11 @@ fun DefaultServiceHeader(
             .fillMaxSize()
             .clipToBounds()
             .pointerInput(Unit) {
-                forEachGesture {
-                    awaitPointerEventScope {
-                        val down = awaitFirstDown()
-                        onPointerDown(down.position)
-                        waitForUpOrCancellation()
-                        onPointerUp()
-                    }
+                awaitEachGesture {
+                    val down = awaitFirstDown()
+                    onPointerDown(down.position)
+                    waitForUpOrCancellation()
+                    onPointerUp()
                 }
             }
             .drawWithCache {

@@ -18,9 +18,9 @@
 
 package any.ui.common.widget
 
-import android.app.Dialog
 import android.content.Context
 import android.graphics.Outline
+import android.os.Build
 import android.view.ContextThemeWrapper
 import android.view.MotionEvent
 import android.view.View
@@ -28,6 +28,8 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.Window
 import android.view.WindowManager
+import androidx.activity.ComponentDialog
+import androidx.activity.addCallback
 import androidx.annotation.StyleRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionContext
@@ -57,9 +59,12 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.window.SecureFlagPolicy
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import java.util.UUID
@@ -137,15 +142,6 @@ fun StyleableDialog(
     }
 }
 
-/**
- * Provides the underlying window of a dialog.
- *
- * Implemented by dialog's root layout.
- */
-interface DialogWindowProvider {
-    val window: Window
-}
-
 @Suppress("ViewConstructor")
 private class DialogLayout(
     context: Context,
@@ -179,7 +175,7 @@ private class DialogWrapper(
     density: Density,
     dialogId: UUID,
     @StyleRes themeResId: Int,
-) : Dialog(
+) : ComponentDialog(
     /**
      * [Window.setClipToOutline] is only available from 22+, but the style attribute exists on 21.
      * So use a wrapped context that sets this attribute for compatibility back to 21.
@@ -195,8 +191,12 @@ private class DialogWrapper(
 
     override val subCompositionView: AbstractComposeView get() = dialogLayout
 
+    private val defaultSoftInputMode: Int
+
     init {
         val window = window ?: error("Dialog has no window")
+        defaultSoftInputMode =
+            window.attributes.softInputMode and WindowManager.LayoutParams.SOFT_INPUT_MASK_ADJUST
         window.requestFeature(Window.FEATURE_NO_TITLE)
         window.setBackgroundDrawableResource(android.R.color.transparent)
         dialogLayout = DialogLayout(context, window).apply {
@@ -237,14 +237,25 @@ private class DialogWrapper(
         // Turn of all clipping so shadows can be drawn outside the window
         (window.decorView as? ViewGroup)?.disableClipping()
         setContentView(dialogLayout)
-        ViewTreeLifecycleOwner.set(dialogLayout, ViewTreeLifecycleOwner.get(composeView))
-        ViewTreeViewModelStoreOwner.set(dialogLayout, ViewTreeViewModelStoreOwner.get(composeView))
+        dialogLayout.setViewTreeLifecycleOwner(composeView.findViewTreeLifecycleOwner())
+        dialogLayout.setViewTreeViewModelStoreOwner(composeView.findViewTreeViewModelStoreOwner())
         dialogLayout.setViewTreeSavedStateRegistryOwner(
             composeView.findViewTreeSavedStateRegistryOwner()
         )
 
         // Initial setup
         updateParameters(onDismissRequest, properties, layoutDirection)
+
+        // Due to how the onDismissRequest callback works
+        // (it enforces a just-in-time decision on whether to update the state to hide the dialog)
+        // we need to unconditionally add a callback here that is always enabled,
+        // meaning we'll never get a system UI controlled predictive back animation
+        // for these dialogs
+        onBackPressedDispatcher.addCallback(this) {
+            if (properties.dismissOnBackPress) {
+                onDismissRequest()
+            }
+        }
     }
 
     private fun setLayoutDirection(layoutDirection: LayoutDirection) {
@@ -283,6 +294,14 @@ private class DialogWrapper(
         setSecurePolicy(properties.securePolicy)
         setLayoutDirection(layoutDirection)
         dialogLayout.usePlatformDefaultWidth = properties.usePlatformDefaultWidth
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            if (properties.decorFitsSystemWindows) {
+                window?.setSoftInputMode(defaultSoftInputMode)
+            } else {
+                @Suppress("DEPRECATION")
+                window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+            }
+        }
     }
 
     fun disposeComposition() {
@@ -301,13 +320,6 @@ private class DialogWrapper(
     override fun cancel() {
         // Prevents the dialog from dismissing itself
         return
-    }
-
-    @Deprecated("")
-    override fun onBackPressed() {
-        if (properties.dismissOnBackPress) {
-            onDismissRequest()
-        }
     }
 }
 
