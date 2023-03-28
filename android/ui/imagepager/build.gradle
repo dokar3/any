@@ -46,7 +46,6 @@ dependencies {
     implementation projects.download
 
     implementation libs.compose.ui.tooling
-    implementation libs.accompanist.pager
     implementation libs.fresco
     implementation (libs.subsamplingimageview) {
         exclude group: 'androidx.appcompat', module: 'appcompat'

@@ -1,6 +1,5 @@
 package any.ui.profile
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -31,7 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.compose.viewModel
-import any.base.R
 import any.base.compose.ImmutableHolder
 import any.base.util.Intents
 import any.data.entity.PostsViewType
@@ -141,7 +139,7 @@ fun ProfileScreen(
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ProfileScreenContent(
     uiState: ProfileUiState,

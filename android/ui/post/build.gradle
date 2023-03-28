@@ -48,7 +48,6 @@ dependencies {
     implementation projects.ui.readingbubble
     implementation projects.ui.imagepager
 
-    implementation libs.accompanist.pager
     implementation libs.accompanist.pager.indicators
 
     implementation libs.expandabletext
