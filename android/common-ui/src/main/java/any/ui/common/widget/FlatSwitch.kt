@@ -29,6 +29,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.LocalAbsoluteElevation
 import androidx.compose.material.LocalElevationOverlay
+import androidx.compose.material.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeableDefaults
 import androidx.compose.material.SwipeableState
@@ -113,7 +114,7 @@ internal fun <T : Any> rememberSwipeableStateFor(
 @OptIn(ExperimentalMaterialApi::class)
 @Suppress("ModifierInspectorInfo")
 internal fun Modifier.minimumTouchTargetSize(): Modifier = composed {
-    if (androidx.compose.material.LocalMinimumTouchTargetEnforcement.current) {
+    if (LocalMinimumInteractiveComponentEnforcement.current) {
         // TODO: consider using a hardcoded value of 48.dp instead to avoid inconsistent UI if the
         // LocalViewConfiguration changes across devices / during runtime.
         val size = LocalViewConfiguration.current.minimumTouchTargetSize

@@ -2,8 +2,8 @@ package any.ui.floatingbubble
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,14 +72,12 @@ internal fun FloatingContent(
         Surface(
             modifier = modifier
                 .pointerInput(null) {
-                    forEachGesture {
-                        awaitPointerEventScope {
-                            awaitFirstDown(requireUnconsumed = true)
-                            do {
-                                val event = awaitPointerEvent()
-                            } while (!event.changes.fastAny { it.changedToUp() })
-                            onRequestHide()
-                        }
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = true)
+                        do {
+                            val event = awaitPointerEvent()
+                        } while (!event.changes.fastAny { it.changedToUp() })
+                        onRequestHide()
                     }
                 }
                 .fillMaxSize()
