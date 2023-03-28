@@ -1,5 +1,6 @@
 package any.ui.common.post
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -33,9 +36,7 @@ import any.ui.common.theme.imagePlaceholder
 import any.ui.common.video.VideoView
 import any.ui.common.video.rememberVideoPlaybackState
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.rememberPagerState
 
 private const val MIN_ASPECT_RATIO = 1f / 1.618f
 
@@ -101,7 +102,7 @@ internal fun MediaPreview(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun MediaPreviewPager(
     media: ImmutableHolder<List<UiPost.Media>>,
@@ -133,7 +134,7 @@ private fun MediaPreviewPager(
     ) {
         val pagerState = rememberPagerState()
         HorizontalPager(
-            count = media.value.size,
+            pageCount = media.value.size,
             state = pagerState,
         ) {
             MediaPreviewItem(
@@ -154,6 +155,7 @@ private fun MediaPreviewPager(
         if (showIndicator) {
             HorizontalPagerIndicator(
                 pagerState = pagerState,
+                pageCount = media.value.size,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(indicatorMargin)

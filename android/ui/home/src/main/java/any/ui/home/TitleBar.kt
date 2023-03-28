@@ -4,8 +4,8 @@ import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
 import androidx.compose.animation.Animatable
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -148,13 +148,11 @@ internal fun TitleBar(
             Column(
                 modifier = Modifier
                     .pointerInput(Unit) {
-                        forEachGesture {
-                            awaitPointerEventScope {
-                                awaitFirstDown(requireUnconsumed = false)
-                                val touchable = titleAlpha() != 0f
-                                if (!touchable) {
-                                    awaitPointerEvent().changes.forEach { it.consume() }
-                                }
+                        awaitEachGesture {
+                            awaitFirstDown(requireUnconsumed = false)
+                            val touchable = titleAlpha() != 0f
+                            if (!touchable) {
+                                awaitPointerEvent().changes.forEach { it.consume() }
                             }
                         }
                     }
