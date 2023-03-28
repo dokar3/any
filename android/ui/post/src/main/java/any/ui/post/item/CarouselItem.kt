@@ -1,5 +1,6 @@
 package any.ui.post.item
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -14,6 +15,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -45,15 +49,11 @@ import any.ui.common.theme.sizes
 import any.ui.common.theme.thumb
 import any.ui.common.video.VideoView
 import any.ui.common.video.rememberVideoPlaybackState
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun CarouselItem(
     carousel: UiContentElement.Carousel,
@@ -87,8 +87,10 @@ internal fun CarouselItem(
         val evenColor = MaterialTheme.colors.imagePlaceholder
         val oddColor = MaterialTheme.colors.darkerImagePlaceholder
 
+        val pageCount = carousel.items.size
+
         HorizontalPager(
-            count = carousel.items.size,
+            pageCount = pageCount,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(carousel.aspectRatio ?: defaultAspectRatio)
@@ -159,21 +161,26 @@ internal fun CarouselItem(
             )
 
             Indicator(
+                pageCount = pageCount,
                 pagerState = pagerState,
                 modifier = Modifier.weight(weight = 1f, fill = false),
             )
 
             Text(
-                text = "${pagerState.currentPage + 1} / ${pagerState.pageCount}",
+                text = "${pagerState.currentPage + 1} / $pageCount",
                 fontSize = 14.sp,
             )
         }
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(
+    ExperimentalFoundationApi::class,
+    com.google.accompanist.pager.ExperimentalPagerApi::class,
+)
 @Composable
 private fun Indicator(
+    pageCount: Int,
     pagerState: PagerState,
     modifier: Modifier = Modifier,
     dotSize: Dp = 8.dp,
@@ -181,7 +188,7 @@ private fun Indicator(
     maxDots: Int = 10,
 ) {
     val hiddenDotCount = pagerState.currentPage / 10 * maxDots
-    val dotCount = min(pagerState.pageCount - hiddenDotCount, maxDots)
+    val dotCount = min(pageCount - hiddenDotCount, maxDots)
     if (dotCount == 0) {
         return
     }
@@ -238,18 +245,16 @@ private fun Indicator(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 private suspend fun PagerState.animateScrollToPrevPage() {
-    val curr = currentPage
-    if (curr != 0) {
-        animateScrollToPage(curr - 1)
+    if (canScrollForward) {
+        animateScrollToPage(currentPage - 1)
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 private suspend fun PagerState.animateScrollToNextPage() {
-    val curr = currentPage
-    if (curr != pageCount - 1) {
-        animateScrollToPage(curr + 1)
+    if (canScrollForward) {
+        animateScrollToPage(currentPage + 1)
     }
 }
