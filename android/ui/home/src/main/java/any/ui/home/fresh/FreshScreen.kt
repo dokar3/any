@@ -67,7 +67,6 @@ import any.navigation.navPushEvent
 import any.navigation.post
 import any.navigation.search
 import any.navigation.settings
-import any.ui.common.awaitAnimations
 import any.ui.common.lazy.LazyGridScrollableState
 import any.ui.common.lazy.rememberLazyGridScrollableState
 import any.ui.common.theme.themeColorOrPrimary
@@ -409,17 +408,10 @@ private fun FreshScreenContent(
 
     val isRefreshing = uiState.isLoadingInitialPosts
 
-    val delayedIsRefreshing = remember { mutableStateOf(isRefreshing) }
-
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = delayedIsRefreshing.value,
+        refreshing = isRefreshing,
         onRefresh = { onFetchFirstPage(true) },
     )
-
-    LaunchedEffect(isRefreshing) {
-        pullRefreshState.awaitAnimations()
-        delayedIsRefreshing.value = isRefreshing
-    }
 
     Box(
         modifier = Modifier.pullRefresh(

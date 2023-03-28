@@ -45,7 +45,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
@@ -86,9 +86,8 @@ class FloatingView(private val context: Context) : LifecycleOwner, SavedStateReg
     override val savedStateRegistry: SavedStateRegistry
         get() = savedStateRegistryController.savedStateRegistry
 
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
-    }
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry
 
     fun setContent(
         arrowColor: @Composable (() -> Color)? = this.arrowColor,
@@ -190,7 +189,7 @@ class FloatingView(private val context: Context) : LifecycleOwner, SavedStateReg
 
         val container = FrameLayout(context)
         container.setViewTreeSavedStateRegistryOwner(this)
-        ViewTreeLifecycleOwner.set(container, this)
+        container.setViewTreeLifecycleOwner(this)
         this.fabContainer = container
 
         val dropToDismissSizeDp = 96.dp
@@ -480,7 +479,7 @@ class FloatingView(private val context: Context) : LifecycleOwner, SavedStateReg
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             setViewTreeSavedStateRegistryOwner(this@FloatingView)
-            ViewTreeLifecycleOwner.set(this, this@FloatingView)
+            setViewTreeLifecycleOwner(this@FloatingView)
             setContent { content() }
         }
         return composeView
@@ -570,12 +569,12 @@ class FloatingView(private val context: Context) : LifecycleOwner, SavedStateReg
         }
         this.contentView = container
         container.setViewTreeSavedStateRegistryOwner(this)
-        ViewTreeLifecycleOwner.set(container, this)
+        container.setViewTreeLifecycleOwner(this)
         container.visibility = View.GONE
 
         val composeView = ComposeView(context)
         composeView.setViewTreeSavedStateRegistryOwner(this)
-        ViewTreeLifecycleOwner.set(composeView, this)
+        composeView.setViewTreeLifecycleOwner(this)
 
         val winFlags = WindowManager.LayoutParams.FLAG_DIM_BEHIND
         val params = WindowManager.LayoutParams(

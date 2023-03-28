@@ -15,12 +15,9 @@ fun NavController.navigateAndReplace(route: String) {
 }
 
 fun NavController.popBackStackUtil(predicate: (NavBackStackEntry)-> Boolean) {
-    val backQueue = backQueue.reversed()
-    for (entry in backQueue) {
-        if (!predicate(entry)) {
-            popBackStack()
-        } else {
-            break
-        }
+    var curr = currentBackStackEntry
+    while (curr != null && !predicate(curr)) {
+        popBackStack()
+        curr = currentBackStackEntry
     }
 }
