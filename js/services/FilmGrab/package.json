@@ -19,6 +19,6 @@
   "devDependencies": {
     "any-service-compile": "portal:../../any-service-compile",
     "any-service-runner": "portal:../../any-service-runner",
-    "concurrently": "^7.1.0"
+    "concurrently": "^8.0.0"
   }
 }
