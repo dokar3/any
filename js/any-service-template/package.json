@@ -22,7 +22,7 @@
     "any-service-compile": "portal:{{anyCompilePath}}",
     "any-service-runner": "portal:{{anyRunnerPath}}",
     "any-service-testing": "portal:{{anyTestingPath}}",
-    "concurrently": "^7.1.0",
+    "concurrently": "^8.0.0",
     "jest": "^29.0.0",
     "ts-jest": "^29.0.0"
   }
