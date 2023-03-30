@@ -21,7 +21,7 @@ sheets = "0.4.2"
 chiptextfield = "0.4.5"
 expandabletext = "0.3.0"
 flick = "1.7.0"
-fresco = "2.6.0"
+fresco = "3.0.0"
 exoplayer = "2.18.5"
 ksp = "1.8.10-1.0.9"
 
