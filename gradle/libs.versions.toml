@@ -73,7 +73,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
-turbine = { module = "app.cash.turbine:turbine", version = "0.12.1" }
+turbine = { module = "app.cash.turbine:turbine", version = "0.12.2" }
 
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "accompanist" }
