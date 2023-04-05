@@ -44,9 +44,17 @@ dependencies {
 
     implementation libs.disklrucache
 
-    implementation libs.fresco
+    implementation(libs.fresco.asProvider()) {
+        exclude group: 'com.facebook.soloader', module: 'soloader'
+        exclude group: 'com.facebook.fresco', module: 'soloader'
+        exclude group: 'com.facebook.fresco', module: 'nativeimagefilters'
+        exclude group: 'com.facebook.fresco', module: 'nativeimagetranscoder'
+        exclude group: 'com.facebook.fresco', module: 'memory-type-native'
+        exclude group: 'com.facebook.fresco', module: 'imagepipeline-native'
+    }
     implementation libs.fresco.animated.base
     implementation libs.fresco.gif
+    implementation libs.fresco.middleware
     implementation libs.fresco.imagepipeline.okhttp
 
     api libs.accompanist.navigation.animation
