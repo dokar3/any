@@ -20,6 +20,11 @@ class DiskCacheImages : Cleanable {
 
     override suspend fun spaceInfo(): SpaceInfo = withContext(Dispatchers.IO) {
         val mainDiskCacheConfig = Fresco.getImagePipeline().config.mainDiskCacheConfig
+            ?: return@withContext SpaceInfo(
+                size = 0,
+                maxSize = 0,
+                available = 0,
+            )
         val maxSize = mainDiskCacheConfig.defaultSizeLimit
         val dir = File(
             mainDiskCacheConfig.baseDirectoryPathSupplier.get(),
