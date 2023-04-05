@@ -93,6 +93,7 @@ fresco = { module = "com.facebook.fresco:fresco", version.ref = "fresco" }
 fresco-animated-base = { module = "com.facebook.fresco:animated-base", version.ref = "fresco" }
 fresco-gif = { module = "com.facebook.fresco:animated-gif", version.ref = "fresco" }
 fresco-webpsupport = { module = "com.facebook.fresco:webpsupport", version.ref = "fresco" }
+fresco-middleware = { module = "com.facebook.fresco:middleware", version.ref = "fresco" }
 fresco-imagepipeline-okhttp = { module = "com.facebook.fresco:imagepipeline-okhttp3", version.ref = "fresco" }
 
 exoplayer-core = { module = "com.google.android.exoplayer:exoplayer-core", version.ref = "exoplayer" }
