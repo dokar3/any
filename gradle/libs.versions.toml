@@ -2,7 +2,7 @@
 compileSdk = "33"
 targetSdk = "33"
 agp = "7.4.2"
-kotlin = "1.8.10"
+kotlin = "1.8.21"
 compose-bom = "2023.05.01"
 composeCompiler = "1.4.7"
 navigationcompose = "2.5.3"
