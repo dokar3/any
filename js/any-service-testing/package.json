@@ -13,7 +13,7 @@
     "@types/jest": "^29.2.2",
     "any-service-api": "portal:../any-service-api",
     "jest": "^29.3.1",
-    "jsdom": "^21.0.0",
+    "jsdom": "^22.0.0",
     "os-locale": "^6.0.2",
     "sync-request": "^6.1.0",
     "ts-jest": "^29.0.3",
