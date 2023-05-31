@@ -9,7 +9,7 @@ plugins {
 android {
     namespace 'any.data'
     compileSdk libs.versions.compileSdk.get().toInteger()
-    buildToolsVersion "30.0.3"
+    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         minSdk 21
@@ -32,14 +32,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
