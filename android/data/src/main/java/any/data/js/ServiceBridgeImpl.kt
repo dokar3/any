@@ -20,6 +20,7 @@ import any.data.js.plugin.MemoryServiceConfigsUpdater
 import any.data.js.plugin.MemoryServiceManifestUpdater
 import any.data.js.plugin.ProgressPlugin
 import any.data.json.Json
+import any.data.json.fromJson
 import any.data.repository.PostContentRepository
 import any.data.repository.ServiceRepository
 import kotlinx.coroutines.CancellationException
@@ -176,10 +177,7 @@ class ServiceBridgeImpl(
 
             // Parse json result
             val fetchResult = try {
-                json.fromJson<JsFetchResult<JsPost>>(
-                    json = text,
-                    type = Json.parameterizedType<JsFetchResult<JsPost>>()
-                )
+                json.fromJson<JsFetchResult<JsPost>>(json = text)
             } catch (e: Exception) {
                 Logger.e(TAG, "Illegal json: \n$text")
                 e.printStackTrace()
@@ -259,10 +257,7 @@ class ServiceBridgeImpl(
             }
 
             val jsPagedResult = try {
-                json.fromJson<JsPagedResult<Array<Comment>>>(
-                    json = text,
-                    type = Json.parameterizedType<JsPagedResult<Array<Comment>>>(),
-                )!!
+                json.fromJson<JsPagedResult<Array<Comment>>>(json = text)!!
             } catch (e: Exception) {
                 e.printStackTrace()
                 Logger.e(TAG, "Illegal json: $text")
@@ -323,10 +318,7 @@ class ServiceBridgeImpl(
     ): FetchState<User> {
         // Parse json result
         val fetchResult = try {
-            json.fromJson<JsFetchResult<JsUser>>(
-                json = result,
-                type = Json.parameterizedType<JsFetchResult<JsUser>>()
-            )
+            json.fromJson<JsFetchResult<JsUser>>(result)
         } catch (e: Exception) {
             Logger.e(TAG, "Illegal json: \n$result")
             e.printStackTrace()
@@ -353,10 +345,7 @@ class ServiceBridgeImpl(
     ): PagedPostsFetchState {
         // Parse json result
         val jsPagedResult = try {
-            json.fromJson<JsPagedResult<Array<JsPost>>>(
-                json = result,
-                type = Json.parameterizedType<JsPagedResult<Array<JsPost>>>(),
-            )!!
+            json.fromJson<JsPagedResult<Array<JsPost>>>(json = result)!!
         } catch (e: Exception) {
             e.printStackTrace()
             Logger.e(TAG, "Illegal json: $result")

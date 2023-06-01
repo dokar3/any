@@ -3,6 +3,8 @@ package any.data.js.plugin
 import android.util.Log
 import any.base.util.Http
 import any.data.json.Json
+import any.data.json.fromJson
+import any.data.json.toJson
 import okhttp3.FormBody
 import okhttp3.Headers
 import okhttp3.OkHttpClient
@@ -15,10 +17,7 @@ class DefaultHttpPlugin(private val json: Json = Json) : HttpPlugin {
 
     override fun request(requestBody: String): String? {
         val request = try {
-            json.fromJson(
-                json = requestBody,
-                clz = HttpPlugin.HttpRequest::class.java
-            )
+            json.fromJson<HttpPlugin.HttpRequest>(requestBody)
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -62,7 +61,7 @@ class DefaultHttpPlugin(private val json: Json = Json) : HttpPlugin {
             headers = okResponse.headers.toMap(),
         )
 
-        return json.toJson(response, HttpPlugin.HttpResponse::class.java)
+        return json.toJson(response)
     }
 
     private fun httpClient(timeout: Long): OkHttpClient {
@@ -74,10 +73,12 @@ class DefaultHttpPlugin(private val json: Json = Json) : HttpPlugin {
             currentTimeout -> {
                 cachedHttpClient
             }
+
             Http.DEFAULT_TIMEOUT -> {
                 cachedHttpClient = Http.DEFAULT_CLIENT
                 cachedHttpClient
             }
+
             else -> {
                 OkHttpClient.Builder()
                     .connectTimeout(okTimeout, TimeUnit.MILLISECONDS)

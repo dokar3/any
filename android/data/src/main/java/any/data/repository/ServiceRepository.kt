@@ -6,6 +6,7 @@ import any.data.db.AppDatabase
 import any.data.db.ServiceDao
 import any.data.entity.ServiceManifest
 import any.data.json.Json
+import any.data.json.fromJson
 import any.data.source.service.AssetsServiceDataSource
 import any.data.source.service.BuiltinServiceDataSource
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ class ServiceRepository(
     ): ServiceManifest? = withContext(Dispatchers.IO) {
         val manifestJson = Http.get(url) ?: return@withContext null
         try {
-            json.fromJson(manifestJson, ServiceManifest::class.java)
+            json.fromJson<ServiceManifest>(manifestJson)
                 ?.let(ServiceManifest::markAsRemote)
                 ?.copy(upgradeUrl = url)
         } catch (e: Exception) {

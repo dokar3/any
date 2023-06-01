@@ -12,6 +12,7 @@ import any.base.util.isHttpUrl
 import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
 import any.data.json.Json
+import any.data.json.fromJson
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -83,7 +84,7 @@ class ServiceInstaller(
         return try {
             val bytes = inputStream.readBytes()
             val jsonText = String(bytes, Charsets.UTF_8)
-            json.fromJson(jsonText, ServiceManifest::class.java)
+            json.fromJson<ServiceManifest>(jsonText)
         } catch (e: Exception) {
             e.printStackTrace()
             null

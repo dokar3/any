@@ -6,6 +6,8 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import kotlin.reflect.javaType
+import kotlin.reflect.typeOf
 
 interface Json {
     fun <T> fromJson(json: String, type: Type): T?
@@ -58,4 +60,28 @@ interface Json {
             )
         }
     }
+}
+
+inline fun <reified T> Json.fromJson(json: String): T? {
+    return if (T::class.java.typeParameters.isEmpty()) {
+        Json.fromJson(json, T::class.java)
+    } else {
+        Json.fromJson(json, Json.parameterizedType<T>())
+    }
+}
+
+inline fun <reified T> Json.fromJson(json: InputStream): T? {
+    return if (T::class.java.typeParameters.isEmpty()) {
+        Json.fromJson(json, T::class.java)
+    } else {
+        Json.fromJson(json, Json.parameterizedType<T>())
+    }
+}
+
+inline fun <reified T : Any> Json.toJson(src: T): String {
+    return Json.toJson(src, T::class.java)
+}
+
+inline fun <reified T : Any> Json.toJson(src: T, output: OutputStream) {
+    Json.toJson(src, output, T::class.java)
 }

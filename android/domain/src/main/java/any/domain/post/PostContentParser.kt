@@ -4,6 +4,7 @@ import any.data.ThumbAspectRatio
 import any.data.entity.ContentElement
 import any.data.entity.ContentElementType
 import any.data.json.Json
+import any.data.json.fromJson
 import any.domain.entity.UiContentElement
 import any.richtext.RichElement
 import any.richtext.html.DefaultHtmlParser
@@ -121,10 +122,7 @@ class PostContentParser(
 
             ContentElementType.Image -> {
                 val image = try {
-                    json.fromJson(
-                        json = value ?: "",
-                        clz = ContentElement.Image::class.java,
-                    )
+                    json.fromJson(value ?: "")
                 } catch (e: Exception) {
                     ContentElement.Image(url = value ?: "", aspectRatio = null)
                 }
@@ -139,10 +137,7 @@ class PostContentParser(
 
             ContentElementType.FullWidthImage -> {
                 val image = try {
-                    json.fromJson(
-                        json = value ?: "",
-                        clz = ContentElement.Image::class.java,
-                    )
+                    json.fromJson(value ?: "")
                 } catch (e: Exception) {
                     ContentElement.Image(url = value ?: "", aspectRatio = null)
                 }
@@ -156,10 +151,7 @@ class PostContentParser(
             }
 
             ContentElementType.Carousel -> {
-                val carousel = json.fromJson(
-                    json = value ?: "",
-                    clz = ContentElement.Carousel::class.java,
-                )
+                val carousel = json.fromJson<ContentElement.Carousel>(value ?: "")
                 checkNotNull(carousel) { "Incorrect carousel element: $value" }
                 listOf(
                     UiContentElement.Carousel(
@@ -170,10 +162,7 @@ class PostContentParser(
             }
 
             ContentElementType.Video -> {
-                val video = json.fromJson(
-                    json = value ?: "",
-                    clz = ContentElement.Video::class.java,
-                )
+                val video = json.fromJson<ContentElement.Video>(value ?: "")
                 checkNotNull(video) { "Incorrect video element: $value" }
                 listOf(
                     UiContentElement.Video(

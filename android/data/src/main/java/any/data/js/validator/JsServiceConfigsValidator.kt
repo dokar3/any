@@ -7,6 +7,7 @@ import any.data.js.ServiceRunner
 import any.data.js.plugin.MemoryServiceConfigsUpdater
 import any.data.js.plugin.MemoryServiceManifestUpdater
 import any.data.json.Json
+import any.data.json.fromJson
 import com.squareup.moshi.JsonClass
 import org.intellij.lang.annotations.Language
 
@@ -70,10 +71,7 @@ class JsServiceConfigsValidator(
                 if (ret.isNullOrEmpty()) {
                     return@runSafely List(configs.size) { ValidationResult.Pass }
                 }
-                json.fromJson<List<ValidationFailure>>(
-                    json = ret,
-                    type = Json.parameterizedType<List<ValidationFailure>>(),
-                )
+                json.fromJson<List<ValidationFailure>>(ret)
             } catch (e: Exception) {
                 e.printStackTrace()
                 val err = "Validation error: ${e.message}"
