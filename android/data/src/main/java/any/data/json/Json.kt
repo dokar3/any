@@ -45,17 +45,17 @@ interface Json {
             return DefaultJson.toJson(src, output, clz)
         }
 
+        @OptIn(ExperimentalStdlibApi::class)
         inline fun <reified T> parameterizedType(): Type {
-            val token = object : `$TypeToken`<T>() {}
-            val tokenParameterizedType = (token::class.java.genericSuperclass as ParameterizedType)
-                .actualTypeArguments[0] as ParameterizedType
+            val kType = typeOf<T>()
+            val javaType = kType.javaType
+            require(javaType is ParameterizedType) {
+                "Unsupported type: $javaType, requires a ParameterizedType"
+            }
             return Types.newParameterizedType(
                 T::class.java.rawType,
-                *tokenParameterizedType.actualTypeArguments
+                *javaType.actualTypeArguments
             )
         }
-
-        @Suppress("unused", "ClassName")
-        open class `$TypeToken`<T> protected constructor()
     }
 }
