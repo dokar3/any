@@ -15,6 +15,8 @@ import any.data.entity.ServiceManifest
 import any.data.entity.ServiceResource
 import any.data.entity.User
 import any.data.json.Json
+import any.data.json.fromJson
+import any.data.json.toJson
 import any.data.service.ServiceInstaller
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -154,7 +156,7 @@ class BackupManagerImpl(
             val manifest = File(serviceDir, SERVICE_MANIFEST_FILENAME)
             try {
                 manifest.inputStream().use {
-                    json.fromJson(it, ServiceManifest::class.java)
+                    json.fromJson<ServiceManifest>(it)
                 } != null
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -345,7 +347,7 @@ class BackupManagerImpl(
             val updatedService = service.copy(localResources = localResources)
             val manifest = File(serviceFolder, SERVICE_MANIFEST_FILENAME)
             manifest.outputStream().use {
-                json.toJson(updatedService, it, ServiceManifest::class.java)
+                json.toJson(updatedService, it)
             }
         }
         return services.size
@@ -353,25 +355,25 @@ class BackupManagerImpl(
 
     private suspend fun exportUsers(outputStream: OutputStream): Int {
         val users = appDatabase.userDao().getAll()
-        json.toJson(users, outputStream, List::class.java)
+        json.toJson(users, outputStream)
         return users.size
     }
 
     private suspend fun exportPosts(outputStream: OutputStream): Int {
         val posts = appDatabase.postDao().getAll()
-        json.toJson(posts, outputStream, List::class.java)
+        json.toJson(posts, outputStream)
         return posts.size
     }
 
     private suspend fun exportBookmarks(outputStream: OutputStream): Int {
         val bookmarks = appDatabase.bookmarkDao().getAll()
-        json.toJson(bookmarks, outputStream, List::class.java)
+        json.toJson(bookmarks, outputStream)
         return bookmarks.size
     }
 
     private suspend fun exportPostContents(outputStream: OutputStream): Int {
         val contents = postContentDatabase.postContentDao().getAll()
-        json.toJson(contents, outputStream, List::class.java)
+        json.toJson(contents, outputStream)
         return contents.size
     }
 

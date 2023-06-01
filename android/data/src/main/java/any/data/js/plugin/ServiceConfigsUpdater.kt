@@ -2,6 +2,7 @@ package any.data.js.plugin
 
 import any.data.entity.ServiceConfig
 import any.data.json.Json
+import any.data.json.fromJson
 
 interface ServiceConfigsUpdater {
     fun update(configsJson: String)
@@ -25,10 +26,7 @@ interface ServiceConfigsUpdater {
 
             val currConfigMap = current.associateBy { it.key }.toMutableMap()
 
-            val newConfigMap = json.fromJson<Map<String, Any?>>(
-                json = updated,
-                type = Json.parameterizedType<Map<String, Any?>>()
-            )
+            val newConfigMap = json.fromJson<Map<String, Any?>>(updated)
             if (newConfigMap.isNullOrEmpty()) {
                 throw IllegalArgumentException(
                     "Cannot update configs: Failed to parse configs object"

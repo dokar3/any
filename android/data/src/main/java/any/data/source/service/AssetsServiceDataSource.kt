@@ -3,6 +3,7 @@ package any.data.source.service
 import android.content.Context
 import any.data.entity.ServiceManifest
 import any.data.json.Json
+import any.data.json.fromJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -16,7 +17,7 @@ class AssetsServiceDataSource(
         val text = context.assets.open(BUILTIN_SERVICES)
             .bufferedReader()
             .use { it.readText() }
-        return@withContext json.fromJson(text, Array<ServiceManifest>::class.java)
+        return@withContext json.fromJson<List<ServiceManifest>>(text)
             ?.map(ServiceManifest::markAsBuiltin)
             ?: emptyList()
     }
