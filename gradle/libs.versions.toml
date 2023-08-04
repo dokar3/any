@@ -62,7 +62,7 @@ androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4"
 
 androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
-androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version = "2.3.0-alpha03" }
+androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version = "2.3.0-alpha04" }
 
 junit = { module = "junit:junit", version = "4.13.2" }
 
