@@ -1,13 +1,14 @@
 package any.ui.service
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -84,9 +85,10 @@ import any.ui.common.widget.FlatSwitch
 import any.ui.common.widget.ProgressBar
 import any.ui.common.widget.WarningMessage
 import com.dokar.sheets.rememberBottomSheetState
-import com.google.accompanist.flowlayout.FlowRow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 fun ServiceDialog(
@@ -719,6 +721,7 @@ private fun ServiceViewTypeItem(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ServiceInfo(
     service: UiServiceManifest,
@@ -754,8 +757,8 @@ private fun ServiceInfo(
 
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
-                mainAxisSpacing = 8.dp,
-                crossAxisSpacing = 8.dp,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Badge(
                     label = { Text("Id") },

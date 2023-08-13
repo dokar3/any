@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
-import any.base.util.compose.copy
+import any.base.compose.copy
 import any.richtext.RichString
 import any.ui.common.richtext.RichTextBlocks
 import any.ui.post.menu.PostHeadingOptionsPopup

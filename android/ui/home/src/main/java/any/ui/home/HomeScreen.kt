@@ -25,7 +25,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import any.base.compose.LocalBenchmarkBuild
 import any.base.util.applyLightStatusBar
 import any.base.util.clearLightStatusBar
@@ -44,9 +47,6 @@ import any.ui.home.collections.CollectionsScreen
 import any.ui.home.downloads.DownloadsScreen
 import any.ui.home.following.FollowingScreen
 import any.ui.home.fresh.FreshScreen
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 const val FADE_TRANS_DURATION = 275
 
@@ -99,8 +99,8 @@ fun HomeScreen(
         barsColorController = barsColorController,
         modifier = modifier.fillMaxSize(),
     ) {
-        val subNavController = rememberAnimatedNavController()
-        AnimatedNavHost(
+        val subNavController = rememberNavController()
+        NavHost(
             navController = subNavController,
             startDestination = initialDestination,
         ) {

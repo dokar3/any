@@ -80,17 +80,16 @@ internal fun CarouselItem(
     ) {
         val scope = rememberCoroutineScope()
 
-        val pagerState = rememberPagerState()
+        val pageCount = carousel.items.size
+
+        val pagerState = rememberPagerState(pageCount = { pageCount })
 
         val feedback = LocalHapticFeedback.current
 
         val evenColor = MaterialTheme.colors.imagePlaceholder
         val oddColor = MaterialTheme.colors.darkerImagePlaceholder
 
-        val pageCount = carousel.items.size
-
         HorizontalPager(
-            pageCount = pageCount,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(carousel.aspectRatio ?: defaultAspectRatio)

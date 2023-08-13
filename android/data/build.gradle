@@ -9,7 +9,6 @@ plugins {
 android {
     namespace 'any.data'
     compileSdk libs.versions.compileSdk.get().toInteger()
-    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         minSdk 21

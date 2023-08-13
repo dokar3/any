@@ -37,10 +37,19 @@ android {
 }
 
 dependencies {
+    api platform(libs.compose.bom)
+
+    api libs.compose.ui.ui
+    api libs.compose.ui.util
+    api libs.compose.animation
+    api libs.compose.foundation
+    api libs.compose.material
 
     implementation libs.okhttp
     implementation libs.androidx.browser
     implementation libs.androidx.documentfile
+    api libs.androidx.activity.compose
+    implementation libs.kotlinx.coroutines.android
 
     implementation libs.disklrucache
 
@@ -56,8 +65,6 @@ dependencies {
     implementation libs.fresco.gif
     implementation libs.fresco.middleware
     implementation libs.fresco.imagepipeline.okhttp
-
-    api libs.accompanist.navigation.animation
 
     testImplementation libs.junit
     testImplementation libs.kotlinx.coroutines.test
