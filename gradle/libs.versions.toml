@@ -23,7 +23,7 @@ expandabletext = "0.3.1"
 flick = "1.7.0"
 fresco = "3.0.0"
 exoplayer = "2.19.0"
-ksp = "1.8.21-1.0.11"
+ksp = "1.9.0-1.0.13"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
