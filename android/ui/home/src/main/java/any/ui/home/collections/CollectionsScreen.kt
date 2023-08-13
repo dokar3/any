@@ -1,7 +1,5 @@
 package any.ui.home.collections
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -72,6 +70,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import any.base.compose.ImmutableHolder
 import any.base.compose.StableHolder
@@ -116,10 +117,9 @@ import any.ui.home.TitleBar
 import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.PeekHeight
 import com.dokar.sheets.rememberBottomSheetState
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 private const val ROUTE = "collections?folder={folder}"
 
@@ -299,7 +299,7 @@ internal fun CollectionsScreen(
 
         val commentsSheetState = rememberBottomSheetState()
 
-        val subNavController = rememberAnimatedNavController()
+        val subNavController = rememberNavController()
 
         val previousFolder = uiState.previousFolderUiState.folder
 
@@ -341,7 +341,7 @@ internal fun CollectionsScreen(
 
         val animSpec = remember { tween<Float>(easing = FastOutSlowInEasing) }
 
-        AnimatedNavHost(
+        NavHost(
             navController = subNavController,
             startDestination = ROUTE,
         ) {

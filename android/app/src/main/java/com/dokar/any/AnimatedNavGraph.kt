@@ -29,6 +29,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import any.base.prefs.LAUNCH_SCREEN_COLLECTIONS
 import any.base.prefs.LAUNCH_SCREEN_DOWNLOADS
@@ -71,8 +73,6 @@ import any.ui.profile.ProfileScreen
 import any.ui.runsql.RunSqlScreen
 import any.ui.search.SearchScreen
 import any.ui.settings.SettingsScreen
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -112,7 +112,7 @@ fun AnimatedAppNavGraph(
         Routes.HOME
     }
 
-    AnimatedNavHost(
+    NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,

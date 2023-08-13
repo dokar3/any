@@ -132,25 +132,30 @@ private fun MediaPreviewPager(
             .fillMaxWidth()
             .aspectRatio(aspectRatio),
     ) {
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f,
+            pageCount = { media.value.size },
+        )
         HorizontalPager(
-            pageCount = media.value.size,
+            modifier = Modifier,
             state = pagerState,
-        ) {
-            MediaPreviewItem(
-                media = media.value[it],
-                aspectRatio = aspectRatio,
-                modifier = modifier,
-                contentDescription = contentDescription,
-                onClick = onClick?.let { block -> { block(it) } },
-                alignment = alignment,
-                contentScale = contentScale,
-                tagMargin = tagMargin,
-                tagFontSize = tagFontSize,
-                tagFontWeight = tagFontWeight,
-                fadeIn = fadeIn,
-            )
-        }
+            pageContent = {
+                MediaPreviewItem(
+                    media = media.value[it],
+                    aspectRatio = aspectRatio,
+                    modifier = modifier,
+                    contentDescription = contentDescription,
+                    onClick = onClick?.let { block -> { block(it) } },
+                    alignment = alignment,
+                    contentScale = contentScale,
+                    tagMargin = tagMargin,
+                    tagFontSize = tagFontSize,
+                    tagFontWeight = tagFontWeight,
+                    fadeIn = fadeIn,
+                )
+            }
+        )
 
         if (showIndicator) {
             HorizontalPagerIndicator(

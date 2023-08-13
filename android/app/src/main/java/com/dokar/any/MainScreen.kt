@@ -3,7 +3,6 @@ package com.dokar.any
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +21,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavDestination
+import androidx.navigation.compose.rememberNavController
 import any.base.R
 import any.base.compose.ImmutableHolder
 import any.domain.entity.UpdatableService
@@ -37,14 +37,12 @@ import any.ui.imagepager.ImagePagerViewModel
 import any.ui.service.ServiceDialog
 import any.ui.settings.services.ServiceMgtViewModel
 import any.ui.settings.services.ServicesUiState
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
 val MainScreenNavBlocker = NavigationBlocker()
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
@@ -57,7 +55,7 @@ fun MainScreen(
     ),
 ) {
     val context = LocalContext.current
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
 
     val uiState by mainViewModel.uiState.collectAsState()
     val servicesUiState by serviceMgtViewModel.servicesUiState.collectAsState()
