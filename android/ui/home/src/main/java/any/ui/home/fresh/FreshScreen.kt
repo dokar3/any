@@ -1,7 +1,5 @@
 package any.ui.home.fresh
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import android.app.Activity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -88,6 +86,8 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
