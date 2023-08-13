@@ -1,5 +1,6 @@
 package any.macrobenchmark
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.benchmark.Shell
 import androidx.room.Room
@@ -17,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 
+@SuppressLint("RestrictedApi")
 class SampleDataManager(
     private val targetPackageName: String,
     private val context: Context,

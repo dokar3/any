@@ -1,5 +1,7 @@
 package any.macrobenchmark
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.benchmark.macro.junit4.BaselineProfileRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@RequiresApi(Build.VERSION_CODES.P)
 class BaselineProfileGenerator {
     @get:Rule
     val baselineRule = BaselineProfileRule()
@@ -36,7 +39,7 @@ class BaselineProfileGenerator {
     }
 
     @Test
-    fun generate() = baselineRule.collectBaselineProfile(
+    fun generate() = baselineRule.collect(
         packageName = TARGET_PACKAGE_NAME,
     ) {
         pressHome()
@@ -44,8 +47,13 @@ class BaselineProfileGenerator {
             it.putExtra("extra.block_all_main_screen_nav", true)
         }
 
+        @Throws(Exception::class)
         fun waitObject(selector: BySelector): UiObject2 {
-            return device.wait(Until.findObject(selector), 5_000)
+            return try {
+                device.wait(Until.findObject(selector), 5_000)
+            } catch (e: Exception) {
+                throw Exception("Wait object error, selector: ${selector}, error: $e")
+            }
         }
 
         waitObject(By.text("Fresh")).click()
@@ -55,9 +63,9 @@ class BaselineProfileGenerator {
                 // Select target service
                 waitObject(By.text(service.name)).click()
                 device.waitForIdle()
+                scrollList(waitObject(By.res("freshPostList")))
+                device.waitForIdle()
             }
-            scrollList(waitObject(By.res("freshPostList")))
-            device.waitForIdle()
         }
 
         waitObject(By.text("Following")).click()
