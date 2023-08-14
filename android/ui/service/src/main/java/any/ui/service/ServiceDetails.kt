@@ -1,11 +1,12 @@
 package any.ui.service
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,10 +50,10 @@ import any.ui.common.richtext.RichText
 import any.ui.common.theme.link
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.Avatar
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.flowlayout.MainAxisAlignment
 import java.text.SimpleDateFormat
 import kotlin.math.max
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 fun ServiceDetails(
@@ -271,6 +272,7 @@ private fun LinkText(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ServiceInfoHeader(
     service: UiServiceManifest,
@@ -305,9 +307,8 @@ private fun ServiceInfoHeader(
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
-            mainAxisSpacing = 8.dp,
-            crossAxisSpacing = 8.dp,
-            mainAxisAlignment = MainAxisAlignment.Center,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Badge(
                 label = { Text(stringResource(BaseR.string.id)) },

@@ -1,8 +1,9 @@
 package any.ui.settings.ui
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,8 +23,10 @@ import any.base.prefs.darkModeFlow
 import any.base.prefs.preferencesStore
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
-import com.google.accompanist.flowlayout.FlowRow
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun DarkModeItem(
     modifier: Modifier = Modifier,
@@ -54,8 +57,8 @@ internal fun DarkModeItem(
 
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
-                mainAxisSpacing = 8.dp,
-                crossAxisSpacing = 8.dp
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 CheckableButton(
                     title = stringResource(BaseR.string.dark_mode_on),

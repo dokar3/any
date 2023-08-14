@@ -11,7 +11,9 @@ class SharedPreferencesStore(
     private val valueChangedFlow = MutableSharedFlow<String>(extraBufferCapacity = 2)
 
     private val onValueChanged = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        valueChangedFlow.tryEmit(key)
+        if (key != null) {
+            valueChangedFlow.tryEmit(key)
+        }
     }
 
     init {
