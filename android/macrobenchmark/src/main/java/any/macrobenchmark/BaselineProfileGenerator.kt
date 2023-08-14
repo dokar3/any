@@ -48,18 +48,28 @@ class BaselineProfileGenerator {
         }
 
         @Throws(Exception::class)
-        fun waitObject(selector: BySelector): UiObject2 {
+        fun waitObject(
+            selector: BySelector,
+            failedCount: Int = 0,
+        ): UiObject2 {
             return try {
-                device.wait(Until.findObject(selector), 5_000)
+                device.wait(Until.findObject(selector), 1_000)
             } catch (e: Exception) {
-                throw Exception("Wait object error, selector: ${selector}, error: $e")
+                // findObject won't work sometimes, this may help
+                device.pressRecentApps()
+                device.pressBack()
+                if (failedCount >= 10) {
+                    throw Exception("Wait object error, selector: ${selector}, error: $e")
+                } else {
+                    return waitObject(selector, failedCount + 1)
+                }
             }
         }
 
         waitObject(By.text("Fresh")).click()
         sampleDataManager.sampleServices().forEach { service ->
             if (!device.hasObject(By.text(service.name))) {
-                waitObject(By.res("serviceSelector")).click()
+                withRetry { waitObject(By.res("serviceSelector")).click() }
                 // Select target service
                 waitObject(By.text(service.name)).click()
                 device.waitForIdle()
@@ -86,5 +96,16 @@ class BaselineProfileGenerator {
     private fun scrollList(uiList: UiObject2) {
         uiList.setGestureMargin(uiList.visibleBounds.width() / 3)
         uiList.fling(Direction.DOWN)
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun withRetry(maxRetries: Int = 5, block: () -> Unit) {
+        for (i in 0..<maxRetries) {
+            try {
+                block()
+                return
+            } catch (_: Exception) {
+            }
+        }
     }
 }
