@@ -1,7 +1,5 @@
 package any.ui.post
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,7 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import any.base.compose.ImmutableHolder
 import any.data.entity.Bookmark
 import any.domain.post.ContentSection
@@ -42,9 +43,8 @@ import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.BottomSheetDefaults
 import com.dokar.sheets.BottomSheetState
 import com.dokar.sheets.rememberBottomSheetState
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 internal const val ROUTE_SECTIONS = "post/sections"
 
@@ -156,7 +156,7 @@ private fun PostDrawerContent(
     startDestination: String = ROUTE_SECTIONS,
     navigationBarBackground: Color = MaterialTheme.colors.background,
 ) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
 
     DisposableEffect(state, navController) {
         state.attachNavController(navController)
@@ -164,7 +164,7 @@ private fun PostDrawerContent(
     }
 
     Column(modifier = modifier.fillMaxSize()) {
-        AnimatedNavHost(
+        NavHost(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier

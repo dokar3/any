@@ -35,10 +35,6 @@ fun ServiceDropdownButton(
     dropdownAlignmentToAnchor: Alignment = Alignment.TopEnd,
     dropdownTransformOrigin: TransformOrigin = TransformOrigin(1f, 0f),
 ) {
-    if (currentService == null) {
-        return
-    }
-
     var showServicesDropDown by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
         val hapticFeedback = LocalHapticFeedback.current
@@ -51,7 +47,7 @@ fun ServiceDropdownButton(
             },
         ) {
             Text(
-                text = currentService.name,
+                text = currentService?.name ?: "???",
                 fontSize = fontSize,
                 fontWeight = fontWeight,
                 maxLines = maxLines,

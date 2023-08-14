@@ -44,7 +44,6 @@ dependencies {
     implementation projects.commonUi
     implementation projects.ui.browser
 
-    implementation libs.accompanist.flowlayout
     implementation libs.expandabletext
     implementation libs.semver
 

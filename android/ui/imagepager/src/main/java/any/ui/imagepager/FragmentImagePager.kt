@@ -2,7 +2,6 @@
 
 package any.ui.imagepager
 
-import any.base.R as BaseR
 import android.annotation.SuppressLint
 import android.app.DialogFragment
 import android.app.ProgressDialog
@@ -10,6 +9,7 @@ import android.graphics.ColorFilter
 import android.graphics.PointF
 import android.graphics.drawable.Animatable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.GestureDetector
@@ -79,6 +79,7 @@ import me.saket.flick.FlickGestureListener
 import java.io.File
 import java.io.InputStream
 import kotlin.math.absoluteValue
+import any.base.R as BaseR
 
 private const val FRAGMENT_TAG = "ImagePager"
 
@@ -369,23 +370,30 @@ class ImagePagerFragment : DialogFragment() {
     }
 
     private fun initOptionsMenu(v: View) {
-        optionsMenu = object : PopupMenu(
-            activity,
-            v,
-            Gravity.NO_GRAVITY,
-            android.R.attr.actionOverflowMenuStyle,
-            0
-        ) {
-            init {
-                inflate(R.menu.image_pager)
-                setOnMenuItemClickListener(::onOptionsItemSelected)
+        optionsMenu = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            object : PopupMenu(
+                activity,
+                v,
+                Gravity.NO_GRAVITY,
+                android.R.attr.actionOverflowMenuStyle,
+                0,
+            ) {
+                override fun show() {
+                    prepareOptionsMenu()
+                    super.show()
+                }
             }
-
-            override fun show() {
-                prepareOptionsMenu()
-                super.show()
+        } else {
+            object : PopupMenu(activity, v, Gravity.NO_GRAVITY) {
+                override fun show() {
+                    prepareOptionsMenu()
+                    super.show()
+                }
             }
         }
+        optionsMenu.inflate(R.menu.image_pager)
+        optionsMenu.setOnMenuItemClickListener(::onOptionsItemSelected)
+
         val isGoogleLensInstalled = PackageUtil.isPackageInstalled(
             packageName = PackageUtil.PKG_GOOGLE_LENS,
             context = activity,

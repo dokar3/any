@@ -6,7 +6,6 @@ plugins {
 android {
     namespace 'com.dokar.any'
     compileSdk libs.versions.compileSdk.get().toInteger()
-    buildToolsVersion = "30.0.3"
 
     defaultConfig {
         applicationId "com.dokar.any"
