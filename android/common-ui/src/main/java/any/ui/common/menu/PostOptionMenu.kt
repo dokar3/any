@@ -1,7 +1,5 @@
 package any.ui.common.menu
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.infiniteRepeatable
@@ -32,8 +30,11 @@ import com.dokar.sheets.BottomSheetValue
 import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 fun PostOptionMenu(
@@ -62,6 +63,7 @@ fun PostOptionMenu(
         snapshotFlow { state.value }
             .distinctUntilChanged()
             .filter { it == BottomSheetValue.Collapsed }
+            .drop(1)
             .collect { onDismiss() }
     }
 
