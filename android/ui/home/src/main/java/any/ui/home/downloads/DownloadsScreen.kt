@@ -1,7 +1,5 @@
 package any.ui.home.downloads
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -48,6 +46,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -104,6 +103,8 @@ import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 internal fun DownloadsScreen(
@@ -136,7 +137,7 @@ internal fun DownloadsScreen(
 
     val isSelectionEnabled = uiState.isSelectionEnabled()
 
-    var bottomBarOffset by remember { mutableStateOf(0) }
+    var bottomBarOffset by remember { mutableIntStateOf(0) }
 
     var showRemoveDialog by remember { mutableStateOf(false) }
 

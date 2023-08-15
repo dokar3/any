@@ -20,6 +20,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,7 +43,7 @@ internal fun WebView(
 ) {
     val context = LocalContext.current
 
-    var loadingProgress by remember { mutableStateOf(0f) }
+    var loadingProgress by remember { mutableFloatStateOf(0f) }
 
     var webView by remember { mutableStateOf<WebView?>(null) }
 
@@ -217,7 +218,7 @@ class WebViewController {
 
 @Stable
 internal sealed interface LoadState {
-    object Loading : LoadState
+    data object Loading : LoadState
 
     class Finished(
         val timeElapse: Long,

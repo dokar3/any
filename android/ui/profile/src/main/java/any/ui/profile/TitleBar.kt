@@ -1,6 +1,5 @@
 package any.ui.profile
 
-import any.base.R as BaseR
 import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,6 +22,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,6 +51,7 @@ import any.ui.common.widget.TitleActionButton
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import any.base.R as BaseR
 
 @Composable
 internal fun TitleBar(
@@ -67,7 +68,7 @@ internal fun TitleBar(
 
     val view = LocalView.current
 
-    var scrollProgress by remember { mutableStateOf(0f) }
+    var scrollProgress by remember { mutableFloatStateOf(0f) }
 
     var contentColor by remember { mutableStateOf(Color.White) }
 

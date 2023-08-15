@@ -1,7 +1,5 @@
 package any.ui.post
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -46,6 +44,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -152,6 +151,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.max
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 fun PostScreen(
@@ -641,7 +642,7 @@ private fun PostContent(
 
     var selectedImage: UiContentElement? by remember { mutableStateOf(null) }
 
-    var indexToAddBookmark by remember { mutableStateOf(-1) }
+    var indexToAddBookmark by remember { mutableIntStateOf(-1) }
 
     var longClickOffset by remember { mutableStateOf(Offset.Zero) }
 

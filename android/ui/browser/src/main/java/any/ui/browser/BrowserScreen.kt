@@ -1,6 +1,5 @@
 package any.ui.browser
 
-import any.base.R as BaseR
 import android.webkit.CookieManager
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -12,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +25,7 @@ import any.base.util.BrowserType
 import any.base.util.ClipboardUtil
 import any.base.util.Intents
 import any.ui.common.widget.EmojiEmptyContent
+import any.base.R as BaseR
 
 @Composable
 internal fun BrowserScreen(
@@ -45,7 +46,7 @@ internal fun BrowserScreen(
 
     var loadState by remember { mutableStateOf<LoadState>(LoadState.Loading) }
 
-    var loadStartTime by remember { mutableStateOf(0L) }
+    var loadStartTime by remember { mutableLongStateOf(0L) }
 
     val webViewController = remember { WebViewController() }
 

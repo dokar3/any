@@ -8,6 +8,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -116,10 +118,10 @@ class VideoPlaybackState internal constructor(
     var error: PlaybackException? by mutableStateOf(null)
         private set
 
-    var duration: Long by mutableStateOf(-0L)
+    var duration: Long by mutableLongStateOf(-0L)
         private set
 
-    var progress: Float by mutableStateOf(-1f)
+    var progress: Float by mutableFloatStateOf(-1f)
         private set
 
     var isMuted: Boolean

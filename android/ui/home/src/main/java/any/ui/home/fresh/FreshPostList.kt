@@ -21,6 +21,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -110,10 +112,10 @@ internal fun FreshPostList(
         mutableMapOf<Int, Animatable<Float, AnimationVector1D>>()
     }
     val itemAnimationJobs = remember { mutableListOf<Job>() }
-    var animationAdditionTick by remember { mutableStateOf(0) }
+    var animationAdditionTick by remember { mutableIntStateOf(0) }
     var itemsAnimState by remember { mutableStateOf(ItemsAnimState.Preparing) }
-    var initialItemAnimValue by remember { mutableStateOf(0f) }
-    var targetItemAnimValue by remember { mutableStateOf(1f) }
+    var initialItemAnimValue by remember { mutableFloatStateOf(0f) }
+    var targetItemAnimValue by remember { mutableFloatStateOf(1f) }
 
     fun stopItemAnimations() {
         itemAnimationJobs.onEach { it.cancel() }

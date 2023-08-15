@@ -1,6 +1,5 @@
 package any.ui.profile
 
-import any.base.R as BaseR
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -37,6 +36,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -74,6 +74,7 @@ import any.ui.common.theme.secondaryText
 import any.ui.common.widget.Avatar
 import io.dokar.expandabletext.ExpandableText
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 @Composable
 internal fun ProfileHeaderBanner(
@@ -85,7 +86,7 @@ internal fun ProfileHeaderBanner(
     aspectRatio: Float = 5f / 2f,
     backgroundColor: Color = Color(0xffacacac),
 ) {
-    var bannerHeight by remember { mutableStateOf(0) }
+    var bannerHeight by remember { mutableIntStateOf(0) }
     Box(
         modifier = modifier
             .fillMaxWidth()

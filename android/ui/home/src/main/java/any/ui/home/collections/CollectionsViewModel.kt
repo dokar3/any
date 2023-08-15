@@ -395,7 +395,7 @@ class CollectionsViewModel(
             posts.filter {
                 val f = it.folder
                 if (f != null) {
-                    folder.isTheSameOrSubFolder(Folder(f))
+                    folder.isTheSameOrSubFolderOf(Folder(f))
                 } else {
                     false
                 }

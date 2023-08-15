@@ -53,7 +53,10 @@ fun CheckableItem(
             }
         }
 
-        val itemOffset by animateDpAsState(if (showCheckmark) 24.dp + 16.dp else 0.dp)
+        val itemOffset by animateDpAsState(
+            if (showCheckmark) 24.dp + 16.dp else 0.dp,
+            label = "itemOffset",
+        )
         Box(
             modifier = Modifier.offset(x = itemOffset),
             content = content,

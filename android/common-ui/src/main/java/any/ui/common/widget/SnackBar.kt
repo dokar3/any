@@ -1,6 +1,5 @@
 package any.ui.common.widget
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -59,7 +58,6 @@ class TextSnackBarState {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TextSnackBar(
     state: TextSnackBarState,

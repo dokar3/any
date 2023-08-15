@@ -1,7 +1,5 @@
 package any.ui.settings.ui
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,7 +32,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -73,6 +70,8 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 internal fun HeaderImageItem(
@@ -103,7 +102,6 @@ internal fun HeaderImageItem(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun HeaderPicSelector(
     onDismissRequest: () -> Unit,

@@ -1,6 +1,5 @@
 package any.ui.post.sheet
 
-import any.base.R as BaseR
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -37,6 +36,7 @@ import com.dokar.sheets.BottomSheetState
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.roundToInt
+import any.base.R as BaseR
 
 private const val MIN_LINE_SPACING_MUL = 1f
 private const val MAX_LINE_SPACING_MUL = 3f
@@ -126,7 +126,7 @@ private fun SnappedSlider(
 ) {
     val hapticFeedback = LocalHapticFeedback.current
 
-    var previousValue by remember { mutableStateOf(0f) }
+    var previousValue by remember { mutableFloatStateOf(0f) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         Row(

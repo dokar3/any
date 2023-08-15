@@ -1,6 +1,5 @@
 package any.ui.settings.dev
 
-import any.base.R as BaseR
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -30,6 +30,7 @@ import any.ui.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
+import any.base.R as BaseR
 
 @Composable
 internal fun BaselineProfileScreen(
@@ -48,7 +49,7 @@ internal fun BaselineProfileScreen(
 
     var compileResult: CompileResult? by remember { mutableStateOf(null) }
 
-    var reloadCompilationStatus by remember { mutableStateOf(0) }
+    var reloadCompilationStatus by remember { mutableIntStateOf(0) }
 
     fun compileNow() {
         manualCompilationEnabled = false

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,7 +45,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -168,7 +168,6 @@ private object BlockMatrixHelper {
 
 private val RandomSeed = System.currentTimeMillis()
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun DefaultServiceHeader(
     currentServiceName: String?,
@@ -199,7 +198,7 @@ fun DefaultServiceHeader(
 
     var blocksInfo by remember { mutableStateOf(BlocksInfo()) }
 
-    var redrawTick by remember { mutableStateOf(0) }
+    var redrawTick by remember { mutableIntStateOf(0) }
 
     val blockColorAnim = remember { Animatable(blockColor) }
     val onBlockColorAnim = remember { Animatable(onBlockColor) }

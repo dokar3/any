@@ -1,8 +1,6 @@
 package any.ui.password
 
-import any.base.R as BaseR
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationVector1D
@@ -80,6 +78,7 @@ import any.ui.common.gesture.detectEventActions
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 private val MAX_INPUTS_WIDTH = 320.dp
 
@@ -293,7 +292,6 @@ private suspend fun animateErrorInput(
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CharacterField(
     password: String,
@@ -382,7 +380,8 @@ private fun animatedBorderPath(
 ): Path? {
     val borderAnimValue = animateFloatAsState(
         targetValue = if (borderVisible) 1f else 0f,
-        animationSpec = animationSpec
+        animationSpec = animationSpec,
+        label = "border",
     )
     val layoutDirection = LocalLayoutDirection.current
     val density = LocalDensity.current
@@ -484,7 +483,6 @@ private fun NumberPanel(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun AnimatedNumberButton(
     char: String,
@@ -506,7 +504,8 @@ private fun AnimatedNumberButton(
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy + 0.05f,
             stiffness = Spring.StiffnessMediumLow + 150
-        )
+        ),
+        label = "scale"
     )
     LaunchedEffect(Unit) {
         delay(animationDelay.toLong())

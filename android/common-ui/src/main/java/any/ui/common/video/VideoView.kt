@@ -1,12 +1,10 @@
 package any.ui.common.video
 
-import any.base.R as BaseR
 import android.view.Gravity
 import android.view.TextureView
 import android.view.View
 import android.widget.FrameLayout
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -32,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,8 +53,8 @@ import any.ui.common.R
 import any.ui.common.image.AsyncImage
 import any.ui.common.rememberScaleIndication
 import kotlinx.coroutines.delay
+import any.base.R as BaseR
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun VideoView(
     state: VideoPlaybackState,
@@ -79,12 +78,13 @@ fun VideoView(
             Color.Black.copy(alpha = 0.6f)
         } else {
             Color.Transparent
-        }
+        },
+        label = "scrimColor"
     )
 
     var size by remember { mutableStateOf(IntSize.Zero) }
 
-    var textureViewRotation by remember { mutableStateOf(0) }
+    var textureViewRotation by remember { mutableIntStateOf(0) }
 
     var isPlayerViewResized by remember { mutableStateOf(false) }
 

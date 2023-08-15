@@ -1,7 +1,5 @@
 package any.ui.settings.services
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -104,6 +102,8 @@ import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -287,7 +287,10 @@ internal fun ServiceManagement(
         }
 
         val showError = uiState.message is UiMessage.Error
-        val errorOffset by animateDpAsState(if (showError) (-56).dp else 0.dp)
+        val errorOffset by animateDpAsState(
+            if (showError) (-56).dp else 0.dp,
+            label = "errorOffset",
+        )
         Column(
             modifier = fabContainerModifier
                 .offset { IntOffset(0, errorOffset.roundToPx()) },
@@ -342,7 +345,8 @@ internal fun ServiceManagement(
             }
 
             val fabRotation by animateFloatAsState(
-                targetValue = if (isFabExpanded) -90f else 0f
+                targetValue = if (isFabExpanded) -90f else 0f,
+                label = "fabRotation",
             )
             LabeledFab(
                 onClick = {
