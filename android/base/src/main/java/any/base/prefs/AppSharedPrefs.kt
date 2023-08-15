@@ -284,6 +284,11 @@ val PreferencesStore.fixedBottomBar
         boolValue(this, key, defaultValue = false)
     }
 
+val PreferencesStore.maxImageCacheSize
+    get() = prefValueOf("max_image_cache_size") { key ->
+        longValue(this, key, defaultValue = -1L)
+    }
+
 @Suppress("unchecked_cast")
 private fun <T> PreferencesStore.prefValueOf(
     key: String,
