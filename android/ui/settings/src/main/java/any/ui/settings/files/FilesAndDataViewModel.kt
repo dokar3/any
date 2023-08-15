@@ -1,12 +1,15 @@
 package any.ui.settings.files
 
-import any.base.R as BaseR
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import any.base.AndroidStrings
 import any.base.Strings
+import any.base.prefs.PreferencesStore
+import any.base.prefs.maxImageCacheSize
+import any.base.prefs.preferencesStore
+import any.base.util.GB
 import any.base.util.updateIf
 import any.data.backup.BackupItem
 import any.data.backup.BackupManager
@@ -30,6 +33,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
+import any.base.R as BaseR
 
 class FilesAndDataViewModel(
     private val serviceRepository: ServiceRepository,
@@ -39,7 +43,8 @@ class FilesAndDataViewModel(
     private val cleanableProvider: CleanableProvider,
     private val backupManager: BackupManager,
     private val strings: Strings,
-    private val bgDispatcher: CoroutineDispatcher = Dispatchers.Default,
+    private val preferencesStore: PreferencesStore,
+    private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : ViewModel() {
     private val _filesUiState = MutableStateFlow(FilesUiState())
     val filesUiState: StateFlow<FilesUiState> = _filesUiState
@@ -55,7 +60,7 @@ class FilesAndDataViewModel(
      * Clean up unused items in the database
      */
     fun cleanUpDatabase() {
-        viewModelScope.launch(bgDispatcher) {
+        viewModelScope.launch(workerDispatcher) {
             val services = serviceRepository.getDbServices()
                 .map(ServiceManifest::id)
                 .toHashSet()
@@ -104,7 +109,7 @@ class FilesAndDataViewModel(
         }
     }
 
-    private fun loadCleanableItems() = viewModelScope.launch(bgDispatcher) {
+    private fun loadCleanableItems() = viewModelScope.launch(workerDispatcher) {
         val downloadedImagesInfo = Pair(
             strings(BaseR.string.downloaded_images),
             strings(BaseR.string.downloaded_images_clean_alert)
@@ -117,20 +122,49 @@ class FilesAndDataViewModel(
             strings(BaseR.string.video_cache),
             strings(BaseR.string.video_cache_clean_alert)
         )
+
+        val adjustableMaxSizes = arrayOf(
+            null,
+            listOf(0.5.GB, 1.GB, 2.GB, 4.GB),
+            null,
+        )
+
+        val maxSizeUpdaters: Array<(maxSize: Long) -> Unit> = arrayOf(
+            {},
+            { maxSize ->
+                preferencesStore.maxImageCacheSize.value = maxSize
+                // Update ui state
+                _filesUiState.update {
+                    val newItems = it.cleanableItems.toMutableList()
+                    val imageCacheItem = newItems[1]
+                    newItems[1] = imageCacheItem.copy(
+                        spaceInfo = imageCacheItem.spaceInfo.copy(
+                            maxSize = maxSize,
+                            available = maxSize - imageCacheItem.spaceInfo.size,
+                        ),
+                    )
+                    it.copy(cleanableItems = newItems)
+                }
+            },
+            {}
+        )
+
         val items = listOf(
             cleanableProvider.get(Cleanable.Type.DownloadedImage) to downloadedImagesInfo,
             cleanableProvider.get(Cleanable.Type.DiskCacheImages) to diskCacheImagesInfo,
             cleanableProvider.get(Cleanable.Type.DiskCacheVideos) to diskCacheVideosInfo,
-        ).map {
-            val cleanable = it.first
-            val info = it.second
+        ).mapIndexed { index, pair ->
+            val cleanable = pair.first
+            val info = pair.second
             val id = cleanable.hashCode()
             CleanableItem(
                 id = id,
                 name = info.first,
                 cleanDescription = info.second,
                 spaceInfo = cleanable.spaceInfo(),
+                adjustableMaxSizes = adjustableMaxSizes[index],
                 onClean = { clean(id, cleanable) },
+                onUpdateMaxSize = maxSizeUpdaters[index],
             )
         }
         _filesUiState.update {
@@ -141,7 +175,7 @@ class FilesAndDataViewModel(
     private fun clean(
         id: Int,
         cleanable: Cleanable
-    ) = viewModelScope.launch(bgDispatcher) {
+    ) = viewModelScope.launch(workerDispatcher) {
         cleanable.clean()
         val spaceInfo = cleanable.spaceInfo()
         val items = filesUiState.value.cleanableItems.toMutableList()
@@ -152,7 +186,7 @@ class FilesAndDataViewModel(
         _filesUiState.update { it.copy(cleanableItems = items) }
     }
 
-    fun loadBackupItemsToExport() = viewModelScope.launch(bgDispatcher) {
+    fun loadBackupItemsToExport() = viewModelScope.launch(workerDispatcher) {
         _backupUiState.update {
             it.copy(
                 items = emptyList(),
@@ -176,7 +210,7 @@ class FilesAndDataViewModel(
         _backupUiState.update { it.copy(items = items) }
     }
 
-    fun exportSelectedBackupItems(backupFile: File) = viewModelScope.launch(bgDispatcher) {
+    fun exportSelectedBackupItems(backupFile: File) = viewModelScope.launch(workerDispatcher) {
         _backupUiState.update { it.copy(isExporting = true) }
 
         val selectedItems = _backupUiState.value.items.filter { it.isSelected }
@@ -206,7 +240,7 @@ class FilesAndDataViewModel(
         }
     }
 
-    fun loadBackupItemsToImport(backupFile: File) = viewModelScope.launch(bgDispatcher) {
+    fun loadBackupItemsToImport(backupFile: File) = viewModelScope.launch(workerDispatcher) {
         _backupUiState.update {
             it.copy(
                 items = emptyList(),
@@ -240,7 +274,7 @@ class FilesAndDataViewModel(
         }
     }
 
-    fun importSelectedBackupItems() = viewModelScope.launch(bgDispatcher) {
+    fun importSelectedBackupItems() = viewModelScope.launch(workerDispatcher) {
         _backupUiState.update { it.copy(isImporting = true) }
 
         val selectedItems = _backupUiState.value.items.filter { it.isSelected && it.file != null }
@@ -315,6 +349,7 @@ class FilesAndDataViewModel(
                 bookmarkRepository = BookmarkRepository.getDefault(context),
                 cleanableProvider = CleanableProviderImpl(context),
                 backupManager = BackupManagerImpl(context = context),
+                preferencesStore = context.preferencesStore(),
                 strings = AndroidStrings(context),
             ) as T
         }
