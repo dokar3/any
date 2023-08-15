@@ -47,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -167,13 +168,17 @@ internal fun CollectionsScreen(
 
     val currentFolder = uiState.currentFolderUiState.folder
     val handleBack = !currentFolder.isRoot() || isSelectionEnabled
-    BackHandler(enabled = handleBack) {
-        if (!currentFolder.isRoot()) {
-            viewModel.gotoParentFolder()
-        } else if (isSelectionEnabled) {
-            viewModel.finishMultiSelection()
+    val onBack = remember(viewModel, handleBack) {
+        onBack@{
+            if (!handleBack) return@onBack
+            if (!currentFolder.isRoot()) {
+                viewModel.gotoParentFolder()
+            } else if (isSelectionEnabled) {
+                viewModel.finishMultiSelection()
+            }
         }
     }
+    BackHandler(enabled = handleBack, onBack = onBack)
 
     LaunchedEffect(viewModel) {
         viewModel.loadCollectedPosts()
@@ -400,10 +405,19 @@ internal fun CollectionsScreen(
                     uiState.previousFolderUiState
                 }
 
+                // A workaround because subNavController.enableOnBackPressed(false) is not working
+                BackHandler(
+                    enabled = handleBack,
+                    onBack = onBack,
+                )
+
                 // Create a new LazyGridState for each composable to remember
                 // the scroll position of folder
                 val gridState = rememberLazyGridState()
-                gridStateProvider.provide(gridState)
+
+                SideEffect {
+                    gridStateProvider.provide(gridState)
+                }
 
                 CollectionList(
                     state = gridState,
