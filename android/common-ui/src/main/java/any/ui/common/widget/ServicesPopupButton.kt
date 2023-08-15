@@ -43,7 +43,7 @@ fun ServicesPopupButton(
             },
         ) {
             Text(
-                text = currentService?.name ?: "???",
+                text = currentService?.name ?: "",
                 fontSize = fontSize,
                 fontWeight = fontWeight,
                 maxLines = maxLines,
