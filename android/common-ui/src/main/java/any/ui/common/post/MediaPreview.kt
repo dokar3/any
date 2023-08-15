@@ -35,7 +35,6 @@ import any.ui.common.image.AsyncImage
 import any.ui.common.theme.imagePlaceholder
 import any.ui.common.video.VideoView
 import any.ui.common.video.rememberVideoPlaybackState
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
 
 private const val MIN_ASPECT_RATIO = 1f / 1.618f
@@ -102,7 +101,7 @@ internal fun MediaPreview(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun MediaPreviewPager(
     media: ImmutableHolder<List<UiPost.Media>>,

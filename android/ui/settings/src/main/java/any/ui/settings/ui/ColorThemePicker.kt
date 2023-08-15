@@ -1,6 +1,5 @@
 package any.ui.settings.ui
 
-import any.base.R as BaseR
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,7 +23,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -46,6 +45,7 @@ import any.ui.common.widget.BottomSheetTitle
 import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.BottomSheetState
 import com.dokar.sheets.PeekHeight
+import any.base.R as BaseR
 
 @Composable
 internal fun ColorThemePicker(
@@ -69,7 +69,7 @@ internal fun ColorThemePicker(
         val index = PrimaryColors.indexOfFirst {
             it.toArgb() == primaryColor
         }
-        mutableStateOf(if (index != -1) index else 0)
+        mutableIntStateOf(if (index != -1) index else 0)
     }
     val onLightModeColorSelected: (Int, Color) -> Unit = remember {
         { index, color ->
@@ -82,7 +82,7 @@ internal fun ColorThemePicker(
         val index = PrimaryColors_DarkMode.indexOfFirst {
             it.toArgb() == darkModePrimaryColor
         }
-        mutableStateOf(if (index != -1) index else 0)
+        mutableIntStateOf(if (index != -1) index else 0)
     }
     val onDarkModeColorSelected: (Int, Color) -> Unit = remember {
         { index, color ->

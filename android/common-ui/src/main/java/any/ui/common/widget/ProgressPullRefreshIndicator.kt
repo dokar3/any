@@ -17,7 +17,8 @@ import androidx.compose.material.pullrefresh.PullRefreshDefaults
 import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -43,9 +44,9 @@ fun rememberPullRefreshIndicatorOffset(
 
     val thresholdPx = with(density) { refreshThreshold.roundToPx() }
 
-    val prevProgress = remember { mutableStateOf(0f) }
+    val prevProgress = remember { mutableFloatStateOf(0f) }
 
-    val indicatorOffset = remember { mutableStateOf(0) }
+    val indicatorOffset = remember { mutableIntStateOf(0) }
 
     LaunchedEffect(state, thresholdPx) {
         snapshotFlow { state.progress }
@@ -53,21 +54,21 @@ fun rememberPullRefreshIndicatorOffset(
                 if (progress == 0f) {
                     launch {
                         animate(
-                            initialValue = prevProgress.value,
+                            initialValue = prevProgress.floatValue,
                             targetValue = progress,
                         ) { value, _ ->
-                            indicatorOffset.value = (thresholdPx * value).toInt()
+                            indicatorOffset.intValue = (thresholdPx * value).toInt()
                         }
-                        prevProgress.value = progress
+                        prevProgress.floatValue = progress
                     }
                 } else {
-                    prevProgress.value = progress
-                    indicatorOffset.value = (thresholdPx * progress).toInt()
+                    prevProgress.floatValue = progress
+                    indicatorOffset.intValue = (thresholdPx * progress).toInt()
                 }
             }
     }
 
-    return indicatorOffset.value
+    return indicatorOffset.intValue
 }
 
 /**

@@ -59,7 +59,8 @@ fun AnimatedDropdownArrow(
     modifier: Modifier = Modifier,
 ) {
     val iconRotation by animateFloatAsState(
-        targetValue = if (isExpanded) 180f else 0f
+        targetValue = if (isExpanded) 180f else 0f,
+        label = "iconRotation"
     )
     Icon(
         imageVector = Icons.Default.KeyboardArrowDown,

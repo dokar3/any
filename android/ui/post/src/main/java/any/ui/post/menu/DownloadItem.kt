@@ -1,7 +1,5 @@
 package any.ui.post.menu
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.DurationBasedAnimationSpec
 import androidx.compose.animation.core.RepeatMode
@@ -34,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,6 +54,8 @@ import any.download.PostImageDownloader
 import any.download.PostImageDownloader.DownloadStatus
 import any.ui.common.theme.pass
 import any.ui.common.widget.SimpleDialog
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 internal fun DownloadItem(
@@ -72,8 +73,8 @@ internal fun DownloadItem(
         }
     }
 
-    var maxProgressWidth by remember { mutableStateOf(0) }
-    var progressTextWidth by remember { mutableStateOf(0) }
+    var maxProgressWidth by remember { mutableIntStateOf(0) }
+    var progressTextWidth by remember { mutableIntStateOf(0) }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 

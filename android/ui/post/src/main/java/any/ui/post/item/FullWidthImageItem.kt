@@ -14,6 +14,7 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,7 +52,7 @@ internal fun FullWidthImageItem(
 
     val feedback = LocalHapticFeedback.current
 
-    var reloadFactor by remember { mutableStateOf(0) }
+    var reloadFactor by remember { mutableIntStateOf(0) }
 
     BoxWithConstraints(
         modifier = modifier,

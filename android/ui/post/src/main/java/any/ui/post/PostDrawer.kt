@@ -1,6 +1,5 @@
 package any.ui.post
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -142,7 +141,6 @@ internal fun PostDrawer(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun PostDrawerContent(
     state: PostDrawerState,

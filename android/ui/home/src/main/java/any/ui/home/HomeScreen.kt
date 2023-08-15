@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -83,7 +83,7 @@ fun HomeScreen(
     titleBarHeight: Dp = MaterialTheme.sizes.titleBarHeight,
     bottomBarHeight: Dp = MaterialTheme.sizes.bottomBarHeight,
 ) {
-    var bottomBarOffset by remember { mutableStateOf(0) }
+    var bottomBarOffset by remember { mutableIntStateOf(0) }
 
     val scrollToTopManager = remember { HomeScrollToTopManager() }
 

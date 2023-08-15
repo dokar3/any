@@ -30,6 +30,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -261,7 +262,7 @@ private fun MessageItem(
         MaterialTheme.shapes.medium.copy(topStart = CornerSize(4.dp))
     }
 
-    var allLines by remember { mutableStateOf(0) }
+    var allLines by remember { mutableIntStateOf(0) }
 
     val maxDisplayLines = 10
 
@@ -367,9 +368,8 @@ private fun BoxScope.MoreLines(
     maxDisplayLines: Int,
     bubbleColor: Color
 ) {
-    var moreLinesHeight by remember {
-        mutableStateOf(0)
-    }
+    var moreLinesHeight by remember { mutableIntStateOf(0) }
+
     val brush = remember(bubbleColor, moreLinesHeight) {
         val colors = listOf(
             Color.Transparent,

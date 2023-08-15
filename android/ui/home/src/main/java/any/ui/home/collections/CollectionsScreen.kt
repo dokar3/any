@@ -2,7 +2,6 @@ package any.ui.home.collections
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -50,6 +49,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -123,7 +123,7 @@ import any.ui.common.R as CommonUiR
 
 private const val ROUTE = "collections?folder={folder}"
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun CollectionsScreen(
     onNavigate: (NavEvent) -> Unit,
@@ -327,7 +327,7 @@ internal fun CollectionsScreen(
             // Current folder has changed and the data is ready, navigate to next folder
             screenState.resetBars()
             val route = ROUTE.replace("{folder}", currentFolder.path.urlEncode())
-            if (currentFolder.isTheSameOrSubFolder(previousFolder)) {
+            if (currentFolder.isTheSameOrSubFolderOf(previousFolder)) {
                 subNavController.popBackStackUtil { entry ->
                     val entryFolder = entry.arguments?.getString("folder")?.urlDecode()
                     val isRoot = entryFolder == null && currentFolder.isRoot()
@@ -601,8 +601,8 @@ private fun MoreMenuContent(
             )
         }
 
-        var selectedTabIndex by remember { mutableStateOf(0) }
-        var previousTabIndex by remember { mutableStateOf(0) }
+        var selectedTabIndex by remember { mutableIntStateOf(0) }
+        var previousTabIndex by remember { mutableIntStateOf(0) }
 
         TabRow(
             selectedTabIndex = selectedTabIndex,

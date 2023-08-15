@@ -15,7 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -55,10 +55,10 @@ class QuickReturnScreenState(
     internal var btmBarOffsetYAnim = Animatable(0f)
     val btmBarOffsetY: Float get() = btmBarOffsetYAnim.value
 
-    var topBarHeight: Int by mutableStateOf(0)
+    var topBarHeight: Int by mutableIntStateOf(0)
         internal set
 
-    var btmBarHeight: Int by mutableStateOf(0)
+    var btmBarHeight: Int by mutableIntStateOf(0)
         internal set
 
     /**

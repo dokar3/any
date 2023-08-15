@@ -30,7 +30,7 @@ data class Folder(
         return path.trim('/') == sub.path.trim('/')
     }
 
-    fun isTheSameOrSubFolder(sub: Folder): Boolean {
+    fun isTheSameOrSubFolderOf(sub: Folder): Boolean {
         if (isRoot()) {
             return true
         }

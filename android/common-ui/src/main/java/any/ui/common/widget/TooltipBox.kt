@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -54,7 +55,7 @@ fun TooltipBox(
 
     var showTooltip by remember { mutableStateOf(false) }
 
-    var height by remember { mutableStateOf(0) }
+    var height by remember { mutableIntStateOf(0) }
 
     Box(
         modifier = modifier

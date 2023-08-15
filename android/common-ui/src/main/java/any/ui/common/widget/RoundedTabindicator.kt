@@ -31,11 +31,13 @@ fun RoundedTabIndicator(
     val currentTabPosition = tabPositions[selectedTabIndex]
     val currentTabWidth by animateDpAsState(
         targetValue = currentTabPosition.width,
-        animationSpec = tween(durationMillis = 250)
+        animationSpec = tween(durationMillis = 250),
+        label = "currentTabWidth"
     )
     val indicatorOffset by animateDpAsState(
         targetValue = currentTabPosition.left,
-        animationSpec = tween(durationMillis = 250)
+        animationSpec = tween(durationMillis = 250),
+        label = "indicatorOffset"
     )
     Spacer(
         modifier = modifier

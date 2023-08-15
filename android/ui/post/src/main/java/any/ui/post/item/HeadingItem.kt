@@ -68,7 +68,7 @@ internal fun HeadingItem(
             )
 
             Box(modifier = Modifier.padding(horizontal = 8.dp)) {
-                val alpha by animateFloatAsState(if (showMoreButton) 0.5f else 0f)
+                val alpha by animateFloatAsState(if (showMoreButton) 0.5f else 0f, label = "alpha")
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = null,

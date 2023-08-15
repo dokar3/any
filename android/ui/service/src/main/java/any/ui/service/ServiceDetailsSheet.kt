@@ -1,6 +1,5 @@
 package any.ui.service
 
-import any.base.R as BaseR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -48,6 +47,7 @@ import any.ui.common.richtext.Markdown
 import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.BottomSheetState
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 @Composable
 fun ServiceDetailsSheet(
@@ -72,7 +72,8 @@ fun ServiceDetailsSheet(
             Layout(
                 content = {
                     val detailsAlpha by animateFloatAsState(
-                        targetValue = if (changelogToShow == null) 1f else 0f
+                        targetValue = if (changelogToShow == null) 1f else 0f,
+                        label = "alpha"
                     )
                     ServiceDetails(
                         onOpenLink = ::openLink,

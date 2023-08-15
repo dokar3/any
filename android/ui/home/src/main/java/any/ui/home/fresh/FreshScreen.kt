@@ -23,6 +23,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -123,7 +125,7 @@ internal fun FreshScreen(
         PaddingValues(bottom = bottomBarHeight + bottomInset)
     }
 
-    var firstItemOffsetY by remember { mutableStateOf(0) }
+    var firstItemOffsetY by remember { mutableIntStateOf(0) }
 
     var showCommandDialog by rememberSaveable(inputs = emptyArray()) {
         mutableStateOf(false)
@@ -133,7 +135,7 @@ internal fun FreshScreen(
         mutableStateOf(false)
     }
 
-    var titleAlpha by remember { mutableStateOf(0f) }
+    var titleAlpha by remember { mutableFloatStateOf(0f) }
     var titleBarIconTintTheme by remember { mutableStateOf(IconTintTheme.Light) }
     var titleBarBackgroundColor by remember { mutableStateOf(Color.Transparent) }
 
@@ -223,7 +225,7 @@ internal fun FreshScreen(
         },
         bottomBar = { onBottomBarOffsetUpdate(it) },
     ) {
-        var headerHeightPx by remember { mutableStateOf(0) }
+        var headerHeightPx by remember { mutableIntStateOf(0) }
 
         LaunchedEffect(scrollableState, statusBarColor) {
             val topBarAlpha = statusBarColor.alpha

@@ -1,6 +1,5 @@
 package any.ui.profile
 
-import any.base.R as BaseR
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,6 +62,7 @@ import any.ui.common.widget.rememberPullRefreshIndicatorOffset
 import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 @Composable
 fun ProfileScreen(
@@ -189,7 +190,7 @@ private fun ProfileScreenContent(
     )
 
     Box(modifier = modifier.pullRefresh(state = pullRefreshState)) {
-        var bannerHeight by remember { mutableStateOf(0) }
+        var bannerHeight by remember { mutableIntStateOf(0) }
 
         var listScrollY: Int? by remember { mutableStateOf(0) }
 

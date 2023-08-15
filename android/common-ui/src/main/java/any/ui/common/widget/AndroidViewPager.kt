@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -92,7 +92,7 @@ class AndroidViewPagerState(
         this.viewPager = null
     }
 
-    var currentPage by mutableStateOf(0)
+    var currentPage by mutableIntStateOf(0)
         private set
 
     fun setCurrentPage(page: Int, animate: Boolean = true) {
