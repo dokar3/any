@@ -331,4 +331,5 @@
     <string name="not_a_valid_http_url">Not a valid http URL</string>
     <string name="no_cookies_obtained">No cookies obtained</string>
     <string name="close">Close</string>
+    <string name="max_size">Max size</string>
 </resources>
