@@ -6,17 +6,17 @@ import android.graphics.Bitmap
 import android.util.Size
 import any.base.AutoCleaner
 import any.base.util.Http
+import any.base.util.MB
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.common.memory.MemoryTrimType
 import com.facebook.common.memory.MemoryTrimmable
 import com.facebook.common.memory.MemoryTrimmableRegistry
-import com.facebook.common.util.ByteConstants
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory
 import kotlinx.coroutines.flow.Flow
 
 object ImageLoader {
-    private const val MAX_DISK_CACHE_MB = 1024
+    private val MAX_DISK_CACHE_SIZE = 1024.MB
 
     private val trimmables = mutableListOf<MemoryTrimmable>()
 
@@ -71,11 +71,23 @@ object ImageLoader {
         }
     }
 
-    fun setup(app: Application, imageFetcher: ImageFetcher) {
-        if(isSetup()) return
+    fun setup(
+        app: Application,
+        imageFetcher: ImageFetcher,
+        maxDiskCacheSize: Long = MAX_DISK_CACHE_SIZE,
+        force: Boolean = false,
+    ) {
+        if (isSetup() && !force) return
         this.imageFetcher = imageFetcher
         val diskCacheConfig = DiskCacheConfig.newBuilder(app)
-            .setMaxCacheSize(MAX_DISK_CACHE_MB.toLong() * ByteConstants.MB)
+            .setMaxCacheSize(
+                if (maxDiskCacheSize > 0L) {
+                    maxDiskCacheSize
+                } else {
+                    // Fallback or default
+                    MAX_DISK_CACHE_SIZE
+                }
+            )
             .build()
         val pipelineConfig = OkHttpImagePipelineConfigFactory
             .newBuilder(app, Http.DEFAULT_CLIENT)
@@ -87,6 +99,9 @@ object ImageLoader {
             .experiment()
             .setNativeCodeDisabled(true)
             .build()
+        if (Fresco.hasBeenInitialized()) {
+            Fresco.shutDown()
+        }
         Fresco.initialize(app, pipelineConfig)
     }
 

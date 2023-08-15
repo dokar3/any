@@ -14,9 +14,15 @@ data class CleanableItem(
     val name: String,
     val cleanDescription: String,
     val spaceInfo: SpaceInfo,
+    val adjustableMaxSizes: List<Long>? = null,
     private val onClean: () -> Unit,
+    private val onUpdateMaxSize: (maxSize: Long) -> Unit,
 ) {
     fun clean() {
         onClean()
+    }
+
+    fun updateMaxSize(maxSize: Long) {
+        onUpdateMaxSize(maxSize)
     }
 }
