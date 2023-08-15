@@ -1,6 +1,5 @@
 package any.ui.search
 
-import any.base.R as BaseR
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +25,8 @@ import any.domain.entity.UiServiceManifest
 import any.ui.common.theme.sizes
 import any.ui.common.widget.SearchBar
 import any.ui.common.widget.SearchBarState
-import any.ui.common.widget.ServiceDropdownButton
+import any.ui.common.widget.ServicesPopupButton
+import any.base.R as BaseR
 
 @Composable
 internal fun TitleBar(
@@ -78,7 +78,7 @@ internal fun TitleBar(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        ServiceDropdownButton(
+        ServicesPopupButton(
             onSelectService = onSelectService,
             onServiceManagementClick = onManagementClick,
             onLongClickCurrentService = {  },

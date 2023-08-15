@@ -32,7 +32,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -70,7 +69,7 @@ import any.ui.common.lazy.rememberLazyGridScrollableState
 import any.ui.common.theme.themeColorOrPrimary
 import any.ui.common.widget.EditDialog
 import any.ui.common.widget.QuickReturnScreen
-import any.ui.common.widget.ServiceDropdownButton
+import any.ui.common.widget.ServicesPopupButton
 import any.ui.common.widget.TitleActionButton
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberQuickReturnScreenState
@@ -211,15 +210,13 @@ internal fun FreshScreen(
                 dividerAlpha = { titleAlpha },
                 titleAlpha = { titleAlpha },
             ) {
-                ServiceDropdownButton(
+                ServicesPopupButton(
                     onSelectService = ::selectService,
                     onServiceManagementClick = ::navigateToServiceManagement,
                     onLongClickCurrentService = { showConfigureServiceDialog = true },
                     services = ImmutableHolder(services),
                     currentService = currentService,
                     fontSize = 16.sp,
-                    dropdownAlignmentToAnchor = Alignment.TopCenter,
-                    dropdownTransformOrigin = TransformOrigin(0.5f, 0f),
                     modifier = Modifier.testTag("serviceSelector"),
                 )
             }
@@ -516,7 +513,7 @@ private fun ServiceHeaderItem(
                 )
             }
 
-            ServiceDropdownButton(
+            ServicesPopupButton(
                 onSelectService = onSelectService,
                 onServiceManagementClick = onServiceManagementClick,
                 onLongClickCurrentService = onLongClickCurrentService,

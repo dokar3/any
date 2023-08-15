@@ -3,7 +3,6 @@ package any.ui.common.widget
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -62,7 +61,6 @@ class AnimatedPopupDismissRequester {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AnimatedPopup(
     dismissRequester: AnimatedPopupDismissRequester,

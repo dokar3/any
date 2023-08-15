@@ -330,4 +330,5 @@
     <string name="this_value_is_not_allowed">This value is not allowed</string>
     <string name="not_a_valid_http_url">Not a valid http URL</string>
     <string name="no_cookies_obtained">No cookies obtained</string>
+    <string name="close">Close</string>
 </resources>
