@@ -182,7 +182,10 @@ export class NewsFeature extends AnyPostFeature {
 
       const indent = parseInt(element.select("td.ind").attr("indent"));
       const username = element.select(".comhead .hnuser").text();
-      const text = element.select(".comment .commtext").text();
+      const text = element.select(".comment .commtext")?.text();
+      if (text == null) {
+        continue;
+      }
 
       indents[i] = indent;
 
