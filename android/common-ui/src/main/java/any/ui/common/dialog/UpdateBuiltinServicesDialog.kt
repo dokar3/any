@@ -142,7 +142,7 @@ private fun UpdatableList(
         itemsIndexed(infoList.value) { index, item ->
             UpdatableItem(
                 service = item,
-                isExpanded = expandedItems.getOrDefault(index, false),
+                isExpanded = expandedItems[index] ?: false,
                 onExpand = { expandedItems[index] = true },
                 onCollapse = { expandedItems[index] = false },
                 onUpdate = { onUpdate(item) },
@@ -221,7 +221,7 @@ private fun UpdatableItem(
                         onUpdate()
                     }
                 },
-                modifier = Modifier.height(32.dp),
+                modifier = Modifier.height(36.dp),
                 enabled = updateEnabled,
                 shape = CircleShape,
                 border = BorderStroke(
@@ -245,7 +245,10 @@ private fun UpdatableItem(
                         strokeWidth = 2.dp,
                     )
                 } else {
-                    Text(stringResource(R.string.update))
+                    Text(
+                        text = stringResource(R.string.update),
+                        fontSize = 14.sp,
+                    )
                 }
             }
         }

@@ -28,7 +28,7 @@ private object DefaultComponentSizes : ComponentSizes {
 
     override val thumbBorderStroke = 0.6.dp
 
-    override val titleBarHeight = 48.dp
+    override val titleBarHeight = 56.dp
 
     override val bottomBarHeight: Dp = 56.dp
 
