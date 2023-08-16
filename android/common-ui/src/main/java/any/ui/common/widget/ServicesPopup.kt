@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -114,6 +112,13 @@ fun ServicesPopup(
 
                 val barsBackground = MaterialTheme.colors.surface.copy(alpha = 0.94f)
                 val barsDividerColor = MaterialTheme.colors.divider
+
+                LaunchedEffect(listState) {
+                    val selectedIndex = services.value.indexOf(selected)
+                    if (selectedIndex != -1) {
+                        listState.scrollToItem(selectedIndex)
+                    }
+                }
 
                 LazyColumn(
                     state = listState,
@@ -275,19 +280,10 @@ private fun ServiceItem(
         Color.Transparent
     }
 
-    val bringIntoViewRequester = remember { BringIntoViewRequester() }
-
-    LaunchedEffect(bringIntoViewRequester) {
-        if (isSelected) {
-            bringIntoViewRequester.bringIntoView()
-        }
-    }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 48.dp)
-            .bringIntoViewRequester(bringIntoViewRequester)
             .background(backgroundColor)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
