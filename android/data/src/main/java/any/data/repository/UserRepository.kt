@@ -74,7 +74,7 @@ class UserRepository(
 
         if (!sources.contains(FetchSources.remote())) {
             channel.close()
-            Log.d("UserRepo", "fetchUser: no remote source included, s: $sources")
+            Log.d("UserRepo", "fetchUser: no remote source included, source: $sources")
             return@channelFlow
         }
 

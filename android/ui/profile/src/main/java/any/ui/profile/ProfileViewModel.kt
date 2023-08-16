@@ -1,6 +1,5 @@
 package any.ui.profile
 
-import any.base.R as BaseR
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -36,9 +35,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 class ProfileViewModel(
     private val serviceRepository: ServiceRepository,
@@ -186,6 +187,8 @@ class ProfileViewModel(
             }
         }.catch {
             onFetchUserError(it)
+        }.onEmpty {
+            _uiState.update { it.copy(isLoadingUser = false) }
         }.collect { state ->
             when (state) {
                 is FetchState.Failure -> {
