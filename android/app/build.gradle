@@ -11,8 +11,8 @@ android {
         applicationId "com.dokar.any"
         minSdk 21
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 3
-        versionName "0.3.0"
+        versionCode 4
+        versionName "0.4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
