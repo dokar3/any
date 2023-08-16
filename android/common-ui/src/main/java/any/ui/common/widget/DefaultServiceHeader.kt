@@ -6,9 +6,7 @@ import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -379,13 +377,14 @@ fun DefaultServiceHeader(
         modifier = modifier
             .fillMaxSize()
             .clipToBounds()
-            .pointerInput(Unit) {
-                awaitEachGesture {
-                    val down = awaitFirstDown()
-                    onPointerDown(down.position)
-                    waitForUpOrCancellation()
-                    onPointerUp()
-                }
+            .pointerInput(scope) {
+                detectTapGestures(
+                    onPress = {
+                        onPointerDown(it)
+                        tryAwaitRelease()
+                        onPointerUp()
+                    }
+                )
             }
             .drawWithCache {
                 val blockSizePx = blockSize.toPx()
