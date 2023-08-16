@@ -8,6 +8,7 @@ import any.base.AndroidStrings
 import any.base.Strings
 import any.base.prefs.PreferencesStore
 import any.base.prefs.maxImageCacheSize
+import any.base.prefs.maxVideoCacheSize
 import any.base.prefs.preferencesStore
 import any.base.util.GB
 import any.base.util.updateIf
@@ -126,27 +127,35 @@ class FilesAndDataViewModel(
         val adjustableMaxSizes = arrayOf(
             null,
             listOf(0.5.GB, 1.GB, 2.GB, 4.GB),
-            null,
+            listOf(0.5.GB, 1.GB, 2.GB, 4.GB),
         )
+
+        fun updateMaxCacheSize(itemIndex: Int, maxSize: Long) {
+            _filesUiState.update {
+                val newItems = it.cleanableItems.toMutableList()
+                val imageCacheItem = newItems[itemIndex]
+                newItems[itemIndex] = imageCacheItem.copy(
+                    spaceInfo = imageCacheItem.spaceInfo.copy(
+                        maxSize = maxSize,
+                        available = maxSize - imageCacheItem.spaceInfo.size,
+                    ),
+                )
+                it.copy(cleanableItems = newItems)
+            }
+        }
 
         val maxSizeUpdaters: Array<(maxSize: Long) -> Unit> = arrayOf(
             {},
             { maxSize ->
                 preferencesStore.maxImageCacheSize.value = maxSize
                 // Update ui state
-                _filesUiState.update {
-                    val newItems = it.cleanableItems.toMutableList()
-                    val imageCacheItem = newItems[1]
-                    newItems[1] = imageCacheItem.copy(
-                        spaceInfo = imageCacheItem.spaceInfo.copy(
-                            maxSize = maxSize,
-                            available = maxSize - imageCacheItem.spaceInfo.size,
-                        ),
-                    )
-                    it.copy(cleanableItems = newItems)
-                }
+                updateMaxCacheSize(1, maxSize)
             },
-            {}
+            { maxSize ->
+                preferencesStore.maxVideoCacheSize.value = maxSize
+                // Update ui state
+                updateMaxCacheSize(2, maxSize)
+            }
         )
 
         val items = listOf(
