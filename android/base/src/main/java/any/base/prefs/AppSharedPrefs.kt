@@ -289,6 +289,11 @@ val PreferencesStore.maxImageCacheSize
         longValue(this, key, defaultValue = -1L)
     }
 
+val PreferencesStore.maxVideoCacheSize
+    get() = prefValueOf("max_video_cache_size") { key ->
+        longValue(this, key, defaultValue = -1L)
+    }
+
 @Suppress("unchecked_cast")
 private fun <T> PreferencesStore.prefValueOf(
     key: String,
