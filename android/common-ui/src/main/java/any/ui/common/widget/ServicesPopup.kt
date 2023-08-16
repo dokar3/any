@@ -44,8 +44,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -274,17 +277,41 @@ private fun ServiceItem(
     isSelected: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val backgroundColor = if (isSelected) {
-        MaterialTheme.colors.primary.copy(alpha = 0.1f)
+    val textColor = if (isSelected) {
+        if (MaterialTheme.colors.isLight) {
+            if (service.themeColor != null) {
+                Color(service.themeColor!!)
+            } else {
+                MaterialTheme.colors.primary
+            }
+        } else {
+            if (service.darkThemeColor != null) {
+                Color(service.darkThemeColor!!)
+            } else {
+                MaterialTheme.colors.primary
+            }
+        }
     } else {
-        Color.Transparent
+        MaterialTheme.colors.onBackground
     }
 
     Row(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 48.dp)
-            .background(backgroundColor)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .clip(MaterialTheme.shapes.small)
+            .drawWithContent {
+                drawContent()
+                if (isSelected) {
+                    drawRoundRect(
+                        color = textColor,
+                        topLeft = Offset(2.dp.toPx(), this.size.height * 0.1f),
+                        size = Size(6.dp.toPx(), this.size.height * 0.8f),
+                        cornerRadius = CornerRadius(6.dp.toPx())
+                    )
+                }
+            }
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
@@ -305,6 +332,6 @@ private fun ServiceItem(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Text(service.name)
+        Text(text = service.name, color = textColor)
     }
 }
