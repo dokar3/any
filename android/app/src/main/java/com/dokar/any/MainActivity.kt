@@ -98,7 +98,11 @@ class MainActivity : DarkModeAwareActivity() {
         ReadingBubbleService.addNavigateListener(this) {
             mainViewModel.setReadingPostToNavigate(it)
             if (lifecycle.currentState < Lifecycle.State.STARTED) {
-                startActivity(Intent(this, MainActivity::class.java))
+                // Bring app to foreground if we are in background
+                startActivity(
+                    Intent(this, MainActivity::class.java)
+                        .setAction(Intent.ACTION_VIEW)
+                )
             }
         }
     }
