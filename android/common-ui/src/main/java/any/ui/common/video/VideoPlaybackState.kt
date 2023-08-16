@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -26,6 +27,8 @@ import androidx.media3.datasource.cache.CacheDataSink
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import any.base.prefs.maxVideoCacheSize
+import any.base.prefs.preferencesStore
 import any.data.cache.ExoVideoCache
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -36,13 +39,26 @@ import kotlin.math.max
 private const val DEFAULT_TICK_INTERVAL = 100L
 
 @Composable
+fun rememberMaxVideoCacheSize(): Long {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val maxSize by context.preferencesStore()
+        .maxVideoCacheSize
+        .asStateFlow(scope)
+        .collectAsState()
+    return if (maxSize > 0L) maxSize else ExoVideoCache.MAX_CACHE_SIZE
+}
+
+@Composable
 fun rememberVideoPlaybackState(
     url: String,
     progressTickInterval: Long = DEFAULT_TICK_INTERVAL,
+    maxDiskCacheSize: Long = rememberMaxVideoCacheSize(),
 ): VideoPlaybackState {
     return rememberVideoPlaybackState(
         uri = Uri.parse(url),
         progressTickInterval = progressTickInterval,
+        maxDiskCacheSize = maxDiskCacheSize,
     )
 }
 
@@ -50,13 +66,14 @@ fun rememberVideoPlaybackState(
 fun rememberVideoPlaybackState(
     uri: Uri,
     progressTickInterval: Long = DEFAULT_TICK_INTERVAL,
+    maxDiskCacheSize: Long = rememberMaxVideoCacheSize(),
 ): VideoPlaybackState {
     val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
 
-    val state = remember(uri) {
-        VideoPlaybackState(context, scope, progressTickInterval, uri)
+    val state = remember(uri, maxDiskCacheSize) {
+        VideoPlaybackState(context, scope, progressTickInterval, uri, maxDiskCacheSize)
     }
 
     SideEffect {
@@ -82,7 +99,7 @@ private object PlaybackStateManager {
         states.remove(state)
     }
 
-    fun  onPlay(state: VideoPlaybackState) {
+    fun onPlay(state: VideoPlaybackState) {
         for (s in states) {
             if (s != state) {
                 // Pause other players
@@ -98,7 +115,8 @@ class VideoPlaybackState internal constructor(
     private val context: Context,
     private val tickScope: CoroutineScope,
     internal var tickInterval: Long,
-    val uri: Uri,
+    private val uri: Uri,
+    private val maxDiskCacheSize: Long = ExoVideoCache.MAX_CACHE_SIZE,
 ) : Player.Listener {
     private var player: ExoPlayer? = null
 
@@ -138,7 +156,7 @@ class VideoPlaybackState internal constructor(
     private var tickJob: Job? = null
 
     private val cacheDataSourceFactory by lazy {
-        val cache = ExoVideoCache.get(context)
+        val cache = ExoVideoCache.get(context = context, maxCacheSize = maxDiskCacheSize)
         val cacheSink = CacheDataSink.Factory().setCache(cache)
         val upstreamFactory = DefaultDataSource.Factory(context, DefaultHttpDataSource.Factory())
         CacheDataSource.Factory()
