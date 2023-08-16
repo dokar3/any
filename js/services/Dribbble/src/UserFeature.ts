@@ -84,28 +84,7 @@ export class UserFeature extends AnyUserFeature {
     const banner =
       header.select(".masthead-banner-image")?.attr("data-bg") ?? null;
 
-    const shotCountStr = doc.select(".scrolling-subnav .shots .count").text();
-    const shotCount = parseInt(shotCountStr);
-
-    let description: string = null;
-    let followerCount: number = null;
-    let followingCount: number = null;
-    const content = doc.select(".about-content");
-    if (content !== null) {
-      const bioTexts = content.selectAll(".profile-section-bio .bio-text");
-      if (bioTexts.length > 0) {
-        description = bioTexts
-          .map((ele) => {
-            return ele.html().replace(/\<br\>/g, "\n");
-          })
-          .join("\n");
-      }
-      const counts = content.selectAll(
-        ".about-content-main .profile-stats-section .count"
-      );
-      followerCount = parseInt(counts[0].text().replace(/,/g, ""));
-      followingCount = parseInt(counts[1].text().replace(/,/g, ""));
-    }
+    let description = header.select(".masthead-intro h2")?.text();
 
     return new User({
       id: userId,
@@ -114,9 +93,6 @@ export class UserFeature extends AnyUserFeature {
       url: BASE_URL + userId,
       banner: banner,
       description: description,
-      followerCount: followerCount,
-      followingCount: followingCount,
-      postCount: shotCount,
     });
   }
 }

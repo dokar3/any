@@ -7,7 +7,7 @@ value class FetchSources private constructor(
     private val value: Int
 ) {
     fun contains(source: FetchSources): Boolean {
-        return value and source.value != 0
+        return abs(value) and source.value != 0
     }
 
     fun isOneShot(): Boolean {
