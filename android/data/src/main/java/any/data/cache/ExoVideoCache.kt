@@ -9,10 +9,13 @@ import any.base.util.Dirs
 import any.base.util.MB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.atomic.AtomicLong
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 object ExoVideoCache {
-    val MAX_CACHE_SIZE = 500.MB
+    val MAX_CACHE_SIZE = 512.MB
+
+    private val currMaxSize = AtomicLong(MAX_CACHE_SIZE)
 
     @Volatile
     private var cache: Cache? = null
@@ -24,15 +27,28 @@ object ExoVideoCache {
         }
     }
 
-    fun  get(context: Context): Cache {
-        return cache ?: synchronized(this) {
-            cache ?: SimpleCache(
-                Dirs.videoCacheDir(context),
-                LeastRecentlyUsedCacheEvictor(MAX_CACHE_SIZE),
-                StandaloneDatabaseProvider(context)
-            ).also {
-                cache = it
+    fun get(
+        context: Context,
+        maxCacheSize: Long = MAX_CACHE_SIZE,
+    ): Cache {
+        val validMaxCacheSize = maxCacheSize.takeIf { it > 0L } ?: MAX_CACHE_SIZE
+        val cache = this.cache
+        if (cache != null && currMaxSize.get() == validMaxCacheSize) {
+            return cache
+        }
+        synchronized(this) {
+            val currCache = this.cache
+            if (currCache != null && currMaxSize.get() == validMaxCacheSize) {
+                return currCache
             }
+            val newCache = SimpleCache(
+                Dirs.videoCacheDir(context),
+                LeastRecentlyUsedCacheEvictor(validMaxCacheSize),
+                StandaloneDatabaseProvider(context)
+            )
+            currMaxSize.set(validMaxCacheSize)
+            this.cache = newCache
+            return newCache
         }
     }
 }
