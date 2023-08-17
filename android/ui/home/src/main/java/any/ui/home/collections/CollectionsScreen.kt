@@ -105,11 +105,13 @@ import any.ui.common.menu.PostOptionMenu
 import any.ui.common.quickScrollToTop
 import any.ui.common.theme.topBarBackground
 import any.ui.common.widget.EditDialog
+import any.ui.common.widget.MessagePopupDefaults
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.RoundedTabIndicator
 import any.ui.common.widget.SearchBar
 import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.TooltipBox
+import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.home.HomeScrollToTopManager
 import any.ui.home.ScrollToTopResponder
@@ -118,6 +120,7 @@ import any.ui.home.TitleBar
 import com.dokar.sheets.BottomSheet
 import com.dokar.sheets.PeekHeight
 import com.dokar.sheets.rememberBottomSheetState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
@@ -188,6 +191,18 @@ internal fun CollectionsScreen(
         if (isSelectionEnabled) {
             screenState.resetBars()
         }
+    }
+
+    LaunchedEffect(uiState.error) {
+        if (uiState.error == null) {
+            return@LaunchedEffect
+        }
+        delay(MessagePopupDefaults.POPUP_DURATION)
+        viewModel.clearError()
+    }
+
+    DisposableEffect(viewModel) {
+        onDispose { viewModel.clearError() }
     }
 
     DisposableEffect(scrollToTopManager) {
@@ -584,6 +599,14 @@ internal fun CollectionsScreen(
                     applyToAllFolders = applyToAllFolders,
                 )
             },
+        )
+    }
+
+    if (uiState.error != null) {
+        val error = uiState.error!!
+        UiMessagePopup(
+            message = error,
+            onClearMessage = viewModel::clearError,
         )
     }
 }

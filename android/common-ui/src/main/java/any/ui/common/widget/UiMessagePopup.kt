@@ -68,7 +68,7 @@ fun UiMessagePopup(
             showMessage = true
             if (message !is UiMessage.Error) {
                 scope.launch {
-                    delay(MSG_POPUP_DURATION)
+                    delay(MessagePopupDefaults.POPUP_DURATION)
                     onClearMessage()
                     isMessageCleared = true
                 }

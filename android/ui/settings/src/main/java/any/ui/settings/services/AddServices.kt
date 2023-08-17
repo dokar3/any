@@ -1,6 +1,5 @@
 package any.ui.settings.services
 
-import any.base.R as BaseR
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,13 +37,14 @@ import any.base.compose.ImmutableHolder
 import any.data.entity.ServiceManifest
 import any.domain.entity.UiServiceManifest
 import any.ui.common.modifier.verticalScrollBar
-import any.ui.common.widget.MSG_POPUP_DURATION
 import any.ui.common.widget.MessagePopup
+import any.ui.common.widget.MessagePopupDefaults
 import any.ui.common.widget.ProgressBar
 import any.ui.common.widget.SearchBar
 import any.ui.service.ServiceDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 @Composable
 internal fun AddServices(
@@ -68,14 +68,14 @@ internal fun AddServices(
         onServiceAdded = {
             message = res.getString(BaseR.string._service_added_with_name, it.name)
             scope.launch {
-                delay(MSG_POPUP_DURATION)
+                delay(MessagePopupDefaults.POPUP_DURATION)
                 showMessage = false
             }
         },
         onServiceUpdated = {
             message = res.getString(BaseR.string._service_updated_with_name, it.name)
             scope.launch {
-                delay(MSG_POPUP_DURATION)
+                delay(MessagePopupDefaults.POPUP_DURATION)
                 showMessage = false
             }
         },

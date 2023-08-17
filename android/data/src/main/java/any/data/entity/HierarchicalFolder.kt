@@ -2,6 +2,8 @@ package any.data.entity
 
 import androidx.compose.runtime.Stable
 import any.base.util.PathJoiner
+import any.base.util.joinToPath
+import java.io.File
 
 @Stable
 data class HierarchicalFolder(
@@ -11,11 +13,14 @@ data class HierarchicalFolder(
     val depth: Int = 0,
     val updatedAt: Long = 0,
 ) {
-    val name: String by lazy { pathSegments.last() }
+    val pathSegments: List<String> = path.trim(File.separatorChar)
+        .split(File.separatorChar)
+        .filter { it.isNotEmpty() }
+        .takeIf { it.isNotEmpty() } ?: listOf("")
 
-    val pathSegments: List<String> by lazy {
-        path.trim('/').split("/")
-    }
+    val name: String = pathSegments.last()
+
+    val validPath: String = pathSegments.joinToPath()
 
     val parentPath: String by lazy {
         if (pathSegments.size > 1) {
