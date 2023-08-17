@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.Collator
 
 class CollectionsViewModel(
@@ -92,7 +93,9 @@ class CollectionsViewModel(
     }
 
     /**
-     * Load collected posts for next folder
+     * Load collected posts for next folder.
+     * When posts are available, [CollectionsUiState.currentFolderUiState] and
+     * [CollectionsUiState.previousFolderUiState] will be updated.
      */
     fun loadPostsForNextFolder(
         folder: Folder
@@ -410,18 +413,21 @@ class CollectionsViewModel(
         } else {
             posts
         }.groupBy {
-            it.folder
+            it.folder?.let { folder -> Folder(folder).validPath }
         }
 
         for (group in groups) {
-            val name = group.key ?: Folder.ROOT.path
-            if (name == folder.path) {
+            val postFolder = group.key ?: Folder.ROOT.path
+            if (postFolder == folder.path) {
                 currFolderPosts.addAll(group.value)
                 continue
             }
             // Merge posts in all sub-folders to the parent folder. E.g. All posts in folder
             // 'dir' and 'dir/sub' will be merged to folder 'dir'.
-            val parentName = name.removePrefix(folder.path).trim('/').split("/").first()
+            val parentName = postFolder.removePrefix(folder.path)
+                .trim(File.separatorChar)
+                .split(File.separatorChar)
+                .first()
             val parentIndex = folders.indexOfFirst { it.name == parentName }
             if (parentIndex != -1) {
                 val parent = folders[parentIndex]
