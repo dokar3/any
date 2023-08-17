@@ -5,8 +5,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import any.base.AndroidStrings
+import any.base.Constants
+import any.base.R
+import any.base.Strings
 import any.base.model.FolderViewType
 import any.base.model.PostSorting
+import any.base.model.UiMessage
 import any.base.prefs.PreferencesStore
 import any.base.prefs.defaultFolderViewType
 import any.base.prefs.forcedFolderViewType
@@ -18,6 +23,7 @@ import any.base.util.joinToPath
 import any.data.ThumbAspectRatio
 import any.data.entity.Folder
 import any.data.entity.FolderInfo
+import any.data.entity.HierarchicalFolder
 import any.data.entity.Post
 import any.data.repository.FolderInfoRepository
 import any.data.repository.PostRepository
@@ -41,6 +47,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.Collator
 
 class CollectionsViewModel(
@@ -48,6 +55,7 @@ class CollectionsViewModel(
     postRepository: PostRepository,
     private val folderInfoRepository: FolderInfoRepository,
     private val preferencesStore: PreferencesStore,
+    private val strings: Strings,
     htmlParser: HtmlParser = DefaultHtmlParser(),
     workerDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : BasePostViewModel(
@@ -85,7 +93,9 @@ class CollectionsViewModel(
     }
 
     /**
-     * Load collected posts for next folder
+     * Load collected posts for next folder.
+     * When posts are available, [CollectionsUiState.currentFolderUiState] and
+     * [CollectionsUiState.previousFolderUiState] will be updated.
      */
     fun loadPostsForNextFolder(
         folder: Folder
@@ -403,18 +413,21 @@ class CollectionsViewModel(
         } else {
             posts
         }.groupBy {
-            it.folder
+            it.folder?.let { folder -> Folder(folder).validPath }
         }
 
         for (group in groups) {
-            val name = group.key ?: Folder.ROOT.path
-            if (name == folder.path) {
+            val postFolder = group.key ?: Folder.ROOT.path
+            if (postFolder == folder.path) {
                 currFolderPosts.addAll(group.value)
                 continue
             }
             // Merge posts in all sub-folders to the parent folder. E.g. All posts in folder
             // 'dir' and 'dir/sub' will be merged to folder 'dir'.
-            val parentName = name.removePrefix(folder.path).trim('/').split("/").first()
+            val parentName = postFolder.removePrefix(folder.path)
+                .trim(File.separatorChar)
+                .split(File.separatorChar)
+                .first()
             val parentIndex = folders.indexOfFirst { it.name == parentName }
             if (parentIndex != -1) {
                 val parent = folders[parentIndex]
@@ -522,6 +535,16 @@ class CollectionsViewModel(
             return
         }
         viewModelScope.launch(workerDispatcher) {
+            val hierarchies = HierarchicalFolder(newName).pathSegments.size
+            if (hierarchies > Constants.MAX_POST_FOLDER_HIERARCHIES) {
+                _collectionsUiState.update {
+                    it.copy(error = UiMessage.Error(strings(R.string.too_many_hierarchies)))
+                }
+                return@launch
+            } else {
+                _collectionsUiState.update { it.copy(error = null) }
+            }
+
             val updatedPosts = folder.posts?.map {
                 it.copy(folder = newName)
             }
@@ -626,6 +649,10 @@ class CollectionsViewModel(
         }
     }
 
+    fun clearError() {
+        _collectionsUiState.update { it.copy(error = null) }
+    }
+
     private suspend fun List<Post>.toFolderPosts(): List<FolderPost> {
         val defThumbAspectRatioMap = serviceRepository.getDbServices()
             .associate { it.id to ThumbAspectRatio.parseOrNull(it.mediaAspectRatio) }
@@ -661,6 +688,7 @@ class CollectionsViewModel(
                 postRepository = PostRepository.getDefault(context),
                 folderInfoRepository = FolderInfoRepository.getDefault(context),
                 preferencesStore = context.preferencesStore(),
+                strings = AndroidStrings(context),
             ) as T
         }
     }

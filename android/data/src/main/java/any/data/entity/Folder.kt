@@ -2,19 +2,24 @@ package any.data.entity
 
 import androidx.compose.runtime.Immutable
 import any.base.util.PathJoiner
+import any.base.util.joinToPath
+import java.io.File
 
 @Immutable
 data class Folder(
     val path: String,
     val posts: List<Post>? = null,
 ) {
-    val name: String by lazy {
-        path.trim('/').split("/").last()
+    val pathSegments: List<String> by lazy {
+        path.trim(File.separatorChar)
+            .split(File.separatorChar)
+            .filter { it.isNotEmpty() }
+            .takeIf { it.isNotEmpty() } ?: listOf("")
     }
 
-    val pathSegments: List<String> by lazy {
-        path.trim('/').split("/")
-    }
+    val name: String by lazy { pathSegments.last() }
+
+    val validPath: String by lazy { pathSegments.joinToPath() }
 
     val parentPath: String by lazy {
         if (pathSegments.size > 1) {
@@ -27,7 +32,7 @@ data class Folder(
     fun isRoot(): Boolean = path == ROOT.path
 
     fun isTheSame(sub: Folder): Boolean {
-        return path.trim('/') == sub.path.trim('/')
+        return path.trim(File.separatorChar) == sub.path.trim(File.separatorChar)
     }
 
     fun isTheSameOrSubFolderOf(sub: Folder): Boolean {

@@ -40,7 +40,9 @@ import androidx.compose.ui.window.PopupProperties
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 
-const val MSG_POPUP_DURATION = 2000L
+object MessagePopupDefaults {
+    const val POPUP_DURATION = 2000L
+}
 
 private const val SwipeNone = 0
 private const val SwipeLeft = 1

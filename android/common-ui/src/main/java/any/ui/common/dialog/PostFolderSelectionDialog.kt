@@ -1,7 +1,5 @@
 package any.ui.common.dialog
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -9,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -53,6 +52,9 @@ import any.data.entity.HierarchicalFolder
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.BasicDialog
+import any.ui.common.widget.ErrorMessage
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -126,6 +128,31 @@ fun PostFolderSelectionDialog(
                     .fillMaxWidth()
                     .heightIn(min = 240.dp)
             ) {
+                if (!uiState.error.isNullOrEmpty()) {
+                    ErrorMessage(
+                        title = {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = uiState.error!!,
+                                    modifier = Modifier.weight(1f),
+                                )
+
+                                IconButton(onClick = { viewModel.clearError() }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = stringResource(BaseR.string.close),
+                                    )
+                                }
+                            }
+                        },
+                        message = {},
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
                 if (showNewFolder) {
                     val keyboardController = LocalSoftwareKeyboardController.current
                     val focusRequester = remember { FocusRequester() }

@@ -1,7 +1,5 @@
 package any.ui.common.menu
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -18,8 +16,11 @@ import com.dokar.sheets.BottomSheetValue
 import com.dokar.sheets.PeekHeight
 import com.dokar.sheets.rememberBottomSheetState
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 fun FolderOptionMenu(
@@ -41,9 +42,8 @@ fun FolderOptionMenu(
         snapshotFlow { state.value }
             .distinctUntilChanged()
             .filter { it == BottomSheetValue.Collapsed }
-            .collect {
-                onDismissRequest()
-            }
+            .drop(1)
+            .collect { onDismissRequest() }
     }
 
     BottomSheet(
