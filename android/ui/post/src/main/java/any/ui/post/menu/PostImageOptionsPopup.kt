@@ -1,6 +1,5 @@
 package any.ui.post.menu
 
-import any.base.R as BaseR
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.MaterialTheme
@@ -22,6 +21,7 @@ import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.lifecycleScope
 import any.base.compose.StableHolder
 import any.base.image.PostImageSaver
+import any.base.log.Logger
 import any.base.util.Intents
 import any.base.util.PackageUtil
 import any.download.PostImageDownloader
@@ -34,6 +34,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.coroutines.coroutineContext
+import any.base.R as BaseR
 
 internal val addBookmarkItem by lazy {
     PostMenuItem(
@@ -144,6 +145,7 @@ internal fun PostImageOptionsPopup(
                         Toast.LENGTH_SHORT,
                     ).show()
                 } else {
+                    Logger.e("ImageSaver", "Failed to save: ${ret.exceptionOrNull()}")
                     Toast.makeText(
                         context,
                         BaseR.string.failed_to_save,
