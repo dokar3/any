@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import any.base.AndroidStrings
+import any.base.Constants
+import any.base.R
+import any.base.Strings
 import any.base.model.PostFolderSelectionSorting
 import any.base.prefs.PreferencesStore
 import any.base.prefs.postFolderSelectionSorting
@@ -31,6 +35,7 @@ class PostFolderSelectionViewModel(
     private val localPostDataSource: LocalPostDataSource,
     private val folderInfoRepository: FolderInfoRepository,
     private val preferencesStore: PreferencesStore,
+    private val strings: Strings,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PostFolderSelectionUiState())
     val uiState: StateFlow<PostFolderSelectionUiState> = _uiState
@@ -151,23 +156,34 @@ class PostFolderSelectionViewModel(
 
     fun newFolder(path: String) {
         viewModelScope.launch(Dispatchers.Default) {
-            val trimmedPath = path.trim('/')
-            if (newFolders.find { it.path == trimmedPath } != null ||
-                allFolders.find { it.path == trimmedPath } != null ||
-                trimmedPath == Folder.ROOT.path
+            val folder = HierarchicalFolder(path)
+
+            if (folder.pathSegments.size > Constants.MAX_POST_FOLDER_HIERARCHIES) {
+                // Don't allowed new folder that has too many hierarchies
+                _uiState.update { it.copy(error = strings(R.string.too_many_hierarchies)) }
+                return@launch
+            } else {
+                _uiState.update { it.copy(error = null) }
+            }
+
+            val validPath = folder.validPath
+
+            if (newFolders.find { it.path == validPath } != null ||
+                allFolders.find { it.path == validPath } != null ||
+                validPath == Folder.ROOT.path
             ) {
                 return@launch
             }
 
             newFolders.add(
                 NewFolder(
-                    path = trimmedPath,
+                    path = validPath,
                     createdAt = System.currentTimeMillis(),
                 )
             )
 
-            if (folderInfoRepository.get(trimmedPath) == null) {
-                folderInfoRepository.add(FolderInfo(path = trimmedPath))
+            if (folderInfoRepository.get(validPath) == null) {
+                folderInfoRepository.add(FolderInfo(path = validPath))
             }
 
             loadAllFolderSync()
@@ -346,11 +362,16 @@ class PostFolderSelectionViewModel(
         preferencesStore.postFolderSelectionSorting = sorting
     }
 
+    fun clearError() {
+        _uiState.update { it.copy(error = null) }
+    }
+
     fun reset() {
         newFolders.clear()
         allFolders.clear()
         _uiState.update {
             it.copy(
+                error = null,
                 flattedFolders = emptyList(),
                 selectedFolder = HierarchicalFolder.ROOT,
             )
@@ -369,6 +390,7 @@ class PostFolderSelectionViewModel(
                 localPostDataSource = LocalPostDataSourceImpl.getDefault(context),
                 folderInfoRepository = FolderInfoRepository.getDefault(context),
                 preferencesStore = context.preferencesStore(),
+                strings = AndroidStrings(context),
             ) as T
         }
     }
