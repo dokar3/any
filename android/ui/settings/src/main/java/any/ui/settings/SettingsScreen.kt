@@ -152,7 +152,7 @@ private fun SettingsNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = subSettings?.ifEmpty { Routes.Settings.MAIN } ?: Routes.Settings.MAIN,
+        startDestination = subSettings?.takeIf(String::isNotEmpty) ?: Routes.Settings.MAIN,
     ) {
         composable(Routes.Settings.MAIN) {
             MainSettings(onSettingsNavigate, viewModel)
