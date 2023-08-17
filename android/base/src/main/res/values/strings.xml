@@ -332,4 +332,5 @@
     <string name="no_cookies_obtained">No cookies obtained</string>
     <string name="close">Close</string>
     <string name="max_size">Max size</string>
+    <string name="too_many_hierarchies">Too many hierarchies</string>
 </resources>

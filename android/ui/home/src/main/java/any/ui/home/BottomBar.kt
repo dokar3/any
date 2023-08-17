@@ -1,6 +1,5 @@
 package any.ui.home
 
-import any.base.R as BaseR
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,12 +53,13 @@ import any.base.prefs.preferencesStore
 import any.navigation.Routes
 import any.ui.common.ViewConfiguration
 import any.ui.common.theme.bottomBarBackground
-import any.ui.common.widget.MSG_POPUP_DURATION
 import any.ui.common.widget.MessagePopup
+import any.ui.common.widget.MessagePopupDefaults
 import any.ui.common.widget.NavigationBarSpacer
 import any.ui.common.widget.ShadowDividerSpacer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -154,7 +154,7 @@ internal fun BottomBar(
                                 launchScreen = item.name
                                 scope.launch {
                                     showMessagePopup = true
-                                    delay(MSG_POPUP_DURATION)
+                                    delay(MessagePopupDefaults.POPUP_DURATION)
                                     showMessagePopup = false
                                 }
                             },
