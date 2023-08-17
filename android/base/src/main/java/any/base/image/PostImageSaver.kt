@@ -22,11 +22,6 @@ object PostImageSaver {
         url: String,
     ): Result<String> = withContext(Dispatchers.IO) save@{
         val picturesDir = Dirs.picturesPostImageDownloadDir()
-        if (!picturesDir.canWrite()) {
-            return@save Result.failure(
-                Exception("Cannot write to 'Pictures' directory")
-            )
-        }
         val dirName = if (postTitle != null) {
             FileUtil.buildValidFatFilename(postTitle)
         } else {
