@@ -1,6 +1,7 @@
 package any.home.test
 
 import androidx.compose.ui.text.input.TextFieldValue
+import any.base.Strings
 import any.base.log.Logger
 import any.base.log.NoOpLogger
 import any.base.model.PostSorting
@@ -57,6 +58,7 @@ class CollectionsViewModelTest {
             folderInfoRepository = testFolderInfoRepository,
             preferencesStore = testPreferencesStore,
             workerDispatcher = testDispatcher,
+            strings = Strings.None,
         )
 
         testPreferencesStore.postSorting = PostSorting.ByAddTime
