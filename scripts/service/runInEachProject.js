@@ -49,8 +49,9 @@ async function askAndRun(cmd) {
   });
   const prompt = (query) =>
     new Promise((resolve) => rl.question(query, resolve));
+  const servicesDirs = path.join(process.cwd(), "js/services/")
   const choice = await prompt(
-    `Run '${cmd}' for every project in the current folder? (y/n)\n`
+    `Run '${cmd}' for every project in '${servicesDirs}' ? (y/n)\n`
   );
   if (choice === "y" || choice === "Y") {
     const start = Date.now();
