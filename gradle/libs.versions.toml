@@ -19,7 +19,8 @@ jsoup = "1.16.1"
 duktape = "1.4.0"
 sheets = "0.4.7"
 chiptextfield = "0.5.0"
-expandabletext = "0.3.4"
+sheets = "0.4.8"
+expandabletext = "0.3.5"
 flick = "1.7.0"
 fresco = "3.0.0"
 media3 = "1.1.1"
@@ -57,8 +58,8 @@ androidx-interpolator = { module = "androidx.interpolator:interpolator", version
 androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version = "1.0.0" }
 
 androidx-benchmark-junit4 = { module = "androidx.benchmark:benchmark-junit4", version = "1.1.1" }
-androidx-benchmark-common = { module = "androidx.benchmark:benchmark-common", version = "1.2.0-beta04" }
-androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4", version = "1.2.0-beta04" }
+androidx-benchmark-common = { module = "androidx.benchmark:benchmark-common", version = "1.2.0-beta05" }
+androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4", version = "1.2.0-beta05" }
 
 androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
