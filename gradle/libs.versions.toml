@@ -3,10 +3,10 @@ compileSdk = "34"
 targetSdk = "34"
 agp = "8.1.1"
 kotlin = "1.9.10"
-compose-bom = "2023.08.00"
+compose-bom = "2023.09.00"
 composeCompiler = "1.5.3"
 navigationcompose = "2.7.2"
-lifecycle = "2.6.1"
+lifecycle = "2.6.2"
 activity = "1.7.2"
 activitycompose = "1.7.2"
 coroutines = "1.7.3"
@@ -43,7 +43,7 @@ compose-ui-util = { module = "androidx.compose.ui:ui-util" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
 
-androidx-core = { module = "androidx.core:core", version = "1.10.1" }
+androidx-core = { module = "androidx.core:core", version = "1.12.0" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activitycompose" }
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
