@@ -1,20 +1,17 @@
 import { describe, expect, test } from "@jest/globals";
-import { AnyPostFeature } from "any-service-api";
 import { createTestService } from "any-service-testing";
-import NineGAGService from "../src/Service";
+import { features } from "../src/main";
 
 describe("MyService", () => {
   test("test fetch posts", () => {
     const service = createTestService({
-      serviceClass: NineGAGService,
+      features: features,
       manifestPath: "manifest.json",
       configs: {
         section: "home",
       },
     });
-    const result = service
-      .getFeature(AnyPostFeature)
-      .fetchFreshList({ pageKey: null });
+    const result = service.features.post.fetchFreshList({ pageKey: null });
     expect(result.isOk()).toBe(true);
   });
 });

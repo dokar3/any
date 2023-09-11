@@ -43,7 +43,7 @@ export function createTestService({
       console.log(`Update loading progress: ${progress} - ${message}`);
     }
   );
-  return _createService(
+  const service = _createService(
     features,
     manifest,
     configs,
@@ -51,6 +51,8 @@ export function createTestService({
     configsUpdater,
     progressUpdater
   );
+  globalThis.service = service;
+  return service;
 }
 
 function readManifest(manifestPath: string): ServiceManifest {
