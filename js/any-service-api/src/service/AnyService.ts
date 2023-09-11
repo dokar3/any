@@ -6,15 +6,15 @@ import { ServiceParams } from "./ServiceParams";
 import { ServiceFeatures } from "./feature/Features";
 
 /**
- * The Any service. Requiring to extend this class and override the onCreate() function
- * to add {@link Feature}s. The extended class should not contain any logic, instead, put
- * them into {@link Feature}s.
+ * The Any service.
  *
  * @since 0.1.0
  */
 export class AnyService {
-  /** @internal */
-  private readonly _features: ServiceFeatures;
+  /**
+   * The features of this service.
+   */
+  readonly features: ServiceFeatures;
 
   /** @internal */
   private readonly _progressUpdater: LoadingProgressUpdater;
@@ -59,7 +59,7 @@ export class AnyService {
     features: ServiceFeatures;
     params: ServiceParams;
   }) {
-    this._features = features;
+    this.features = features;
     this._progressUpdater = params.progressUpdater;
 
     const manifestManager = new ManifestManager(

@@ -3,19 +3,17 @@
 Unlike the browser environment, the service runtime does not have a `window` object, the following
 classes and objects are provided for creating services alternatively:
 
-| Class              | Description                               | Details                                                                                                            |
-|:-------------------|:------------------------------------------|:-------------------------------------------------------------------------------------------------------------------|
-| `AnyService`       | Features, configs and manifest management | Add features in the `onCreate()` function                                                                          |
-| `ServiceRegistry`  | service registration                      | Call `ServiceRegistry.register(ServiceClass)` to register the implemented service                                  |
-| `Feature`          | Basic feature                             | The base feature, all features must extend this class                                                              |
-| `AnyPostFeature`   | Post-related data fetching                | Extend this class and implement fetch functions, then add it in the `onCreate()` of service class                  |
-| `AnyUserFeature`   | User-related data fetching                | Extend this class and implement fetch functions, then add it in the `onCreate()` of service class                  |
-| `AnyConfigFeature` | Service configs validation                | Extend this class and implement the `validateConfigs()` function, then add it in the `onCreate()` of service class |
-| `DomElement`       | The html/xml element                      | Use the global function `$(String)` to create a DOM element from html/xml                                          |
-| `DOM`              | Simple DOM implementation                 | Use `DOM.createDocument()` to create a document from html/xml string. Exported as `globalThis.DOM`                 |
-| `Console`          | Logging                                   | `log()`, `info()`, `warn()` and `error()` are supported                                                            |
-| `Http`             | Network                                   | Provides `get()` and `post()` to fetch and send data. Exported as `globalThis.http`                                |
-| `Env`              | Environment properties                    | Used to access the service runtime environment properties like `LANGUAGE`. Exported as `globalThis.env`            |
+| Class              | Description                               | Details                                                                                                 |
+|:-------------------|:------------------------------------------|:--------------------------------------------------------------------------------------------------------|
+| `AnyService`       | Features, configs and manifest management | Access and update configs, manifests. Exported as `globalThis.service`.                                 |
+| `PostFeature`      | Post-related data fetching                | Implement needed functions.                                                                             |
+| `AnyUserFeature`   | User-related data fetching                | Implement needed functions.                                                                             |
+| `AnyConfigFeature` | Service configs validation                | Implement needed functions.                                                                             |
+| `DomElement`       | The html/xml element                      | Use the global function `$(String)` to create a DOM element from html/xml                               |
+| `DOM`              | Simple DOM implementation                 | Use `DOM.createDocument()` to create a document from html/xml string. Exported as `globalThis.DOM`      |
+| `Console`          | Logging                                   | `log()`, `info()`, `warn()` and `error()` are supported                                                 |
+| `Http`             | Network                                   | Provides `get()` and `post()` to fetch and send data. Exported as `globalThis.http`                     |
+| `Env`              | Environment properties                    | Used to access the service runtime environment properties like `LANGUAGE`. Exported as `globalThis.env` |
 
 # Create services (TypeScript)
 
@@ -78,57 +76,59 @@ a service project from scratch.**
    }
    ```
 
-4. Create an `AnyPostFeature` and implement the fetch functions:
+4. Create and implement the post feature:
 
    ```typescript
-   // src/PostService.ts
+   // src/postFeature.ts
    import {
-     AnyPostFeature,
+     FetchPostParams,
      FetchFreshListParams,
      PagedResult,
      Post,
    } from "any-service-api";
-
-   export class PostFeature extends AnyPostFeature {
-     fetchFreshList(params: FetchFreshListParams): PagedResult<Post[]> {
-       // Implement this function
-     }
-
-     // Implement more functions if needed
+   
+   export function fetch(params: FetchPostParams): FetchResult<Post> {
+     // Implement this function
    }
+   
+   export function fetchFreshList(params: FetchFreshListParams): PagedResult<Post[]> {
+     // Implement this function
+   }
+   
+   // Implement more functions if needed
+   
    ```
 
-5. Create an `AnyService` and add the post feature we created before:
-
-   ```typescript
-   // src/Service.ts
-   import { AnyService } from "any-service-api";
-   import { PostFeature } from "./PostFeature";
-
-   export class Service extends AnyService {
-     onCreate(): void {
-       this.addFeature(PostFeature);
-     }
-   }
-   ```
-
-6. Register the service in the `main.ts`:
+5. Register the service in the `main.ts`:
 
    ```javascript
    // src/main.ts
-   import { ServiceRegistry } from "any-service-api";
-   import { Service } from "Service";
-
-   ServiceRegistry.register(Service);
+   import { ServiceFeatures } from "any-service-api";
+   import * postFeature from "./postFeature";
+   
+   // Export all features as a 'features' field.
+   export const features: ServiceFeatures = {
+     post: {
+       fetch: postFeature.fetch,
+       fetchFreshList: postFeature.fetchFreshList,
+       // More...
+     },
+     user: {
+       // Implement user feature if needed
+     },
+     config: {
+       // Implement config feature if needed
+     },
+   };
    ```
 
-7. Run service in a browser:
+6. Run service in a browser:
 
    ```shell
    yarn runner
    ```
 
-8. Build service
+7. Build service
    ```shell
    yarn build-android
    ```

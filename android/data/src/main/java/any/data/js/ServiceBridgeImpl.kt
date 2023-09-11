@@ -51,7 +51,7 @@ class ServiceBridgeImpl(
                 const params = {
                     userId: "${id.escape()}",
                 };
-                const feature = service._features.user;
+                const feature = service.features.user;
                 JSON.stringify(feature.fetchById(params))
             """.trimIndent()
 
@@ -78,7 +78,7 @@ class ServiceBridgeImpl(
                 const params = {
                     userUrl: "${url.escape()}",
                 };
-                const feature = service._features.user;
+                const feature = service.features.user;
                 JSON.stringify(feature.fetchByUrl(params))
             """.trimIndent()
 
@@ -107,7 +107,7 @@ class ServiceBridgeImpl(
                     userId: "${userId.escape()}",
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service._features.user;
+                const feature = service.features.user;
                 const pagedResult = feature.fetchPosts(params);
                 JSON.stringify(pagedResult)
             """.trimIndent()
@@ -135,7 +135,7 @@ class ServiceBridgeImpl(
                 const params = {
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service._features.post;
+                const feature = service.features.post;
                 const pagedResult = feature.fetchFreshList(params);
                 JSON.stringify(pagedResult)
             """.trimIndent()
@@ -163,7 +163,7 @@ class ServiceBridgeImpl(
                 const params = {
                     url: "$postUrl",
                 };
-                const feature = service._features.post;
+                const feature = service.features.post;
                 const fetchResult = feature.fetch(params);
                 JSON.stringify(fetchResult)
             """.trimIndent()
@@ -213,7 +213,7 @@ class ServiceBridgeImpl(
                     query: "$query",
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service._features.post;
+                const feature = service.features.post;
                 const pagedResult = feature.search(params);
                 JSON.stringify(pagedResult)
             """.trimIndent()
@@ -245,7 +245,7 @@ class ServiceBridgeImpl(
                     loadKey: "$commentsKey",
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service._features.post;
+                const feature = service.features.post;
                 const comments = feature.fetchComments(params);
                 JSON.stringify(comments)
             """.trimIndent()
@@ -303,7 +303,7 @@ class ServiceBridgeImpl(
         ) {
             @Language("JS")
             val testCode = """
-                const feature = service._features.post;
+                const feature = service.features.post;
                 const proto = Object.getPrototypeOf(feature);
                 proto.hasOwnProperty("search")
             """.trimIndent()
