@@ -1,7 +1,5 @@
 package any.ui.common.dialog
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -43,6 +41,8 @@ import com.dokar.chiptextfield.ChipTextFieldState
 import com.dokar.chiptextfield.OutlinedChipTextField
 import com.dokar.chiptextfield.rememberChipTextFieldState
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @OptIn(
     ExperimentalComposeUiApi::class,
