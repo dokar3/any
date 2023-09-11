@@ -1,4 +1,13 @@
-import { ServiceRegistry } from "any-service-api";
-import Service from "./RssService";
+import { ServiceFeatures } from "any-service-api";
+import * as postFeature from "./postFeature";
+import { validateConfigs } from "./configFeature";
 
-ServiceRegistry.register(Service);
+export const features: ServiceFeatures = {
+  post: {
+    fetch: postFeature.fetch,
+    fetchFreshList: postFeature.fetchFreshList,
+  },
+  config: {
+    validate: validateConfigs,
+  },
+};

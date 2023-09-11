@@ -64,7 +64,7 @@ class JsDomElement implements DomElement {
 
   selectAll(cssQuery: string): DomElement[] {
     const elements = this.element.querySelectorAll(cssQuery);
-    const wrappedElements = [elements.length];
+    const wrappedElements = new Array(elements.length);
     for (let i = 0; i < elements.length; i++) {
       wrappedElements[i] = new JsDomElement(elements[i]);
     }

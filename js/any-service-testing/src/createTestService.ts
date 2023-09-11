@@ -2,8 +2,9 @@ import {
   AnyService,
   ConfigsUpdater,
   LoadingProgressUpdater,
+  ServiceFeatures,
   ServiceManifest,
-  ServiceRegistry
+  _createService,
 } from "any-service-api";
 import * as fs from "fs";
 import * as path from "path";
@@ -19,12 +20,12 @@ import { setupTestGlobals } from "./TestGlobals";
  * @param configs The optional service configs.
  */
 export function createTestService({
-  serviceClass,
+  features,
   manifestPath,
   configs = {},
   cachedHttpInterceptor = new CachedHttpInterceptor(),
 }: {
-  serviceClass: typeof AnyService;
+  features: ServiceFeatures;
   manifestPath: string;
   configs?: any;
   cachedHttpInterceptor?: CachedHttpInterceptor;
@@ -42,14 +43,16 @@ export function createTestService({
       console.log(`Update loading progress: ${progress} - ${message}`);
     }
   );
-  ServiceRegistry.register(serviceClass);
-  return globalThis.createService(
+  const service = _createService(
+    features,
     manifest,
     configs,
     manifestUpdater,
     configsUpdater,
     progressUpdater
   );
+  globalThis.service = service;
+  return service;
 }
 
 function readManifest(manifestPath: string): ServiceManifest {
