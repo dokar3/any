@@ -1,10 +1,9 @@
 import { ConfigsManager } from "../config/ConfigsManager";
-import { ServiceManifest } from "../manifest/ServiceManifest";
 import { ManifestManager } from "../manifest/ManifestManager";
-import { ServiceParams } from "./ServiceParams";
+import { ServiceManifest } from "../manifest/ServiceManifest";
 import { LoadingProgressUpdater } from "./LoadingProgressUpdater";
-import { Feature } from "./feature/Feature";
-import { Features } from "./Features";
+import { ServiceParams } from "./ServiceParams";
+import { ServiceFeatures } from "./feature/Features";
 
 /**
  * The Any service. Requiring to extend this class and override the onCreate() function
@@ -15,10 +14,10 @@ import { Features } from "./Features";
  */
 export class AnyService {
   /** @internal */
-  private _features: Features;
+  private readonly _features: ServiceFeatures;
 
   /** @internal */
-  private _progressUpdater: LoadingProgressUpdater;
+  private readonly _progressUpdater: LoadingProgressUpdater;
 
   /**
    * The service manifest.
@@ -53,9 +52,14 @@ export class AnyService {
    * @param {ServiceParams} params Constructor parameters.
    * @internal
    */
-  constructor(params: ServiceParams) {
-    this._features = new Features(this);
-
+  constructor({
+    features,
+    params,
+  }: {
+    features: ServiceFeatures;
+    params: ServiceParams;
+  }) {
+    this._features = features;
     this._progressUpdater = params.progressUpdater;
 
     const manifestManager = new ManifestManager(
@@ -89,45 +93,6 @@ export class AnyService {
         );
       },
     });
-
-    this.onCreate();
-  }
-
-  /**
-   * Called when the service is created.
-   */
-  onCreate(): void {}
-
-  /**
-   * Add a feature.
-   *
-   * @param ctor The feature class.
-   */
-  addFeature<S extends Feature>(ctor: new (service: AnyService) => S) {
-    this._features.add(ctor);
-  }
-
-  /**
-   * Check if target feature type is added.
-   *
-   * @param ctor The feature class.
-   * @returns True if target feature is added, false otherwise.
-   */
-  hasFeature<S extends Feature>(
-    ctor: new (service: AnyService) => S
-  ): boolean {
-    return this._features.isAdded(ctor);
-  }
-
-  /**
-   * Get the specified type of feature.
-   *
-   * @param ctor The feature class.
-   * @returns The feature instance.
-   * @throws A error if target feature is not registered.
-   */
-  getFeature<S extends Feature>(ctor: new (service: AnyService) => S): S {
-    return this._features.getOrCreate(ctor);
   }
 
   /**

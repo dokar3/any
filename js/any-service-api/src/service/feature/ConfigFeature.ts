@@ -1,6 +1,3 @@
-import { NotImplementedError } from "../../util";
-import { Feature } from "./Feature";
-
 /**
  * Configuration validation error.
  *
@@ -30,20 +27,16 @@ export class ValidationError {
 }
 
 /**
- * Service configuration related feature.
+ * The service config feature.
  *
- * @since 0.1.0
+ * @since 0.2.0
  */
-export class AnyConfigFeature extends Feature {
+export type ConfigFeature = {
   /**
    * Validate service configs.
    *
    * @returns {ValidationError|ValidationError[]|null} Failures, null if all pass.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  validateConfigs(): ValidationError | ValidationError[] | null {
-    throw new NotImplementedError(
-      "ConfigFeature.validateConfigs() is not implemented"
-    );
-  }
-}
+  validate(): ValidationError | ValidationError[] | null;
+};

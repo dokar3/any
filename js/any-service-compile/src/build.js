@@ -209,19 +209,27 @@ function buildService(
           return;
         }
 
+        // Recreate entry point
+        const entryPointPath = generateEntryPoint(serviceSourceFile);
+
         const outputFilename = path
           .basename(serviceSourceFile)
           .replace(/.ts$/, ".js");
 
-        // Compile service source
-        await compileJsSources(
-          [serviceSourceFile],
-          uncompressedOutputDir,
-          outputFilename,
-          platform,
-          null,
-          minimize === true
-        );
+        try {
+          // Compile service source
+          await compileJsSources(
+            [entryPointPath],
+            uncompressedOutputDir,
+            outputFilename,
+            platform,
+            null,
+            minimize === true
+          );
+        } finally {
+          // Delete temporary entry point file
+          fs.rmSync(entryPointPath);
+        }
 
         // Update source path in manifest
         manifest.main = outputFilename;
@@ -288,6 +296,36 @@ function buildService(
       })
   );
   return Promise.all(compilations);
+}
+
+/**
+ * Generate a entry point which initiates the service.
+ *
+ * @param {string} originalEntryPointPath Original main path.
+ *
+ * @returns {string} The path of temporary entry point file.
+ */
+function generateEntryPoint(originalEntryPointPath) {
+  const dir = path.dirname(originalEntryPointPath);
+  const filename = path.parse(originalEntryPointPath).name;
+  const code = `
+    import { _createService, ServiceManifest } from "any-service-api";
+    import { features } from "./${filename}";
+
+    globalThis.createService = function(manifest: ServiceManifest, configs: any) {
+      return _createService(
+        features,
+        manifest,
+        configs,
+        manifestUpdater ?? globalThis.manifestUpdater,
+        configsUpdater ?? globalThis.configsUpdater,
+        progressUpdater ?? globalThis.progressUpdater,
+      );
+    }
+    `;
+  const tempFile = path.join(dir, filename + "." + crypto.randomUUID() + ".ts");
+  fs.writeFileSync(tempFile, code);
+  return tempFile;
 }
 
 export { buildService };

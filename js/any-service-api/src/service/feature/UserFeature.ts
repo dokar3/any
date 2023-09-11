@@ -2,8 +2,6 @@ import { Post } from "../../post/Post";
 import { FetchResult } from "../../result/FetchResult";
 import { PagedResult } from "../../result/PagedResult";
 import { User } from "../../user/User";
-import { NotImplementedError } from "../../util";
-import { Feature } from "./Feature";
 
 /**
  * Parameters for {@link UserFeature.fetchById}
@@ -82,45 +80,35 @@ export class FetchUserPostsParams {
 }
 
 /**
- * The feature used to fetch user related data.
+ * Fetch user related data.
  *
- * @since 0.1.0
+ * @since 0.2.0
  */
-export class AnyUserFeature extends Feature {
+export type UserFeature = {
   /**
    * Fetch user by the user id.
    *
    * @param {FetchUserByIdParams} params Fetch parameters.
    * @returns {FetchResult<User>} The user entity.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  fetchById(params: FetchUserByIdParams): FetchResult<User> {
-    throw new NotImplementedError("UserFeature.fetchById() is not implemented");
-  }
+  fetchById(params: FetchUserByIdParams): FetchResult<User>;
 
   /**
    * Fetch user by the user url.
    *
    * @param {FetchUserByUrlParams} params Fetch parameters.
    * @returns {FetchResult<User>} The user entity.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  fetchByUrl(params: FetchUserByUrlParams): FetchResult<User> {
-    throw new NotImplementedError(
-      "UserFeature.fetchByUrl() is not implemented"
-    );
-  }
+  fetchByUrl?(params: FetchUserByUrlParams): FetchResult<User>;
 
   /**
    * Fetch user posts.
    *
    * @param {FetchUserPostsParams} params Fetch parameters.
    * @returns {PagedResult<Post[]>} The posts result.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  fetchPosts(params: FetchUserPostsParams): PagedResult<Post[]> {
-    throw new NotImplementedError(
-      "UserService.fetchPosts() is not implemented"
-    );
-  }
-}
+  fetchPosts(params: FetchUserPostsParams): PagedResult<Post[]>;
+};

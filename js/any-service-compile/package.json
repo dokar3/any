@@ -6,6 +6,9 @@
   "type": "module",
   "author": "Any",
   "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc --allowJs --emitDeclarationOnly --declaration ./src/build.js"
+  },
   "dependencies": {
     "@babel/core": "^7.20.5",
     "@babel/plugin-proposal-class-properties": "^7.16.7",

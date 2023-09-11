@@ -2,8 +2,6 @@ import { Comment } from "../../post/Comment";
 import { Post } from "../../post/Post";
 import { FetchResult } from "../../result/FetchResult";
 import { PagedResult } from "../../result/PagedResult";
-import { NotImplementedError } from "../../util";
-import { Feature } from "./Feature";
 
 /**
  * Parameters for {@link PostFeature.fetch}
@@ -119,56 +117,44 @@ export class FetchCommentsParams {
 }
 
 /**
- * The post feature of the AnyService, used to fetch post and related data.
- *
- * @since 0.1.0
+ * Fetch post related data.
+ * 
+ * @since 0.2.0
  */
-export class AnyPostFeature extends Feature {
+export type PostFeature = {
   /**
    * Fetch the detailed post.
    *
    * @param {FetchPostParams} params Fetch parameters.
    * @returns {FetchResult<Post>} The post result.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  fetch(params: FetchPostParams): FetchResult<Post> {
-    throw new NotImplementedError("PostService.fetch() is not implemented");
-  }
+  fetch(params: FetchPostParams): FetchResult<Post>;
 
   /**
    * Search posts.
    *
    * @param {SearchPostsParams} params Fetch parameters.
    * @returns {PagedResult<Post[]>} Search result.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  search(params: SearchPostsParams): PagedResult<Post[]> {
-    throw new NotImplementedError("PostService.search() is not implemented");
-  }
+  search?(params: SearchPostsParams): PagedResult<Post[]>;
 
   /**
    * Fetch fresh post list.
    *
    * @param {FetchFreshListParams} params Fetch parameters.
    * @returns {PagedResult<Post[]>} The posts result.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  fetchFreshList(params: FetchFreshListParams): PagedResult<Post[]> {
-    throw new NotImplementedError(
-      "PostService.fetchFreshList() is not implemented"
-    );
-  }
+  fetchFreshList(params: FetchFreshListParams): PagedResult<Post[]>;
 
   /**
    * Fetch comments.
    *
    * @param {FetchCommentsParams} params Fetch parameters.
    * @returns {PagedResult<Comment[]>} Comments.
-   * @since 0.1.0
+   * @since 0.2.0
    */
-  fetchComments(params: FetchCommentsParams): PagedResult<Comment[]> {
-    throw new NotImplementedError(
-      "PostService.fetchComments() is not implemented"
-    );
-  }
-}
+  fetchComments?(params: FetchCommentsParams): PagedResult<Comment[]>;
+};
