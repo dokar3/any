@@ -2,10 +2,10 @@ export * from "./global/Globals";
 
 export { AnyService } from "./service/AnyService";
 
-export { Feature } from "./service/feature/Feature";
+export { ServiceFeatures } from "./service/feature/Features";
 
 export {
-  AnyPostFeature,
+  PostFeature,
   FetchPostParams,
   FetchFreshListParams,
   FetchCommentsParams,
@@ -13,14 +13,14 @@ export {
 } from "./service/feature/PostFeature";
 
 export {
-  AnyUserFeature,
+  UserFeature,
   FetchUserByIdParams,
   FetchUserByUrlParams,
   FetchUserPostsParams,
 } from "./service/feature/UserFeature";
 
 export {
-  AnyConfigFeature,
+  ConfigFeature,
   ValidationError,
 } from "./service/feature/ConfigFeature";
 
@@ -31,8 +31,6 @@ export { Checksums } from "./manifest/Checksums";
 export { ConfigsUpdater } from "./config/ConfigsUpdater";
 
 export { LoadingProgressUpdater } from "./service/LoadingProgressUpdater";
-
-export { ServiceRegistry } from "./service/ServiceRegistry";
 
 export { Post } from "./post/Post";
 
@@ -63,3 +61,5 @@ export {
   HttpInterceptor,
   HttpRequestHandler,
 } from "./global/Http";
+
+export { _createService } from "./service/createService";

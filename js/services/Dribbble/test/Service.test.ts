@@ -1,28 +1,24 @@
 import { describe, expect, test } from "@jest/globals";
-import { AnyService, AnyPostFeature, AnyUserFeature } from "any-service-api";
+import { AnyService } from "any-service-api";
 import { createTestService } from "any-service-testing";
-import Service from "../src/Service";
+import { features } from "../src/main";
 
 function service(): AnyService {
   return createTestService({
-    serviceClass: Service,
+    features: features,
     manifestPath: "manifest.json",
   });
 }
 
 describe("DribbleService", () => {
   test("test fetch shots", () => {
-    const result = service()
-      .getFeature(AnyPostFeature)
-      .fetchFreshList({ pageKey: null });
+    const result = service().features.post.fetchFreshList({ pageKey: null });
     expect(result.isOk()).toBe(true);
     expect(result.data).toHaveLength(24);
   });
 
   test("test fetch user", () => {
-    const result = service()
-      .getFeature(AnyUserFeature)
-      .fetchById({ userId: "Ramotion" });
+    const result = service().features.user!.fetchById({ userId: "Ramotion" });
     expect(result.isOk()).toBe(true);
     expect(result.data?.name).toBe("Ramotion");
   });

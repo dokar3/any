@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest ./test"
+    "test": "jest ./test",
+    "build": "tsc"
   },
   "license": "Apache-2.0",
   "devDependencies": {

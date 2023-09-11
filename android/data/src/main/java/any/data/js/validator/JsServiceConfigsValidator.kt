@@ -42,8 +42,8 @@ class JsServiceConfigsValidator(
         ) {
             @Language("JS")
             val checkCode = """
-                const feature = service.getFeature(AnyConfigFeature);
-                typeof feature.validateConfigs === 'function'
+                const feature = service.features.config;
+                feature != null && typeof feature.validateConfigs === 'function'
             """.trimIndent()
             val hasValidator = evaluate(checkCode, Boolean::class.java) == true
 
@@ -53,7 +53,7 @@ class JsServiceConfigsValidator(
 
             @Language("JS")
             val validateCode = """
-                const feature = service.getFeature(AnyConfigFeature);
+                const feature = service.features.config;
                 const ret = feature.validateConfigs();
                 var failures = null;
                 if (ret) {

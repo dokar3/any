@@ -1,4 +1,12 @@
-import { ServiceRegistry } from "any-service-api";
-import Service from "./Service";
+import { NotImplementedError, ServiceFeatures } from "any-service-api";
+import * as postFeature from "./postFeature";
 
-ServiceRegistry.register(Service);
+export const features: ServiceFeatures = {
+  post: {
+    fetch: () => {
+      throw new NotImplementedError("Fetch is not implemented");
+    },
+    fetchFreshList: postFeature.fetchFreshList,
+    search: postFeature.search,
+  },
+};
