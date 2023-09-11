@@ -60,7 +60,7 @@ export function fetchFreshList(
   params: FetchFreshListParams
 ): PagedResult<Post[]> {
   const page = (params.pageKey as number) ?? 1;
-  const url = `${BASE_URL}?page=${page}&per_page=24`;
+  const url = `${BASE_URL}/shots/popular?page=${page}&per_page=24`;
   return fetchShots(url, page);
 }
 
