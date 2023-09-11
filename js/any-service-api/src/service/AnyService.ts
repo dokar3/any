@@ -13,6 +13,8 @@ import { ServiceFeatures } from "./feature/Features";
 export class AnyService {
   /**
    * The features of this service.
+   *
+   * @since 0.2.0
    */
   readonly features: ServiceFeatures;
 
