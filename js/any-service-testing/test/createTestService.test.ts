@@ -1,15 +1,28 @@
 import { describe, expect, test } from "@jest/globals";
-import { AnyService } from "any-service-api";
+import {
+  NotImplementedError,
+  ServiceFeatures,
+} from "any-service-api";
 import { createTestService } from "../src/createTestService";
 
-class MyService extends AnyService {}
+const features: ServiceFeatures = {
+  post: {
+    fetch: () => {
+      throw new NotImplementedError("Not implemented.");
+    },
+    fetchFreshList: () => {
+      throw new NotImplementedError("Not implemented.");
+    },
+  },
+};
 
 describe("createTestService()", () => {
   test("test create service", () => {
     const service = createTestService({
-      serviceClass: MyService,
+      features: features,
       manifestPath: "./test/test_manifest.json",
     });
+    expect(service.features.post.fetch).toThrow("Not implemented.");
     expect(service.manifest.name).toBe("MyService");
     expect(service.manifest.id).toBe("me.service");
   });
