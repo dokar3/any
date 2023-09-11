@@ -1,3 +1,4 @@
+import { AnyService } from "../service/AnyService";
 import { DOM } from "./Dom";
 import { Env } from "./Env";
 import { Http } from "./Http";
@@ -23,6 +24,11 @@ declare global {
    * @since 0.1.0
    */
   var DOM: DOM;
+
+  /**
+   * The service instance used to access or update service configs, manifests, etc.
+   */
+  var service: AnyService;
 }
 
 export {};

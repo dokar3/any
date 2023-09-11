@@ -1,5 +1,5 @@
 import { DomElement, PagedResult, Post } from "any-service-api";
-import { BASE_URL } from "./Service";
+import { BASE_URL } from "./shared";
 
 /**
  * Fetch and parse shots.

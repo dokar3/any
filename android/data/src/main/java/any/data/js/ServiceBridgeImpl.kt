@@ -25,8 +25,8 @@ import any.data.repository.PostContentRepository
 import any.data.repository.ServiceRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -51,7 +51,7 @@ class ServiceBridgeImpl(
                 const params = {
                     userId: "${id.escape()}",
                 };
-                const feature = service.getFeature(AnyUserFeature);
+                const feature = service._features.user;
                 JSON.stringify(feature.fetchById(params))
             """.trimIndent()
 
@@ -78,7 +78,7 @@ class ServiceBridgeImpl(
                 const params = {
                     userUrl: "${url.escape()}",
                 };
-                const feature = service.getFeature(AnyUserFeature);
+                const feature = service._features.user;
                 JSON.stringify(feature.fetchByUrl(params))
             """.trimIndent()
 
@@ -107,7 +107,7 @@ class ServiceBridgeImpl(
                     userId: "${userId.escape()}",
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service.getFeature(AnyUserFeature);
+                const feature = service._features.user;
                 const pagedResult = feature.fetchPosts(params);
                 JSON.stringify(pagedResult)
             """.trimIndent()
@@ -135,7 +135,7 @@ class ServiceBridgeImpl(
                 const params = {
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service.getFeature(AnyPostFeature);
+                const feature = service._features.post;
                 const pagedResult = feature.fetchFreshList(params);
                 JSON.stringify(pagedResult)
             """.trimIndent()
@@ -163,7 +163,7 @@ class ServiceBridgeImpl(
                 const params = {
                     url: "$postUrl",
                 };
-                const feature = service.getFeature(AnyPostFeature);
+                const feature = service._features.post;
                 const fetchResult = feature.fetch(params);
                 JSON.stringify(fetchResult)
             """.trimIndent()
@@ -213,7 +213,7 @@ class ServiceBridgeImpl(
                     query: "$query",
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service.getFeature(AnyPostFeature);
+                const feature = service._features.post;
                 const pagedResult = feature.search(params);
                 JSON.stringify(pagedResult)
             """.trimIndent()
@@ -245,7 +245,7 @@ class ServiceBridgeImpl(
                     loadKey: "$commentsKey",
                     pageKey: ${pageKey.toJsValue()},
                 };
-                const feature = service.getFeature(AnyPostFeature);
+                const feature = service._features.post;
                 const comments = feature.fetchComments(params);
                 JSON.stringify(comments)
             """.trimIndent()
@@ -303,7 +303,7 @@ class ServiceBridgeImpl(
         ) {
             @Language("JS")
             val testCode = """
-                const feature = service.getFeature(AnyPostFeature);
+                const feature = service._features.post;
                 const proto = Object.getPrototypeOf(feature);
                 proto.hasOwnProperty("search")
             """.trimIndent()
@@ -378,6 +378,7 @@ class ServiceBridgeImpl(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private suspend fun <T> ProducerScope<FetchState<T>>.callFetchFunc(
         service: ServiceManifest,
         block: suspend JsEngine.() -> Unit,
@@ -415,7 +416,6 @@ class ServiceBridgeImpl(
         if (error is CancellationException) {
             throw error
         }
-        @OptIn(ExperimentalCoroutinesApi::class)
         if (!isClosedForSend) {
             send(FetchState.failure(error))
             channel.close()
