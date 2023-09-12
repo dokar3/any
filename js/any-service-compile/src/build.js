@@ -299,7 +299,7 @@ function buildService(
 }
 
 /**
- * Generate a entry point which initiates the service.
+ * Generate a entry point which initiates the service then binds to globalThis.
  *
  * @param {string} originalEntryPointPath Original main path.
  *
@@ -312,8 +312,8 @@ function generateEntryPoint(originalEntryPointPath) {
     import { _createService, ServiceManifest } from "any-service-api";
     import { features } from "./${filename}";
 
-    globalThis.createService = function(manifest: ServiceManifest, configs: any) {
-      return _createService(
+    globalThis.initService = function(manifest: ServiceManifest, configs: any) {
+      globalThis.service = _createService(
         features,
         manifest,
         configs,
