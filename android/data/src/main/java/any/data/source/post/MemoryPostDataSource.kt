@@ -4,7 +4,7 @@ import any.base.MemoryCache
 import any.data.entity.Post
 import any.data.entity.ServiceManifest
 
-internal object MemoryPostDataSource {
+internal class MemoryPostDataSource {
     private val cache = MemoryCache<String, Post>(maxSize = 10000)
 
     fun get(serviceId: String, url: String): Post? {
