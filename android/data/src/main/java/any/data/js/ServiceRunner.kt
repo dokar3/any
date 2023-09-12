@@ -30,14 +30,12 @@ class ServiceRunner(
         service: ServiceManifest,
         manifestUpdater: ServiceManifestUpdater,
         configsUpdater: ServiceConfigsUpdater,
-        globalServiceName: String = "service",
         block: suspend JsEngine.() -> R
     ): Result<R> = runCatching {
         run(
             service,
             manifestUpdater,
             configsUpdater,
-            globalServiceName,
             block,
         )
     }
@@ -46,7 +44,6 @@ class ServiceRunner(
         service: ServiceManifest,
         manifestUpdater: ServiceManifestUpdater,
         configsUpdater: ServiceConfigsUpdater,
-        globalServiceName: String = "service",
         block: suspend JsEngine.() -> R
     ): R = withContext(Dispatchers.Default) {
         val jsEngine = jsEngineFactory.create()
@@ -86,8 +83,8 @@ class ServiceRunner(
 
             val manifest = service.toJsObject().code
             val configs = service.configs.toJsObject().code
-            // Create the global service object
-            jsEngine.evaluate("globalThis.$globalServiceName = createService(${manifest},${configs});")
+            // Initiate the service and bind to globalThis
+            jsEngine.evaluate("initService(${manifest},${configs});")
 
             try {
                 block(jsEngine)
