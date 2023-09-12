@@ -304,8 +304,7 @@ class ServiceBridgeImpl(
             @Language("JS")
             val testCode = """
                 const feature = service.features.post;
-                const proto = Object.getPrototypeOf(feature);
-                proto.hasOwnProperty("search")
+                feature != null && typeof feature.search === "function" 
             """.trimIndent()
             evaluate(testCode, Boolean::class.java) == true
         }
