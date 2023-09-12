@@ -39,7 +39,7 @@ class PostRepository(
      * Memory post cache for storing temporary posts (search results, etc.).
      * Should update the cache on every read/write/update to keep posts in cache is fresh.
      */
-    private val memoryPostDataSource = MemoryPostDataSource
+    private val memoryPostDataSource = MemoryPostDataSource()
 
     private val mutex = Mutex()
 
