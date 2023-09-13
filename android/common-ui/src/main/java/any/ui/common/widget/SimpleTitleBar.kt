@@ -1,6 +1,5 @@
 package any.ui.common.widget
 
-import any.base.R as BaseR
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -39,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.ui.common.ViewConfiguration
 import kotlin.math.max
+import any.base.R as BaseR
 
 @Composable
 fun SimpleTitleBar(
@@ -128,9 +128,9 @@ private fun TitleBarLayout(
     Layout(
         modifier = modifier,
         content = {
-            Box { startButton() }
-            Box { title() }
-            Box { endButton() }
+            Box(contentAlignment = Alignment.Center) { startButton() }
+            Box(contentAlignment = Alignment.Center) { title() }
+            Box(contentAlignment = Alignment.Center) { endButton() }
         },
     ) { measurables, constraints ->
         val buttonConstraints = constraints.copy(minWidth = 0)
