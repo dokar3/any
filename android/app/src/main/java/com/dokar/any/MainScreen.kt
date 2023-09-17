@@ -31,8 +31,8 @@ import any.navigation.NavigationBlocker
 import any.navigation.Routes
 import any.navigation.navigateAndReplace
 import any.navigation.post
+import any.ui.common.dialog.SimpleDialog
 import any.ui.common.dialog.UpdateBuiltinServicesDialog
-import any.ui.common.widget.SimpleDialog
 import any.ui.imagepager.ImagePagerViewModel
 import any.ui.service.ServiceDialog
 import any.ui.settings.services.ServiceMgtViewModel

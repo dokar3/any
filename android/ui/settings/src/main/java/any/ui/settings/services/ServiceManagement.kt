@@ -1,5 +1,6 @@
 package any.ui.settings.services
 
+import android.R
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -80,16 +81,16 @@ import any.base.util.FileUtil
 import any.base.util.compose.performLongPress
 import any.base.util.isHttpUrl
 import any.domain.entity.UiServiceManifest
+import any.ui.common.dialog.BasicDialog
+import any.ui.common.dialog.EditDialog
+import any.ui.common.dialog.SimpleDialog
 import any.ui.common.dialog.UpdateBuiltinServicesDialog
 import any.ui.common.modifier.fabOffset
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem
-import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.CheckableItem
-import any.ui.common.widget.EditDialog
 import any.ui.common.widget.FlatSwitch
-import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
 import any.ui.service.ServiceDialog
@@ -443,7 +444,7 @@ internal fun ServiceManagement(
             placeholder = { Text("https://.../manifest.json") },
             label = error?.let { { Text(it) } },
             confirmText = { Text(stringResource(BaseR.string.confirm)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             isError = error != null,
             dismissOnClickOutside = !isLoading,
             dismissOnBackPress = !isLoading,
@@ -465,7 +466,7 @@ internal fun ServiceManagement(
         BasicDialog(
             onDismissRequest = { showServicePickerDialog = false },
             title = { Text(stringResource(BaseR.string.choose_service)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             confirmText = { Text(stringResource(BaseR.string.next)) },
             onConfirmClick = { configuringService = selectedService },
         ) {
@@ -497,7 +498,7 @@ internal fun ServiceManagement(
             onDismissRequest = { showRemoveAllSelectedServicesDialog = false },
             title = { Text(stringResource(BaseR.string.remove)) },
             text = { Text(stringResource(BaseR.string.remove_selected_services_alert)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             confirmText = {
                 Text(
                     text = stringResource(BaseR.string.remove),

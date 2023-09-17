@@ -1,7 +1,6 @@
 package any.ui.settings.files
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
+import android.R
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,9 +11,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import any.ui.common.widget.SimpleDialog
+import any.ui.common.dialog.SimpleDialog
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 internal fun CleanUpDbItem(
@@ -40,7 +41,7 @@ internal fun CleanUpDbItem(
             onDismissRequest = { showCleanDbDialog = false },
             title = { Text(stringResource(BaseR.string.clean_up_database)) },
             text = { Text(stringResource(BaseR.string.clean_up_database_alert)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             confirmText = {
                 Text(
                     text = stringResource(BaseR.string.clean),

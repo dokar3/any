@@ -1,5 +1,6 @@
 package any.ui.home.collections
 
+import android.R
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -98,18 +99,18 @@ import any.navigation.popBackStackUtil
 import any.navigation.settings
 import any.ui.comments.CommentsSheet
 import any.ui.common.dialog.AddToCollectionsDialog
+import any.ui.common.dialog.EditDialog
 import any.ui.common.dialog.PostFolderSelectionDialog
+import any.ui.common.dialog.SimpleDialog
 import any.ui.common.lazy.rememberLazyGridScrollableState
 import any.ui.common.menu.FolderOptionMenu
 import any.ui.common.menu.PostOptionMenu
 import any.ui.common.quickScrollToTop
 import any.ui.common.theme.topBarBackground
-import any.ui.common.widget.EditDialog
 import any.ui.common.widget.MessagePopupDefaults
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.RoundedTabIndicator
 import any.ui.common.widget.SearchBar
-import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.TooltipBox
 import any.ui.common.widget.UiMessagePopup
 import any.ui.common.widget.rememberQuickReturnScreenState
@@ -557,10 +558,10 @@ internal fun CollectionsScreen(
                     Text(stringResource(BaseR.string.unfold_folder_alert))
                 },
                 confirmText = {
-                    Text(stringResource(android.R.string.ok))
+                    Text(stringResource(R.string.ok))
                 },
                 cancelText = {
-                    Text(stringResource(android.R.string.cancel))
+                    Text(stringResource(R.string.cancel))
                 },
                 onConfirmClick = {
                     viewModel.unfoldFolder(tempFolder)
@@ -820,7 +821,7 @@ private fun PostSelectionPanel(
                     color = MaterialTheme.colors.error,
                 )
             },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             onConfirmClick = onRemoveSelected,
         )
     }

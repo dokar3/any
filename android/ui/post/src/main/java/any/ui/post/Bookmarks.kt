@@ -1,6 +1,6 @@
 package any.ui.post
 
-import any.base.R as BaseR
+import android.R
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,9 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.compose.ImmutableHolder
 import any.data.entity.Bookmark
+import any.ui.common.dialog.SimpleDialog
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.widget.EmojiEmptyContent
-import any.ui.common.widget.SimpleDialog
+import any.base.R as BaseR
 
 @Composable
 internal fun Bookmarks(
@@ -98,7 +99,7 @@ internal fun Bookmarks(
                 )
             },
             cancelText = {
-                Text(stringResource(android.R.string.cancel))
+                Text(stringResource(R.string.cancel))
             },
             onConfirmClick = {
                 onRemoveBookmark(bookmark)

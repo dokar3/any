@@ -2,7 +2,8 @@
 <resources>
 
     <style name="ComposeDialogTheme" parent="@android:style/Theme.DeviceDefault.Dialog">
-        <item name="android:windowAnimationStyle">@style/ComposeDialogAnimation</item>
+        <!--<item name="android:windowAnimationStyle">@style/ComposeDialogAnimation</item>-->
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 
     <style name="ComposeDialogTheme.Large">

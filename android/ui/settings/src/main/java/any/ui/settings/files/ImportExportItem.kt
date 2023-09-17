@@ -1,7 +1,6 @@
 package any.ui.settings.files
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
+import android.R
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
@@ -41,9 +40,9 @@ import androidx.lifecycle.viewModelScope
 import any.base.compose.StableHolder
 import any.base.util.Dirs
 import any.base.util.FileUtil
+import any.ui.common.dialog.BasicDialog
 import any.ui.common.theme.pass
 import any.ui.common.theme.secondaryText
-import any.ui.common.widget.BasicDialog
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
 import kotlinx.coroutines.Dispatchers
@@ -54,6 +53,8 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 private const val BACKUP_FILE_MIME_TYPE = "application/zip"
 
@@ -268,7 +269,7 @@ private fun BackupItemSelectionDialog(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         title = title,
-        cancelText = { Text(stringResource(android.R.string.cancel)) },
+        cancelText = { Text(stringResource(R.string.cancel)) },
         confirmText = confirmText,
         cancelEnabled = !isBackupRunning,
         confirmEnabled = selectedCount != 0 && !isBackupRunning,
