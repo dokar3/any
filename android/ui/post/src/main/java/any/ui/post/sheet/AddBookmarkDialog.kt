@@ -1,6 +1,5 @@
 package any.ui.post.sheet
 
-import any.base.R as BaseR
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,8 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import any.data.entity.Bookmark
 import any.domain.entity.UiPost
-import any.ui.common.widget.BasicDialog
+import any.ui.common.dialog.BasicDialog
 import any.ui.common.widget.WarningMessage
+import any.base.R as BaseR
 
 @Composable
 internal fun AddBookmarkDialog(

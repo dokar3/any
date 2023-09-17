@@ -1,5 +1,6 @@
 package any.ui.common.dialog
 
+import android.R
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -51,7 +52,6 @@ import any.data.entity.Folder
 import any.data.entity.HierarchicalFolder
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.secondaryText
-import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.ErrorMessage
 import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
@@ -193,8 +193,8 @@ fun PostFolderSelectionDialog(
             }
         },
         neutralText = { Text(stringResource(BaseR.string.new_folder)) },
-        confirmText = { Text(stringResource(android.R.string.ok)) },
-        cancelText = { Text(stringResource(android.R.string.cancel)) },
+        confirmText = { Text(stringResource(R.string.ok)) },
+        cancelText = { Text(stringResource(R.string.cancel)) },
         onNeutralClick = { showNewFolder = true },
         onConfirmClick = { onFolderSelected(uiState.selectedFolder.toFolder()) },
         dismissOnNeutral = false,

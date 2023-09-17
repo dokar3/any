@@ -1,6 +1,6 @@
 package any.ui.home.collections
 
-import any.base.R as BaseR
+import android.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -28,11 +28,12 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import any.base.compose.StableHolder
+import any.ui.common.dialog.SimpleDialog
 import any.ui.common.modifier.fadingEdge
 import any.ui.common.modifier.verticalScrollBar
-import any.ui.common.widget.SimpleDialog
 import any.ui.home.HomeScreenDefaults
 import any.ui.home.SelectionChip
+import any.base.R as BaseR
 
 @Composable
 internal fun TagSelection(
@@ -113,13 +114,13 @@ internal fun TagSelection(
                 Text(message)
             },
             confirmText = {
-                Text(stringResource(android.R.string.ok), color = MaterialTheme.colors.error)
+                Text(stringResource(R.string.ok), color = MaterialTheme.colors.error)
             },
             onConfirmClick = {
                 onRemoveTagFromPosts(tag)
             },
             cancelText = {
-                Text(stringResource(android.R.string.cancel))
+                Text(stringResource(R.string.cancel))
             }
         )
     }

@@ -1,5 +1,6 @@
 package any.ui.service
 
+import android.R
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -73,12 +74,12 @@ import any.data.entity.value
 import any.data.js.ServiceApiVersion
 import any.domain.entity.UiServiceManifest
 import any.richtext.RichContent
+import any.ui.common.dialog.BasicDialog
 import any.ui.common.image.AsyncImage
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.richtext.Html
 import any.ui.common.richtext.RichText
 import any.ui.common.theme.secondaryText
-import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.DoubleEndDashedDivider
 import any.ui.common.widget.ErrorMessage
 import any.ui.common.widget.FlatSwitch
@@ -201,7 +202,7 @@ fun ServiceDialog(
                 ProgressBar(size = 20.dp)
             }
         },
-        cancelText = { Text(stringResource(android.R.string.cancel)) },
+        cancelText = { Text(stringResource(R.string.cancel)) },
         confirmText = {
             Text(
                 text = if (uiState.updateInfo != null) {

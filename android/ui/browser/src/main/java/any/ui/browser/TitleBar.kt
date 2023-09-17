@@ -1,7 +1,6 @@
 package any.ui.browser
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
+import android.R
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,13 +51,15 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.base.util.compose.performLongPress
+import any.ui.common.dialog.BasicDialog
 import any.ui.common.theme.pass
 import any.ui.common.theme.secondaryText
 import any.ui.common.theme.warn
 import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem
-import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.rememberAnimatedPopupDismissRequester
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -295,7 +296,7 @@ private fun ClearBrowsingDataDialog(
         onDismissRequest = onDismissRequest,
         modifier = modifier,
         title = { Text(stringResource(BaseR.string.clear_browsing_data)) },
-        cancelText = { Text(stringResource(android.R.string.cancel)) },
+        cancelText = { Text(stringResource(R.string.cancel)) },
         confirmText = {
             Text(
                 text = stringResource(BaseR.string.clear),

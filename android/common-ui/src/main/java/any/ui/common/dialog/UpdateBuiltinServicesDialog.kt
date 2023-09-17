@@ -48,7 +48,6 @@ import any.ui.common.theme.divider
 import any.ui.common.theme.pass
 import any.ui.common.theme.secondaryText
 import any.ui.common.widget.Avatar
-import any.ui.common.widget.SimpleDialog
 import java.text.SimpleDateFormat
 
 @Composable

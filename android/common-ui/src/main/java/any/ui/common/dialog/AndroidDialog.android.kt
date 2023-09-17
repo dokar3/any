@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package any.ui.common.widget
+package any.ui.common.dialog
 
 import android.content.Context
 import android.graphics.Outline

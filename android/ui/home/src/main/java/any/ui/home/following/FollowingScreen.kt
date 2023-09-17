@@ -1,7 +1,6 @@
 package any.ui.home.following
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
+import android.R
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -62,6 +61,7 @@ import any.navigation.NavEvent
 import any.navigation.Routes
 import any.navigation.navPushEvent
 import any.navigation.navigateToUser
+import any.ui.common.dialog.SimpleDialog
 import any.ui.common.lazy.rememberLazyListScrollableState
 import any.ui.common.modifier.fabOffset
 import any.ui.common.quickScrollToTop
@@ -70,13 +70,14 @@ import any.ui.common.widget.EmojiEmptyContent
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.QuickReturnScreenState
 import any.ui.common.widget.SearchBar
-import any.ui.common.widget.SimpleDialog
 import any.ui.common.widget.rememberQuickReturnScreenState
 import any.ui.home.HomeScrollToTopManager
 import any.ui.home.ScrollToTopResponder
 import any.ui.home.SettingsButton
 import any.ui.home.TitleBar
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 internal fun FollowingScreen(
@@ -301,7 +302,7 @@ private fun FollowingScreenContent(
                     )
                 )
             },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             confirmText = {
                 Text(
                     text = stringResource(BaseR.string.confirm),
