@@ -60,7 +60,7 @@ fun TooltipBox(
     Box(
         modifier = modifier
             .onSizeChanged { height = it.height }
-            .onLongClick {
+            .onLongClickAcceptsConsumed {
                 hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                 onLongClick?.invoke()
                 coroutineScope.launch {
@@ -116,21 +116,19 @@ private suspend fun AwaitPointerEventScope.consumeUntilUp() {
     } while (event.changes.fastAny { it.pressed })
 }
 
-private inline fun Modifier.onLongClick(
-    crossinline onLongClick: () -> Unit
-): Modifier {
-    return pointerInput(Unit) {
-        awaitEachGesture {
-            val down = awaitFirstDown(requireUnconsumed = false)
-            down.consume()
-            try {
-                withTimeout(viewConfiguration.longPressTimeoutMillis) {
-                    waitForUpOrCancellation()
-                }
-            } catch (_: PointerEventTimeoutCancellationException) {
-                onLongClick()
-                consumeUntilUp()
+private fun Modifier.onLongClickAcceptsConsumed(
+    onLongClick: () -> Unit
+): Modifier = this.pointerInput(onLongClick) {
+    awaitEachGesture {
+        val down = awaitFirstDown(requireUnconsumed = false)
+        down.consume()
+        try {
+            withTimeout(viewConfiguration.longPressTimeoutMillis) {
+                waitForUpOrCancellation()
             }
+        } catch (_: PointerEventTimeoutCancellationException) {
+            onLongClick()
+            consumeUntilUp()
         }
     }
 }

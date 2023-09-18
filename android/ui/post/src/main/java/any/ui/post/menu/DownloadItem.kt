@@ -1,5 +1,6 @@
 package any.ui.post.menu
 
+import android.R
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.DurationBasedAnimationSpec
 import androidx.compose.animation.core.RepeatMode
@@ -52,8 +53,8 @@ import androidx.compose.ui.unit.dp
 import any.domain.entity.UiPost
 import any.download.PostImageDownloader
 import any.download.PostImageDownloader.DownloadStatus
+import any.ui.common.dialog.SimpleDialog
 import any.ui.common.theme.pass
-import any.ui.common.widget.SimpleDialog
 import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
 
@@ -210,7 +211,7 @@ internal fun DownloadItem(
             onDismissRequest = { showDeleteDialog = false },
             title = { Text(stringResource(BaseR.string.delete)) },
             text = { Text(stringResource(BaseR.string.delete_downloaded_images_alert)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             confirmText = {
                 Text(
                     text = stringResource(BaseR.string.delete),

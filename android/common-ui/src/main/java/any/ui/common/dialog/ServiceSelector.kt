@@ -1,16 +1,5 @@
-package any.ui.common.widget
+package any.ui.common.dialog
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideIn
-import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -54,7 +42,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import any.base.compose.ImmutableHolder
@@ -63,13 +50,15 @@ import any.data.entity.ServiceResource
 import any.domain.entity.UiServiceManifest
 import any.ui.common.modifier.verticalScrollBar
 import any.ui.common.theme.divider
+import any.ui.common.widget.Avatar
+import any.ui.common.widget.rememberAnimatedPopupDismissRequester
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import any.base.R as BaseR
 import any.ui.common.R as CommonUiR
 
 @Composable
-fun ServicesPopup(
+fun ServiceSelector(
     services: ImmutableHolder<List<UiServiceManifest>>,
     selected: UiServiceManifest?,
     onDismissRequest: () -> Unit,
@@ -106,7 +95,7 @@ fun ServicesPopup(
                     onClick = { dismissRequester.dismiss() },
                 )
         ) {
-            AnimatedDialogContent(dismissRequester = dismissRequester) {
+            BouncyDialogContent(visibleState = dismissRequester.visibleState) {
                 val hapticFeedback = LocalHapticFeedback.current
 
                 val listState = rememberLazyListState()
@@ -208,65 +197,6 @@ fun ServicesPopup(
     }
 }
 
-private val slideSpring = spring<IntOffset>(
-    dampingRatio = Spring.DampingRatioLowBouncy,
-    stiffness = Spring.StiffnessMediumLow,
-)
-
-private val floatSpring = spring<Float>(
-    dampingRatio = Spring.DampingRatioLowBouncy,
-    stiffness = Spring.StiffnessLow,
-)
-
-@Composable
-private fun AnimatedDialogContent(
-    dismissRequester: AnimatedPopupDismissRequester,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
-    AnimatedVisibility(
-        visibleState = dismissRequester.visibleState,
-        enter = slideIn(animationSpec = slideSpring) {
-            IntOffset(0, -it.height)
-        } + fadeIn(
-            animationSpec = tween(
-                durationMillis = 300,
-                easing = FastOutSlowInEasing,
-            )
-        ) + scaleIn(
-            initialScale = 0.9f,
-            animationSpec = floatSpring,
-        ),
-        exit = slideOut(
-            animationSpec = tween(
-                durationMillis = 255,
-                easing = FastOutSlowInEasing,
-            )
-        ) {
-            IntOffset(0, -it.height)
-        } + fadeOut(
-            animationSpec = tween(
-                durationMillis = 255,
-                easing = FastOutSlowInEasing,
-            )
-        ) + scaleOut(
-            targetScale = 0.9f,
-            animationSpec = tween(
-                durationMillis = 255,
-                easing = FastOutSlowInEasing,
-            )
-        ),
-    ) {
-        Surface(
-            modifier = modifier,
-            color = MaterialTheme.colors.surface,
-            shape = MaterialTheme.shapes.medium,
-            elevation = 6.dp,
-        ) {
-            content()
-        }
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

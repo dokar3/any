@@ -1,7 +1,5 @@
 package any.ui.settings.privacy
 
-import any.base.R as BaseR
-import any.ui.common.R as CommonUiR
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,10 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import any.base.prefs.appPassword
 import any.base.prefs.preferencesStore
-import any.ui.common.widget.EditDialog
+import any.ui.common.dialog.EditDialog
 import any.ui.common.widget.FlatSwitch
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
+import any.base.R as BaseR
+import any.ui.common.R as CommonUiR
 
 @Composable
 internal fun AppPasswordItem(

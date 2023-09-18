@@ -66,10 +66,10 @@ import any.navigation.navPushEvent
 import any.navigation.post
 import any.navigation.search
 import any.navigation.settings
+import any.ui.common.dialog.EditDialog
 import any.ui.common.lazy.LazyGridScrollableState
 import any.ui.common.lazy.rememberLazyGridScrollableState
 import any.ui.common.theme.themeColorOrPrimary
-import any.ui.common.widget.EditDialog
 import any.ui.common.widget.QuickReturnScreen
 import any.ui.common.widget.ServicesPopupButton
 import any.ui.common.widget.TitleActionButton
