@@ -1,5 +1,6 @@
 package any.ui.common.dialog
 
+import android.R
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import any.data.entity.Folder
 import any.domain.entity.UiPost
 import any.ui.common.theme.secondaryText
-import any.ui.common.widget.BasicDialog
 import com.dokar.chiptextfield.Chip
 import com.dokar.chiptextfield.ChipTextFieldDefaults
 import com.dokar.chiptextfield.ChipTextFieldState
@@ -84,7 +84,7 @@ fun AddToCollectionsDialog(
             Text(stringResource(BaseR.string.confirm))
         },
         cancelText = {
-            Text(stringResource(android.R.string.cancel))
+            Text(stringResource(R.string.cancel))
         },
         onConfirmClick = {
             scope.launch {

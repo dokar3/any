@@ -1,5 +1,6 @@
 package any.ui.settings.files
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -40,7 +41,7 @@ import any.base.compose.StableHolder
 import any.base.log.Logger
 import any.base.util.FileUtil
 import any.data.entity.SpaceInfo
-import any.ui.common.widget.BasicDialog
+import any.ui.common.dialog.BasicDialog
 import any.ui.common.widget.RoundedProgressBar
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
@@ -184,7 +185,7 @@ private fun CleanConfirmDialog(
     BasicDialog(
         onDismissRequest = onDismissRequest,
         title = { Text(stringResource(BaseR.string._clean, item.name)) },
-        cancelText = { Text(stringResource(android.R.string.cancel)) },
+        cancelText = { Text(stringResource(R.string.cancel)) },
         confirmText = {
             Text(
                 text = stringResource(BaseR.string.clean),
@@ -252,8 +253,8 @@ private fun AdjustMaxSizeDialog(
                 )
             }
         },
-        confirmText = { Text(stringResource(id = android.R.string.ok)) },
-        cancelText = { Text(stringResource(id = android.R.string.cancel)) },
+        confirmText = { Text(stringResource(id = R.string.ok)) },
+        cancelText = { Text(stringResource(id = R.string.cancel)) },
         onConfirmClick = { onSelectSize(sizes[currMaxSizeIndex]) }
     ) {
         Column {

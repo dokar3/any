@@ -1,5 +1,6 @@
 package any.ui.home.downloads
 
+import android.R
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -78,6 +79,7 @@ import any.navigation.Routes
 import any.navigation.navPushEvent
 import any.navigation.post
 import any.navigation.settings
+import any.ui.common.dialog.BasicDialog
 import any.ui.common.image.AsyncImage
 import any.ui.common.lazy.rememberLazyListScrollableState
 import any.ui.common.modifier.fabOffset
@@ -89,7 +91,6 @@ import any.ui.common.theme.sizes
 import any.ui.common.theme.thumb
 import any.ui.common.theme.thumbBorder
 import any.ui.common.theme.topBarBackground
-import any.ui.common.widget.BasicDialog
 import any.ui.common.widget.CheckableItem
 import any.ui.common.widget.EmojiEmptyContent
 import any.ui.common.widget.LinearProgressBar
@@ -297,7 +298,7 @@ internal fun DownloadsScreen(
         BasicDialog(
             onDismissRequest = { showRemoveDialog = false },
             title = { Text(stringResource(BaseR.string.remove_downloads)) },
-            cancelText = { Text(stringResource(android.R.string.cancel)) },
+            cancelText = { Text(stringResource(R.string.cancel)) },
             confirmText = {
                 Text(
                     text = stringResource(BaseR.string.remove),

@@ -100,6 +100,7 @@ import any.navigation.userProfile
 import any.ui.comments.CommentsSheet
 import any.ui.common.LocalFontScale
 import any.ui.common.dialog.AddToCollectionsDialog
+import any.ui.common.dialog.EditDialog
 import any.ui.common.itemRange
 import any.ui.common.lazy.LazyListScrollableState
 import any.ui.common.lazy.rememberLazyListScrollableState
@@ -112,7 +113,6 @@ import any.ui.common.widget.AnimatedPopup
 import any.ui.common.widget.AnimatedPopupItem
 import any.ui.common.widget.BoxWithSystemBars
 import any.ui.common.widget.CommentCount
-import any.ui.common.widget.EditDialog
 import any.ui.common.widget.EmojiEmptyContent
 import any.ui.common.widget.MessagePopup
 import any.ui.common.widget.ProgressPullRefreshIndicator

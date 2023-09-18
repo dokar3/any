@@ -1,7 +1,7 @@
-package any.ui.common.widget
+package any.ui.common.dialog
 
-import any.ui.common.R as CommonUiR
 import androidx.annotation.StyleRes
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,8 +19,13 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,6 +34,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import kotlinx.coroutines.flow.filter
+import any.ui.common.R as CommonUiR
 
 @Composable
 fun SimpleDialog(
@@ -110,6 +117,7 @@ fun EditDialog(
                     KeyboardType.NumberPassword -> {
                         PasswordVisualTransformation()
                     }
+
                     else -> VisualTransformation.None
                 }
                 OutlinedTextField(
@@ -171,14 +179,36 @@ fun BasicDialog(
     @StyleRes themeResId: Int = CommonUiR.style.ComposeDialogTheme,
     content: @Composable (() -> Unit)? = null,
 ) {
+    val visibleState = remember {
+        MutableTransitionState(false).also { it.targetState = true }
+    }
+
+    val currentOnDismissRequest = rememberUpdatedState(onDismissRequest)
+
+    LaunchedEffect(visibleState) {
+        snapshotFlow { visibleState.currentState to visibleState.targetState }
+            .filter { !it.first && !it.second }
+            .collect { currentOnDismissRequest.value.invoke() }
+    }
+
+    DisposableEffect(visibleState) {
+        onDispose { visibleState.targetState = false }
+    }
+
     StyleableDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { visibleState.targetState = false },
         content = {
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colors.surface),
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = MaterialTheme.shapes.medium,
+                    )
+                    .background(
+                        color = MaterialTheme.colors.surface,
+                        shape = MaterialTheme.shapes.medium,
+                    )
             ) {
                 // Title
                 if (title != null) {

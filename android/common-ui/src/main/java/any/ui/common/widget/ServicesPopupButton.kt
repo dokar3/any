@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import any.base.compose.ImmutableHolder
 import any.base.util.compose.performLongPress
 import any.domain.entity.UiServiceManifest
+import any.ui.common.dialog.ServiceSelector
 
 @Composable
 fun ServicesPopupButton(
@@ -58,7 +59,7 @@ fun ServicesPopupButton(
                     fontWeight = FontWeight.Normal,
                 )
             ) {
-                ServicesPopup(
+                ServiceSelector(
                     services = services,
                     selected = currentService,
                     onDismissRequest = { showServicesDropDown = false },
