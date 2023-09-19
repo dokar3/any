@@ -96,8 +96,6 @@ object ImageLoader {
             .setResizeAndRotateEnabledForNetwork(true)
             .setMainDiskCacheConfig(diskCacheConfig)
             .setMemoryTrimmableRegistry(memoryTrimmableRegistry)
-            .experiment()
-            .setNativeCodeDisabled(true)
             .build()
         if (Fresco.hasBeenInitialized()) {
             Fresco.shutDown()
