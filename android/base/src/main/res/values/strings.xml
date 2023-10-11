@@ -217,7 +217,7 @@
     <string name="posts">Posts</string>
     <string name="add_builtin_services">Add built-in services</string>
     <string name="add_from_local_file">Add from local file</string>
-    <string name="add_from_network_link">Add from network link</string>
+    <string name="add_from_internet_link">Add from internet link</string>
     <string name="invalid_link">Invalid link</string>
     <string name="choose_service">Choose service</string>
     <string name="next">Next</string>
