@@ -319,7 +319,7 @@ internal fun ServiceManagement(
                     ) {
                         Icon(
                             painter = painterResource(CommonUiR.drawable.ic_baseline_add_link_24),
-                            contentDescription = stringResource(BaseR.string.add_from_network_link),
+                            contentDescription = stringResource(BaseR.string.add_from_internet_link),
                             tint = Color.White,
                         )
                     }
@@ -440,7 +440,7 @@ internal fun ServiceManagement(
             onDismissRequest = { showAddByLinkDialog = false },
             value = url,
             onValueChange = { url = it },
-            title = { Text(stringResource(BaseR.string.add_from_network_link)) },
+            title = { Text(stringResource(BaseR.string.add_from_internet_link)) },
             placeholder = { Text("https://.../manifest.json") },
             label = error?.let { { Text(it) } },
             confirmText = { Text(stringResource(BaseR.string.confirm)) },
