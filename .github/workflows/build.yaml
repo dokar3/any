@@ -117,7 +117,7 @@ jobs:
         run: |
           profile_path="./android/macrobenchmark/build/outputs/\
           connected_android_test_additional_output/benchmark/connected/emulator(AVD) - 12/\
-          BaselineProfileGenerator_generate_baseline_prof.txt"
+          BaselineProfileGenerator_generate-baseline-prof.txt"
           output_path="./android/app/src/main/baseline-prof.txt"
           cp "$profile_path" "$output_path"
         shell: bash
