@@ -73,6 +73,11 @@ object FrameRateMonitor {
                 }
                 tvFrameRate.requestApplyInsets()
 
+                // Cleanup
+                this.coroutineContext.job.invokeOnCompletion {
+                    root.removeView(tvFrameRate)
+                }
+
                 // Collect frame rate updates
                 frameRateFlow(activity)
                     .distinctUntilChanged()
@@ -87,11 +92,6 @@ object FrameRateMonitor {
                             tvFrameRate.setTextColor(Color.Red.toArgb())
                         }
                     }
-
-                // Cleanup
-                this.coroutineContext.job.invokeOnCompletion {
-                    root.removeView(tvFrameRate)
-                }
             }
         }
     }
