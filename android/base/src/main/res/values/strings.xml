@@ -315,6 +315,8 @@
     <string name="preparing">Preparing</string>
     <string name="ignore">Ignore</string>
     <string name="baseline_profile">Baseline profile</string>
+    <string name="monitor_frame_rate">Monitor frame rate</string>
+    <string name="monitor_frame_rate_summary">Show FPS on the screen</string>
     <string name="downloading">Downloading</string>
     <string name="_playback_error">Playback error, code: %s</string>
     <string name="_username_reposted">%s reposted</string>

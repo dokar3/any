@@ -24,6 +24,7 @@ import any.base.DarkModeAwareActivity
 import any.base.compose.LocalBenchmarkBuild
 import any.base.image.ImageLoader
 import any.base.log.Logger
+import any.base.prefs.InMemorySettings
 import any.base.prefs.darkModeEnabledFlow
 import any.base.prefs.darkModePrimaryColor
 import any.base.prefs.isSecureScreenEnabled
@@ -36,6 +37,7 @@ import any.navigation.Routes
 import any.navigation.navPushEvent
 import any.navigation.search
 import any.navigation.userProfile
+import any.ui.common.fps.FrameRateMonitor
 import any.ui.common.theme.AnyTheme
 import any.ui.jslogger.FloatingLoggerService
 import any.ui.readingbubble.ReadingBubbleService
@@ -59,6 +61,8 @@ class MainActivity : DarkModeAwareActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         observeSecureScreen()
+
+        monitorFrameRate()
 
         setContent {
             val scope = rememberCoroutineScope()
@@ -144,6 +148,16 @@ class MainActivity : DarkModeAwareActivity() {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                 }
             }
+    }
+
+    private fun monitorFrameRate() = lifecycleScope.launch {
+        InMemorySettings.isFrameRateMonitoringEnabled.collect { enabled ->
+            if (enabled) {
+                FrameRateMonitor.start(this@MainActivity)
+            } else {
+                FrameRateMonitor.stop(this@MainActivity)
+            }
+        }
     }
 
     private fun handleIntent(intent: Intent?) {

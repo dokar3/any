@@ -1,11 +1,12 @@
 package any.ui.settings.dev
 
-import any.ui.common.R as CommonUiR
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -15,13 +16,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import any.base.R
+import any.base.prefs.InMemorySettings
 import any.navigation.NavEvent
 import any.navigation.Routes
 import any.navigation.navPushEvent
+import any.ui.common.widget.FlatSwitch
 import any.ui.settings.SettingsItem
 import any.ui.settings.SettingsItemIcon
 import any.ui.settings.SettingsViewModel
 import any.ui.settings.menu.ActionMenuController
+import kotlinx.coroutines.flow.update
+import any.ui.common.R as CommonUiR
 
 internal const val ROUTE_DEV_MAIN = "dev_main"
 
@@ -138,6 +143,39 @@ private fun MainDevSettings(
                 onClick = { navController.navigate(ROUTE_BASELINE_PROFILE) },
             ) {
                 Text(stringResource(R.string.baseline_profile))
+            }
+        }
+
+        item {
+            val isFrameRateMonitoringEnabled by InMemorySettings.isFrameRateMonitoringEnabled
+                .collectAsState()
+            SettingsItem(
+                modifier = modifier,
+                icon = {
+                    SettingsItemIcon(
+                        painterResource(CommonUiR.drawable.ic_baseline_60fps_24)
+                    )
+                },
+                onClick = {
+                    InMemorySettings.isFrameRateMonitoringEnabled.update {
+                        !isFrameRateMonitoringEnabled
+                    }
+                },
+                summary = {
+                    Text(stringResource(R.string.monitor_frame_rate_summary))
+                },
+                widget = {
+                    FlatSwitch(
+                        checked = isFrameRateMonitoringEnabled,
+                        onCheckedChange = {
+                            InMemorySettings.isFrameRateMonitoringEnabled.update {
+                                !isFrameRateMonitoringEnabled
+                            }
+                        },
+                    )
+                },
+            ) {
+                Text(stringResource(R.string.monitor_frame_rate))
             }
         }
     }
