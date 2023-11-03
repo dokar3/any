@@ -253,12 +253,13 @@ class MainActivity : DarkModeAwareActivity() {
 
         // anyapp://app.actions
         private const val APP_URL_HOST_ACTIONS = "app.actions"
+        // anyapp://app.actions/configure_service?id={SERVICE_ID}
         private const val APP_URL_ACTION_CONFIGURE_SERVICE = "configure_service"
 
-        // anyapp://user
+        // anyapp://user?serviceId={SERVICE_ID}&id={USER_ID}
         private const val APP_URL_HOST_USER = "user"
 
-        // anyapp://search
+        // anyapp://search?serviceId={SERVICE_ID}&query={QUERY}
         private const val APP_URL_HOST_SEARCH = "search"
     }
 }
