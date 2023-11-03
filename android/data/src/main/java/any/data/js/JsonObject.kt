@@ -13,7 +13,7 @@ fun String.escape(): String {
 }
 
 @JvmInline
-value class JsObject(val code: String) {
+value class JsonObject(val text: String) {
     class Builder {
         private val fields = TreeMap<String, String>()
 
@@ -39,9 +39,9 @@ value class JsObject(val code: String) {
             return this
         }
 
-        fun addObjectField(name: String, value: JsObject?): Builder {
+        fun addObjectField(name: String, value: JsonObject?): Builder {
             checkFieldName(name)
-            fields[name] = value?.code ?: "null"
+            fields[name] = value?.text ?: "null"
             return this
         }
 
@@ -57,7 +57,7 @@ value class JsObject(val code: String) {
                                 is Boolean -> item.toString()
                                 is Number -> item.toString()
                                 is String -> "\"${item.escape()}\""
-                                is JsObject -> item.code
+                                is JsonObject -> item.text
                                 else -> throw IllegalArgumentException(
                                     "Unsupported array element: [$index] = $item"
                                 )
@@ -80,7 +80,7 @@ value class JsObject(val code: String) {
             require(!name.contains('"')) { "The field name must not contain (\"): $name" }
         }
 
-        fun build(): JsObject {
+        fun build(): JsonObject {
             val code = buildString {
                 append('{')
                 for ((name, value) in fields) {
@@ -93,11 +93,7 @@ value class JsObject(val code: String) {
                 }
                 append('}')
             }
-            return JsObject(code)
+            return JsonObject(code)
         }
-    }
-
-    companion object {
-        val Undefined = JsObject("undefined")
     }
 }

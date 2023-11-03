@@ -81,8 +81,8 @@ class ServiceRunner(
             )
             jsEngine.evaluate(main)
 
-            val manifest = service.toJsObject().code
-            val configs = service.configs.toJsObject().code
+            val manifest = service.toJsObject().text
+            val configs = service.configs.toJsObject().text
             // Initiate the service and bind to globalThis
             jsEngine.evaluate("initService(${manifest},${configs});")
 
