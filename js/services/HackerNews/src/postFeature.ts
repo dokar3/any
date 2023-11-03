@@ -176,20 +176,19 @@ export function parseNews(doc: DomElement, page: number): PagedResult<Post[]> {
 }
 
 function parseComments(elements: DomElement[]): Comment[] {
-  const comments = new Array<Comment>();
-  const indents = new Array<number>(elements.length);
+  const comments: Comment[] = [];
+  const flattenComments: Comment[] = [];
+  const indents: number[] = [];
 
   for (let i = 0; i < elements.length; i++) {
     const element = elements[i];
 
     const indent = parseInt(element.select("td.ind").attr("indent"));
     const username = element.select(".comhead .hnuser").text();
-    const text = element.select(".comment .commtext")?.text();
+    const text = parseCommentContent(element.select(".comment .commtext"));
     if (text == null) {
       continue;
     }
-
-    indents[i] = indent;
 
     const comment = new Comment({
       username: username,
@@ -198,20 +197,43 @@ function parseComments(elements: DomElement[]): Comment[] {
     });
 
     if (indent > 0) {
-      if (comments.length == 0) {
-        throw "Comment indent is larger than 0, but no comment has been added";
+      // Find the parent comment
+      let parentIndex = indents.lastIndexOf(indent - 1);
+      if (parentIndex === -1) {
+        throw new Error(
+          `Cannot find parent comment for child comment ${i}, indent: ${indent}`
+        );
       }
-      let parent: Comment = comments[comments.length - 1];
-      let children: Comment[] = parent.replies;
-      for (let j = 0; j < indent - 1; j++) {
-        parent = children[children.length - 1];
-        children = parent.replies;
-      }
-      children.push(comment);
+      const parent = flattenComments[parentIndex];
+      parent.replies.push(comment);
     } else {
       comments.push(comment);
     }
+
+    indents.push(indent);
+    flattenComments.push(comment);
   }
 
   return comments;
+}
+
+function parseCommentContent(commentElement: DomElement | null): string | null {
+  if (commentElement === null) {
+    return null;
+  }
+  const content = commentElement.text().trim();
+  if (content.startsWith("> any")) {
+    console.log("comment: ", content);
+  }
+  const replyElement = commentElement.select('> [class*="reply"]');
+  if (replyElement === null) {
+    return content;
+  }
+  const replyElementText = replyElement.text();
+  if (content.endsWith(replyElementText)) {
+    // Remove the last 'reply' in the comment content
+    return content.substring(0, content.length - replyElementText.length);
+  } else {
+    return content;
+  }
 }
