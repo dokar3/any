@@ -11,13 +11,14 @@ import * as EventType from "./call_event.js";
  */
 function call(serviceConfigs, type, params) {
   const manifest = {};
-  const service = createService(manifest, serviceConfigs);
+  console.log("this:", globalThis)
+  initService(manifest, serviceConfigs);
   if (type === EventType.TYPE_FETCH_LATEST_POSTS) {
-    return service.getFeature(AnyPostFeature).fetchFreshList(params);
+    return service.features.post.fetchFreshList(params);
   } else if (type === EventType.TYPE_FETCH_POST_CONTENT) {
-    return service.getFeature(AnyPostFeature).fetch(params);
+    return service.features.post.fetch(params);
   } else if (type == EventType.TYPE_SEARCH_POSTS) {
-    return service.getFeature(AnyPostFeature).search(params);
+    return service.features.post.search(params);
   } else {
     throw new Error("Unknown call event: " + type);
   }

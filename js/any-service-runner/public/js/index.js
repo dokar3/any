@@ -78,7 +78,7 @@ window.selectCompiledService = function (index) {
   const url = compiledServiceManifestUrls[index];
   const command =
     "adb shell am start -n com.dokar.any/.MainActivity " +
-    '-a any.action.add_app --es "extra.app_manifest_url" "' +
+    '-a any.action.add_service --es "extra.service_manifest_url" "' +
     url +
     '"';
   updateAddServiceCommand(command);
