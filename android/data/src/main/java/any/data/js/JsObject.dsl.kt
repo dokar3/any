@@ -9,7 +9,7 @@ package any.data.js
  *     "message" eq "Some text"
  *     "year" eq 1990
  *     "enabled" eq false
- *     "name" eq JsObject.Null
+ *     "name" eq null
  *     "builtin" eq JsObject.Undefined
  *     "inner" eq buildJsObject {
  *         "value" eq 1.0
@@ -48,6 +48,8 @@ interface JsObjectScope {
     infix fun String.eq(value: Array<Any?>?)
 
     infix fun String.eq(value: List<Any?>?)
+
+    infix fun String.eq(nullValue: Nothing?)
 }
 
 private class JsObjectScopeImpl : JsObjectScope {
@@ -75,6 +77,10 @@ private class JsObjectScopeImpl : JsObjectScope {
 
     override fun String.eq(value: List<Any?>?) {
         builder.addArrayField(this, value?.toTypedArray())
+    }
+
+    override fun String.eq(nullValue: Nothing?) {
+        builder.addObjectField(this, null)
     }
 
     fun buildObject(): JsObject {

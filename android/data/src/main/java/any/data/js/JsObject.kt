@@ -41,7 +41,7 @@ value class JsObject(val code: String) {
 
         fun addObjectField(name: String, value: JsObject?): Builder {
             checkFieldName(name)
-            fields[name] = value?.code ?: ""
+            fields[name] = value?.code ?: "null"
             return this
         }
 
@@ -98,8 +98,6 @@ value class JsObject(val code: String) {
     }
 
     companion object {
-        val Null = JsObject("null")
-
         val Undefined = JsObject("undefined")
     }
 }

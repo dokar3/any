@@ -42,7 +42,7 @@ fun List<ServiceConfig>?.toJsObject(): JsObject = buildJsObject {
         val key = field.key
         val value = field.value
         if (value == null) {
-            key eq JsObject.Null
+            key eq JsObject.Undefined
             continue
         }
         when (value) {
