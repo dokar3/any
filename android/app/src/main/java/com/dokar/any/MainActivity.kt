@@ -235,7 +235,7 @@ class MainActivity : DarkModeAwareActivity() {
 
     private fun Intent.handleAddService(): Boolean {
         if (action != ACTION_ADD_SERVICE) return false
-        val manifestUrl = intent.getStringExtra(EXTRA_SERVICE_MANIFEST_URL) ?: return false
+        val manifestUrl = getStringExtra(EXTRA_SERVICE_MANIFEST_URL) ?: return false
         mainViewModel.setServiceManifestUrlToAdd(manifestUrl)
         return true
     }
