@@ -7,7 +7,7 @@ import any.data.entity.ServiceConfig
 import any.data.entity.ServiceManifest
 import any.data.entity.value
 
-fun ServiceManifest.toJsObject(): JsObject = buildJsObject {
+fun ServiceManifest.toJsObject(): JsonObject = json {
     "id" eq id
     "name" eq name
     "description" eq description
@@ -18,7 +18,7 @@ fun ServiceManifest.toJsObject(): JsObject = buildJsObject {
     "version" eq version
     "minApiVersion" eq minApiVersion
     "maxApiVersion" eq maxApiVersion
-    "mainChecksums" eq buildJsObject {
+    "mainChecksums" eq json {
         "md5" eq mainChecksums.md5
         "sha1" eq mainChecksums.sha1
         "sha256" eq mainChecksums.sha256
@@ -36,16 +36,15 @@ fun ServiceManifest.toJsObject(): JsObject = buildJsObject {
     "forceConfigsValidation" eq forceConfigsValidation
 }
 
-fun List<ServiceConfig>?.toJsObject(): JsObject = buildJsObject {
+fun List<ServiceConfig>?.toJsObject(): JsonObject = json {
     val fields = this@toJsObject ?: emptyList()
     for (field in fields) {
         val key = field.key
-        val value = field.value
-        if (value == null) {
-            key eq JsObject.Undefined
-            continue
-        }
-        when (value) {
+        when (val value = field.value) {
+            null -> {
+                key eq null
+            }
+
             is Boolean -> {
                 key eq value
             }
@@ -59,7 +58,7 @@ fun List<ServiceConfig>?.toJsObject(): JsObject = buildJsObject {
             }
 
             is CookiesUaValue -> {
-                key eq buildJsObject {
+                key eq json {
                     "cookies" eq value.cookies
                     "userAgent" eq value.userAgent
                 }
