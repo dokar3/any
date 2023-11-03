@@ -22,6 +22,7 @@ body {
   width: 100vw;
   height: 100vh;
   box-sizing: border-box;
+  font-family: system-ui, -apple-system;
 }
 
 .title-bar {

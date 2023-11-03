@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.runner/
 test/.http_cache/
 *.log
 

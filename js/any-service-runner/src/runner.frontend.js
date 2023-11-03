@@ -20,7 +20,7 @@ const __dirname = dirname(__filename);
  */
 function startFrontendRunnerServer(port, backendServerPort) {
   const currentDir = process.cwd();
-  const outputDir = path.join(currentDir, "dist/runner");
+  const outputDir = path.join(currentDir, ".runner");
 
   const ifdefOpts = {
     platform: "browser",
@@ -51,11 +51,27 @@ function startFrontendRunnerServer(port, backendServerPort) {
     throw new Error("Field 'main' not found in manifest.json");
   }
 
+  // Read template main
+  const realServiceMainTemplateFile = path.join(
+    __dirname,
+    "realServiceMain.template.js"
+  );
+  const realServiceMainCode = fs
+    .readFileSync(realServiceMainTemplateFile, "utf-8")
+    .replace("{{MAIN_PATH}}", "../" + manifest.main);
+
+  // Write real main to project's src dir
+  const realServiceMainFile = path.join(outputDir, "realServiceMain.js");
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir);
+  }
+  fs.writeFileSync(realServiceMainFile, realServiceMainCode);
+
   const compiler = Webpack({
     entry: {
-      main: path.join(currentDir, manifest.main),
-      index: path.join(__dirname, "../public/js/index.js"),
-      app_worker: path.join(__dirname, "../public/js/app.worker.js"),
+      main: realServiceMainFile, // service main
+      index: path.join(__dirname, "../public/js/index.js"), // frontend index
+      app_worker: path.join(__dirname, "../public/js/app.worker.js"), // frontend worker
     },
     output: {
       path: outputDir,
