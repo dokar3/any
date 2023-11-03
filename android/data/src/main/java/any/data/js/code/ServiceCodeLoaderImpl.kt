@@ -29,33 +29,27 @@ class ServiceCodeLoaderImpl(context: Context) : ServiceCodeLoader {
         val text = when {
             url.startsWith("file:///android_asset/") -> {
                 context.assets.open(url.removePrefix("file:///android_asset/"))
-                    .also { it.verifyChecksums(checksums) }
-                    .also { it.reset() }
-                    .bufferedReader()
-                    .use { it.readText() }
+                    .readAndVerifyCode(checksums)
             }
 
             url.startsWith("file://") -> {
                 val file = File(url.removePrefix("file://"))
                 require(file.exists()) { "Source file not exists: $file" }
-                file.inputStream().use { it.verifyChecksums(checksums) }
-                file.readText()
+                file.inputStream().readAndVerifyCode(checksums)
             }
 
             url.startsWith("/") -> {
                 val file = File(url)
                 require(file.exists()) { "Source file not exists: $file" }
-                file.inputStream().use { it.verifyChecksums(checksums) }
-                file.readText()
+                file.inputStream().readAndVerifyCode(checksums)
             }
 
             url.startsWith("http://") || url.startsWith("https://") -> {
                 val call = Request.Builder().url(url).get().build()
                 val res = httpClient.newCall(call).execute()
-                res.body?.byteStream()?.verifyChecksums(checksums)
-                res.body?.byteStream()?.bufferedReader()
-                    ?.use { it.readText() }
+                val inputStream = res.body?.byteStream()
                     ?: throw IllegalStateException("Cannot read remote code")
+                inputStream.readAndVerifyCode(checksums)
             }
 
             else -> {
@@ -66,29 +60,37 @@ class ServiceCodeLoaderImpl(context: Context) : ServiceCodeLoader {
         text
     }
 
-    private fun InputStream.verifyChecksums(checksums: Checksums) {
+    private fun InputStream.readAndVerifyCode(checksums: Checksums): String = use {
+        it.checkMaxCodeBytes()
+        val bytes = it.readBytes()
+        bytes.verifyChecksums(checksums)
+        bytes.decodeToString()
+    }
+
+    private fun InputStream.checkMaxCodeBytes() {
+        val availableBytes = available()
+        if (availableBytes > MAX_CODE_BYTES) {
+            throw IllegalStateException("Too many bytes of code: $availableBytes")
+        }
+    }
+
+    private fun ByteArray.verifyChecksums(checksums: Checksums) {
         val md5Digest = MessageDigest.getInstance("md5")
         val sha1Digest = MessageDigest.getInstance("sha1")
         val sha256Digest = MessageDigest.getInstance("sha256")
         val sha512Digest = MessageDigest.getInstance("sha512")
-        val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-        var len: Int
-        while (read(buffer).also { len = it } != -1) {
-            md5Digest.update(buffer, 0, len)
-            sha1Digest.update(buffer, 0, len)
-            sha256Digest.update(buffer, 0, len)
-            sha512Digest.update(buffer, 0, len)
-        }
         val current = Checksums(
-            md5 = md5Digest.digest().toHexString(),
-            sha1 = sha1Digest.digest().toHexString(),
-            sha256 = sha256Digest.digest().toHexString(),
-            sha512 = sha512Digest.digest().toHexString()
+            md5 = md5Digest.digest(this).toHexString(),
+            sha1 = sha1Digest.digest(this).toHexString(),
+            sha256 = sha256Digest.digest(this).toHexString(),
+            sha512 = sha512Digest.digest(this).toHexString()
         )
         require(current == checksums) { "Failed to verify the service code" }
     }
 
     companion object {
         private val MAX_CODE_CACHE_SIZE = 50.MB
+
+        private val MAX_CODE_BYTES = 1.MB
     }
 }
