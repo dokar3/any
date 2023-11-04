@@ -338,6 +338,7 @@ fun VideoView(
             onShowRequest = { controlsVisible = true },
             onMuteClick = { state.isMuted = !state.isMuted },
             onFullscreenClick = { onFullscreenClick?.invoke() },
+            onSeek = { progress -> state.seek(progress) },
             controlsVisible = controlsVisible,
             duration = state.duration,
             progress = state.progress,
