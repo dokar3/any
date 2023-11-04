@@ -111,6 +111,7 @@ class BuiltinServiceUpdater(
             supportedPostUrls = builtin.supportedPostUrls,
             supportedUserUrls = builtin.supportedUserUrls,
             forceConfigsValidation = builtin.forceConfigsValidation,
+            upgradeUrl = builtin.upgradeUrl,
             buildTime = builtin.buildTime,
             source = ServiceManifest.Source.Builtin,
             localResources = localResources,
