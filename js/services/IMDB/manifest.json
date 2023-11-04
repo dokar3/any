@@ -1,0 +1,19 @@
+{
+  "id": "any.imdb.top250",
+  "name": "IMDB Top 250",
+  "description": "List of <a href=\"https://www.imdb.com/chart/top/\">IMDb Top 250 Movies</a>",
+  "developer": "any",
+  "version": "1.0.0",
+  "minApiVersion": "0.2.0",
+  "maxApiVersion": "",
+  "isPageable": true,
+  "postsViewType": "grid",
+  "mediaAspectRatio": "72:106",
+  "main": "src/main.ts",
+  "icon": "src/assets/icon.png",
+  "languages": [
+    "en"
+  ],
+  "supportedPostUrls": [],
+  "configs": []
+}
