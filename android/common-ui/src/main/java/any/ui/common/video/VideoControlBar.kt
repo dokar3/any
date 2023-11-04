@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import any.ui.common.R
+import any.ui.common.widget.VideoSlider
 
 private const val CONTROL_BACKGROUND_OPACITY = 0.6f
 
@@ -41,6 +41,7 @@ internal fun VideoControlBar(
     onShowRequest: () -> Unit,
     onMuteClick: () -> Unit,
     onFullscreenClick: () -> Unit,
+    onSeek: (progress: Float) -> Unit,
     controlsVisible: Boolean,
     duration: Long,
     progress: Float,
@@ -143,12 +144,12 @@ internal fun VideoControlBar(
         }
 
         if (progress >= 0f) {
-            LinearProgressIndicator(
-                progress = progress,
+            VideoSlider(
+                value = progress,
+                onValueChange = onSeek,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter),
-                backgroundColor = Color.Transparent,
             )
         }
     }
