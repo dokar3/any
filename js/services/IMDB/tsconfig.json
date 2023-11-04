@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "module": "ES6",
+    "target": "ES5",
+    "allowJs": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*"]
+}
