@@ -1,8 +1,7 @@
 package any.ui.common.video
 
 import android.view.Gravity
-import android.view.TextureView
-import android.view.View
+import android.view.SurfaceView
 import android.widget.FrameLayout
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -30,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,7 +69,7 @@ fun VideoView(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    var playerView by remember { mutableStateOf<TextureView?>(null) }
+    var playerView by remember { mutableStateOf<SurfaceView?>(null) }
 
     val scrimColor by animateColorAsState(
         if (state.error != null) {
@@ -84,24 +82,13 @@ fun VideoView(
 
     var size by remember { mutableStateOf(IntSize.Zero) }
 
-    var textureViewRotation by remember { mutableIntStateOf(0) }
-
     var isPlayerViewResized by remember { mutableStateOf(false) }
-
-    val onLayoutChangeListener = remember {
-        View.OnLayoutChangeListener { view, _, _, _, _, _, _, _, _ ->
-            TextureViewUtil.applyTextureViewRotation(
-                view as TextureView,
-                textureViewRotation
-            )
-        }
-    }
 
     /**
      * Copied from StyledPlayerView.updateAspectRatio()
      */
     fun applyAspectRatio(
-        view: TextureView,
+        view: SurfaceView,
         videoAspectRatio: Float,
         unappliedRotationDegrees: Int,
     ) {
@@ -124,17 +111,6 @@ fun VideoView(
             val resizeVideoSurface = onVideoAspectRatioAvailable(mutVideoAspectRatio)
             if (!resizeVideoSurface) return
         }
-
-        if (textureViewRotation != 0) {
-            view.removeOnLayoutChangeListener(onLayoutChangeListener)
-        }
-        textureViewRotation = unappliedRotationDegrees
-        if (textureViewRotation != 0) {
-            // The texture view's dimensions might be changed after layout step.
-            // So add an OnLayoutChangeListener to apply rotation after layout step.
-            view.addOnLayoutChangeListener(onLayoutChangeListener)
-        }
-        TextureViewUtil.applyTextureViewRotation(view, textureViewRotation)
 
         view.layoutParams.run {
             val containerAspectRatio = containerSize.width.toFloat() / containerSize.height
@@ -170,7 +146,6 @@ fun VideoView(
         }
     }
 
-
     DisposableEffect(state, playerView) {
         val view = playerView
         if (view != null) {
@@ -178,8 +153,8 @@ fun VideoView(
         }
         onDispose {
             if (view != null) {
+                state.pause()
                 view.keepScreenOn = false
-                view.removeOnLayoutChangeListener(onLayoutChangeListener)
                 state.detachFromView(view)
             }
         }
@@ -238,9 +213,9 @@ fun VideoView(
             if (state.isPlayed) {
                 AndroidView(
                     factory = { context ->
-                        val textureView = TextureView(context)
-                        textureView.alpha = 0f
-                        playerView = textureView
+                        val surfaceView = SurfaceView(context)
+                        surfaceView.alpha = 0f
+                        playerView = surfaceView
 
                         FrameLayout(context).apply {
                             val params = FrameLayout.LayoutParams(
@@ -249,7 +224,7 @@ fun VideoView(
                             ).also {
                                 it.gravity = Gravity.CENTER
                             }
-                            addView(textureView, params)
+                            addView(surfaceView, params)
                         }
                     },
                     modifier = Modifier.fillMaxSize(),
