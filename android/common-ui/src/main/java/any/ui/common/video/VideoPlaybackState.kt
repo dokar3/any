@@ -2,7 +2,7 @@ package any.ui.common.video
 
 import android.content.Context
 import android.net.Uri
-import android.view.TextureView
+import android.view.SurfaceView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
@@ -204,15 +204,15 @@ class VideoPlaybackState internal constructor(
         this.error = error
     }
 
-    fun attachToView(view: TextureView) {
+    fun attachToView(view: SurfaceView) {
         withPlayer {
-            setVideoTextureView(view)
+            setVideoSurfaceView(view)
         }
     }
 
-    fun detachFromView(view: TextureView) {
+    fun detachFromView(view: SurfaceView) {
         withPlayer {
-            clearVideoTextureView(view)
+            clearVideoSurfaceView(view)
         }
         release()
     }
