@@ -251,6 +251,7 @@ class VideoPlaybackState internal constructor(
 
     fun seek(position: Long) {
         withPlayer { seekTo(position) }
+        updateProgress()
     }
 
     fun updateProgress() {
