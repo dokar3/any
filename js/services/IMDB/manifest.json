@@ -11,6 +11,7 @@
   "mediaAspectRatio": "72:106",
   "main": "src/main.ts",
   "icon": "src/assets/icon.png",
+  "themeColor": "#E2B616",
   "languages": [
     "en"
   ],
