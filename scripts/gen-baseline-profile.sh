@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-ATTEMPTS=5
+# Path to success: retry
+ATTEMPTS=10
 for ((i=1; i <= ATTEMPTS; i++)); do
-  echo "Attempt $i"
+  echo "Attempt #$i"
   ./gradlew macrobenchmark:connectedBenchmarkAndroidTest \
   -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator \
   -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" \
@@ -9,6 +10,7 @@ for ((i=1; i <= ATTEMPTS; i++)); do
 
   exit_code=$?
   if [ $exit_code -eq 0 ]; then
+    echo "Baseline profile generated on attempt #$i"
     break
   fi
 
