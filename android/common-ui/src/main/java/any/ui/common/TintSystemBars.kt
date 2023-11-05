@@ -1,16 +1,15 @@
 package any.ui.common
 
-import android.app.Activity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import any.base.util.applyLightNavBar
 import any.base.util.applyLightStatusBar
 import any.base.util.clearLightBars
+import any.base.util.getActivityOrNull
 import any.base.util.setNavigationBarColor
 import any.base.util.setStatusBarColor
 import any.ui.common.theme.navigationBar
@@ -25,20 +24,18 @@ fun TintSystemBars(
     applyLightNavigationBarAutomatically: Boolean = true,
 ) {
     val context = LocalContext.current
-    val window = (context as Activity).window
-    val view = LocalView.current.rootView
     LaunchedEffect(
-        window,
-        view,
+        context,
         darkMode,
         statusBarColor,
         navigationBarColor,
         applyLightStatusBarAutomatically,
         applyLightNavigationBarAutomatically,
     ) {
+        val window = context.getActivityOrNull()?.window ?: return@LaunchedEffect
         val statusBarColorInt = if (statusBarColor.alpha == 0f) {
             // Zero alpha colors may get ignored, so set the alpha to 1
-            statusBarColor.toArgb() and 0x00ffffff or 0x01000000
+            statusBarColor.toArgb() and 0x01ffffff
         } else {
             statusBarColor.toArgb()
         }
@@ -46,12 +43,13 @@ fun TintSystemBars(
 
         val navigationBarColorInt = if (navigationBarColor.alpha == 0f) {
             // Zero alpha colors may get ignored, so set the alpha to 1
-            navigationBarColor.toArgb() and 0x00ffffff or 0x01000000
+            navigationBarColor.toArgb() and 0x01ffffff
         } else {
             navigationBarColor.toArgb()
         }
         window.setNavigationBarColor(navigationBarColorInt, animate = false)
 
+        val view = window.decorView
         if (darkMode) {
             view.clearLightBars(window)
         } else {
