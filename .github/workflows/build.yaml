@@ -106,26 +106,7 @@ jobs:
           arch: x86_64
           profile: pixel
           avd-name: emulator
-          script: |
-            ATTEMPTS=5
-            for n in {1..$ATTEMPTS}; do
-            echo "Attempt $n"
-            ./gradlew macrobenchmark:connectedBenchmarkAndroidTest \
-            -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator \
-            -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" \
-            -PdisableSplits
-            
-            exit_code=$?
-            if [ $exit_code -eq 0 ]; then
-            break
-            fi
-            
-            done
-        
-            if [ $exit_code -ne 0 ]; then
-            echo "Script execution failed after $ATTEMPTS attempts."
-            exit 1
-            fi
+          script: ./scripts/gen-baseline-profile.sh
 
       - name: Copy baseline profile to app module
         if: ${{ inputs.build_release_apks }}
