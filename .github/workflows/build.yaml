@@ -106,7 +106,7 @@ jobs:
           arch: x86_64
           profile: pixel
           avd-name: emulator
-          script: ./scripts/gen-baseline-profile.sh
+          script: chmod +x ./scripts/gen-baseline-profile.sh && ./scripts/gen-baseline-profile.sh
 
       - name: Copy baseline profile to app module
         if: ${{ inputs.build_release_apks }}
