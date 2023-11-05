@@ -28,6 +28,7 @@ import androidx.profileinstaller.ProfileVerifier.CompilationStatus
 import any.ui.common.theme.pass
 import any.ui.settings.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import any.base.R as BaseR
@@ -54,9 +55,13 @@ internal fun BaselineProfileScreen(
     fun compileNow() {
         manualCompilationEnabled = false
         scope.launch(Dispatchers.Default) {
-            compileResult = compileBaselineProfile(packageName = context.packageName)
-            compilationStatus = getCompilationStatusSync(context)
-            reloadCompilationStatus++
+            val result = compileBaselineProfile(packageName = context.packageName)
+            compileResult = result
+            if (result.isSuccess) {
+                delay(2000)
+                compilationStatus = getCompilationStatusSync(context)
+                reloadCompilationStatus++
+            }
         }
     }
 
@@ -109,11 +114,11 @@ internal fun BaselineProfileScreen(
                 Text("Compile now (root required)")
             }
 
-            val compileRet = compileResult
-            if (compileRet != null) {
+            val result = compileResult
+            if (result != null) {
                 Text(
-                    text = compileRet.output,
-                    color = if (compileRet.isSuccess) {
+                    text = result.output,
+                    color = if (result.isSuccess) {
                         MaterialTheme.colors.pass
                     } else {
                         MaterialTheme.colors.error
