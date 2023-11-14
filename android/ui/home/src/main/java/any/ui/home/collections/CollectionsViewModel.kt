@@ -47,7 +47,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.text.Collator
 
 class CollectionsViewModel(
@@ -161,16 +160,15 @@ class CollectionsViewModel(
 
                 val tags = updateTagsFromPosts(tags = _currTags, posts = groupedPosts)
 
-                val filteredFolders = groupedResult.folders
-                    .filter { !it.posts.isNullOrEmpty() }
-                    .map {
-                        val filteredFolderPosts = filterPostsByTags(
-                            posts = it.posts!!,
-                            tags = tags,
-                        )
-                        it.copy(posts = filteredFolderPosts)
-                    }
-                    .filter { !it.posts.isNullOrEmpty() }
+                val filteredFolders = groupedResult.folders.mapNotNull {
+                    val folderPosts = it.posts
+                    if (folderPosts.isNullOrEmpty()) return@mapNotNull null
+                    val filteredFolderPosts = filterPostsByTags(folderPosts, tags)
+                    if (filteredFolderPosts.isEmpty()) return@mapNotNull null
+                    it.copy(posts = filteredFolderPosts)
+                }
+
+                println("target f: ${folder.path}, filtered folder: ${filteredFolders.joinToString{it.path}}")
 
                 val tagsFilteredPosts = filterPostsByTags(groupedResult.posts, tags)
 
@@ -425,8 +423,8 @@ class CollectionsViewModel(
             // Merge posts in all sub-folders to the parent folder. E.g. All posts in folder
             // 'dir' and 'dir/sub' will be merged to folder 'dir'.
             val parentName = postFolder.removePrefix(folder.path)
-                .trim(File.separatorChar)
-                .split(File.separatorChar)
+                .trim(Folder.pathSeparator)
+                .split(Folder.pathSeparator)
                 .first()
             val parentIndex = folders.indexOfFirst { it.name == parentName }
             if (parentIndex != -1) {

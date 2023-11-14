@@ -11,8 +11,8 @@ data class Folder(
     val posts: List<Post>? = null,
 ) {
     val pathSegments: List<String> by lazy {
-        path.trim(File.separatorChar)
-            .split(File.separatorChar)
+        path.trim(pathSeparator)
+            .split(pathSeparator)
             .filter { it.isNotEmpty() }
             .takeIf { it.isNotEmpty() } ?: listOf("")
     }
@@ -32,7 +32,7 @@ data class Folder(
     fun isRoot(): Boolean = path == ROOT.path
 
     fun isTheSame(sub: Folder): Boolean {
-        return path.trim(File.separatorChar) == sub.path.trim(File.separatorChar)
+        return path.trim(pathSeparator) == sub.path.trim(pathSeparator)
     }
 
     fun isTheSameOrSubFolderOf(sub: Folder): Boolean {
@@ -54,5 +54,7 @@ data class Folder(
 
     companion object {
         val ROOT = Folder("")
+
+        const val pathSeparator = '/'
     }
 }
