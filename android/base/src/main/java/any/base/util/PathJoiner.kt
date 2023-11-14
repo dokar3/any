@@ -1,7 +1,5 @@
 package any.base.util
 
-import java.io.File
-
 fun List<String>.joinToPath(): String {
     return PathJoiner(this).join()
 }
@@ -9,7 +7,7 @@ fun List<String>.joinToPath(): String {
 class PathJoiner {
     private val segments: MutableList<String>
 
-    private var separator: String = File.separator
+    private var separator: String = "/"
 
     constructor(vararg segments: String) {
         this.segments = segments.toMutableList()

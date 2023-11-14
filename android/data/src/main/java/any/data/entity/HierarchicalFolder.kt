@@ -13,8 +13,8 @@ data class HierarchicalFolder(
     val depth: Int = 0,
     val updatedAt: Long = 0,
 ) {
-    val pathSegments: List<String> = path.trim(File.separatorChar)
-        .split(File.separatorChar)
+    val pathSegments: List<String> = path.trim(Folder.pathSeparator)
+        .split(Folder.pathSeparator)
         .filter { it.isNotEmpty() }
         .takeIf { it.isNotEmpty() } ?: listOf("")
 
