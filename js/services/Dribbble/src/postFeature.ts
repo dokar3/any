@@ -27,13 +27,10 @@ export function fetch(params: FetchPostParams): FetchResult<Post> {
     return FetchResult.err({ error: "No content found" });
   }
 
-  const header = content.select(".shot-header .shot-header-content");
-  const title = header.select(".shot-header-title")?.text();
-  const artist = header.select(".shot-user-details")?.text();
-  const artistId = header
-    .select(".shot-user-details .shot-user-link")
-    .attr("href");
-  const avatar = header.select(".shot-user-avatar a .photo")?.attr("src");
+  const title = content.select(".shot-header__title")?.text();
+  const artist = content.select(".shot-user-details")?.text();
+  const artistId = content.select(".sticky-header__avatar .url").attr("href");
+  const avatar = content.select(".sticky-header__avatar a .photo")?.attr("src");
 
   const shotId = /\/shots\/(\d+)/.exec(params.url)[1];
   const fetchCommentsUrl =
