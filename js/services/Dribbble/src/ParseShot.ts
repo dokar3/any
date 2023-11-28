@@ -306,7 +306,7 @@ function resolveAspectRatioFromStyle(element: DomElement): number | null {
  */
 function parseImageUrl(img: DomElement): string {
   let srcSet = img.attr("data-srcset");
-  if (srcSet.length === 0) {
+  if (srcSet == null || srcSet.length === 0) {
     srcSet = img.attr("srcset");
   }
   if (srcSet.length === 0) {
