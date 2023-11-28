@@ -11,10 +11,19 @@ function service(): AnyService {
 }
 
 describe("DribbleService", () => {
-  test("test fetch shots", () => {
+  test("test fetch fresh shots", () => {
     const result = service().features.post.fetchFreshList({ pageKey: null });
     expect(result.isOk()).toBe(true);
     expect(result.data).toHaveLength(24);
+  });
+
+  test("test fetch shot", () => {
+    const url = "https://dribbble.com/shots/23117340-Winter";
+    const result = service().features.post.fetch({ url: url });
+    expect(result.isOk()).toBe(true);
+    const post = result.data!!;
+    expect(post.title).toBe("Winter  ❄️🌲🌨️⛄️🧣🧤");
+    expect(post.content).toHaveLength(2);
   });
 
   test("test fetch user", () => {
