@@ -29,6 +29,8 @@ describe("DribbleService", () => {
   test("test fetch user", () => {
     const result = service().features.user!.fetchById({ userId: "Ramotion" });
     expect(result.isOk()).toBe(true);
-    expect(result.data?.name).toBe("Ramotion");
+    const user = result.data!!;
+    expect(user.name).toBe("Ramotion");
+    expect(user.banner).toBeDefined();
   });
 });
