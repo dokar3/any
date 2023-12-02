@@ -109,7 +109,7 @@ internal fun FullWidthImageItem(
                     }
                 }
             },
-            reloadFactor = reloadFactor,
+            reloadKey = reloadFactor,
             showProgressbar = true,
         )
 

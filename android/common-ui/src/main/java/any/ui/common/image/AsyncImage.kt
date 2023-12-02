@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,7 +40,7 @@ import kotlinx.coroutines.flow.combine
 interface ImageStateListener {
     fun onLoading(size: IntSize?)
 
-    fun onSuccess(size: IntSize)
+    fun onSuccess(size: IntSize, originalSize: IntSize?)
 
     fun onFailure(error: Throwable?)
 }
@@ -52,7 +53,7 @@ internal open class OnImageStateListener(
         onState?.invoke(ImageState.Loading(size))
     }
 
-    override fun onSuccess(size: IntSize) {
+    override fun onSuccess(size: IntSize, originalSize: IntSize?) {
         onState?.invoke(ImageState.Success(size))
     }
 
@@ -74,7 +75,7 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = rememberImageColorFilter(),
     onState: ((ImageState) -> Unit)? = null,
-    reloadFactor: Int? = null,
+    reloadKey: Int? = null,
     placeholder: ImageRequest? = null,
     fadeIn: Boolean = false,
     showProgressbar: Boolean = false,
@@ -86,8 +87,8 @@ fun AsyncImage(
     val imageSizeState = remember(request) { mutableStateOf(IntSize.Zero) }
     val layoutSizeState = remember(request) { mutableStateOf(IntSize.Zero) }
 
-    var autoWidth by remember(request) { mutableStateOf(0) }
-    var autoHeight by remember(request) { mutableStateOf(0) }
+    var autoWidth by remember(request) { mutableIntStateOf(0) }
+    var autoHeight by remember(request) { mutableIntStateOf(0) }
 
     fun autoSizing() {
         val imageSize = imageSizeState.value
@@ -105,8 +106,8 @@ fun AsyncImage(
 
     val listener = remember(request, onState, layoutSizeState) {
         object : OnImageStateListener(onState) {
-            override fun onSuccess(size: IntSize) {
-                super.onSuccess(size)
+            override fun onSuccess(size: IntSize, originalSize: IntSize?) {
+                super.onSuccess(size, originalSize)
                 imageSizeState.value = size
                 autoSizing()
             }
@@ -173,7 +174,7 @@ fun AsyncImage(
                 colorFilter = colorFilter,
                 listener = listener,
                 size = requestSize,
-                reloadFactor = reloadFactor,
+                reloadFactor = reloadKey,
                 placeholder = placeholder,
                 fadeIn = fadeIn,
                 showProgressbar = showProgressbar,
@@ -204,7 +205,7 @@ fun AsyncImage(
             alpha = alpha,
             colorFilter = colorFilter,
             listener = listener,
-            reloadFactor = reloadFactor,
+            reloadFactor = reloadKey,
             placeholder = placeholder,
             fadeIn = fadeIn,
             showProgressbar = showProgressbar,
