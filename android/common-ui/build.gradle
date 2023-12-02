@@ -46,6 +46,7 @@ dependencies {
 
     implementation libs.androidx.activity.compose
     implementation libs.fresco
+    implementation libs.fresco.middleware
     implementation libs.accompanist.drawablepainter
     implementation libs.accompanist.pager.indicators
     implementation libs.chiptextfield

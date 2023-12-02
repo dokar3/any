@@ -142,6 +142,6 @@ class CircleProgressDrawable : Drawable(), CloneableDrawable {
     }
 
     companion object {
-        private const val MAX_LEVEL = 10000
+        const val MAX_LEVEL = 10000
     }
 }

@@ -1,18 +1,26 @@
 package any.ui.common.image
 
+import android.content.Context
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,10 +33,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.util.packFloats
+import androidx.compose.ui.util.unpackFloat1
+import androidx.compose.ui.util.unpackFloat2
 import androidx.core.graphics.drawable.toDrawable
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
@@ -40,11 +52,21 @@ import com.facebook.drawee.controller.BaseControllerListener
 import com.facebook.drawee.controller.ControllerListener
 import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.drawable.ScalingUtils.AbstractScaleType
+import com.facebook.drawee.generic.GenericDraweeHierarchy
 import com.facebook.drawee.generic.GenericDraweeHierarchyInflater
 import com.facebook.drawee.view.DraweeHolder
+import com.facebook.fresco.middleware.HasExtraData
+import com.facebook.imagepipeline.common.ImageDecodeOptions
 import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.image.ImageInfo
+import com.facebook.imagepipeline.image.RegionDecoder
+import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
+import kotlin.math.min
 
 private class ControllerListenerWrapper<T>(
     private val listeners: List<ControllerListener<T>>
@@ -74,6 +96,51 @@ private class ControllerListenerWrapper<T>(
     }
 }
 
+private data class RequestRegion(
+    val decode: IntRect,
+    val aspectRatio: Float,
+    val requestSize: IntSize?,
+)
+
+private data class Regions(
+    val aspectRatio: Float,
+    val list: List<RequestRegion>,
+)
+
+@Suppress("FunctionName")
+internal fun RegionDecodeThreshold(
+    minHeight: Int,
+    maxAspectRatio: Float,
+): RegionDecodeThresholds = RegionDecodeThresholds(
+    value = packFloats(minHeight.toFloat(), maxAspectRatio)
+)
+
+@Immutable
+@JvmInline
+internal value class RegionDecodeThresholds(private val value: Long) {
+    val minHeight: Int
+        get() = unpackFloat1(value).toInt()
+
+    val maxAspectRatio: Float
+        get() = unpackFloat2(value)
+
+    companion object {
+        /**
+         * Default thresholds, which helps memory usage and quality for large and long images.
+         */
+        val Default = RegionDecodeThreshold(
+            minHeight = 2000,
+            maxAspectRatio = 2f / 3f,
+        )
+
+        // No image satisfies these thresholds
+        val Disabled = RegionDecodeThreshold(
+            minHeight = Int.MAX_VALUE,
+            maxAspectRatio = 0f,
+        )
+    }
+}
+
 @Composable
 internal fun FrescoAsyncImage(
     request: ImageRequest,
@@ -89,7 +156,14 @@ internal fun FrescoAsyncImage(
     placeholder: ImageRequest? = null,
     fadeIn: Boolean = false,
     showProgressbar: Boolean = false,
+    regionDecodeThresholds: RegionDecodeThresholds = RegionDecodeThresholds.Default,
 ) {
+    var sourceImageSize by remember(request) { mutableStateOf<IntSize?>(null) }
+
+    var regions by remember(request) { mutableStateOf<Regions?>(null) }
+
+    var isRegionsDisplayed by remember(request) { mutableStateOf(false) }
+
     var isLoaded by remember(request) { mutableStateOf(false) }
 
     val listenerWrapper = remember(listener) {
@@ -99,9 +173,10 @@ internal fun FrescoAsyncImage(
                 listener?.onLoading(size)
             }
 
-            override fun onSuccess(size: IntSize) {
+            override fun onSuccess(size: IntSize, originalSize: IntSize?) {
                 isLoaded = true
-                listener?.onSuccess(size)
+                listener?.onSuccess(size, originalSize)
+                sourceImageSize = originalSize
             }
 
             override fun onFailure(error: Throwable?) {
@@ -110,21 +185,100 @@ internal fun FrescoAsyncImage(
         }
     }
 
+    /// Calculate regions for long images
+    LaunchedEffect(request, regionDecodeThresholds, sourceImageSize, size) {
+        val srcSize = sourceImageSize
+        if (srcSize == null) {
+            regions = null
+            return@LaunchedEffect
+        }
+        val width = srcSize.width
+        val height = srcSize.height
+        val aspectRatio = width.toFloat() / height
+        if (height < regionDecodeThresholds.minHeight ||
+            aspectRatio > regionDecodeThresholds.maxAspectRatio
+        ) {
+            regions = null
+            return@LaunchedEffect
+        }
+        // Calculate regions
+        val maxHeightPerRegion = (width / regionDecodeThresholds.maxAspectRatio).toInt()
+        val regionList = mutableListOf<RequestRegion>()
+        var top = 0
+        while (top < height) {
+            val targetHeight = min(height - top, maxHeightPerRegion)
+            val rect = IntRect(0, top, width, top + targetHeight)
+            val requestSize = size?.run { IntSize(width, rect.height / (rect.width / width)) }
+            regionList.add(
+                RequestRegion(
+                    decode = rect,
+                    aspectRatio = rect.width.toFloat() / rect.height,
+                    requestSize = requestSize,
+                )
+            )
+            top += targetHeight
+        }
+        regions = Regions(aspectRatio, regionList)
+    }
+
     Box(modifier = modifier) {
-        FrescoAsyncImageImpl(
-            request = request,
-            contentDescription = contentDescription,
-            modifier = Modifier.fillMaxSize(),
-            alignment = alignment,
-            contentScale = contentScale,
-            alpha = alpha,
-            colorFilter = colorFilter,
-            listener = listenerWrapper,
-            size = size,
-            reloadFactor = reloadFactor,
-            fadeIn = fadeIn,
-            showProgressbar = showProgressbar,
-        )
+        val regionsVal = regions
+        if (regionsVal != null) {
+            LaunchedEffect(request) {
+                isRegionsDisplayed = false
+                awaitFrame()
+                delay(100)
+                isRegionsDisplayed = true
+            }
+
+            /// Decode and display image regions in a lazy column
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(regionsVal.aspectRatio),
+                userScrollEnabled = false,
+            ) {
+                items(
+                    items = regionsVal.list,
+                    key = { region -> request.toString() + region },
+                ) { region ->
+                    FrescoAsyncImageImpl(
+                        request = request,
+                        contentDescription = contentDescription,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(region.aspectRatio),
+                        alignment = alignment,
+                        contentScale = ContentScale.FillWidth,
+                        alpha = 1f,
+                        colorFilter = colorFilter,
+                        listener = listenerWrapper,
+                        size = region.requestSize,
+                        decodeRegion = region.decode,
+                        reloadKey = reloadFactor,
+                        fadeIn = false,
+                        showProgressbar = showProgressbar,
+                    )
+                }
+            }
+        }
+
+        if (regions == null || !isRegionsDisplayed) {
+            FrescoAsyncImageImpl(
+                request = request,
+                contentDescription = contentDescription,
+                modifier = Modifier.fillMaxSize(),
+                alignment = alignment,
+                contentScale = contentScale,
+                alpha = alpha,
+                colorFilter = colorFilter,
+                listener = listenerWrapper,
+                size = size,
+                reloadKey = reloadFactor,
+                fadeIn = fadeIn,
+                showProgressbar = showProgressbar,
+            )
+        }
 
         if (!isLoaded && placeholder != null && placeholder != request) {
             // Show placeholder if image is not ready
@@ -154,15 +308,16 @@ private fun FrescoAsyncImageImpl(
     colorFilter: ColorFilter? = null,
     listener: ImageStateListener? = null,
     size: IntSize? = null,
-    reloadFactor: Int? = null,
+    decodeRegion: IntRect? = null,
+    reloadKey: Int? = null,
     fadeIn: Boolean = false,
     checkMemoryCacheFirst: Boolean = false,
     showProgressbar: Boolean = false,
 ) {
     val context = LocalContext.current
 
-    var drawable: Drawable? by remember(request, checkMemoryCacheFirst) {
-        val d = if (checkMemoryCacheFirst) {
+    val drawable = remember(request, checkMemoryCacheFirst, decodeRegion) {
+        val d: Drawable? = if (checkMemoryCacheFirst && decodeRegion == null) {
             ImageLoader.fetchBitmapFromCache(request)?.toDrawable(context.resources)
         } else {
             null
@@ -170,6 +325,87 @@ private fun FrescoAsyncImageImpl(
         mutableStateOf(d)
     }
 
+    var updatedProgress by remember { mutableFloatStateOf(0f) }
+
+    val progressDrawable = rememberProgressDrawable(
+        onUpdateStyle = { updatedProgress = it },
+        request = request,
+        showProgressbar = showProgressbar,
+    )
+
+    val holder = remember(request, reloadKey) {
+        frescoHolderOf(
+            context = context,
+            request = request,
+            size = size,
+            decodeRegion = decodeRegion,
+            fadeIn = fadeIn,
+            progressDrawable = progressDrawable,
+            checkMemoryCacheFirst = checkMemoryCacheFirst,
+            currDrawable = drawable,
+            listener = listener,
+        )
+    }
+
+    val frescoScaleType = rememberFrescoScaleType(alignment, contentScale)
+
+    LaunchedEffect(holder, frescoScaleType) {
+        holder.hierarchy.actualImageScaleType = frescoScaleType
+    }
+
+    LaunchedEffect(updatedProgress) {
+        // Update progress drawable
+        holder.hierarchy.setProgress(updatedProgress, true)
+    }
+
+    DisposableEffect(holder) {
+        holder.onVisibilityChange(true)
+        holder.onAttach()
+        onDispose {
+            holder.onVisibilityChange(false)
+            holder.onDetach()
+        }
+    }
+
+    SideEffect {
+        drawable.value?.let {
+            val bounds = it.bounds
+            val width = it.intrinsicWidth
+            val height = it.intrinsicHeight
+            if (bounds.width() != width || bounds.height() != height) {
+                it.bounds = Rect(0, 0, width, height)
+            }
+        }
+    }
+
+    Image(
+        painter = rememberDrawablePainter(drawable.value),
+        contentDescription = contentDescription,
+        modifier = modifier,
+        alpha = alpha,
+        colorFilter = colorFilter,
+        alignment = alignment,
+        contentScale = contentScale,
+    )
+}
+
+@Composable
+private fun rememberFrescoScaleType(
+    alignment: Alignment,
+    contentScale: ContentScale,
+): ScalingUtils.ScaleType {
+    val layoutDirection = LocalLayoutDirection.current
+    return remember(alignment, contentScale, layoutDirection) {
+        createFrescoScaleType(alignment, contentScale, layoutDirection)
+    }
+}
+
+@Composable
+private fun rememberProgressDrawable(
+    onUpdateStyle: (currProgress: Float) -> Unit,
+    request: ImageRequest,
+    showProgressbar: Boolean,
+): Drawable? {
     val density = LocalDensity.current
     val progressColor = MaterialTheme.colors.primary
     val secondaryProgressColor = MaterialTheme.colors.secondary.copy(alpha = 0.5f)
@@ -193,155 +429,17 @@ private fun FrescoAsyncImageImpl(
         }
     }
 
-    val holder = remember(request, reloadFactor) {
-        val hierarchy = GenericDraweeHierarchyInflater.inflateBuilder(context, null)
-            .setFadeDuration(if (fadeIn) 255 else 0)
-            .setProgressBarImage(progressDrawable)
-            .build()
-        val holder = DraweeHolder.create(hierarchy, context)
-
-        if (drawable != null && checkMemoryCacheFirst) {
-            // Hit memory cache, skip
-            return@remember holder
-        }
-
-        val imageStateListener = object : BaseControllerListener<ImageInfo>() {
-            override fun onSubmit(id: String?, callerContext: Any?) {
-                listener?.onLoading(null)
-            }
-
-            override fun onFinalImageSet(
-                id: String?,
-                imageInfo: ImageInfo?,
-                animatable: Animatable?
-            ) {
-                listener?.onSuccess(imageInfo?.getIntSize() ?: IntSize.Zero)
-            }
-
-            override fun onIntermediateImageSet(id: String?, imageInfo: ImageInfo?) {
-                listener?.onLoading(imageInfo?.getIntSize())
-            }
-
-            override fun onFailure(id: String?, throwable: Throwable?) {
-                listener?.onFailure(throwable)
-            }
-
-            private fun ImageInfo.getIntSize(): IntSize {
-                return IntSize(width, height)
-            }
-        }
-        val updateDrawableListener = object : BaseControllerListener<ImageInfo>() {
-            override fun onSubmit(id: String?, callerContext: Any?) {
-                drawable = holder.topLevelDrawable
-            }
-
-            override fun onFinalImageSet(
-                id: String?,
-                imageInfo: ImageInfo?,
-                animatable: Animatable?
-            ) {
-                drawable = holder.topLevelDrawable
-            }
-
-            override fun onIntermediateImageSet(id: String?, imageInfo: ImageInfo?) {
-                drawable = holder.topLevelDrawable
-            }
-        }
-        val controllerListener = ControllerListenerWrapper(
-            listeners = listOf(imageStateListener, updateDrawableListener)
-        )
-
-        val resizeOptions = if (size != null && size.width > 0 && size.height > 0) {
-            ResizeOptions(size.width, size.height)
-        } else {
-            null
-        }
-
-        val controllerBuilder = Fresco.newDraweeControllerBuilder()
-            .let { controllerBuilder ->
-                if (request is ImageRequest.Downloadable) {
-                    val fetcher = PostImageDownloader.get(context)
-                    val requests = request.frescoRequestBuilders(fetcher)
-                        .map { it.setResizeOptions(resizeOptions).build() }
-                        .toTypedArray()
-                    if (requests.size == 1) {
-                        controllerBuilder.setImageRequest(requests.first())
-                    } else {
-                        controllerBuilder.setFirstAvailableImageRequests(requests)
-                    }
-                } else {
-                    val frescoRequest = request.toFrescoRequestBuilder()
-                        .setResizeOptions(resizeOptions)
-                        .build()
-                    controllerBuilder.setImageRequest(frescoRequest)
-                }
-            }
-            .setAutoPlayAnimations(true)
-            .setOldController(holder.controller)
-            .setControllerListener(controllerListener)
-
-        holder.controller = controllerBuilder.build()
-
-        holder
-    }
-
-    val frescoScaleType = rememberFrescoScaleType(alignment, contentScale)
-
-    LaunchedEffect(holder, frescoScaleType) {
-        holder.hierarchy.actualImageScaleType = frescoScaleType
-    }
-
-    LaunchedEffect(progressColor, secondaryProgressColor, layoutDirection) {
+    LaunchedEffect(progressColor, secondaryProgressColor, layoutDirection, onUpdateStyle) {
         progressDrawable?.let {
             it.progressColor = progressColor.toArgb()
             it.secondaryProgressColor = secondaryProgressColor.toArgb()
             it.layoutDirection = layoutDirection
-            val progress = it.level / 10000f
-            // Update progress drawable
-            holder.hierarchy.setProgress(progress, true)
+            val progress = it.level / CircleProgressDrawable.MAX_LEVEL.toFloat()
+            onUpdateStyle(progress)
         }
     }
 
-    DisposableEffect(holder) {
-        holder.onVisibilityChange(true)
-        holder.onAttach()
-        onDispose {
-            holder.onVisibilityChange(false)
-            holder.onDetach()
-        }
-    }
-
-    SideEffect {
-        drawable?.let {
-            val bounds = it.bounds
-            val width = it.intrinsicWidth
-            val height = it.intrinsicHeight
-            if (bounds.width() != width || bounds.height() != height) {
-                it.bounds = Rect(0, 0, width, height)
-            }
-        }
-    }
-
-    Image(
-        painter = rememberDrawablePainter(drawable),
-        contentDescription = contentDescription,
-        modifier = modifier,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        alignment = alignment,
-        contentScale = contentScale,
-    )
-}
-
-@Composable
-private fun rememberFrescoScaleType(
-    alignment: Alignment,
-    contentScale: ContentScale,
-): ScalingUtils.ScaleType {
-    val layoutDirection = LocalLayoutDirection.current
-    return remember(alignment, contentScale, layoutDirection) {
-        createFrescoScaleType(alignment, contentScale, layoutDirection)
-    }
+    return progressDrawable
 }
 
 private fun createFrescoScaleType(
@@ -384,4 +482,145 @@ private fun createFrescoScaleType(
             outTransform.postTranslate(offset.x.toFloat(), offset.y.toFloat())
         }
     }
+}
+
+private fun frescoHolderOf(
+    context: Context,
+    request: ImageRequest,
+    size: IntSize?,
+    decodeRegion: IntRect?,
+    fadeIn: Boolean,
+    progressDrawable: Drawable?,
+    currDrawable: MutableState<Drawable?>,
+    checkMemoryCacheFirst: Boolean,
+    listener: ImageStateListener?,
+): DraweeHolder<GenericDraweeHierarchy> {
+    val hierarchy = GenericDraweeHierarchyInflater.inflateBuilder(context, null)
+        .setFadeDuration(if (fadeIn) 255 else 0)
+        .setProgressBarImage(progressDrawable)
+        .build()
+    val holder = DraweeHolder.create(hierarchy, context)
+
+    val currVale = currDrawable.value
+    if (checkMemoryCacheFirst &&
+        currVale is RegionDrawable &&
+        currVale.region == decodeRegion
+    ) {
+        // Hit memory cache, skip
+        return holder
+    }
+
+    val imageStateListener = object : BaseControllerListener<ImageInfo>() {
+        override fun onSubmit(id: String?, callerContext: Any?) {
+            listener?.onLoading(null)
+        }
+
+        override fun onFinalImageSet(
+            id: String?,
+            imageInfo: ImageInfo?,
+            animatable: Animatable?
+        ) {
+            listener?.onSuccess(
+                imageInfo?.getIntSize() ?: IntSize.Zero,
+                imageInfo?.originalSize()
+            )
+        }
+
+        override fun onIntermediateImageSet(id: String?, imageInfo: ImageInfo?) {
+            listener?.onLoading(imageInfo?.getIntSize())
+        }
+
+        override fun onFailure(id: String?, throwable: Throwable?) {
+            listener?.onFailure(throwable)
+        }
+
+    }
+    val updateDrawableListener = object : BaseControllerListener<ImageInfo>() {
+        override fun onSubmit(id: String?, callerContext: Any?) {
+            currDrawable.value = RegionDrawable.of(holder.topLevelDrawable, decodeRegion)
+        }
+
+        override fun onFinalImageSet(
+            id: String?,
+            imageInfo: ImageInfo?,
+            animatable: Animatable?
+        ) {
+            currDrawable.value = RegionDrawable.of(holder.topLevelDrawable, decodeRegion)
+        }
+
+        override fun onIntermediateImageSet(id: String?, imageInfo: ImageInfo?) {
+            currDrawable.value = RegionDrawable.of(holder.topLevelDrawable, decodeRegion)
+        }
+    }
+    val controllerListener = ControllerListenerWrapper(
+        listeners = listOf(imageStateListener, updateDrawableListener)
+    )
+
+    val resizeOptions = if (decodeRegion != null) {
+        val resize = if (size.isNonZero()) size else decodeRegion.size
+        // Disable down-sampling
+        ResizeOptions(resize.width, resize.height, maxBitmapSize = 20_000f)
+    } else if (size.isNonZero()) {
+        ResizeOptions(size.width, size.height)
+    } else {
+        null
+    }
+
+    val controllerBuilder = Fresco.newDraweeControllerBuilder()
+        .let { controllerBuilder ->
+            if (request is ImageRequest.Downloadable) {
+                val fetcher = PostImageDownloader.get(context)
+                val requests = request.frescoRequestBuilders(fetcher)
+                    .map {
+                        it.setResizeOptions(resizeOptions)
+                            .setImageRegionDecode(decodeRegion)
+                            .build()
+                    }
+                    .toTypedArray()
+                if (requests.size == 1) {
+                    controllerBuilder.setImageRequest(requests.first())
+                } else {
+                    controllerBuilder.setFirstAvailableImageRequests(requests)
+                }
+            } else {
+                val frescoRequest = request.toFrescoRequestBuilder()
+                    .setResizeOptions(resizeOptions)
+                    .setImageRegionDecode(decodeRegion)
+                    .build()
+                controllerBuilder.setImageRequest(frescoRequest)
+            }
+        }
+        .setAutoPlayAnimations(true)
+        .setOldController(holder.controller)
+        .setControllerListener(controllerListener)
+
+    holder.controller = controllerBuilder.build()
+
+    return holder
+}
+
+private fun ImageRequestBuilder.setImageRegionDecode(region: IntRect?): ImageRequestBuilder {
+    region ?: return this
+    return this.setImageDecodeOptions(
+        ImageDecodeOptions.newBuilder()
+            .setCustomImageDecoder(RegionDecoder.create(region))
+            .build()
+    )
+}
+
+private fun ImageInfo.getIntSize(): IntSize {
+    return IntSize(width, height)
+}
+
+private fun ImageInfo.originalSize(): IntSize? {
+    val width = extras[HasExtraData.KEY_ENCODED_WIDTH] as? Int ?: return null
+    val height = extras[HasExtraData.KEY_ENCODED_HEIGHT] as? Int ?: return null
+    return IntSize(width, height)
+}
+
+@OptIn(ExperimentalContracts::class)
+private fun <T : IntSize?> T.isNonZero(): Boolean {
+    contract { returns(true) implies (this@isNonZero != null) }
+    this ?: return false
+    return width > 0 && height > 0
 }
