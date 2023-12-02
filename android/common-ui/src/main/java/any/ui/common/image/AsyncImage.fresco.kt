@@ -106,40 +106,6 @@ private data class Regions(
     val list: List<RequestRegion>,
 )
 
-@Suppress("FunctionName")
-internal fun RegionDecodeThreshold(
-    minHeight: Int,
-    maxAspectRatio: Float,
-): RegionDecodeThresholds = RegionDecodeThresholds(
-    value = packFloats(minHeight.toFloat(), maxAspectRatio)
-)
-
-@Immutable
-@JvmInline
-internal value class RegionDecodeThresholds(private val value: Long) {
-    val minHeight: Int
-        get() = unpackFloat1(value).toInt()
-
-    val maxAspectRatio: Float
-        get() = unpackFloat2(value)
-
-    companion object {
-        /**
-         * Default thresholds, which helps memory usage and quality for large and long images.
-         */
-        val Default = RegionDecodeThreshold(
-            minHeight = 2000,
-            maxAspectRatio = 2f / 3f,
-        )
-
-        // No image satisfies these thresholds
-        val Disabled = RegionDecodeThreshold(
-            minHeight = Int.MAX_VALUE,
-            maxAspectRatio = 0f,
-        )
-    }
-}
-
 @Composable
 internal fun FrescoAsyncImage(
     request: ImageRequest,
@@ -155,7 +121,7 @@ internal fun FrescoAsyncImage(
     placeholder: ImageRequest? = null,
     fadeIn: Boolean = false,
     showProgressbar: Boolean = false,
-    regionDecodeThresholds: RegionDecodeThresholds = RegionDecodeThresholds.Default,
+    regionDecodeThresholds: RegionDecodeThresholds = RegionDecodeThresholds.Disabled,
 ) {
     var sourceImageSize by remember(request) { mutableStateOf<IntSize?>(null) }
 

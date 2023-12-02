@@ -81,6 +81,7 @@ fun AsyncImage(
     showProgressbar: Boolean = false,
     restrictRequestSizeToContainer: Boolean = true,
     autoFreeRequest: Boolean = true,
+    regionDecodeThresholds: RegionDecodeThresholds = RegionDecodeThresholds.Disabled,
 ) {
     val density = LocalDensity.current
 
@@ -178,6 +179,7 @@ fun AsyncImage(
                 placeholder = placeholder,
                 fadeIn = fadeIn,
                 showProgressbar = showProgressbar,
+                regionDecodeThresholds = regionDecodeThresholds,
             )
         }
     } else {
@@ -209,6 +211,7 @@ fun AsyncImage(
             placeholder = placeholder,
             fadeIn = fadeIn,
             showProgressbar = showProgressbar,
+            regionDecodeThresholds = regionDecodeThresholds,
         )
     }
 }
