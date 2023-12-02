@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,7 +40,7 @@ import kotlinx.coroutines.flow.combine
 interface ImageStateListener {
     fun onLoading(size: IntSize?)
 
-    fun onSuccess(size: IntSize)
+    fun onSuccess(size: IntSize, originalSize: IntSize?)
 
     fun onFailure(error: Throwable?)
 }
@@ -52,7 +53,7 @@ internal open class OnImageStateListener(
         onState?.invoke(ImageState.Loading(size))
     }
 
-    override fun onSuccess(size: IntSize) {
+    override fun onSuccess(size: IntSize, originalSize: IntSize?) {
         onState?.invoke(ImageState.Success(size))
     }
 
@@ -62,7 +63,50 @@ internal open class OnImageStateListener(
 }
 
 /**
- * Image that load image synchronously.
+ * Component for async image loading.
+ *
+ * ### Examples
+ *
+ * ```kotlin
+ * // Load from internet
+ * AsyncImage(
+ *     request = ImageRequest.Url("https://.../pic.png"),
+ *     contentDescription = null,
+ * )
+ *
+ * // Load from file
+ * AsyncImage(
+ *     request = ImageRequest.File(File(path)),
+ *     contentDescription = null,
+ * )
+ *
+ * // Load from resources
+ * AsyncImage(
+ *     request = ImageRequest.Res(R.drawable.some_picture),
+ *     contentDescription = null,
+ * )
+ * ```
+ *
+ * @param request The request object, supports file, http url, res id and more.
+ * @param contentDescription Content description string.
+ * @param modifier The modifier passed to the sub component.
+ * @param alignment The alignment of actual image.
+ * @param contentScale Content scale of the actual image.
+ * @param alpha Alpha to apply for the painter.
+ * @param colorFilter Color filter to apply for the painter.
+ * @param onState The image loading state, can be one of [ImageState.Loading],
+ * [ImageState.Success] and [ImageState.Failure].
+ * @param reloadKey A key to force reload the image.
+ * @param placeholder The placeholder request. Usually a thumbnail url smaller than the [request].
+ * @param fadeIn Whether the fade in transition should be enabled when displaying the loaded image.
+ * @param showProgressbar Whether the progress bar should be displayed when loading the image.
+ * @param restrictRequestSizeToContainer If true, the actual image will be resized to fit the
+ * container, which can be memory efficient but also less performant for layout. Defaults to true.
+ * @param autoFreeRequest If true, the cached image will be enqueued to the image memory cache
+ * cleaner after it's offscreen.
+ * @param regionDecodeThresholds Region decode the image if its actual size meets these thresholds.
+ * This helps the down-sampling of long images but can hurt layout performance. Defaults to be
+ * disabled.
  */
 @Composable
 fun AsyncImage(
@@ -74,20 +118,21 @@ fun AsyncImage(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = rememberImageColorFilter(),
     onState: ((ImageState) -> Unit)? = null,
-    reloadFactor: Int? = null,
+    reloadKey: Int? = null,
     placeholder: ImageRequest? = null,
     fadeIn: Boolean = false,
     showProgressbar: Boolean = false,
     restrictRequestSizeToContainer: Boolean = true,
     autoFreeRequest: Boolean = true,
+    regionDecodeThresholds: RegionDecodeThresholds = RegionDecodeThresholds.Disabled,
 ) {
     val density = LocalDensity.current
 
     val imageSizeState = remember(request) { mutableStateOf(IntSize.Zero) }
     val layoutSizeState = remember(request) { mutableStateOf(IntSize.Zero) }
 
-    var autoWidth by remember(request) { mutableStateOf(0) }
-    var autoHeight by remember(request) { mutableStateOf(0) }
+    var autoWidth by remember(request) { mutableIntStateOf(0) }
+    var autoHeight by remember(request) { mutableIntStateOf(0) }
 
     fun autoSizing() {
         val imageSize = imageSizeState.value
@@ -105,8 +150,8 @@ fun AsyncImage(
 
     val listener = remember(request, onState, layoutSizeState) {
         object : OnImageStateListener(onState) {
-            override fun onSuccess(size: IntSize) {
-                super.onSuccess(size)
+            override fun onSuccess(size: IntSize, originalSize: IntSize?) {
+                super.onSuccess(size, originalSize)
                 imageSizeState.value = size
                 autoSizing()
             }
@@ -173,10 +218,11 @@ fun AsyncImage(
                 colorFilter = colorFilter,
                 listener = listener,
                 size = requestSize,
-                reloadFactor = reloadFactor,
+                reloadFactor = reloadKey,
                 placeholder = placeholder,
                 fadeIn = fadeIn,
                 showProgressbar = showProgressbar,
+                regionDecodeThresholds = regionDecodeThresholds,
             )
         }
     } else {
@@ -204,10 +250,11 @@ fun AsyncImage(
             alpha = alpha,
             colorFilter = colorFilter,
             listener = listener,
-            reloadFactor = reloadFactor,
+            reloadFactor = reloadKey,
             placeholder = placeholder,
             fadeIn = fadeIn,
             showProgressbar = showProgressbar,
+            regionDecodeThresholds = regionDecodeThresholds,
         )
     }
 }

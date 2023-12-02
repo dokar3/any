@@ -111,7 +111,7 @@ internal fun ImageItem(
                     }
                 }
             },
-            reloadFactor = reloadFactor,
+            reloadKey = reloadFactor,
             showProgressbar = true,
         )
 
