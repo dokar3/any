@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import any.base.image.ImageRequest
 import any.base.image.ImageState
 import any.ui.common.image.AsyncImage
+import any.ui.common.image.RegionDecodeThresholds
 import any.ui.common.theme.darkerImagePlaceholder
 import any.ui.common.theme.imagePlaceholder
 
@@ -109,8 +110,9 @@ internal fun FullWidthImageItem(
                     }
                 }
             },
-            reloadFactor = reloadFactor,
+            reloadKey = reloadFactor,
             showProgressbar = true,
+            regionDecodeThresholds = RegionDecodeThresholds.Default,
         )
 
         if (!isLoaded && showIndex) {
