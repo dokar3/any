@@ -7,11 +7,10 @@ import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -231,17 +230,8 @@ internal fun FrescoAsyncImage(
                 isRegionsDisplayed = true
             }
 
-            /// Decode and display image regions in a lazy column
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(regionsVal.aspectRatio),
-                userScrollEnabled = false,
-            ) {
-                items(
-                    items = regionsVal.list,
-                    key = { region -> request.toString() + region },
-                ) { region ->
+            Column {
+                for (region in regionsVal.list) {
                     FrescoAsyncImageImpl(
                         request = request,
                         contentDescription = contentDescription,
@@ -252,48 +242,48 @@ internal fun FrescoAsyncImage(
                         contentScale = ContentScale.FillWidth,
                         alpha = 1f,
                         colorFilter = colorFilter,
-                        listener = listenerWrapper,
+                        listener = null,
                         size = region.requestSize,
                         decodeRegion = region.decode,
                         reloadKey = reloadFactor,
                         fadeIn = false,
-                        showProgressbar = showProgressbar,
+                        showProgressbar = false,
                     )
                 }
             }
         }
+    }
 
-        if (regions == null || !isRegionsDisplayed) {
-            FrescoAsyncImageImpl(
-                request = request,
-                contentDescription = contentDescription,
-                modifier = Modifier.fillMaxSize(),
-                alignment = alignment,
-                contentScale = contentScale,
-                alpha = alpha,
-                colorFilter = colorFilter,
-                listener = listenerWrapper,
-                size = size,
-                reloadKey = reloadFactor,
-                fadeIn = fadeIn,
-                showProgressbar = showProgressbar,
-            )
-        }
+    if (regions == null || !isRegionsDisplayed) {
+        FrescoAsyncImageImpl(
+            request = request,
+            contentDescription = contentDescription,
+            modifier = Modifier.fillMaxSize(),
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha,
+            colorFilter = colorFilter,
+            listener = listenerWrapper,
+            size = size,
+            reloadKey = reloadFactor,
+            fadeIn = fadeIn,
+            showProgressbar = showProgressbar,
+        )
+    }
 
-        if (!isLoaded && placeholder != null && placeholder != request) {
-            // Show placeholder if image is not ready
-            FrescoAsyncImageImpl(
-                request = placeholder,
-                contentDescription = contentDescription,
-                modifier = Modifier.fillMaxSize(),
-                alignment = alignment,
-                contentScale = contentScale,
-                alpha = alpha,
-                colorFilter = colorFilter,
-                size = size,
-                checkMemoryCacheFirst = true,
-            )
-        }
+    if (!isLoaded && placeholder != null && placeholder != request) {
+        // Show placeholder if image is not ready
+        FrescoAsyncImageImpl(
+            request = placeholder,
+            contentDescription = contentDescription,
+            modifier = Modifier.fillMaxSize(),
+            alignment = alignment,
+            contentScale = contentScale,
+            alpha = alpha,
+            colorFilter = colorFilter,
+            size = size,
+            checkMemoryCacheFirst = true,
+        )
     }
 }
 
