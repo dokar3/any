@@ -2,7 +2,6 @@ package any.ui.common.image
 
 import android.content.Context
 import android.graphics.Matrix
-import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
@@ -14,10 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -25,21 +24,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntRect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.util.packFloats
-import androidx.compose.ui.util.unpackFloat1
-import androidx.compose.ui.util.unpackFloat2
 import androidx.core.graphics.drawable.toDrawable
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
@@ -66,6 +68,7 @@ import kotlinx.coroutines.delay
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.math.min
+import android.graphics.Rect as AndroidRect
 
 private class ControllerListenerWrapper<T>(
     private val listeners: List<ControllerListener<T>>
@@ -198,7 +201,7 @@ internal fun FrescoAsyncImage(
 
             Column {
                 for (region in regionsVal.list) {
-                    FrescoAsyncImageImpl(
+                    LazyFrescoAsyncImage(
                         request = request,
                         contentDescription = contentDescription,
                         modifier = Modifier
@@ -206,14 +209,10 @@ internal fun FrescoAsyncImage(
                             .aspectRatio(region.aspectRatio),
                         alignment = alignment,
                         contentScale = ContentScale.FillWidth,
-                        alpha = 1f,
                         colorFilter = colorFilter,
-                        listener = null,
                         size = region.requestSize,
                         decodeRegion = region.decode,
                         reloadKey = reloadFactor,
-                        fadeIn = false,
-                        showProgressbar = false,
                     )
                 }
             }
@@ -250,6 +249,58 @@ internal fun FrescoAsyncImage(
             size = size,
             checkMemoryCacheFirst = true,
         )
+    }
+}
+
+/**
+ * Only load and display image when its bounds are in the root layout. Optimize for images in
+ * a scrollable container.
+ */
+@Composable
+private fun LazyFrescoAsyncImage(
+    request: ImageRequest,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    colorFilter: ColorFilter? = null,
+    size: IntSize? = null,
+    decodeRegion: IntRect? = null,
+    reloadKey: Int? = null,
+    checkMemoryCacheFirst: Boolean = false,
+    preloadDistance: Dp = 96.dp,
+) {
+    var bounds by remember { mutableStateOf<Rect?>(null) }
+    val view = LocalView.current
+    val preloadDistancePx = with(LocalDensity.current) { preloadDistance.toPx() }
+    val visible by remember {
+        derivedStateOf {
+            val currBounds = bounds ?: return@derivedStateOf false
+            val rootSize = IntSize(view.width, view.height).toSize()
+            val rootBounds = Rect(offset = Offset.Zero, size = rootSize)
+            val testBounds = currBounds.copy(
+                top = currBounds.top - preloadDistancePx,
+                bottom = currBounds.bottom + preloadDistancePx,
+            )
+            rootBounds.overlaps(testBounds)
+        }
+    }
+
+    Box(modifier = modifier.onGloballyPositioned { bounds = it.boundsInRoot() }) {
+        if (visible) {
+            FrescoAsyncImageImpl(
+                request = request,
+                modifier = Modifier,
+                contentDescription = contentDescription,
+                alignment = alignment,
+                contentScale = contentScale,
+                colorFilter = colorFilter,
+                size = size,
+                decodeRegion = decodeRegion,
+                reloadKey = reloadKey,
+                checkMemoryCacheFirst = checkMemoryCacheFirst,
+            )
+        }
     }
 }
 
@@ -329,7 +380,7 @@ private fun FrescoAsyncImageImpl(
             val width = it.intrinsicWidth
             val height = it.intrinsicHeight
             if (bounds.width() != width || bounds.height() != height) {
-                it.bounds = Rect(0, 0, width, height)
+                it.bounds = AndroidRect(0, 0, width, height)
             }
         }
     }
@@ -406,7 +457,7 @@ private fun createFrescoScaleType(
     return object : AbstractScaleType() {
         override fun getTransformImpl(
             outTransform: Matrix,
-            parentRect: Rect,
+            parentRect: AndroidRect,
             childWidth: Int,
             childHeight: Int,
             focusX: Float,
