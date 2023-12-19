@@ -99,7 +99,7 @@ media3-common = { module = "androidx.media3:media3-common", version.ref = "media
 media3-database = { module = "androidx.media3:media3-database", version.ref = "media3" }
 media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3" }
 
-guava = { module = "com.google.guava:guava", version = "31.1-android" }
+guava = { module = "com.google.guava:guava", version = "33.0.0-jre" }
 
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
