@@ -94,6 +94,16 @@ export function fetchFreshList(
     }
 
     let thumb = item.select("featuredImage")?.text() ?? "";
+    if (thumb.length === 0) {
+      const enclosures = item.selectAll("enclosure");
+      for (const enclosure of enclosures) {
+        if (enclosure.attr("type").startsWith("image/")) {
+          thumb = enclosure.attr("url");
+          break;
+        }
+      }
+    }
+
     let contentElements = new Array<Post.ContentElement>();
 
     const text = content.length > 0 ? content : description;
