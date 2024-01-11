@@ -193,8 +193,10 @@ class CommentsViewModel(
         }
     }
 
-    fun clearMessage() {
-        _uiState.update { it.copy(message = null) }
+    fun removeMessageById(id: Long) {
+        if (uiState.value.message?.id == id) {
+            _uiState.update { it.copy(message = null) }
+        }
     }
 
     fun expandReplies(

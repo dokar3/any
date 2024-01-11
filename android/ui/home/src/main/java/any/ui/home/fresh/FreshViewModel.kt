@@ -341,6 +341,12 @@ class FreshViewModel(
         }
     }
 
+    fun removeMessageById(id: Long) {
+        if (freshUiState.value.message?.id == id) {
+            _freshUiState.update { it.copy(message = null) }
+        }
+    }
+
     /**
      * Cancel loading jobs
      */

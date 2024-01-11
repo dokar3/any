@@ -967,8 +967,8 @@ private fun PostContent(
     UiMessagePopup(
         message = uiState.error,
         applyWindowInsetsToOffset = false,
-        offset = DpOffset(0.dp, -bottomBarHeight),
-        onClearMessage = viewModel::clearError,
+        offset = DpOffset(0.dp, -bottomBarHeight + 16.dp),
+        onMessageDismissed = viewModel::removeErrorById,
         onRetry = {
             viewModel.fetchPost(
                 serviceId = serviceId,

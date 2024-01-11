@@ -98,7 +98,7 @@ fun ProfileScreen(
             },
             onFetchMore = viewModel::fetchMorePosts,
             onRetryPostsFetch = viewModel::retryPostsFetch,
-            onClearMessage = viewModel::clearMessage,
+            onMessageDismissed = viewModel::removeMessageById,
             onCollectPost = viewModel::collectPost,
             onDiscardPost = viewModel::discardPost,
             onAddPostToFolder = viewModel::addToFolder,
@@ -133,7 +133,7 @@ fun ProfileScreen(
         },
         onFetchMore = viewModel::fetchMorePosts,
         onRetryPostsFetch = viewModel::retryPostsFetch,
-        onClearMessage = viewModel::clearMessage,
+        onMessageDismissed = viewModel::removeMessageById,
         onCollectPost = viewModel::collectPost,
         onDiscardPost = viewModel::discardPost,
         onAddPostToFolder = viewModel::addToFolder,
@@ -151,7 +151,7 @@ private fun ProfileScreenContent(
     onRefresh: () -> Unit,
     onFetchMore: () -> Unit,
     onRetryPostsFetch: () -> Unit,
-    onClearMessage: () -> Unit,
+    onMessageDismissed: (id: Long) -> Unit,
     onCollectPost: (UiPost) -> Unit,
     onDiscardPost: (UiPost) -> Unit,
     onAddPostToFolder: (UiPost, String) -> Unit,
@@ -325,7 +325,7 @@ private fun ProfileScreenContent(
 
     UiMessagePopup(
         message = uiState.message,
-        onClearMessage = onClearMessage,
+        onMessageDismissed = onMessageDismissed,
         onRetry = {
             if (uiState.isFailedToFetchPosts) {
                 onRetryPostsFetch()

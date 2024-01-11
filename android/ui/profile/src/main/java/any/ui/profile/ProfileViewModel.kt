@@ -381,6 +381,12 @@ class ProfileViewModel(
         _uiState.update { it.copy(message = null) }
     }
 
+    fun removeMessageById(id: Long) {
+        if (uiState.value.message?.id == id) {
+            _uiState.update { it.copy(message = null) }
+        }
+    }
+
     override suspend fun onPostsUpdated(posts: List<UiPost>) {
         val currentPosts = uiState.value.posts.toMutableList()
         if (currentPosts.isEmpty()) {
