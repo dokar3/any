@@ -647,6 +647,12 @@ class CollectionsViewModel(
         }
     }
 
+    fun removeErrorMessageById(id: Long) {
+        if (collectionsUiState.value.error?.id == id) {
+            _collectionsUiState.update { it.copy(error = null) }
+        }
+    }
+
     fun clearError() {
         _collectionsUiState.update { it.copy(error = null) }
     }

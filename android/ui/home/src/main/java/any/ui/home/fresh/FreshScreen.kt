@@ -307,7 +307,7 @@ internal fun FreshScreen(
                     )
                 }
             },
-            onClearMessage = { viewModel.clearMessage() },
+            onMessageDismissed = viewModel::removeMessageById,
             appBarHeight = { screenState.topBarHeight },
             appBarOffsetProvider = { screenState.topBarOffsetY },
             uiState = uiState,
@@ -389,7 +389,7 @@ private fun FreshScreenContent(
     onFetchMore: (force: Boolean) -> Unit,
     onRefresh: () -> Unit,
     onFetchPreviousRequest: (remoteOnly: Boolean) -> Unit,
-    onClearMessage: () -> Unit,
+    onMessageDismissed: (id: Long) -> Unit,
     appBarHeight: () -> Int,
     appBarOffsetProvider: () -> Float,
     uiState: FreshUiState,
@@ -456,9 +456,9 @@ private fun FreshScreenContent(
     if (!isRunningTransitions) {
         UiMessagePopup(
             message = uiState.message,
-            onClearMessage = onClearMessage,
+            onMessageDismissed = onMessageDismissed,
             onRetry = { onFetchPreviousRequest(true) },
-            offset = DpOffset(0.dp, (-56).dp),
+            offset = DpOffset(0.dp, (-40).dp),
         )
     }
 }

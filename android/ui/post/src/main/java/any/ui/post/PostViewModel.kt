@@ -264,6 +264,12 @@ class PostViewModel(
         }
     }
 
+    fun removeErrorById(id: Long) {
+        if (postUiState.value.error?.id == id) {
+            _postUiState.update { it.copy(error = null) }
+        }
+    }
+
     private suspend fun reloadPost(post: Post) {
         val cachedPost = postRepository.loadCachedPost(post.serviceId, post.url)
         if (cachedPost != null) {

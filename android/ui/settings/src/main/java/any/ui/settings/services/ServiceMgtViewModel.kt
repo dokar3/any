@@ -254,6 +254,12 @@ class ServiceMgtViewModel(
         }
     }
 
+    fun removeMessageById(id: Long) {
+        if (servicesUiState.value.message?.id == id) {
+            _servicesUiState.update { it.copy(message = null) }
+        }
+    }
+
     fun unselectAllDbServices() {
         _servicesUiState.update {
             it.copy(selectedServices = emptySet())
