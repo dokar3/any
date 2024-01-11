@@ -520,7 +520,7 @@ internal fun ServiceManagement(
 
     UiMessagePopup(
         message = uiState.message,
-        onClearMessage = { viewModel.clearMessage() },
+        onMessageDismissed = viewModel::removeMessageById,
         modifier = Modifier.height(48.dp),
         maxTextLines = 1,
         applyWindowInsetsToOffset = false,

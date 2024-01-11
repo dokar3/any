@@ -607,7 +607,7 @@ internal fun CollectionsScreen(
         val error = uiState.error!!
         UiMessagePopup(
             message = error,
-            onClearMessage = viewModel::clearError,
+            onMessageDismissed = viewModel::removeErrorMessageById,
         )
     }
 }
