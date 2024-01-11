@@ -283,6 +283,12 @@ class SearchViewModel(
         }
     }
 
+    fun removeMessageById(id: Long) {
+        if (searchUiState.value.message?.id == id) {
+            _searchUiState.update { it.copy(message = null) }
+        }
+    }
+
     override suspend fun onPostsUpdated(posts: List<UiPost>) {
         val currPosts = _searchUiState.value.posts
         val updatedPosts = currPosts.updateWith(

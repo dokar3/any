@@ -50,6 +50,7 @@ dependencies {
     implementation libs.accompanist.drawablepainter
     implementation libs.accompanist.pager.indicators
     implementation libs.chiptextfield
+    implementation libs.sonner
     implementation libs.media3.exoplayer
     implementation libs.guava
 

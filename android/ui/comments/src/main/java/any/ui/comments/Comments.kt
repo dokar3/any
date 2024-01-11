@@ -185,7 +185,7 @@ fun CommentsSheet(
 
         UiMessagePopup(
             message = uiState.message,
-            onClearMessage = viewModel::clearMessage,
+            onMessageDismissed = viewModel::removeMessageById,
             onRetry = viewModel::fetchPrevRequest,
         )
     }
