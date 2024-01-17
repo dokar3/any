@@ -3,12 +3,8 @@ package any.ui.common.widget
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -16,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
@@ -27,6 +22,7 @@ import any.base.util.Intents
 import any.ui.common.richtext.Html
 import any.ui.common.richtext.RichTextStyle
 import com.dokar.sonner.LocalToastContentColor
+import com.dokar.sonner.TextToastAction
 import com.dokar.sonner.Toast
 import com.dokar.sonner.ToastType
 import com.dokar.sonner.ToastWidthPolicy
@@ -46,7 +42,6 @@ fun UiMessagePopup(
     showRetry: Boolean = onRetry != null,
     offset: DpOffset = DpOffset.Zero,
     applyWindowInsetsToOffset: Boolean = true,
-    retryText: @Composable () -> Unit = { Text(stringResource(R.string.reload)) },
 ) {
     val toaster = rememberToasterState(onToastDismissed = { onMessageDismissed(it.id as Long) })
 
@@ -55,6 +50,10 @@ fun UiMessagePopup(
     val context = LocalContext.current
 
     val density = LocalDensity.current
+
+    val retryActionText = stringResource(R.string.retry)
+
+    val currentOnRetry = rememberUpdatedState(newValue = onRetry)
 
     val intOffset = if (applyWindowInsetsToOffset) {
         with(density) {
@@ -67,8 +66,14 @@ fun UiMessagePopup(
         with(density) { IntOffset(offset.x.roundToPx(), offset.y.roundToPx()) }
     }
 
-    LaunchedEffect(toaster) {
-        toaster.listen { currentMessage?.toToast() }
+    LaunchedEffect(toaster, retryActionText, showRetry) {
+        toaster.listen {
+            currentMessage?.toToast(
+                retryActionText = retryActionText,
+                showRetry = showRetry,
+                onRetry = currentOnRetry.value,
+            )
+        }
     }
 
     Toaster(
@@ -85,25 +90,9 @@ fun UiMessagePopup(
                 ToastWidthPolicy()
             }
         },
-        actionSlot = {
-            if (it.type == ToastType.Error && showRetry && onRetry != null) {
-                TextButton(onClick = { onRetry() }) {
-                    CompositionLocalProvider(
-                        LocalTextStyle provides LocalTextStyle.current.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = LocalToastContentColor.current,
-                        )
-                    ) {
-                        retryText()
-                    }
-                }
-            } else {
-                ToasterDefaults.actionSlot(toast = it)
-            }
-        },
-        messageSlot = {
+        messageSlot = { toast ->
             Html(
-                html = it.message.toString(),
+                html = toast.message.toString(),
                 onLinkClick = { Intents.openInBrowser(context, it) },
                 style = RichTextStyle.Default.copy(linkColor = MaterialTheme.colors.secondary),
                 color = LocalToastContentColor.current,
@@ -115,12 +104,24 @@ fun UiMessagePopup(
     )
 }
 
-private fun UiMessage.toToast(): Toast = when (this) {
+private fun UiMessage.toToast(
+    retryActionText: String,
+    showRetry: Boolean,
+    onRetry: (() -> Unit)?,
+): Toast = when (this) {
     is UiMessage.Error -> Toast(
         id = id,
         message = message,
         type = ToastType.Error,
-        duration = Duration.INFINITE
+        duration = Duration.INFINITE,
+        action = if (onRetry != null && showRetry) {
+            TextToastAction(
+                text = retryActionText,
+                onClick = { onRetry() },
+            )
+        } else {
+            null
+        },
     )
 
     is UiMessage.Warn -> Toast(id = id, message = message, type = ToastType.Warning)
