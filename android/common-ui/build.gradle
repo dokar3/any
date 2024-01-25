@@ -45,7 +45,6 @@ dependencies {
     api projects.richtext
 
     implementation libs.androidx.activity.compose
-    implementation libs.compose.ui.uiText
     implementation libs.fresco
     implementation libs.fresco.middleware
     implementation libs.accompanist.drawablepainter
