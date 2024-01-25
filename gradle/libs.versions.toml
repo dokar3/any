@@ -40,6 +40,7 @@ compose-animation = { module = "androidx.compose.animation:animation" }
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material = { module = "androidx.compose.material:material" }
 compose-ui-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-uiText = { module = "androidx.compose.ui:ui-text" }
 compose-ui-util = { module = "androidx.compose.ui:ui-util" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
