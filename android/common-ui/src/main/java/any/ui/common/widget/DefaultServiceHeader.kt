@@ -438,9 +438,9 @@ fun DefaultServiceHeader(
                 // Random letters
                 val textMargin = 8.dp.toPx()
                 val textMeasurer = TextMeasurer(
-                    fallbackFontFamilyResolver = fontFamilyResolver,
-                    fallbackDensity = density,
-                    fallbackLayoutDirection = layoutDirection,
+                    defaultFontFamilyResolver = fontFamilyResolver,
+                    defaultDensity = density,
+                    defaultLayoutDirection = layoutDirection,
                 )
                 val textStyle = TextStyle(
                     fontSize = 60.sp,
