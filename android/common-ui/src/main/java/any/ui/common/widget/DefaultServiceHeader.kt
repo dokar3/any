@@ -57,11 +57,13 @@ import androidx.compose.ui.unit.sp
 import any.base.compose.ImmutableHolder
 import any.base.image.ImageLoader
 import any.base.image.ImageRequest
+import any.base.log.Logger
 import any.ui.common.image.rememberImageColorFilter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -326,10 +328,19 @@ fun DefaultServiceHeader(
                     return@launch
                 }
                 semaphore.withPermit {
-                    val bitmap = ImageLoader.fetchBitmap(
-                        request = icons.value[i],
-                        finalResultOnly = true,
-                    ).firstOrNull()
+                    val request = icons.value[i]
+                    val bitmap = ImageLoader
+                        .fetchBitmap(
+                            request = request,
+                            finalResultOnly = true,
+                        )
+                        .catch {
+                            Logger.e(
+                                "DefaultServiceHeader",
+                                "Failed to fetch bitmap for req: $request"
+                            )
+                        }
+                        .firstOrNull()
                     if (bitmap != null) {
                         mutex.withLock { iconImages[i] = bitmap.asImageBitmap() }
                     } else {
