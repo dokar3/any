@@ -156,7 +156,7 @@ class SampleDataManager(
     }
 
     fun sampleServices(): List<ServiceManifest> {
-        return PostsViewType.values().map {
+        return PostsViewType.entries.map {
             val id = serviceIdFromPostsViewType(it)
             ServiceManifest(
                 id = id,
@@ -239,7 +239,7 @@ class SampleDataManager(
             if (it % 2 == 0) "Folder" else null
         }
         val now = System.currentTimeMillis()
-        val posts = PostsViewType.values()
+        val posts = PostsViewType.entries
             .map { postsViewType ->
                 List(postMedias.size) {
                     Post(

@@ -39,7 +39,7 @@ object CrashHandler {
                 ).show()
             }
 
-            writeCrashLog(e)
+            writeCrashLog(thread, e)
 
             val defHandler = defaultExceptionHandler
             if (defHandler != null) {
@@ -50,12 +50,15 @@ object CrashHandler {
         }
     }
 
-    private fun writeCrashLog(e: Throwable) {
+    private fun writeCrashLog(thread: Thread, e: Throwable) {
         val now = System.currentTimeMillis()
         val logFile = File(logDir, logFileDateFormat.format(now) + LOG_FILE_EXT)
         logFile.createNewFile()
         logFile.bufferedWriter()
-            .use { it.write(e.stackTraceToString()) }
+            .use {
+                it.write("Thread: ${thread}\n")
+                it.write(e.stackTraceToString())
+            }
     }
 
     fun crashLogFiles(): List<File> {

@@ -115,11 +115,11 @@ object ImageLoader {
         if (size != null && size.width > 0 && size.height > 0) {
             requestSizes[request] = size
         }
-        autoCleaner.enqueue(request)
+        autoCleaner.remove(request)
     }
 
     fun detachRequest(request: ImageRequest) {
-        autoCleaner.remove(request)
+        autoCleaner.enqueue(request)
     }
 
     fun evictFromCache(request: ImageRequest) {
