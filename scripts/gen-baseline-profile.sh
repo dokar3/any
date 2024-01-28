@@ -3,10 +3,7 @@
 ATTEMPTS=10
 for ((i=1; i <= ATTEMPTS; i++)); do
   echo "Attempt #$i"
-  ./gradlew macrobenchmark:connectedBenchmarkAndroidTest \
-  -Pandroid.testInstrumentationRunnerArguments.class=any.macrobenchmark.BaselineProfileGenerator \
-  -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect" \
-  -PdisableSplits
+  ./gradlew :app:generateReleaseBaselineProfile -PdisableSplits
 
   exit_code=$?
   if [ $exit_code -eq 0 ]; then

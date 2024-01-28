@@ -92,6 +92,14 @@ jobs:
           fi
           node ./scripts/fileBase64Converter.js str2f $ENCODED_KEYSTORE $KEYSTORE_PATH
 
+      # https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
+      - name: Enable KVM group perms
+        if: ${{ inputs.runner_os == 'ubuntu-latest' }}
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
       - name: Generate baseline profile
         if: ${{ inputs.build_release_apks }}
         env:
@@ -99,24 +107,7 @@ jobs:
           KEYSTORE_KEY_PASSWORD: ${{ secrets.keystore_key_password }}
           TWITTER_CLIENT_ID: ${{ secrets.twitter_client_id }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.unsplash_access_key }}
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          target: default
-          arch: x86_64
-          profile: pixel
-          avd-name: emulator
-          script: chmod +x ./scripts/gen-baseline-profile.sh && ./scripts/gen-baseline-profile.sh
-
-      - name: Copy baseline profile to app module
-        if: ${{ inputs.build_release_apks }}
-        run: |
-          profile_path="./android/macrobenchmark/build/outputs/\
-          connected_android_test_additional_output/benchmark/connected/emulator(AVD) - 12/\
-          BaselineProfileGenerator_generate-baseline-prof.txt"
-          output_path="./android/app/src/main/baseline-prof.txt"
-          cp "$profile_path" "$output_path"
-        shell: bash
+        run: chmod +x ./scripts/gen-baseline-profile.sh && ./scripts/gen-baseline-profile.sh
 
       - name: Build release APKs
         if: ${{ inputs.build_release_apks }}
