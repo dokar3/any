@@ -5,17 +5,17 @@ import { AnyService } from "./AnyService";
 import { LoadingProgressUpdater } from "./LoadingProgressUpdater";
 import { ServiceFeatures } from "./feature/Features";
 
-/// #if platform == 'android'
-// #code import { setupAndroidGlobals } from "../global/Globals.android";
-// #code setupAndroidGlobals();
-/// #elif platform == 'desktop'
-// #code import { setupDesktopGlobals } from "../global/Globals.desktop";
-// #code setupDesktopGlobals();
-/// #elif platform == 'browser'
-// #code import { setupBrowserGlobals } from "../global/Globals.browser";
-// #code setupBrowserGlobals();
+/// #if platform === 'android'
+import { setupAndroidGlobals } from "../global/Globals.android";
+setupAndroidGlobals();
+/// #elif platform === 'desktop'
+import { setupDesktopGlobals } from "../global/Globals.desktop";
+setupDesktopGlobals();
+/// #elif platform === 'browser'
+import { setupBrowserGlobals } from "../global/Globals.browser";
+setupBrowserGlobals();
 /// #else
-// #code throw new Error("Unknown platform: " + platform);
+throw new Error("Unknown platform: " + globalThis.platform);
 /// #endif
 
 /**
