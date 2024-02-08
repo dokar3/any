@@ -20,6 +20,8 @@
     "babel-plugin-inline-import": "^3.0.0",
     "cli-color": "^2.0.2",
     "dotenv": "^16.0.3",
+    "esbuild": "^0.19.12",
+    "esbuild-ifdef": "^0.2.0",
     "handlebars": "^4.7.7",
     "ifdef-loader": "^2.3.2",
     "terser-webpack-plugin": "^5.3.1",

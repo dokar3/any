@@ -3,7 +3,7 @@ import clc from "cli-color";
 import fs from "fs";
 import path from "path";
 import process from "process";
-import { compileJsSources } from "./compile.js";
+import { esbuildCompileJsSources } from "./compile.js";
 import Handlebars from "handlebars";
 import * as dotenv from "dotenv";
 import crypto from "crypto";
@@ -134,6 +134,8 @@ function buildService(
     fs.writeFileSync(path.join(outputDir, "build_info.json"), text);
   }
 
+  const tempFiles = [];
+
   const compilations = manifestsToCompile.map(
     (manifestFile) =>
       new Promise(async (resolve, reject) => {
@@ -212,23 +214,24 @@ function buildService(
         // Recreate entry point
         const entryPointPath = generateEntryPoint(serviceSourceFile);
 
+        tempFiles.push(entryPointPath);
+
         const outputFilename = path
           .basename(serviceSourceFile)
           .replace(/.ts$/, ".js");
 
         try {
           // Compile service source
-          await compileJsSources(
+          await esbuildCompileJsSources(
             [entryPointPath],
             uncompressedOutputDir,
             outputFilename,
             platform,
-            null,
             minimize === true
           );
-        } finally {
-          // Delete temporary entry point file
-          fs.rmSync(entryPointPath);
+        } catch (e) {
+          reject(e);
+          return;
         }
 
         // Update source path in manifest
@@ -295,7 +298,11 @@ function buildService(
         }
       })
   );
-  return Promise.all(compilations);
+  return Promise.all(compilations).finally(() => {
+    for (const tempFile of tempFiles) {
+      fs.rmSync(tempFile);
+    }
+  });
 }
 
 /**

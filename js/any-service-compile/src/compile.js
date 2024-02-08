@@ -4,14 +4,53 @@ import process from "process";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import TerserPlugin from "terser-webpack-plugin";
+import * as esbuild from "esbuild";
+import ifdefPlugin from "esbuild-ifdef";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
- * Compile js source files.
+ * Compile js source files using Esbuild.
  *
- * @param {string[]} file paths Source file paths.
+ * @param {string[]} filePaths paths Source file paths.
+ * @param {string} outputDir Output directory.
+ * @param {string} outputFilename Output filename, only works if the size of filePaths is 1.
+ * @param {string} platform Target platform.
+ * @param {boolean} [minimize] Enable the minimize optimization. Defaults to true.
+ */
+async function esbuildCompileJsSources(
+  filePaths,
+  outputDir,
+  outputFilename,
+  platform,
+  minimize
+) {
+  if (filePaths.length === 0) {
+    throw new Error("No files to compile.");
+  }
+  await esbuild.build({
+    entryPoints: filePaths,
+    bundle: true,
+    target: "esnext",
+    outdir: filePaths.length > 1 ? outputDir : undefined,
+    outfile:
+      filePaths.length == 1 ? path.join(outputDir, outputFilename) : undefined,
+    plugins: [
+      ifdefPlugin({
+        variables: {
+          platform: platform,
+        },
+      }),
+    ],
+    minify: minimize ?? true,
+  });
+}
+
+/**
+ * Compile js source files using Webpack.
+ *
+ * @param {string[]} filePaths paths Source file paths.
  * @param {string} outputDir Output directory.
  * @param {string} outputFilename Output filename.
  * @param {string} platform Target platform.
@@ -138,4 +177,4 @@ function compileJsSources(
   });
 }
 
-export { compileJsSources };
+export { esbuildCompileJsSources, compileJsSources };
