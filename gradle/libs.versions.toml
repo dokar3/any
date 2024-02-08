@@ -61,11 +61,9 @@ androidx-profileinstaller = { module = "androidx.profileinstaller:profileinstall
 androidx-interpolator = { module = "androidx.interpolator:interpolator", version = "1.0.0" }
 androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version = "1.0.0" }
 
-
 androidx-benchmark-common = { module = "androidx.benchmark:benchmark-common", version.ref = "androidx-benchmark" }
 androidx-benchmark-junit4 = { module = "androidx.benchmark:benchmark-junit4", version.ref = "androidx-benchmark" }
 androidx-macrobenchmark = { module = "androidx.benchmark:benchmark-macro-junit4", version.ref = "androidx-benchmark" }
-
 
 androidx-test-junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
 androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
@@ -111,8 +109,6 @@ guava = { module = "com.google.guava:guava", version = "31.1-android" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
-
-duktape = { module = "com.squareup.duktape:duktape-android", version.ref = "duktape" }
 
 disklrucache = { module = "com.jakewharton:disklrucache", version = "2.0.2" }
 
