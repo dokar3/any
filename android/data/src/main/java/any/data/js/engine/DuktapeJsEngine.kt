@@ -9,17 +9,17 @@ class DuktapeJsEngine private constructor() : JsEngine {
 
     override val version = "unknown"
 
-    override fun <T : Any> set(name: String, clz: Class<T>, instance: T) {
-        duktape.set(name, clz, instance)
+    override fun <T : Any> set(name: String, type: Class<T>, instance: T) {
+        duktape.set(name, type, instance)
     }
 
-    override fun evaluate(jsCode: String) {
-        duktape.evaluate(jsCode)
+    override suspend fun evaluate(code: String) {
+        duktape.evaluate(code)
     }
 
-    override fun <T> evaluate(jsCode: String, clz: Class<T>): T? {
+    override suspend fun <T : Any?> evaluate(code: String, type: Class<T>): T? {
         @Suppress("UNCHECKED_CAST")
-        return duktape.evaluate(jsCode) as? T
+        return duktape.evaluate(code) as T
     }
 
     override fun close() {
