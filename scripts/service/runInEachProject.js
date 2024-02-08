@@ -27,7 +27,7 @@ if (args.length == 0 || args[0] === "--help" || args[0] === "-h") {
 function runCommandForAllProjects(cmd) {
   forEachProjects(
     (projectDir) => {
-      console.log(`Run '${cmd}'for /${path.basename(projectDir)} ...`);
+      console.log(`Run '${cmd}' in /${path.basename(projectDir)}...`);
 
       process.chdir(projectDir);
 
@@ -51,7 +51,7 @@ async function askAndRun(cmd) {
     new Promise((resolve) => rl.question(query, resolve));
   const servicesDirs = path.join(process.cwd(), "js/services/")
   const choice = await prompt(
-    `Run '${cmd}' for every project in '${servicesDirs}' ? (y/n)\n`
+    `Run '${cmd}' for every project in '${servicesDirs}'? (y/n)\n`
   );
   if (choice === "y" || choice === "Y") {
     const start = Date.now();
