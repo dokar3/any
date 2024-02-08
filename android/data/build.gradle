@@ -73,6 +73,7 @@ dependencies {
     implementation libs.jsoup
     implementation libs.crc
     implementation libs.duktape
+    implementation libs.quickjs.kt
     implementation libs.bolts.tasks
     implementation libs.media3.common
     implementation libs.media3.database
@@ -80,6 +81,7 @@ dependencies {
 
     testImplementation libs.junit
     androidTestImplementation libs.duktape
+    androidTestImplementation libs.quickjs.kt
     androidTestImplementation projects.dataTesting
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso

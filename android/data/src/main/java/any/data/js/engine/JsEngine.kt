@@ -5,11 +5,11 @@ interface JsEngine : AutoCloseable {
 
     val version: String
 
-    fun <T : Any> set(name: String, clz: Class<T>, instance: T)
+    fun <T : Any> set(name: String, type: Class<T>, instance: T)
 
-    fun evaluate(jsCode: String)
+    suspend fun evaluate(code: String)
 
-    fun <T : Any?> evaluate(jsCode: String, clz: Class<T>): T?
+    suspend fun <T : Any?> evaluate(code: String, type: Class<T>): T?
 
     interface Factory {
         fun create(): JsEngine

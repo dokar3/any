@@ -197,7 +197,7 @@ class ServiceBridgeImpl(
                 send(FetchState.failure(error = Exception(errorMessage)))
             }
 
-            close()
+            channel.close()
         }
     }
 
@@ -227,7 +227,7 @@ class ServiceBridgeImpl(
 
             send(convertJsPostPagedResult(service, result))
 
-            close()
+            channel.close()
         }
     }
 
@@ -283,7 +283,7 @@ class ServiceBridgeImpl(
                 send(FetchState.failure(error = Exception(errorMessage)))
             }
 
-            close()
+            channel.close()
         }
     }
 
