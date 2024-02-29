@@ -3,9 +3,10 @@ package any.data.js.engine
 import com.dokar.quickjs.QuickJs
 import com.dokar.quickjs.binding.define
 import com.dokar.quickjs.evaluate
+import kotlinx.coroutines.Dispatchers
 
 class QuickJsEngine : JsEngine {
-    private val quickJs = QuickJs.create()
+    private val quickJs = QuickJs.create(Dispatchers.IO)
 
     override val name: String = "QuickJS"
 
