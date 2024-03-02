@@ -1,7 +1,7 @@
 [versions]
 compileSdk = "34"
 targetSdk = "34"
-agp = "8.2.2"
+agp = "8.3.0"
 kotlin = "1.9.22"
 compose-bom = "2024.02.01"
 composeCompiler = "1.5.8"
