@@ -126,7 +126,7 @@ jobs:
           fi
 
       - name: Create release from tag
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: ${{ (inputs.create_release_from_tag) && startsWith(github.ref, 'refs/tags/v') }}
         with:
           generate_release_notes: true
