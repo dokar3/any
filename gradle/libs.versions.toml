@@ -24,7 +24,7 @@ media3 = "1.3.0"
 ksp = "1.9.22-1.0.18"
 sonner = "0.3.4"
 androidx-benchmark = "1.2.3"
-quickjs-kt = "1.0.0-alpha08"
+quickjs-kt = "1.0.0-alpha09"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
