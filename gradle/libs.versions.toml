@@ -124,7 +124,7 @@ flick = { module = "me.saket:flick", version.ref = "flick" }
 
 crc = { module = "com.github.snksoft:crc", version = "1.1.0" }
 
-commonmark = { module = "org.commonmark:commonmark", version = "0.21.0" }
+commonmark = { module = "org.commonmark:commonmark", version = "0.22.0" }
 
 semver = { module = "com.vdurmont:semver4j", version = "3.1.0" }
 
