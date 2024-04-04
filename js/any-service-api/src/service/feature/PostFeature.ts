@@ -10,7 +10,7 @@ import { PagedResult } from "../../result/PagedResult";
  */
 export class FetchPostParams {
   /**
-   * The ost url.
+   * The post url.
    *
    * @since 0.1.0
    */
