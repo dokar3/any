@@ -210,7 +210,8 @@ function compileService(req, res) {
   } else {
     const result = {
       isSuccess: false,
-      message: "Server error: cannot get net address",
+      message:
+        "Server error: cannot get the local network address, please connect to a WI-FI.",
     };
     res.send(result);
   }

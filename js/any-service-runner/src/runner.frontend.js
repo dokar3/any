@@ -155,12 +155,24 @@ function startFrontendRunnerServer(port, backendServerPort) {
     ],
     port: !port || port <= 0 ? 10102 : port,
     open: true,
-    proxy: {
-      "/manifests": backendUrl,
-      "/request": backendUrl,
-      "/compile_service": backendUrl,
-      "/run_command": backendUrl,
-    },
+    proxy: [
+      {
+        context: "/manifests",
+        target: backendUrl,
+      },
+      {
+        context: "/request",
+        target: backendUrl,
+      },
+      {
+        context: "/compile_service",
+        target: backendUrl,
+      },
+      {
+        context: "/run_command",
+        target: backendUrl,
+      },
+    ],
   };
   const server = new WebpackDevServer(devServerOptions, compiler);
 
