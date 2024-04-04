@@ -79,9 +79,13 @@ export function parseShots(html: string, page: number): PagedResult<Post[]> {
     const start = scriptContent.indexOf(varDefine);
     if (start !== -1) {
       let end = scriptContent.length;
-      for (let j = start + varDefine.length; j < scriptContent.length; j++) {
-        if (scriptContent[j] === ";") {
-          end = j;
+      for (
+        let j = start + varDefine.length;
+        j < scriptContent.length - 1;
+        j++
+      ) {
+        if (scriptContent[j] === "]" && scriptContent[j + 1] === "\n") {
+          end = j + 1;
           break;
         }
       }
