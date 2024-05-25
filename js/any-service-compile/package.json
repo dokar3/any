@@ -20,7 +20,7 @@
     "babel-plugin-inline-import": "^3.0.0",
     "cli-color": "^2.0.2",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.21.0",
+    "esbuild": "^0.21.4",
     "esbuild-ifdef": "^0.2.0",
     "handlebars": "^4.7.7",
     "ifdef-loader": "^2.3.2",
