@@ -4,7 +4,6 @@ targetSdk = "34"
 agp = "8.4.1"
 kotlin = "2.0.0"
 compose-bom = "2024.05.00"
-composeCompiler = "1.5.11"
 navigationcompose = "2.7.7"
 lifecycle = "2.8.0"
 activitycompose = "1.9.0"
@@ -33,6 +32,7 @@ android-test = { id = "com.android.test", version.ref = "agp" }
 androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidx-benchmark" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 
 [libraries]

@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,7 +49,7 @@ internal fun ImageItem(
 ) {
     val hapticFeedback = LocalHapticFeedback.current
 
-    BoxWithConstraints(
+    Box(
         modifier = modifier.padding(
             horizontal = horizontalSpacing,
             vertical = verticalSpacing,
