@@ -20,5 +20,5 @@
     "ts-jest": "^29.0.3",
     "typescript": "^5.0.0"
   },
-  "packageManager": "yarn@3.3.0+sha512.16136ce2bbe4239c67bdb29c7af54918e0d8ef3029076bc4f30d32f5cdc35b6a081d8bff0ed404a32dc3da45f01bd7e0b9d12e83f1fc42638a3adc77115fafad"
+  "packageManager": "yarn@3.8.2"
 }
