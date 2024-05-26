@@ -16,6 +16,9 @@ import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFact
 import kotlinx.coroutines.flow.Flow
 
 object ImageLoader {
+    private const val HTTP_REQUEST_UA =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+
     private val MAX_DISK_CACHE_SIZE = 1024.MB
 
     private val trimmables = mutableListOf<MemoryTrimmable>()
@@ -89,8 +92,17 @@ object ImageLoader {
                 }
             )
             .build()
+        val httpClient = Http.DEFAULT_CLIENT_BUILDER
+            .addInterceptor { chain ->
+                val request = chain.request()
+                    .newBuilder()
+                    .header("User-Agent", HTTP_REQUEST_UA)
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
         val pipelineConfig = OkHttpImagePipelineConfigFactory
-            .newBuilder(app, Http.DEFAULT_CLIENT)
+            .newBuilder(app, httpClient)
             .setDiskCacheEnabled(true)
             .setDownsampleEnabled(true)
             .setResizeAndRotateEnabledForNetwork(true)
