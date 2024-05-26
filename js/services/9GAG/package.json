@@ -2,12 +2,7 @@
   "name": "9gag",
   "version": "1.0.0",
   "author": "Any",
-  "devDependencies": {
-    "@types/bun": "^1.1.3",
-    "concurrently": "^8.0.0"
-  },
-  "description": "Browse posts on 9gag.com",
-  "license": "Apache-2.0",
+  "type": "module",
   "scripts": {
     "test": "bun ./test",
     "build-android": "any-service-build --platform=android --output=./dist/",
@@ -17,5 +12,13 @@
     "any-service-runner-frontend": "any-service-runner --frontend",
     "runner": "concurrently --kill-others -n \"Backend \",\"Frontend\" \"npm run any-service-runner-backend\" \"npm run any-service-runner-frontend\""
   },
-  "type": "module"
+  "dependencies": {
+    "any-service-api": "link:any-service-api"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.3",
+    "any-service-compile": "link:any-service-compile",
+    "any-service-testing": "link:any-service-testing",
+    "concurrently": "^8.0.0"
+  }
 }
