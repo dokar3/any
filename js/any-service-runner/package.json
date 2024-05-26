@@ -25,5 +25,5 @@
     "any-service-compile": "portal:../any-service-compile"
   },
   "bin": "./src/main.js",
-  "packageManager": "yarn@3.8.2"
+  "packageManager": "yarn@4.2.2"
 }
