@@ -10,10 +10,10 @@ const HELP = `Run commands for built-in service projects.
 
 Examples:
 Install dependencies for all projects:
-  node runInEachProject.js yarn
+  bun runInEachProject.js bun install
 
 Upgrade typescript for all projects without ask any interactive question:
-  node runInEachProject.js --no-interaction yarn up typescript
+bun runInEachProject.js --no-interaction bun update typescript
 
 Options:
 --help, -h    Print help messages`;

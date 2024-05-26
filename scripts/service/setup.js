@@ -7,21 +7,18 @@ const child_process = require("child_process");
 const forEachProjects = require("./forEachProjects.js");
 
 const HELP = `This script will do:
-1. Check and install yarn (if not)
-2. Install dependencies for projects in the 'js/any-***' and 'js/services/' folder
-3. Build local dependencies, e.g. 'js/any-service-api', 'js/any-service-test'
-4. Link 'js/any-service-cli' so you can use the 'any-service-cli' command to create a new project
+1. Install dependencies for projects in the 'js/any-***' and 'js/services/' folder
+2. Build local dependencies, e.g. 'js/any-service-api', 'js/any-service-test'
+3. Link 'js/any-service-cli' so you can use the 'any-service-cli' command to create a new project
 
 Options:
---yarn        Specify the yarn version
 --help, -h    Print help messages`;
 
-let YARN_VERSION = "3.3.0";
-
-const PRE_BUILD_PATHS = [
+const DEPENDENCY_PATHS = [
   "./any-service-api",
   "./any-service-testing",
   "./any-service-compile",
+  "./any-service-runner",
 ];
 
 const BIN_LINKS = [
@@ -43,15 +40,11 @@ if (args.length > 0) {
       return;
     }
   }
-
-  if (args[0].startsWith("--yarn=")) {
-    YARN_VERSION = args[0].substring(7);
-  }
 }
 
 function err(msg) {
   if (err != null) {
-    console.error(msg);
+    throw new Error(msg);
   }
   process.exit(1);
 }
@@ -59,66 +52,24 @@ function err(msg) {
 if (!fs.existsSync(JS_DIR)) {
   err(
     "'js' folder is not found, Are you running this script another location " +
-      "rather than the project's root directory?"
+      "rather than the project's root directory?\nExpected dir to exist: " + JS_DIR
   );
   return;
 }
 
-function initYarn() {
-  function checkYarn() {
-    try {
-      const currVer = child_process.execSync("yarn -v").toString().trim();
-      return currVer === YARN_VERSION;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function checkCorepack() {
-    try {
-      child_process.execSync("corepack -v");
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function installCorepack() {
-    console.log("Installing corepack...");
-    child_process.execSync("npm i -g corepack");
-  }
-
-  function installYarn() {
-    if (!checkCorepack()) {
-      installCorepack();
-    }
-    try {
-      child_process.execSync("corepack enable");
-    } catch (e) {
-      console.warn(
-        "Unable to run 'corepack enable', 'yarn' may fail to install. \nPlease " +
-          "try to run this script in administrator mode if it fails.\n"
-      );
-    }
-    console.log(`Installing yarn ${YARN_VERSION}`);
-    child_process.execSync(`corepack prepare yarn@${YARN_VERSION} --activate`);
-    console.log();
-  }
-
-  if (!checkYarn()) {
-    installYarn();
-    initYarn();
-  }
+function checkBun() {
+  child_process.execSync("bun -v", { stdio: "inherit" });
 }
 
 function installDependencies() {
+  process.chdir(CURRENT_DIR);
   forEachProjects(
     (projectDir) => {
       process.chdir(projectDir);
       console.log(
         "Install dependencies for " + path.relative(JS_DIR, projectDir)
       );
-      child_process.execSync("yarn", { stdio: "inherit" });
+      child_process.execSync("bun install", { stdio: "inherit" });
       console.log();
     },
     () => {
@@ -129,7 +80,8 @@ function installDependencies() {
 }
 
 function buildLocalDependencies() {
-  for (const p of PRE_BUILD_PATHS) {
+  process.chdir(CURRENT_DIR);
+  for (const p of DEPENDENCY_PATHS) {
     const projectDir = path.join(JS_DIR, p);
     if (!fs.existsSync(projectDir)) {
       err("Pre-build local dependency does not exist, path: \n" + projectDir);
@@ -144,18 +96,26 @@ function buildLocalDependencies() {
       shouldBuildMain = !fs.existsSync(mainFile);
     }
 
+    process.chdir(projectDir);
+
+    console.log("Install dependencies for " + p);
+    child_process.execSync("bun install", { stdio: "inherit" });
+    console.log();
+
     if (shouldBuildMain) {
-      console.log(
-        "Building local dependency: " + path.relative(JS_DIR, projectDir)
-      );
-      process.chdir(projectDir);
-      child_process.execSync("yarn tsc", { stdio: "inherit" });
+      console.log("Building and creating link for local dependency:", p);
+      child_process.execSync("bun tsc && bun link", { stdio: "inherit" });
+      console.log();
+    } else {
+      console.log("Creating link for local dependency:", p)
+      child_process.execSync("bun link", { stdio: "inherit" });
       console.log();
     }
   }
 }
 
 function initBinLinks() {
+  process.chdir(CURRENT_DIR);
   for (const link of BIN_LINKS) {
     try {
       const r = child_process.execSync(link.testCmd);
@@ -170,9 +130,9 @@ function initBinLinks() {
 
 const start = Date.now();
 
-initYarn();
-installDependencies();
+checkBun();
 buildLocalDependencies();
+installDependencies();
 initBinLinks();
 
 const end = Date.now();

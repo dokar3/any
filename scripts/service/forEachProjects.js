@@ -4,7 +4,7 @@ const process = require("process");
 
 function err(msg) {
   if (err != null) {
-    console.error(msg);
+    throw new Error(msg);
   }
   process.exit(1);
 }
@@ -37,8 +37,8 @@ function forEachProjects(action, onEmpty, includeDependencyProjects) {
   const jsDir = path.join(currentDir, "js");
   if (!fs.existsSync(jsDir)) {
     err(
-      "'js' folder is not found, Are you running this script another location " +
-        "rather than the project's root directory?"
+    "'js' folder is not found, Are you running this script another location " +
+      "rather than the project's root directory?\nExpected dir to exist: " + jsDir
     );
     return;
   }

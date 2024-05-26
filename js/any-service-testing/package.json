@@ -1,24 +1,23 @@
 {
-  "name": "any-testing",
+  "name": "any-service-testing",
   "version": "1.0.0",
   "author": "Any",
   "description": "Create and test services on the node.js environment",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest ./test",
+    "test": "bun test",
     "build": "tsc"
   },
   "license": "Apache-2.0",
+  "dependencies": {
+    "any-service-api": "link:any-service-api"
+  },
   "devDependencies": {
-    "@types/jest": "^29.2.2",
-    "any-service-api": "portal:../any-service-api",
-    "jest": "^29.3.1",
+    "@types/bun": "^1.1.3",
     "jsdom": "^24.0.0",
     "os-locale": "^6.0.2",
     "sync-request": "^6.1.0",
-    "ts-jest": "^29.0.3",
     "typescript": "^5.0.0"
-  },
-  "packageManager": "yarn@4.2.2"
+  }
 }

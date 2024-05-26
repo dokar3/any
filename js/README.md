@@ -38,8 +38,7 @@ Built-in services.
 
 **Requirements:**
 
-- [Node.js](https://nodejs.org/) The JavaScript runtime for compiling and packing.
-- [yarn](https://yarnpkg.com/) The dependency management.
+- [Bun](https://bun.sh/) The JavaScript runtime and package manager.
 
 **Setup:**
 
@@ -51,15 +50,14 @@ node ./scripts/service/setup.js
 
 The `setup.js` script will do:
 
-1. Check and install `yarn` (if not)
-2. Install dependencies for projects in the `js/any-***` and `js/services/` folder
-3. Build local dependencies, e.g. `js/any-service-api`, `js/any-service-test`
-4. Link `js/any-service-cli` so you can use the `any-service-cli` command to create a new project
+1. Install dependencies for projects in the `js/any-***` and `js/services/` folder
+2. Build local dependencies, e.g. `js/any-service-api`, `js/any-service-test`
+3. Link `js/any-service-cli` so you can use the `any-service-cli` command to create a new project
 
 **Create and run a new service:**
 
 
-3. Run `any-service-cli` command to create new project:
+1. Run `any-service-cli` command to create new project:
 
     ```shell
     cd js/services/
@@ -67,25 +65,25 @@ The `setup.js` script will do:
     any-service-cli
     ```
 
-4. Install dependencies:
+2. Install dependencies:
 
     ```shell
     cd NewProject
 
-    yarn
+    bun install
     ```
 
-5. Test, run and build:
+3. Test, run and build:
 
     ```shell
     # Test with jest framework
-    yarn test
+    bun test
     
     # (WIP) Start runner servers to debug service in a browser
-    yarn runner
+    bun runner
     
     # Build
-    yarn build-android
+    bun build-android
     ```
 
 ### Other commands and scripts
@@ -94,14 +92,14 @@ The `setup.js` script will do:
 
 ```shell
 # Install dependencies for all projects
-node ./scripts/service/runInEachProject.js yarn
+bun ./scripts/service/runInEachProject.js bun install
 
 # Upgrade 'typescript' for all projects
-node ./scripts/service/runInEachProject.js yarn up typescript
+bun ./scripts/service/runInEachProject.js bun update typescript
 ```
 
 **Build all built-in services:**
 
 ```shell
-node ./scripts/service/buildAll.js --platform=android --output=/path/to/output_dir
+bun ./scripts/service/buildAll.js --platform=android --output=/path/to/output_dir
 ```
