@@ -98,6 +98,10 @@ function buildLocalDependencies() {
 
     process.chdir(projectDir);
 
+    console.log("Install dependencies for " + p);
+    child_process.execSync("bun install", { stdio: "inherit" });
+    console.log();
+
     if (shouldBuildMain) {
       console.log("Building and creating link for local dependency:", p);
       child_process.execSync("bun tsc && bun link", { stdio: "inherit" });
