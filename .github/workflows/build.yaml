@@ -37,35 +37,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up node.js
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 18
-
-      - name: Upgrade yarn
-        run: |
-          corepack enable
-          corepack prepare yarn@stable --activate
-          echo "yarn version: $(yarn -v)"
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get globalFolder)/cache" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Restore yarn cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('js/**/yarn.lock', 'js/**/.yarnrc.yml') }}
-          restore-keys: |
-            yarn-cache-folder-
-
-      - name: Setup yarn and js projects
-        run: |
-          node ./scripts/service/setup.js
-          echo "yarn version: $(yarn -v)"
-        shell: bash
+          bun-version: latest
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -90,7 +65,7 @@ jobs:
             echo "secret 'keystore_base64' is not set"
             exit 1
           fi
-          node ./scripts/fileBase64Converter.js str2f $ENCODED_KEYSTORE $KEYSTORE_PATH
+          bun ./scripts/fileBase64Converter.js str2f $ENCODED_KEYSTORE $KEYSTORE_PATH
 
       # https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
       - name: Enable KVM group perms

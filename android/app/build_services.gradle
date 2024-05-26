@@ -49,16 +49,10 @@ def cmd(File dir, String command) {
     )
 }
 
-def checkNodeJs() {
-    def check = "node -v"
+def checkBun() {
+    def check = "bun -v"
     def out = cmd(builtinServicesDir(), check).stdout
     return Pattern.compile("v\\d+\\.\\d+\\.\\d+").matcher(out).matches()
-}
-
-def checkYarn() {
-    def check = "yarn -v"
-    def out = cmd(builtinServicesDir(), check).stdout
-    return Pattern.compile("\\d+\\.\\d+\\.\\d+").matcher(out).matches()
 }
 
 task compileBuiltinJsServices() {
@@ -69,22 +63,17 @@ task compileBuiltinJsServices() {
     inputs.files(inputFiles)
     outputs.dir(compiledJsDir())
     doLast {
-        // Check nodejs
-        println("Checking node.js")
-        if (!checkNodeJs()) {
-            throw new GradleException("Node.js is not installed, please install it " +
-                    "manually: https://nodejs.org")
-        }
-
-        if (!checkYarn()) {
-            throw new GradleException("Yarn is not installed, please install it " +
-                    "manually: https://yarnpkg.com/getting-started/install")
+        // Check Bun
+        println("Checking Bun...")
+        if (!checkBun()) {
+            throw new GradleException("Bun is not installed, please install it " +
+                    "manually: https://bun.sh")
         }
 
         println("Compiling builtin js services...")
         // Compile js files
         def outputDir = compiledJsDir().absolutePath
-        def buildCmd = "node scripts/service/buildAll.js " +
+        def buildCmd = "bun scripts/service/buildAll.js " +
                 "--platform=android " +
                 "--output=${outputDir} " +
                 "--file-prefix=file:///android_asset/js/"

@@ -11,13 +11,13 @@ const OPT_BASE64_TXT_FILE_TO_FILE = "txt2f";
 
 const HELP = `Usage:
 Convert a file to a base 64 encoded text file:
-node fileBase64Converter.js ${OPT_FILE_TO_BASE64_TXT} input_file output.txt
+bun fileBase64Converter.js ${OPT_FILE_TO_BASE64_TXT} input_file output.txt
 
 Convert base 64 string to file:
-node fileBase64Converter.js ${OPT_BASE64_STRING_TO_FILE} BASE_64_STRING output_file
+bun fileBase64Converter.js ${OPT_BASE64_STRING_TO_FILE} BASE_64_STRING output_file
 
 Converter base 64 encoded text file to file:
-node fileBase64Converter.js ${OPT_BASE64_TXT_FILE_TO_FILE} base64.txt output_file
+bun fileBase64Converter.js ${OPT_BASE64_TXT_FILE_TO_FILE} base64.txt output_file
 `
 
 function err(msg) {

@@ -8,7 +8,7 @@ const forEachProjects = require("./forEachProjects.js");
 
 const HELP = `Build all builtin services
 Example:
-  node buildAll.js --platform=PLATFORM --output=/PATH/TO/OUTPUT/DIR
+  bun buildAll.js --platform=PLATFORM --output=/PATH/TO/OUTPUT/DIR
 
 Options:
 --platform            [Required] The target platform, could be 'android', 'desktop' or 'browser'.
@@ -385,7 +385,7 @@ function buildAll() {
 
       process.chdir(projectDir);
       child_process.execSync(
-        `yarn run build-${PLATFORM} -minimize=${MINIMIZE}`,
+        `bun run build-${PLATFORM} -minimize=${MINIMIZE}`,
         {
           stdio: "inherit",
         }
