@@ -6,7 +6,8 @@
     "allowJs": true,
     "declaration": true,
     "emitDeclarationOnly": false,
-    "outDir": "dist"
+    "outDir": "dist",
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"
