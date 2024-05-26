@@ -14,17 +14,11 @@ const HELP = `This script will do:
 Options:
 --help, -h    Print help messages`;
 
-const BUN_LINK_PATHS = [
+const DEPENDENCY_PATHS = [
   "./any-service-api",
-  "./any-service-compile",
   "./any-service-testing",
+  "./any-service-compile",
   "./any-service-runner",
-]
-
-const PRE_BUILD_PATHS = [
-  "./any-service-api",
-  "./any-service-testing",
-  "./any-service-compile",
 ];
 
 const BIN_LINKS = [
@@ -67,20 +61,6 @@ function checkBun() {
   child_process.execSync("bun -v", { stdio: "inherit" });
 }
 
-function bunLinkDependencies() {
-  process.chdir(CURRENT_DIR);
-  for (const p of BUN_LINK_PATHS) {
-    const projectDir = path.join(JS_DIR, p);
-    if (!fs.existsSync(projectDir)) {
-      err("Pre-build local dependency does not exist, path: \n" + projectDir);
-    }
-    process.chdir(projectDir);
-    console.log(`Creating link for '${p}'`);
-    child_process.execSync("bun link", { stdio: "inherit" });
-    console.log()
-  }
-}
-
 function installDependencies() {
   process.chdir(CURRENT_DIR);
   forEachProjects(
@@ -101,7 +81,7 @@ function installDependencies() {
 
 function buildLocalDependencies() {
   process.chdir(CURRENT_DIR);
-  for (const p of PRE_BUILD_PATHS) {
+  for (const p of DEPENDENCY_PATHS) {
     const projectDir = path.join(JS_DIR, p);
     if (!fs.existsSync(projectDir)) {
       err("Pre-build local dependency does not exist, path: \n" + projectDir);
@@ -116,10 +96,15 @@ function buildLocalDependencies() {
       shouldBuildMain = !fs.existsSync(mainFile);
     }
 
+    process.chdir(projectDir);
+
     if (shouldBuildMain) {
-      console.log("Building local dependency: ", p);
-      process.chdir(projectDir);
-      child_process.execSync("bun tsc", { stdio: "inherit" });
+      console.log("Building and creating link for local dependency:", p);
+      child_process.execSync("bun tsc && bun link", { stdio: "inherit" });
+      console.log();
+    } else {
+      console.log("Creating link for local dependency:", p)
+      child_process.execSync("bun link", { stdio: "inherit" });
       console.log();
     }
   }
@@ -142,9 +127,8 @@ function initBinLinks() {
 const start = Date.now();
 
 checkBun();
-bunLinkDependencies();
-installDependencies();
 buildLocalDependencies();
+installDependencies();
 initBinLinks();
 
 const end = Date.now();
