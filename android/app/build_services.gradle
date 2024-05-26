@@ -52,7 +52,7 @@ def cmd(File dir, String command) {
 def checkBun() {
     def check = "bun -v"
     def out = cmd(builtinServicesDir(), check).stdout
-    return Pattern.compile("v\\d+\\.\\d+\\.\\d+").matcher(out).matches()
+    return Pattern.compile("\\d+\\.\\d+\\.\\d+").matcher(out).matches()
 }
 
 task compileBuiltinJsServices() {
