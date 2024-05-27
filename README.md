@@ -29,7 +29,7 @@ App for collecting news, articles, feeds and web pages. Currently, it's still in
 # Build requirements
 
 - Android Studio
-- [Node.js](https://nodejs.org/) and [yarn](https://yarnpkg.com/) (check the [README](js/README.md) in the `js` folder for more details)
+- [Bun](https://bun.sh) (check the [README](js/README.md) in the `js` folder for more details)
 
 # Credits
 
