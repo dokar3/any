@@ -30,7 +30,7 @@ const http = new Http({
     for (const key of Object.keys(respHeaders)) {
       headers[key] = respHeaders[key];
     }
-    return new HttpResponse(resp.body.toString(), resp.statusCode, headers);
+    return new HttpResponse(resp.text(), resp.status, headers);
   },
 });
 
