@@ -1,6 +1,8 @@
-# The JavaScript sources
+# JavaScript services
 
-### Summary
+This folder includes the source code of all built-in JavaScript services, these services will support the data fetching and parsing part of the app.
+
+# Modules
 
 Modules in this folder are used to create, build and run services.
 
@@ -26,26 +28,24 @@ The service template module.
 
 `/any-service-testing`
 
-Provides test utility functions like `createTestService()` to test services on the node environment. 
+Provides test utility functions like `createTestService()` to test services on the node environment.
 
 `/services`
 
 Built-in services.
 
-### Start a new service project
+# Start a new service project
 
-*The following commands are only tested on Windows 10*
-
-**Requirements:**
+### Requirements
 
 - [Bun](https://bun.sh/) The JavaScript runtime and package manager.
 
-**Setup:**
+### Setup
 
 ```shell
 cd project/root/dir
 
-node ./scripts/service/setup.js
+bun ./scripts/service/setup.js
 ```
 
 The `setup.js` script will do:
@@ -54,39 +54,38 @@ The `setup.js` script will do:
 2. Build local dependencies, e.g. `js/any-service-api`, `js/any-service-test`
 3. Link `js/any-service-cli` so you can use the `any-service-cli` command to create a new project
 
-**Create and run a new service:**
-
+### Create and run a new service
 
 1. Run `any-service-cli` command to create new project:
 
-    ```shell
-    cd js/services/
-    
-    any-service-cli
-    ```
+   ```shell
+   cd js/services/
+
+   any-service-cli
+   ```
 
 2. Install dependencies:
 
-    ```shell
-    cd NewProject
+   ```shell
+   cd NewProject
 
-    bun install
-    ```
+   bun install
+   ```
 
 3. Test, run and build:
 
-    ```shell
-    # Test with jest framework
-    bun test
-    
-    # (WIP) Start runner servers to debug service in a browser
-    bun runner
-    
-    # Build
-    bun build-android
-    ```
+   ```shell
+   # Test with jest framework
+   bun test
 
-### Other commands and scripts
+   # (WIP) Start runner servers to debug service in a browser
+   bun runner
+
+   # Build
+   bun build-android
+   ```
+
+# Other commands and scripts
 
 **Run commands for all built-in projects**
 
