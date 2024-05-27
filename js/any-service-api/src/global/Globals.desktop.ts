@@ -12,42 +12,42 @@ declare const __ANY_LOG__: any;
 declare const __ANY_HTTP__: any;
 declare const __AnyDoc__: any;
 
-const console = new Console(
-  (message) => __ANY_LOG__.log(message),
-  (message) => __ANY_LOG__.info(message),
-  (message) => __ANY_LOG__.warn(message),
-  (message) => __ANY_LOG__.error(message)
-);
-
-const env = new Env(__ANY_ENV__);
-
-const http = new Http({
-  handle: (request) => {
-    const json = JSON.stringify(request);
-    const jsonRes = __ANY_HTTP__.request(json);
-    const res = JSON.parse(jsonRes);
-    return new HttpResponse(res.text, res.status, res.headers);
-  },
-});
-
-const dom: DOM = {
-  createDocument(text, type?) {
-    const doc = new __AnyDoc__(text, type === "xml" ? type : "html");
-    return new DesktopDomElement(doc, doc.rootElementId());
-  },
-};
-
-const progressUpdater = new LoadingProgressUpdater((progress, message) => {
-  console.log("Update loading progress: " + progress + " - msg " + message);
-});
-
-const manifestUpdater = new ManifestUpdater();
-
-const configsUpdater = new ConfigsUpdater((configs) => {
-  // DO NOTHING
-});
-
 export function setupDesktopGlobals() {
+  const console = new Console(
+    (message) => __ANY_LOG__.log(message),
+    (message) => __ANY_LOG__.info(message),
+    (message) => __ANY_LOG__.warn(message),
+    (message) => __ANY_LOG__.error(message)
+  );
+
+  const env = new Env(__ANY_ENV__);
+
+  const http = new Http({
+    handle: (request) => {
+      const json = JSON.stringify(request);
+      const jsonRes = __ANY_HTTP__.request(json);
+      const res = JSON.parse(jsonRes);
+      return new HttpResponse(res.text, res.status, res.headers);
+    },
+  });
+
+  const dom: DOM = {
+    createDocument(text, type?) {
+      const doc = new __AnyDoc__(text, type === "xml" ? type : "html");
+      return new DesktopDomElement(doc, doc.rootElementId());
+    },
+  };
+
+  const progressUpdater = new LoadingProgressUpdater((progress, message) => {
+    console.log("Update loading progress: " + progress + " - msg " + message);
+  });
+
+  const manifestUpdater = new ManifestUpdater();
+
+  const configsUpdater = new ConfigsUpdater((configs) => {
+    // DO NOTHING
+  });
+
   globalThis.console = console as any;
   globalThis.env = env;
   globalThis.http = http;

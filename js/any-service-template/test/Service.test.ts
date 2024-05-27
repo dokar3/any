@@ -1,4 +1,5 @@
 import { createTestService } from "any-service-testing";
+import { describe, expect, test } from "bun:test";
 import { features } from "../src/main";
 
 describe("MyService", () => {

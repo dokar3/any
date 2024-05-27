@@ -1,8 +1,6 @@
-import {
-  NotImplementedError,
-  ServiceFeatures,
-} from "any-service-api";
+import { NotImplementedError, ServiceFeatures } from "any-service-api";
 import { createTestService } from "../src/createTestService";
+import { describe, test, expect } from "bun:test";
 
 const features: ServiceFeatures = {
   post: {

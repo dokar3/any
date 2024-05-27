@@ -14,46 +14,46 @@ declare const __ANY_DOM_PLUGIN__: any;
 declare const __ANY_PROGRESS_PLUGIN__: any;
 declare const __ANY_CONFIGS_UPDATER__: any;
 
-const console = new Console(
-  (message) => __ANY_LOG_PLUGIN__.log(message),
-  (message) => __ANY_LOG_PLUGIN__.info(message),
-  (message) => __ANY_LOG_PLUGIN__.warn(message),
-  (message) => __ANY_LOG_PLUGIN__.error(message)
-);
-
-const env = new Env(__ANY_ENV__);
-
-const http = new Http({
-  handle: (request) => {
-    const json = JSON.stringify(request);
-    const jsonRes = __ANY_HTTP_PLUGIN__.request(json);
-    const res = JSON.parse(jsonRes);
-    return new HttpResponse(res.text, res.status, res.headers);
-  },
-});
-
-const dom: DOM = {
-  createDocument(text, type?) {
-    const t = type === "xml" ? type : "html";
-    const id = __ANY_DOM_PLUGIN__.create(text, t);
-    return new AndroidDomElement(id);
-  },
-};
-
-const progressUpdater = new LoadingProgressUpdater((progress, message) => {
-  __ANY_PROGRESS_PLUGIN__.update(
-    progress,
-    message !== undefined ? message : null
-  );
-});
-
-const manifestUpdater = new AndroidManifestUpdater();
-
-const configsUpdater = new ConfigsUpdater((configs) => {
-  __ANY_CONFIGS_UPDATER__.update(JSON.stringify(configs));
-});
-
 export function setupAndroidGlobals() {
+  const console = new Console(
+    (message) => __ANY_LOG_PLUGIN__.log(message),
+    (message) => __ANY_LOG_PLUGIN__.info(message),
+    (message) => __ANY_LOG_PLUGIN__.warn(message),
+    (message) => __ANY_LOG_PLUGIN__.error(message)
+  );
+
+  const env = new Env(__ANY_ENV__);
+
+  const http = new Http({
+    handle: (request) => {
+      const json = JSON.stringify(request);
+      const jsonRes = __ANY_HTTP_PLUGIN__.request(json);
+      const res = JSON.parse(jsonRes);
+      return new HttpResponse(res.text, res.status, res.headers);
+    },
+  });
+
+  const dom: DOM = {
+    createDocument(text, type?) {
+      const t = type === "xml" ? type : "html";
+      const id = __ANY_DOM_PLUGIN__.create(text, t);
+      return new AndroidDomElement(id);
+    },
+  };
+
+  const progressUpdater = new LoadingProgressUpdater((progress, message) => {
+    __ANY_PROGRESS_PLUGIN__.update(
+      progress,
+      message !== undefined ? message : null
+    );
+  });
+
+  const manifestUpdater = new AndroidManifestUpdater();
+
+  const configsUpdater = new ConfigsUpdater((configs) => {
+    __ANY_CONFIGS_UPDATER__.update(JSON.stringify(configs));
+  });
+
   globalThis.console = console as any;
   globalThis.env = env;
   globalThis.http = http;
