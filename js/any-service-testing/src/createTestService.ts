@@ -12,6 +12,7 @@ import * as process from "process";
 import { CachedHttpInterceptor } from "./CachedHttpRequestHandler";
 import { MemoryManifestUpdater } from "./MemoryManifestUpdater";
 import { setupTestGlobals } from "./TestGlobals";
+
 /**
  * Create a test service in the node environment.
  *

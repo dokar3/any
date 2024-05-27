@@ -316,8 +316,10 @@ function generateEntryPoint(originalEntryPointPath) {
   const dir = path.dirname(originalEntryPointPath);
   const filename = path.parse(originalEntryPointPath).name;
   const code = `
-    import { _createService, ServiceManifest } from "any-service-api";
+    import { _setupPlatformGlobals, _createService, ServiceManifest } from "any-service-api";
     import { features } from "./${filename}";
+
+    _setupPlatformGlobals();
 
     globalThis.initService = function(manifest: ServiceManifest, configs: any) {
       globalThis.service = _createService(

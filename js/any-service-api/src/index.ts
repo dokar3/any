@@ -1,5 +1,7 @@
 export * from "./global/Globals";
 
+export { _setupPlatformGlobals } from "./global/setupPlatformGlobals";
+
 export { AnyService } from "./service/AnyService";
 
 export { ServiceFeatures } from "./service/feature/Features";

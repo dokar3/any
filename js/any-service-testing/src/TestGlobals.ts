@@ -8,25 +8,23 @@ import {
   StringOrVoid,
 } from "any-service-api";
 import { IncomingHttpHeaders } from "http";
-import { JSDOM } from "jsdom";
-import { osLocaleSync } from "os-locale";
-import syncRequest from "sync-request";
+import syncFetch from "sync-fetch";
 
 const env = new Env({
-  LANGUAGE: osLocaleSync(),
+  get LANGUAGE(): string {
+    const osLocale = require("os-locale");
+    return osLocale;
+  },
 });
 
 const http = new Http({
   handle: (request: HttpRequest) => {
-    const resp = syncRequest(
-      request.method === "POST" ? "POST" : "GET",
-      request.url!!,
-      {
-        timeout: request.timeout,
-        headers: request.headers as IncomingHttpHeaders,
-        body: request.method === "POST" ? request.params : undefined,
-      }
-    );
+    const resp = syncFetch(request.url!!, {
+      method: request.method === "POST" ? "POST" : "GET",
+      timeout: request.timeout,
+      headers: request.headers as IncomingHttpHeaders,
+      body: request.method === "POST" ? request.params : undefined,
+    });
     const respHeaders = resp.headers;
     const headers = new Map<string, string>();
     for (const key of Object.keys(respHeaders)) {
@@ -39,6 +37,7 @@ const http = new Http({
 const dom: DOM = {
   createDocument(text, type?) {
     type = type === "xml" ? "application/xml" : "text/html";
+    const { JSDOM } = require("jsdom");
     const doc = new JSDOM(text, { contentType: type }).window.document;
     return new JsDomElement(doc);
   },
