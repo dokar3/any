@@ -181,6 +181,11 @@ function newAnyService(templateDir, params) {
   });
 
   console.log("Service project created: " + projectDir);
+  console.log("Run the following commands to get started:");
+  console.log();
+  console.log(`cd ${path.basename(projectDir)}`);
+  console.log(`bun install`);
+  console.log(`bun build-android`);
 }
 
 export default function newServiceProject(templateDir) {
