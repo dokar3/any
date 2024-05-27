@@ -122,7 +122,7 @@ function initBinLinks() {
     } catch (e) {
       console.log("Linking project " + link.path);
       process.chdir(path.join(JS_DIR, link.path));
-      child_process.execSync("npm link --bin-links");
+      child_process.execSync("bun link");
       console.log();
     }
   }
