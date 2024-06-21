@@ -21,6 +21,6 @@
   "bin": "./src/main.js",
   "description": "Any service runner for browsers.",
   "license": "Apache-2.0",
-  "packageManager": "yarn@4.3.0",
+  "packageManager": "yarn@4.3.1",
   "type": "module"
 }
