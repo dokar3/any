@@ -111,7 +111,7 @@ object PostImageSaver {
         targetFile: File,
         removeDiskCacheIfCopied: Boolean = false,
     ): Boolean {
-        val request = com.facebook.imagepipeline.request.ImageRequest.fromUri(url)
+        val request = com.facebook.imagepipeline.request.ImageRequest.fromUri(url)!!
         val imageDataSource = Fresco
             .getImagePipeline()
             .fetchEncodedImage(request, null)
