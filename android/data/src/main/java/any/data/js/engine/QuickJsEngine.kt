@@ -1,9 +1,16 @@
 package any.data.js.engine
 
+import any.data.entity.Comment
+import any.data.entity.JsFetchResult
+import any.data.entity.JsPagedResult
+import any.data.entity.JsPost
+import any.data.entity.JsUser
 import com.dokar.quickjs.QuickJs
 import com.dokar.quickjs.binding.define
+import com.dokar.quickjs.conveter.JsonClassConverter
 import com.dokar.quickjs.evaluate
 import kotlinx.coroutines.Dispatchers
+import kotlin.reflect.KType
 
 class QuickJsEngine : JsEngine {
     private val quickJs = QuickJs.create(Dispatchers.IO)
@@ -14,6 +21,12 @@ class QuickJsEngine : JsEngine {
 
     init {
         quickJs.maxStackSize = 5 * 1024 * 1024L
+        quickJs.addTypeConverters(
+            JsonClassConverter<JsFetchResult<JsPost>>(),
+            JsonClassConverter<JsFetchResult<JsUser>>(),
+            JsonClassConverter<JsPagedResult<List<JsPost>>>(),
+            JsonClassConverter<JsPagedResult<List<Comment>>>(),
+        )
     }
 
     override fun <T : Any> set(name: String, type: Class<T>, instance: T) {
@@ -24,7 +37,7 @@ class QuickJsEngine : JsEngine {
         quickJs.evaluate<Any>(code)
     }
 
-    override suspend fun <T : Any?> evaluate(code: String, type: Class<T>): T? {
+    override suspend fun <T : Any?> evaluate(code: String, type: KType): T? {
         return quickJs.evaluate(code, type)
     }
 

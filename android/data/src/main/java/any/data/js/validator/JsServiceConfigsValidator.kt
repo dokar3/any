@@ -4,6 +4,7 @@ import any.base.result.ValidationResult
 import any.data.entity.ServiceConfig
 import any.data.entity.ServiceManifest
 import any.data.js.ServiceRunner
+import any.data.js.engine.evaluate
 import any.data.js.plugin.MemoryServiceConfigsUpdater
 import any.data.js.plugin.MemoryServiceManifestUpdater
 import any.data.json.Json
@@ -40,12 +41,11 @@ class JsServiceConfigsValidator(
                 update = { latest = it },
             ),
         ) {
-            @Language("JS")
             val checkCode = """
                 const feature = service.features.config;
                 feature != null && typeof feature.validate === 'function'
             """.trimIndent()
-            val hasValidator = evaluate(checkCode, Boolean::class.java) == true
+            val hasValidator = evaluate<Boolean?>(checkCode) == true
 
             if (!hasValidator) {
                 return@runSafely configs.map { ValidationResult.Pass }
@@ -66,7 +66,7 @@ class JsServiceConfigsValidator(
             """.trimIndent()
 
             val failures = try {
-                val ret = evaluate(validateCode, String::class.java)
+                val ret = evaluate<String>(validateCode)
                 if (ret.isNullOrEmpty()) {
                     return@runSafely List(configs.size) { ValidationResult.Pass }
                 }

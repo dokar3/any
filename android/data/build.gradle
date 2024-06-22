@@ -71,6 +71,7 @@ dependencies {
     implementation libs.jsoup
     implementation libs.crc
     implementation libs.quickjs.kt
+    implementation libs.quickjs.kt.converter.moshi
     implementation libs.bolts.tasks
     implementation libs.media3.common
     implementation libs.media3.database
