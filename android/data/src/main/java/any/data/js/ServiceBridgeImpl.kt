@@ -1,7 +1,6 @@
 package any.data.js
 
 import android.content.Context
-import any.base.log.Logger
 import any.data.FetchState
 import any.data.entity.Comment
 import any.data.entity.JsFetchResult
@@ -14,13 +13,12 @@ import any.data.entity.Post
 import any.data.entity.ServiceManifest
 import any.data.entity.User
 import any.data.js.engine.JsEngine
+import any.data.js.engine.evaluate
 import any.data.js.plugin.LocalServiceConfigsUpdater
 import any.data.js.plugin.LocalServiceManifestUpdater
 import any.data.js.plugin.MemoryServiceConfigsUpdater
 import any.data.js.plugin.MemoryServiceManifestUpdater
 import any.data.js.plugin.ProgressPlugin
-import any.data.json.Json
-import any.data.json.fromJson
 import any.data.repository.PostContentRepository
 import any.data.repository.ServiceRepository
 import kotlinx.coroutines.CancellationException
@@ -32,37 +30,34 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.Language
 
 class ServiceBridgeImpl(
     private val serviceRunner: ServiceRunner,
     private val postContentRepository: PostContentRepository,
     private val serviceRepository: ServiceRepository,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default),
-    private val json: Json = Json,
 ) : ServiceBridge {
     override fun fetchUserById(
         service: ServiceManifest,
         id: String,
     ): Flow<FetchState<User>> = channelFlow {
         callFetchFunc(service) {
-            @Language("JS")
             val code = """
                 const params = {
                     userId: "${id.escape()}",
                 };
                 const feature = service.features.user;
-                JSON.stringify(feature.fetchById(params))
+                feature.fetchById(params)
             """.trimIndent()
 
             // Run js
-            val ret = evaluate(code, String::class.java)
-            if (ret == null) {
+            val jsResult = evaluate<JsFetchResult<JsUser>?>(code)
+            if (jsResult == null) {
                 send(FetchState.failure(Exception("Failed to fetch user, id: $id")))
                 return@callFetchFunc
             }
 
-            send(convertJsFetchUserResult(service, ret))
+            send(convertJsFetchUserResult(service, jsResult))
 
             channel.close()
         }
@@ -73,7 +68,6 @@ class ServiceBridgeImpl(
         url: String,
     ): Flow<FetchState<User>> = channelFlow {
         callFetchFunc(service) {
-            @Language("JS")
             val code = """
                 const params = {
                     userUrl: "${url.escape()}",
@@ -83,13 +77,13 @@ class ServiceBridgeImpl(
             """.trimIndent()
 
             // Run js
-            val ret = evaluate(code, String::class.java)
-            if (ret == null) {
+            val jsResult = evaluate<JsFetchResult<JsUser>?>(code)
+            if (jsResult == null) {
                 send(FetchState.failure(Exception("Failed to fetch user, url: $url")))
                 return@callFetchFunc
             }
 
-            send(convertJsFetchUserResult(service, ret))
+            send(convertJsFetchUserResult(service, jsResult))
 
             channel.close()
         }
@@ -101,25 +95,23 @@ class ServiceBridgeImpl(
         pageKey: JsPageKey?
     ): Flow<PagedPostsFetchState> = channelFlow {
         callFetchFunc(service) {
-            @Language("JS")
             val code = """
                 const params = {
                     userId: "${userId.escape()}",
                     pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.features.user;
-                const pagedResult = feature.fetchPosts(params);
-                JSON.stringify(pagedResult)
+                feature.fetchPosts(params)
             """.trimIndent()
 
             // Run js
-            val result = evaluate(code, String::class.java)
-            if (result == null) {
+            val jsResult = evaluate<JsPagedResult<List<JsPost>>?>(code)
+            if (jsResult == null) {
                 channel.send(FetchState.failure(Exception("Failed to fetch user posts")))
                 return@callFetchFunc
             }
 
-            send(convertJsPostPagedResult(service, result))
+            send(convertJsPostPagedResult(service, jsResult))
 
             channel.close()
         }
@@ -130,24 +122,22 @@ class ServiceBridgeImpl(
         pageKey: JsPageKey?
     ): Flow<PagedPostsFetchState> = channelFlow {
         callFetchFunc(service) {
-            @Language("JS")
             val code = """
                 const params = {
                     pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.features.post;
-                const pagedResult = feature.fetchFreshList(params);
-                JSON.stringify(pagedResult)
+                feature.fetchFreshList(params)
             """.trimIndent()
 
-            // Run js
-            val result = evaluate(code, String::class.java)
-            if (result == null) {
+            val jsResult = evaluate<JsPagedResult<List<JsPost>>?>(code)
+
+            if (jsResult == null) {
                 channel.send(FetchState.failure(Exception("Failed to fetch latest posts")))
                 return@callFetchFunc
             }
 
-            send(convertJsPostPagedResult(service, result))
+            send(convertJsPostPagedResult(service, jsResult))
 
             channel.close()
         }
@@ -158,42 +148,27 @@ class ServiceBridgeImpl(
         postUrl: String
     ): Flow<FetchState<Post?>> = channelFlow {
         callFetchFunc(service) {
-            @Language("JS")
             val code = """
                 const params = {
                     url: "$postUrl",
                 };
                 const feature = service.features.post;
-                const fetchResult = feature.fetch(params);
-                JSON.stringify(fetchResult)
+                feature.fetch(params)
             """.trimIndent()
 
             // Run js
-            val text = evaluate(code, String::class.java)
-            if (text == null) {
+            val jsResult = evaluate<JsFetchResult<JsPost>?>(code)
+            if (jsResult == null) {
                 send(FetchState.failure(Exception("Failed to load post")))
                 return@callFetchFunc
             }
 
-            // Parse json result
-            val fetchResult = try {
-                json.fromJson<JsFetchResult<JsPost>>(json = text)
-            } catch (e: Exception) {
-                Logger.e(TAG, "Illegal json: \n$text")
-                e.printStackTrace()
-                null
-            }
-
-            require(fetchResult != null) {
-                "Cannot fetch this post: Illegal data returned from javascript, $postUrl"
-            }
-
-            if (fetchResult.isOk()) {
-                val jsPost = fetchResult.data!!
+            if (jsResult.isOk()) {
+                val jsPost = jsResult.data!!
                 val post = jsPostToPost(service, jsPost)
                 send(FetchState.success(value = post, isRemote = true))
             } else {
-                val errorMessage = fetchResult.error ?: "No data passed from js"
+                val errorMessage = jsResult.error ?: "No data passed from js"
                 send(FetchState.failure(error = Exception(errorMessage)))
             }
 
@@ -207,25 +182,23 @@ class ServiceBridgeImpl(
         pageKey: JsPageKey?
     ): Flow<PagedPostsFetchState> = channelFlow {
         callFetchFunc(service) {
-            @Language("JS")
             val code = """
                 const params = {
                     query: "$query",
                     pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.features.post;
-                const pagedResult = feature.search(params);
-                JSON.stringify(pagedResult)
+                feature.search(params)
             """.trimIndent()
 
             // Run js
-            val result = evaluate(code, String::class.java)
-            if (result == null) {
+            val jsResult = evaluate<JsPagedResult<List<JsPost>>?>(code)
+            if (jsResult == null) {
                 send(FetchState.failure(Exception("Failed to load posts")))
                 return@callFetchFunc
             }
 
-            send(convertJsPostPagedResult(service, result))
+            send(convertJsPostPagedResult(service, jsResult))
 
             channel.close()
         }
@@ -238,7 +211,6 @@ class ServiceBridgeImpl(
         pageKey: JsPageKey?,
     ): Flow<PagedCommentsFetchState> = channelFlow {
         callFetchFunc(service) {
-            @Language("JS")
             val code = """
                 const params = {
                     postUrl: "$postUrl",
@@ -246,32 +218,19 @@ class ServiceBridgeImpl(
                     pageKey: ${pageKey.toJsValue()},
                 };
                 const feature = service.features.post;
-                const comments = feature.fetchComments(params);
-                JSON.stringify(comments)
+                feature.fetchComments(params)
             """.trimIndent()
 
-            val text = evaluate(code, String::class.java)
-            if (text == null) {
+            val jsResult = evaluate<JsPagedResult<List<Comment>>?>(code)
+            if (jsResult == null) {
                 send(FetchState.failure(Exception("Failed to load comments")))
                 return@callFetchFunc
             }
 
-            val jsPagedResult = try {
-                json.fromJson<JsPagedResult<Array<Comment>>>(json = text)!!
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Logger.e(TAG, "Illegal json: $text")
-                null
-            }
-
-            require(jsPagedResult != null) {
-                "Cannot fetch comments: Unsupported json returned from javascript"
-            }
-
-            if (jsPagedResult.isOk()) {
-                val comments = jsPagedResult.data!!.toList()
-                val prevKey = jsPagedResult.prevJsFetchKey()
-                val nextKey = jsPagedResult.nextJsFetchKey()
+            if (jsResult.isOk()) {
+                val comments = jsResult.data!!.toList()
+                val prevKey = jsResult.prevJsFetchKey()
+                val nextKey = jsResult.nextJsFetchKey()
                 val result = PagedResult(
                     data = comments,
                     prevKey = prevKey,
@@ -279,7 +238,7 @@ class ServiceBridgeImpl(
                 )
                 send(FetchState.success(value = result, isRemote = true))
             } else {
-                val errorMessage = jsPagedResult.error ?: "No data passed from js"
+                val errorMessage = jsResult.error ?: "No data passed from js"
                 send(FetchState.failure(error = Exception(errorMessage)))
             }
 
@@ -301,70 +260,43 @@ class ServiceBridgeImpl(
                 update = {},
             ),
         ) {
-            @Language("JS")
             val testCode = """
                 const feature = service.features.post;
                 feature != null && typeof feature.search === "function" 
             """.trimIndent()
-            evaluate(testCode, Boolean::class.java) == true
+            evaluate<Boolean>(testCode) == true
         }
         emit(isSearchable.getOrDefault(false))
     }
 
     private fun convertJsFetchUserResult(
         service: ServiceManifest,
-        result: String,
+        result: JsFetchResult<JsUser>,
     ): FetchState<User> {
-        // Parse json result
-        val fetchResult = try {
-            json.fromJson<JsFetchResult<JsUser>>(result)
-        } catch (e: Exception) {
-            Logger.e(TAG, "Illegal json: \n$result")
-            e.printStackTrace()
-            null
-        }
-
-        require(fetchResult != null) {
-            "Cannot fetch this user: Illegal data returned from javascript"
-        }
-
-        return if (fetchResult.isOk()) {
-            val jsUser = fetchResult.data!!
+        return if (result.isOk()) {
+            val jsUser = result.data!!
             val user = User.fromJsUser(serviceId = service.id, jsUser = jsUser)
             FetchState.success(value = user, isRemote = true)
         } else {
-            val errorMessage = fetchResult.error ?: "Unknown error from js"
+            val errorMessage = result.error ?: "Unknown error from js"
             FetchState.failure(error = Exception(errorMessage))
         }
     }
 
     private suspend fun convertJsPostPagedResult(
         service: ServiceManifest,
-        result: String,
+        result: JsPagedResult<List<JsPost>>,
     ): PagedPostsFetchState {
-        // Parse json result
-        val jsPagedResult = try {
-            json.fromJson<JsPagedResult<Array<JsPost>>>(json = result)!!
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Logger.e(TAG, "Illegal json: $result")
-            null
-        }
-
-        require(jsPagedResult != null) {
-            "Cannot fetch posts: Unsupported json returned from javascript"
-        }
-
-        return if (jsPagedResult.isOk()) {
-            val jsPosts = jsPagedResult.data!!
+        return if (result.isOk()) {
+            val jsPosts = result.data!!
             val createdAt = System.currentTimeMillis() + jsPosts.size - 1
             val posts: List<Post> = jsPosts
                 .distinctBy { it.url }
                 .mapIndexed { index, post ->
                     jsPostToPost(service, post).copy(createdAt = createdAt - index)
                 }
-            val prevKey = jsPagedResult.prevJsFetchKey()
-            val nextKey = jsPagedResult.nextJsFetchKey()
+            val prevKey = result.prevJsFetchKey()
+            val nextKey = result.nextJsFetchKey()
             val ret = PagedResult(
                 data = posts,
                 prevKey = prevKey,
@@ -372,7 +304,7 @@ class ServiceBridgeImpl(
             )
             FetchState.success(value = ret, isRemote = true)
         } else {
-            val errorMessage = jsPagedResult.error ?: "No data passed from js"
+            val errorMessage = result.error ?: "No data passed from js"
             FetchState.failure(error = Exception(errorMessage))
         }
     }
@@ -444,9 +376,9 @@ class ServiceBridgeImpl(
                 avatar = avatar,
                 category = category,
                 tags = tags,
-                commentCount = commentCount,
+                commentCount = commentCount ?: 0,
                 commentsKey = commentsKey,
-                openInBrowser = openInBrowser,
+                openInBrowser = openInBrowser == true,
                 reference = reference?.let {
                     Post.Reference(
                         type = it.type,

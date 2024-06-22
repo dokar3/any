@@ -17,9 +17,9 @@ internal data class JsPost(
     val category: String? = null,
     val tags: List<String>? = null,
     val content: List<ContentElement>? = null,
-    val commentCount: Int = 0,
+    val commentCount: Int? = 0,
     val commentsKey: String? = null,
-    val openInBrowser: Boolean = false,
+    val openInBrowser: Boolean? = false,
     val reference: Reference? = null,
 ) {
     @JsonClass(generateAdapter = true)
