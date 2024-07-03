@@ -10,8 +10,8 @@ data class Comment(
     val content: String = "",
     val avatar: String? = null,
     val media: List<Post.Media>? = null,
-    val date: Long = 0,
-    val upvotes: Int = 0,
-    val downvote: Int = 0,
+    val date: Long? = 0,
+    val upvotes: Int? = 0,
+    val downvote: Int? = 0,
     val replies: List<Comment>? = null,
 )
