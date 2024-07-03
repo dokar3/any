@@ -14,7 +14,7 @@ android {
         minSdk 21
         targetSdk libs.versions.targetSdk.get().toInteger()
         versionCode 18
-        versionName "0.6.8"
+        versionName "0.6.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
