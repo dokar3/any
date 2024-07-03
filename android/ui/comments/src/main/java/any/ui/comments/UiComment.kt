@@ -65,9 +65,9 @@ private fun List<Comment>.toUiComments(
                     avatar = avatar,
                     content = content,
                     media = media,
-                    date = date,
-                    upvotes = upvotes,
-                    downvote = downvote,
+                    date = date ?: 0L,
+                    upvotes = upvotes ?: 0,
+                    downvote = downvote ?: 0,
                 )
             } else {
                 UiComment.Reply(
@@ -77,9 +77,9 @@ private fun List<Comment>.toUiComments(
                     avatar = avatar,
                     content = content,
                     media = media,
-                    date = date,
-                    upvotes = upvotes,
-                    downvote = downvote,
+                    date = date ?: 0L,
+                    upvotes = upvotes ?: 0,
+                    downvote = downvote ?: 0,
                 )
             }
         }
