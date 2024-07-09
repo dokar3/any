@@ -229,9 +229,9 @@ iconv-lite@^0.4.24:
     safer-buffer ">= 2.1.2 < 3"
 
 inquirer@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-10.0.0.tgz#c50b1c6e02ee1a77085008ff36ed79186b9b47ce"
-  integrity sha512-flE/e5bOgsRRd+UrfGe6SfA9gZnGvY69dVUb2TPJn/I1LlbvWTuk0hZXbf7l7KiJwFkDtD9tH37HczSK1+gvww==
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-10.0.1.tgz#d05d9b8e1397b3cb136bf00d6ffea6a2d4f75fd3"
+  integrity sha512-XgthhRIn0Ci9JdGJpUo2EtpPfaczbooZbGTN+FTzSCyUb7YHJcPPnuSXfeG5903bJMy3OyEoVTQMnvO4Ly5tFg==
   dependencies:
     "@inquirer/prompts" "^5.1.2"
     "@inquirer/type" "^1.3.3"
