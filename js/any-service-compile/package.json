@@ -31,5 +31,5 @@
   "bin": {
     "any-service-build": "./src/build_cli.js"
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.5.3"
 }
