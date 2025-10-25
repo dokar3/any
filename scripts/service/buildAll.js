@@ -32,6 +32,22 @@ function err(msg) {
   process.exit(1);
 }
 
+function isCommandAvailable(command) {
+  try {
+    const checkCmd = process.platform === 'win32' ? 'where' : 'which';
+    child_process.execSync(`${checkCmd} ${command}`);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+const buildToolAvailable = isCommandAvailable("any-service-build")
+if (!buildToolAvailable) {
+  err("'any-service-build' not available, please first run 'bun scripts/service/setup.js' to setup.");
+  return;
+}
+
 const CURRENT_DIR = process.cwd();
 const JS_DIR = path.join(CURRENT_DIR, "js");
 const SERVICES_DIR = path.join(JS_DIR, "services");
