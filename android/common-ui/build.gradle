@@ -55,6 +55,7 @@ dependencies {
     api libs.androidx.lifecycle.viewmodel.compose
     api libs.androidx.viewpager
     api libs.androidx.interpolator
+    api libs.compose.material.icons
 
     api libs.sheets
 

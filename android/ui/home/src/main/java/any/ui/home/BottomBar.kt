@@ -19,7 +19,7 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -126,7 +126,7 @@ internal fun BottomBar(
                     modifier = Modifier
                         .combinedClickable(
                             interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple(bounded = false, color = selectedColor),
+                            indication = ripple(bounded = false, color = selectedColor),
                             onClick = { onItemClick?.invoke(item, isSelected) },
                             onLongClick = {
                                 onItemLongClick?.invoke(item, isSelected)

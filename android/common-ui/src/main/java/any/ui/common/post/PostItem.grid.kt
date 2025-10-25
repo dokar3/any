@@ -1,6 +1,5 @@
 package any.ui.common.post
 
-import any.base.R as BaseR
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +24,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -49,7 +48,7 @@ import any.data.entity.Post
 import any.data.entity.PostsViewType
 import any.domain.entity.UiPost
 import any.richtext.isNullOrEmpty
-import any.ui.common.rememberScaleIndication
+import any.ui.common.indication.ScaleIndicationNodeFactory
 import any.ui.common.richtext.RichText
 import any.ui.common.richtext.RichTextStyle
 import any.ui.common.theme.imagePlaceholder
@@ -58,6 +57,7 @@ import any.ui.common.theme.thumb
 import any.ui.common.theme.thumbBorder
 import any.ui.common.widget.Avatar
 import any.ui.common.widget.CollectButton
+import any.base.R as BaseR
 
 @Composable
 fun GridPostItem(
@@ -196,7 +196,7 @@ private fun TextGridPostItem(
         modifier = modifier
             .combinedClickable(
                 interactionSource = interactionSource,
-                indication = rememberScaleIndication(),
+                indication = ScaleIndicationNodeFactory,
                 onClick = { onClick?.invoke(post) },
                 onLongClick = {
                     hapticFeedback.performLongPress()
@@ -328,7 +328,7 @@ private fun CoverGridPostItem(
         modifier = modifier
             .combinedClickable(
                 interactionSource = interactionSource,
-                indication = rememberScaleIndication(),
+                indication = ScaleIndicationNodeFactory,
                 onClick = {
                     onClick?.invoke(post)
                 },
@@ -527,7 +527,7 @@ private fun ActionButtons(
                         .size(buttonSize)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple(bounded = false),
+                            indication = ripple(bounded = false),
                             onClick = { onMoreClick?.invoke() },
                         )
                         .padding(4.dp)

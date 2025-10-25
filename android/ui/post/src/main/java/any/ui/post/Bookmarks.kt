@@ -15,7 +15,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -152,7 +152,7 @@ private fun BookmarkItem(
             .fillMaxWidth()
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(),
+                indication = ripple(),
                 onClick = onClick,
                 onLongClick = {
                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)

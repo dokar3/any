@@ -1,6 +1,5 @@
 package any.ui.runsql
 
-import any.ui.common.R as CommonUiR
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -17,7 +16,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import any.ui.common.R as CommonUiR
 
 @Composable
 internal fun InputBox(
@@ -74,7 +74,7 @@ internal fun InputBox(
                     .clickable(
                         enabled = sendEnabled,
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = false),
+                        indication = ripple(bounded = false),
                         onClick = { onSubmit(text) },
                     )
                     .padding(16.dp, 12.dp),

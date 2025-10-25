@@ -26,7 +26,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -191,7 +191,7 @@ fun AnimatedPopupItem(
             .combinedClickable(
                 enabled = onClick != null || onLongClick != null,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(),
+                indication = ripple(),
                 onClick = { onClick?.invoke() },
                 onLongClick = { onLongClick?.invoke() },
             )

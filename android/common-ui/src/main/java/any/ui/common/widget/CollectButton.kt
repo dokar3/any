@@ -1,6 +1,5 @@
 package any.ui.common.widget
 
-import any.base.R as BaseR
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -12,7 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import any.ui.common.R
 import kotlinx.coroutines.launch
+import any.base.R as BaseR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -74,7 +74,7 @@ fun CollectButton(
             .size(size)
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = false, radius = rippleRadius),
+                indication = ripple(bounded = false, radius = rippleRadius),
                 onClick = {
                     if (transition.isRunning) {
                         return@combinedClickable

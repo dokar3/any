@@ -24,7 +24,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -130,7 +130,7 @@ internal fun OptionFieldItem(
                     .clip(TextFieldDefaults.OutlinedTextFieldShape)
                     .clickable(
                         interactionSource = interactionSource,
-                        indication = rememberRipple(),
+                        indication = ripple(),
                         onClick = {
                             showOptionsPopup = true
                         },
@@ -156,6 +156,9 @@ internal fun OptionFieldItem(
                     contentDescription = null,
                 )
             }
+
+            // Fix lint
+            val maxWidth = this.maxWidth
 
             if (showOptionsPopup && options.value.isNotEmpty()) {
                 DropdownMenu(

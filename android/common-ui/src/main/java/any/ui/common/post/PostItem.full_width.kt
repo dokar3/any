@@ -1,6 +1,5 @@
 package any.ui.common.post
 
-import any.base.R as BaseR
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,7 +22,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -47,6 +46,7 @@ import any.ui.common.theme.placeholder
 import any.ui.common.widget.Avatar
 import any.ui.common.widget.CollectButton
 import any.ui.common.widget.CommentsButton
+import any.base.R as BaseR
 
 @Composable
 fun FullWidthPostItem(
@@ -134,7 +134,7 @@ private fun FullWidthPostItemImpl(
 
     val clickModifier = Modifier.combinedClickable(
         interactionSource = interactionSource,
-        indication = rememberRipple(),
+        indication = ripple(),
         onClick = { onClick?.invoke(post) },
         onLongClick = {
             hapticFeedback.performLongPress()
@@ -352,7 +352,7 @@ private fun MoreButton(
             .size(24.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(bounded = false),
+                indication = ripple(bounded = false),
                 onClick = onClick,
             )
             .alpha(PostItemDefaults.IconButtonsOpacity),

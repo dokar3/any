@@ -16,7 +16,6 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory
 import com.facebook.imagepipeline.image.CloseableAnimatedImage
 import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.image.CloseableImage
-import com.facebook.imagepipeline.request.ImageRequest
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -63,7 +62,7 @@ object FrescoUtil {
                 val result = ref.get()
                 if (result is CloseableBitmap) {
                     val bmp = result.underlyingBitmap
-                    bitmap = bmp.copy(bmp.config, false)
+                    bitmap = bmp.copy(bmp.config!!, false)
                 }
             }
         } finally {
@@ -87,7 +86,9 @@ object FrescoUtil {
                 dataSource.result?.use { ref ->
                     when (val image = ref.get()) {
                         is CloseableBitmap -> {
-                            val bitmap = image.underlyingBitmap.let { it.copy(it.config, false) }
+                            val bitmap = image.underlyingBitmap.let {
+                                it.copy(it.config!!, false)
+                            }
                             trySend(bitmap to dataSource.isFinished)
                         }
 

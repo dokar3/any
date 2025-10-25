@@ -1,6 +1,5 @@
 package any.ui.common.post
 
-import any.base.R as BaseR
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,7 +25,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -69,6 +68,7 @@ import any.ui.common.theme.thumbBorder
 import any.ui.common.widget.Avatar
 import any.ui.common.widget.CollectButton
 import any.ui.common.widget.CommentsButton
+import any.base.R as BaseR
 
 private const val INFO_ANNOTATION_AUTHOR = "author"
 
@@ -222,7 +222,7 @@ private fun TextListPostItem(
         modifier = modifier
             .combinedClickable(
                 interactionSource = interactionSource,
-                indication = rememberRipple(),
+                indication = ripple(),
                 onClick = { onClick?.invoke(post) },
                 onLongClick = {
                     hapticFeedback.performLongPress()
@@ -344,7 +344,7 @@ private fun CoverListPostItem(
         modifier = modifier
             .combinedClickable(
                 interactionSource = interactionSource,
-                indication = rememberRipple(),
+                indication = ripple(),
                 onClick = { onClick?.invoke(post) },
                 onLongClick = {
                     hapticFeedback.performLongPress()

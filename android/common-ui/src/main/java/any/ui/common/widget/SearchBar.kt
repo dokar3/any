@@ -17,7 +17,7 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -169,7 +169,7 @@ fun SearchBar(
                     .size(24.dp)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = false),
+                        indication = ripple(bounded = false),
                         onClick = { onValueChange(TextFieldValue()) }
                     ),
                 tint = MaterialTheme.colors.onBackground.copy(alpha = 0.4f),

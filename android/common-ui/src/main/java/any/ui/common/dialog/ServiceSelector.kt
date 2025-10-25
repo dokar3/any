@@ -24,7 +24,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -169,7 +169,7 @@ fun ServiceSelector(
                         contentDescription = stringResource(BaseR.string.service_management),
                         modifier = Modifier.clickable(
                             interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple(bounded = false),
+                            indication = ripple(bounded = false),
                             onClick = {
                                 dismissRequester.dismiss()
                                 onManagementClick()
@@ -187,7 +187,7 @@ fun ServiceSelector(
                         contentDescription = stringResource(BaseR.string.close),
                         modifier = Modifier.clickable(
                             interactionSource = remember { MutableInteractionSource() },
-                            indication = rememberRipple(bounded = false),
+                            indication = ripple(bounded = false),
                             onClick = { dismissRequester.dismiss() },
                         ),
                     )
@@ -244,7 +244,7 @@ private fun ServiceItem(
             }
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(),
+                indication = ripple(),
                 onClick = onClick,
                 onLongClick = onLongClick,
             )

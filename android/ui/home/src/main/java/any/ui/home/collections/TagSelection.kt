@@ -16,7 +16,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -181,7 +181,7 @@ private fun RowTags(
                 .align(Alignment.BottomEnd)
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(radius = 24.dp),
+                    indication = ripple(radius = 24.dp),
                     onClick = onShowAllTagsClick
                 ),
             contentAlignment = Alignment.Center

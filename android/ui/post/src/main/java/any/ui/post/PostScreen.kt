@@ -37,7 +37,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -953,7 +953,7 @@ private fun PostContent(
                 modifier = Modifier
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = false),
+                        indication = ripple(bounded = false),
                         onClick = {
                             shareImageJob?.cancel()
                             isPreparingToShare = false

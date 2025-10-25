@@ -22,7 +22,7 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -251,7 +251,7 @@ private fun OptionsMenu(
                     .widthIn(min = 56.dp)
                     .combinedClickable(
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(),
+                        indication = ripple(),
                         onClick = {
                             hapticFeedback.performTextHandleMove()
                             onOptionSelected(option)

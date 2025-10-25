@@ -34,7 +34,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
@@ -693,7 +693,7 @@ private fun ServiceViewTypeItem(
             .widthIn(min = 72.dp)
             .clickable(
                 interactionSource = remember(item) { MutableInteractionSource() },
-                indication = rememberRipple(),
+                indication = ripple(),
                 onClick = onClick,
                 enabled = enabled,
             )

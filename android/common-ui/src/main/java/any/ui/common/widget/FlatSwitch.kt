@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
@@ -34,7 +33,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SwipeableDefaults
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.Switch
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -327,7 +326,7 @@ private fun BoxScope.SwitchImpl(
             .offset { IntOffset(thumbValue.value.roundToInt().coerceAtMost(maxOffsetX), 0) }
             .indication(
                 interactionSource = interactionSource,
-                indication = rememberRipple(bounded = false, radius = ThumbRippleRadius)
+                indication = ripple(bounded = false, radius = ThumbRippleRadius)
             )
             .requiredSize(ThumbDiameter)
             .shadow(elevation, CircleShape, clip = false)

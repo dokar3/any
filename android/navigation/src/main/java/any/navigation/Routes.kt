@@ -49,9 +49,7 @@ object Routes {
 
     class Builder(private var route: String) {
         fun arg(name: String, value: Any?): Builder {
-            if (value != null) {
-                route = route.replace("{${name}}", value.toString())
-            }
+            route = route.replace("{${name}}", value?.toString() ?: "")
             return this
         }
 
