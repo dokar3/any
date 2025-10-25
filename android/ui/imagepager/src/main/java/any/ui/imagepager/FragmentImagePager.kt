@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.asAndroidColorFilter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
-import androidx.core.view.forEach
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import any.base.image.ImageLoader
@@ -706,7 +705,10 @@ class ImagePagerFragment : DialogFragment() {
 
         suspend fun onFile(file: File) {
             val format = ImageFormatChecker.getImageFormat(file.absolutePath)
-            if (format == DefaultImageFormats.PNG || format == DefaultImageFormats.JPEG) {
+            if (format == DefaultImageFormats.PNG ||
+                format == DefaultImageFormats.JPEG ||
+                DefaultImageFormats.isWebpFormat(format)
+            ) {
                 withContext(Dispatchers.Main) {
                     target.visibility = View.VISIBLE
                     target.setImage(ImageSource.uri(Uri.fromFile(file)))

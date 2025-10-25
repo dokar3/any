@@ -16,7 +16,7 @@ object AppUtil {
         } else {
             packageManager.getPackageInfo(context.packageName, 0)
         }
-        return info.versionName
+        return info.versionName!!
     }
 
     @Suppress("deprecation")

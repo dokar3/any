@@ -9,7 +9,6 @@ import com.github.snksoft.crc.CRC
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.vdurmont.semver4j.Semver
-import okhttp3.internal.toHexString
 
 @Immutable
 @JsonClass(generateAdapter = true)

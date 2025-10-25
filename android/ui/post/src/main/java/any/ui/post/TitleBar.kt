@@ -1,6 +1,5 @@
 package any.ui.post
 
-import any.base.R as BaseR
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -17,7 +16,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,7 @@ import any.domain.entity.UiPost
 import any.ui.common.dialog.AddToCollectionsDialog
 import any.ui.common.widget.CollectButton
 import any.ui.common.widget.StatusBarSpacer
+import any.base.R as BaseR
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -69,7 +69,7 @@ internal fun TitleBar(
                     .size(iconSize)
                     .combinedClickable(
                         interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(bounded = false),
+                        indication = ripple(bounded = false),
                         onClick = onBackClick,
                         onLongClick = remember {
                             {
