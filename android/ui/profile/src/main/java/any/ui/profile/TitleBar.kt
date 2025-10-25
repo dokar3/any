@@ -1,6 +1,7 @@
 package any.ui.profile
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -64,7 +64,7 @@ internal fun TitleBar(
     isLightTheme: Boolean = MaterialTheme.colors.isLight,
     contentPadding: PaddingValues = PaddingValues(8.dp),
 ) {
-    val window = (LocalContext.current as Activity).window
+    val window = (LocalActivity.current as Activity).window
 
     val view = LocalView.current
 
