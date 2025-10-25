@@ -1,6 +1,7 @@
 package com.dokar.any
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -362,7 +363,7 @@ private fun NavGraphBuilder.profileScreen(
         val userId = backStackEntry.userId
         val userUrl = backStackEntry.userUrl
 
-        val window = (LocalContext.current as Activity).window
+        val window = (LocalActivity.current as Activity).window
         val view = LocalView.current
 
         LaunchedEffect(view) {

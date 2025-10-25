@@ -1,6 +1,7 @@
 package any.ui.home
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.VectorConverter
@@ -20,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavBackStackEntry
@@ -189,7 +189,7 @@ private fun NavGraphBuilder.freshScreen(
             fadeOut(animationSpec = tween(durationMillis = FADE_TRANS_DURATION))
         },
     ) {
-        val window = (LocalContext.current as Activity).window
+        val window = (LocalActivity.current as Activity).window
         val view = LocalView.current
         LaunchedEffect(view) {
             // Override default xml attribute
