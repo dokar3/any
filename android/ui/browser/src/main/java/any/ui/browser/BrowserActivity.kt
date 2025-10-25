@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.webkit.CookieManager
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -47,7 +48,7 @@ class BrowserActivity : DarkModeAwareActivity() {
         setContent {
             val scope = rememberCoroutineScope()
 
-            val window = (LocalContext.current as Activity).window
+            val window = (LocalActivity.current as Activity).window
 
             val view = LocalView.current
 
