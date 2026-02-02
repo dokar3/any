@@ -1,8 +1,18 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.compose.compiler)
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget("17")
+        languageVersion = KotlinVersion.KOTLIN_2_3
+        apiVersion = KotlinVersion.KOTLIN_2_3
+    }
 }
 
 android {
@@ -12,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.dokar.any"
-        minSdk 21
+        minSdk 24
         targetSdk libs.versions.targetSdk.get().toInteger()
         versionCode 18
         versionName "0.6.9"
@@ -58,7 +68,7 @@ android {
             minifyEnabled true
             debuggable false
             shrinkResources true
-            proguardFiles "benchmark-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'benchmark-rules.pro'
             buildConfigField "boolean", "BENCHMARK", "true"
         }
         release {
@@ -82,9 +92,6 @@ android {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = '17'
     }
     buildFeatures {
         compose true
