@@ -10,14 +10,14 @@ plugins {
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.fromTarget("11")
-        languageVersion = KotlinVersion.fromVersion("2.3")
-        apiVersion = KotlinVersion.fromVersion("2.3")
+        languageVersion = KotlinVersion.KOTLIN_2_3
+        apiVersion = KotlinVersion.KOTLIN_2_3
     }
 }
 
 android {
     namespace = "any.benchmark"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 34
+        targetSdk = libs.versions.targetSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

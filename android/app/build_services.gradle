@@ -102,8 +102,12 @@ def configureTaskDependency(variant) {
     project.tasks.matching {
         it.name == "merge${targetName}Resources"
                 || it.name == "merge${targetName}Assets"
+                || it.name == "lintAnalyze${targetName}"
                 || it.name == "lintVitalAnalyzeRelease"
+                || it.name == "lintVitalAnalyzeBenchmark"
                 || it.name == "generateReleaseLintVitalReportModel"
+                || it.name == "generate${targetName}LintReportModel"
+                || it.name == "generateBenchmarkLintVitalReportModel"
     }.configureEach {
         it.dependsOn(compileBuiltinJsServices)
     }

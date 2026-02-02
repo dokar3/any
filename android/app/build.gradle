@@ -10,8 +10,8 @@ plugins {
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.fromTarget("17")
-        languageVersion = KotlinVersion.fromVersion("2.3")
-        apiVersion = KotlinVersion.fromVersion("2.3")
+        languageVersion = KotlinVersion.KOTLIN_2_3
+        apiVersion = KotlinVersion.KOTLIN_2_3
     }
 }
 
@@ -68,7 +68,7 @@ android {
             minifyEnabled true
             debuggable false
             shrinkResources true
-            proguardFiles "benchmark-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'benchmark-rules.pro'
             buildConfigField "boolean", "BENCHMARK", "true"
         }
         release {
