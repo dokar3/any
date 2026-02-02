@@ -5,6 +5,9 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
@@ -23,6 +26,8 @@ rootProject.name = "Any"
 
 file("android").eachDir { dir ->
     if (dir.name == "ui") {
+        include ":ui"
+        project(":ui").projectDir = dir
         dir.eachDir { subDir ->
             include ":ui:${subDir.name}"
             project(":ui:${subDir.name}").projectDir = subDir

@@ -1,8 +1,18 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.compose.compiler)
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget("17")
+        languageVersion = KotlinVersion.fromVersion("2.3")
+        apiVersion = KotlinVersion.fromVersion("2.3")
+    }
 }
 
 android {
@@ -12,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.dokar.any"
-        minSdk 21
+        minSdk 24
         targetSdk libs.versions.targetSdk.get().toInteger()
         versionCode 18
         versionName "0.6.9"
@@ -82,9 +92,6 @@ android {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = '17'
     }
     buildFeatures {
         compose true

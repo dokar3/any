@@ -26,7 +26,7 @@ class ExecRet {
     }
 }
 
-def cmd(File dir, String command) {
+def cmd(Project project, File dir, String command) {
     def stdout = new ByteArrayOutputStream()
     def errorOut = new ByteArrayOutputStream()
     def commandArgs
@@ -35,7 +35,8 @@ def cmd(File dir, String command) {
     } else {
         commandArgs = ["sh", "-c", command]
     }
-    def ret = exec {
+    def execOps = project.services.get(ExecOperations)
+    def ret = execOps.exec {
         workingDir dir
         commandLine commandArgs
         standardOutput stdout
@@ -49,9 +50,9 @@ def cmd(File dir, String command) {
     )
 }
 
-def checkBun() {
+def checkBun(Project project) {
     def check = "bun -v"
-    def out = cmd(builtinServicesDir(), check).stdout
+    def out = cmd(project, builtinServicesDir(), check).stdout
     return Pattern.compile("\\d+\\.\\d+\\.\\d+").matcher(out).matches()
 }
 
@@ -65,7 +66,7 @@ task compileBuiltinJsServices() {
     doLast {
         // Check Bun
         println("Checking Bun...")
-        if (!checkBun()) {
+        if (!checkBun(project)) {
             throw new GradleException("Bun is not installed, please install it " +
                     "manually: https://bun.sh")
         }
@@ -77,7 +78,7 @@ task compileBuiltinJsServices() {
                 "--platform=android " +
                 "--output=${outputDir} " +
                 "--file-prefix=file:///android_asset/js/"
-        def ret = cmd(rootProject.projectDir, buildCmd)
+        def ret = cmd(project, rootProject.projectDir, buildCmd)
         if (ret.exitValue != 0) {
             throw new GradleException("Failed to compile builtin js services, details:\n" +
                     "stdout:\n${ret.stdout}\nerrorOut:\n${ret.errorOut}")
@@ -96,14 +97,22 @@ task cleanCompiledJs() {
     }
 }
 
-project.afterEvaluate {
-    def isAndroidLibrary = plugins.hasPlugin("com.android.library")
-    def variants = isAndroidLibrary ? android.libraryVariants : android.applicationVariants
-    variants.all { def variant ->
-        def targetName = variant.name.capitalize()
-        tasks.findByName("merge${targetName}Resources").dependsOn(compileBuiltinJsServices)
-        tasks.findByName("merge${targetName}Assets").dependsOn(compileBuiltinJsServices)
+def configureTaskDependency(variant) {
+    def targetName = variant.name.capitalize()
+    project.tasks.matching {
+        it.name == "merge${targetName}Resources"
+                || it.name == "merge${targetName}Assets"
+                || it.name == "lintVitalAnalyzeRelease"
+                || it.name == "generateReleaseLintVitalReportModel"
+    }.configureEach {
+        it.dependsOn(compileBuiltinJsServices)
     }
+}
+
+androidComponents {
+    onVariants(selector().all(), { variant ->
+        configureTaskDependency(variant)
+    })
 }
 
 clean.dependsOn(cleanCompiledJs)
