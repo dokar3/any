@@ -5291,18 +5291,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"schema-utils@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "schema-utils@npm:4.0.1"
-  dependencies:
-    "@types/json-schema": "npm:^7.0.9"
-    ajv: "npm:^8.9.0"
-    ajv-formats: "npm:^2.1.1"
-    ajv-keywords: "npm:^5.1.0"
-  checksum: 8/745e7293c6b6c84940de16753c207311da821aa9911b9e2d158cfd9ffc5bf1f880147abbbe775b96cb8cd3c7f48890950fe0164f54eed9a8aabb948ebf8a3fdd
-  languageName: node
-  linkType: hard
-
 "schema-utils@npm:^4.2.0":
   version: 4.2.0
   resolution: "schema-utils@npm:4.2.0"
@@ -5789,16 +5777,16 @@ __metadata:
   linkType: hard
 
 "thread-loader@npm:^4.0.0":
-  version: 4.0.2
-  resolution: "thread-loader@npm:4.0.2"
+  version: 4.0.4
+  resolution: "thread-loader@npm:4.0.4"
   dependencies:
     json-parse-better-errors: "npm:^1.0.2"
     loader-runner: "npm:^4.1.0"
     neo-async: "npm:^2.6.2"
-    schema-utils: "npm:^4.0.1"
+    schema-utils: "npm:^4.2.0"
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 8/1b1bd4cf4320b63e2a8c52d6ff64c4cf7fbc5e6099f41aae5fa35c4714134becff5b91cd6b00d707f60d18003aba0ae112a719dfbd92fbcdeb875beba76b1146
+  checksum: 10c0/0cf5636865afa02366b95044d74df01c34479fcf363057e58c12279e93f2e3c840a7e7f222f4a71b2b22e4244b378280778d67c576c342e72fc0cbc0a63ae19d
   languageName: node
   linkType: hard
 
