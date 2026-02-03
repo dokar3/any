@@ -3708,8 +3708,8 @@ __metadata:
   linkType: hard
 
 "html-webpack-plugin@npm:^5.5.0":
-  version: 5.6.0
-  resolution: "html-webpack-plugin@npm:5.6.0"
+  version: 5.6.6
+  resolution: "html-webpack-plugin@npm:5.6.6"
   dependencies:
     "@types/html-minifier-terser": "npm:^6.0.0"
     html-minifier-terser: "npm:^6.0.2"
@@ -3724,7 +3724,7 @@ __metadata:
       optional: true
     webpack:
       optional: true
-  checksum: 8/32a6e41da538e798fd0be476637d7611a5e8a98a3508f031996e9eb27804dcdc282cb01f847cf5d066f21b49cfb8e21627fcf977ffd0c9bea81cf80e5a65070d
+  checksum: 10c0/30c07c46c6125d51f9779e4fc3dd1bf30ebd0ef78e9628d918f8e4c45e116e79a31ca5ba3444d2743833335405616b8772a68d6183b0663f016529802422ca9e
   languageName: node
   linkType: hard
 
