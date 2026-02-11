@@ -84,7 +84,7 @@ accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pa
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist" }
 
-barcodeScanning = { module = "com.google.mlkit:barcode-scanning", version = "17.2.0" }
+barcodeScanning = { module = "com.google.mlkit:barcode-scanning", version = "17.3.0" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 
