@@ -115,7 +115,7 @@ jobs:
 
       - name: Upload APKs
         if: ${{ inputs.build_release_apks }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: "app-release-apks"
           path: android/app/build/outputs/apk/release/*.apk
