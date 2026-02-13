@@ -19,7 +19,7 @@
     "babel-loader": "^10.0.0",
     "babel-plugin-inline-import": "^3.0.0",
     "cli-color": "^2.0.2",
-    "dotenv": "^16.0.3",
+    "dotenv": "^17.0.0",
     "esbuild": "^0.27.0",
     "esbuild-ifdef": "^0.2.0",
     "handlebars": "^4.7.7",
