@@ -16,7 +16,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.18.6",
     "archiver": "^7.0.0",
-    "babel-loader": "^9.0.0",
+    "babel-loader": "^10.0.0",
     "babel-plugin-inline-import": "^3.0.0",
     "cli-color": "^2.0.2",
     "dotenv": "^16.0.3",
