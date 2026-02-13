@@ -22,6 +22,6 @@
     "any-service-compile": "link:any-service-compile",
     "any-service-runner": "link:any-service-runner",
     "any-service-testing": "link:any-service-testing",
-    "concurrently": "^8.0.0"
+    "concurrently": "^9.0.0"
   }
 }

@@ -21,6 +21,6 @@
     "@types/bun": "^1.1.3",
     "any-service-compile": "link:any-service-compile",
     "any-service-testing": "link:any-service-testing",
-    "concurrently": "^8.0.0"
+    "concurrently": "^9.0.0"
   }
 }
