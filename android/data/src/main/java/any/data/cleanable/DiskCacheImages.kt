@@ -11,7 +11,7 @@ import kotlin.math.min
 
 class DiskCacheImages : Cleanable {
     override suspend fun clean(): Boolean = withContext(Dispatchers.IO) {
-        ImagePipelineFactory.getInstance().also {
+        ImagePipelineFactory.getInstance().diskCachesStoreSupplier.get().also {
             it.mainBufferedDiskCache.clearAll().waitForCompletion()
             it.smallImageFileCache.clearAll()
         }
