@@ -29,8 +29,9 @@ object FrescoUtil {
     fun fetchCachedFile(request: ImageRequest): File? {
         val cacheKey = DefaultCacheKeyFactory.getInstance()
             .getEncodedCacheKey(request, null)
-        val mainCache = ImagePipelineFactory.getInstance().mainFileCache
-        val smallCache = ImagePipelineFactory.getInstance().smallImageFileCache
+        val diskCachesStore = ImagePipelineFactory.getInstance().diskCachesStoreSupplier.get()
+        val mainCache = diskCachesStore.mainFileCache
+        val smallCache = diskCachesStore.smallImageFileCache
         return if (mainCache.hasKey(cacheKey)) {
             val resource = mainCache.getResource(cacheKey)
             (resource as? FileBinaryResource)?.file
