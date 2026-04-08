@@ -70,14 +70,14 @@ const QUESTIONS = [
   },
   {
     name: "isPageable",
-    type: "list",
+    type: "select",
     message: "Can this service load multiple pages?",
     choices: ["true", "false"],
     default: "true",
   },
   {
     name: "postsViewType",
-    type: "list",
+    type: "select",
     message: "Post list view type",
     choices: POSTS_VIEW_TYPES,
     default: POSTS_VIEW_TYPES[0],
