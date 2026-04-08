@@ -566,7 +566,7 @@ private fun frescoHolderOf(
     val resizeOptions = if (decodeRegion != null) {
         val resize = if (size.isNonZero()) size else decodeRegion.size
         // Disable down-sampling
-        ResizeOptions(resize.width, resize.height, maxBitmapSize = 20_000f)
+        ResizeOptions(resize.width, resize.height, maxBitmapDimension = 20_000f)
     } else if (size.isNonZero()) {
         ResizeOptions(size.width, size.height)
     } else {
