@@ -105,7 +105,7 @@ media3-common = { module = "androidx.media3:media3-common", version.ref = "media
 media3-database = { module = "androidx.media3:media3-database", version.ref = "media3" }
 media3-datasource = { module = "androidx.media3:media3-datasource", version.ref = "media3" }
 
-guava = { module = "com.google.guava:guava", version = "33.6.0-android" }
+guava = { module = "com.google.guava:guava", version = "33.6.0-jre" }
 
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 
