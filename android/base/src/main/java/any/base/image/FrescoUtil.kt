@@ -63,7 +63,7 @@ object FrescoUtil {
             dataSource.result?.use { ref ->
                 val result = ref.get()
                 if (result is CloseableBitmap) {
-                    val bmp = result.underlyingBitmap
+                    val bmp = result.underlyingBitmap ?: return@use
                     bitmap = bmp.copy(bmp.config!!, false)
                 }
             }
@@ -88,7 +88,8 @@ object FrescoUtil {
                 dataSource.result?.use { ref ->
                     when (val image = ref.get()) {
                         is CloseableBitmap -> {
-                            val bitmap = image.underlyingBitmap.let {
+                            val sourceBitmap = image.underlyingBitmap ?: return@use
+                            val bitmap = sourceBitmap.let {
                                 it.copy(it.config!!, false)
                             }
                             trySend(bitmap to dataSource.isFinished)
